@@ -24,6 +24,11 @@ which is **not** the most recent Play Store version.
 
 This may be updated over time.
 
+###Download
+You can download this module from either the GitHub release page (see on top of the page -> Releases),
+or the official [Xposed Repo page](http://repo.xposed.info/module/com.woalk.apps.xposed.htcblinkfeedauthorizer).
+I recommend the last one, it is the best integrated way of installing an Xposed Module.
+(Also I can count downloads.)
 
 ###Legal
 ```
