@@ -1,7 +1,9 @@
 #HTC BlinkFeed Authorizer
 ##Xposed Module
 This [Xposed Module](http://repo.xposed.info/) removes the message
-*"Unauthorized device - Your device is not compatible with this app."*
+
+!["Unauthorized device - This app is not compatible with your phone."](http://ext.woalk.de/img/github/htcblinkfeedunauth.png)
+
 from [HTC BlinkFeed/Sense Home](https://play.google.com/store/apps/details?id=com.htc.launcher&hl=en).
 
 ###Requirements
