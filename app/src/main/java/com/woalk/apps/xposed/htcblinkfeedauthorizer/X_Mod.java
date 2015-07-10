@@ -20,6 +20,9 @@ public class X_Mod implements IXposedHookLoadPackage {
     public static final String CLASS_COMMON_MF_MAIN_ACTIVITY = PKG_HTC_SOCIALNETWORK_UI +
             ".CommonMfMainActivity";
 
+    public static final String PKG_HTC_GALLERY = "com.htc.album";
+    public static final String CLASS_3DSCENE = "com.htc.sunny2.frameworks.base.widgets.SunnyScene";
+
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
         if (!lpparam.packageName.equals(PKG_HTC_LAUNCHER))
@@ -33,6 +36,7 @@ public class X_Mod implements IXposedHookLoadPackage {
                     }
                 });
 
+
         XposedHelpers.findAndHookMethod(CLASS_HDK0UTIL, lpparam.classLoader, "isHTCDevice",
                 new XC_MethodHook() {
                     @Override
@@ -40,6 +44,14 @@ public class X_Mod implements IXposedHookLoadPackage {
                         param.setResult(true);
                     }
                 });
+
+        XposedHelpers.findAndHookMethod(CLASS_HDK0UTIL, lpparam.classLoader, "getHDKBaseVersion",
+                new XC_MethodHook() {
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        param.setResult(true);
+                    }
+                });
+
 
         XposedHelpers.findAndHookMethod(CLASS_HDK0UTIL, lpparam.classLoader, "isHEPDevice",
                 Context.class, new XC_MethodHook() {
@@ -80,5 +92,14 @@ public class X_Mod implements IXposedHookLoadPackage {
                         param.setResult(true);
                     }
                 });
+
+        XposedHelpers.findAndHookMethod(CLASS_3DSCENE, lpparam.classLoader,
+                "enable3dScene", new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        param.setResult(true);
+                    }
+                });
+
     }
 }
