@@ -116,5 +116,6 @@ public class X_Mod implements IXposedHookLoadPackage {
                         }
                     });
 
-    }
+		}
+	}
 }
