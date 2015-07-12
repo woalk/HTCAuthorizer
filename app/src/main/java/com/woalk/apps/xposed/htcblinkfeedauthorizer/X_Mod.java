@@ -53,14 +53,7 @@ public class X_Mod implements IXposedHookLoadPackage {
                         }
                     });
 			
-			XposedHelpers.findAndHookMethod(PKG_HTC_LIB2, lpparam.classLoader, "isHTCDevice",
-                    new XC_MethodHook() {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult(true);
-                        }
-                    });
-					
+							
 			XposedHelpers.findAndHookMethod(CLASS_HDK0UTIL, lpparam.classLoader, "isStockUIDevice",
                     Context.class, new XC_MethodHook() {
                         @Override
@@ -77,9 +70,7 @@ public class X_Mod implements IXposedHookLoadPackage {
                         }
                     });
 
-		}
-		// Move application-specific checks here
-		else if (lpparam.packageName.equals(PKG_HTC_LAUNCHER)) {
+		} else if (lpparam.packageName.equals(PKG_HTC_LAUNCHER)) {
 
             XposedHelpers.findAndHookMethod(CLASS_HDK0UTIL, lpparam.classLoader, "isHEPDevice",
                     Context.class, new XC_MethodHook() {
@@ -89,6 +80,14 @@ public class X_Mod implements IXposedHookLoadPackage {
                         }
                     });
 
+			XposedHelpers.findAndHookMethod(PKG_HTC_LIB2, lpparam.classLoader, "isHTCDevice",
+                    new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            param.setResult(true);
+                        }
+                    });
+					
             XposedHelpers.findAndHookMethod(CLASS_HDK0UTIL, lpparam.classLoader, "isODMDevice",
                     Context.class, new XC_MethodHook() {
                         @Override
@@ -113,9 +112,7 @@ public class X_Mod implements IXposedHookLoadPackage {
                             param.setResult(true);
                         }
                     });
-        }
-		//Gallery Checks
-		else if (lpparam.packageName.equals(PKG_HTC_GALLERY)) {
+        } else if (lpparam.packageName.equals(PKG_HTC_GALLERY)) {
 			//This check enables duo fx - tie to a toggle in UI
 			XposedHelpers.findAndHookMethod(CLASS_3DSCENE, lpparam.classLoader,
                 "enable3dScene", new XC_MethodHook() {
