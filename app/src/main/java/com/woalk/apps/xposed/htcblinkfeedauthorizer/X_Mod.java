@@ -12,7 +12,9 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
  */
 public class X_Mod implements IXposedHookLoadPackage {
     public static final String PKG_HTC_LAUNCHER = "com.htc.launcher";
-    public static final String PKG_HTC_LIB0 = "com.htc.lib0";
+	public static final String PKG_HTC_GALLERY = "com.htc.album";
+	public static final String PKG_HTC_CAMERA = "com.htc.camera";
+	public static final String PKG_HTC_LIB0 = "com.htc.lib0";
     public static final String PKG_HTC_SOCIALNETWORK_UI = "com.htc.socialnetwork.common.utils.ui";
 
     public static final String CLASS_HDK0UTIL = PKG_HTC_LIB0 + ".HDKLib0Util";
@@ -20,6 +22,7 @@ public class X_Mod implements IXposedHookLoadPackage {
     public static final String CLASS_COMMON_MF_MAIN_ACTIVITY = PKG_HTC_SOCIALNETWORK_UI +
             ".CommonMfMainActivity";
 
+    public static final String CLASS_3DSCENE = "com.htc.sunny2.frameworks.base.widgets.SunnyScene";
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
         if (lpparam.packageName.equals(PKG_HTC_LAUNCHER)) {
@@ -79,5 +82,15 @@ public class X_Mod implements IXposedHookLoadPackage {
                         }
                     });
         }
+		
+		if (lpparam.packageName.equals(PKG_HTC_GALLERY)) {
+        XposedHelpers.findAndHookMethod(CLASS_3DSCENE, lpparam.classLoader,
+                "enable3dScene", new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        param.setResult(true);
+                        }
+                    });
+
     }
 }
