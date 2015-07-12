@@ -40,7 +40,7 @@ public class X_Mod implements IXposedHookLoadPackage {
                     new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult(6.0f); //Guessing at this value, need to investigate
+                            param.setResult(19.2f); //Guessing at this value, need to investigate
                         }
                     });
 
