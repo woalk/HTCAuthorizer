@@ -1,6 +1,8 @@
 package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
+import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
@@ -71,6 +73,14 @@ public class X_Mod implements IXposedHookLoadPackage {
                         }
                     });
 			
+			XposedHelpers.findAndHookMethod(CLASS_BF_UDACT, lpparam.classLoader, "onCreate", Bundle.class,
+					new XC_MethodHook() {
+						@Override
+						protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+							((Activity) param.thisObject).getIntent().setAction("ANY_ACTION");
+						}
+					});
+			
 							
 			XposedHelpers.findAndHookMethod(CLASS_HDK0UTIL, lpparam.classLoader, "isStockUIDevice",
                     Context.class, new XC_MethodHook() {
@@ -89,7 +99,7 @@ public class X_Mod implements IXposedHookLoadPackage {
                     });
 					
 			XposedHelpers.findAndHookMethod(CLASS_BF_SETTINGUTIL, lpparam.classLoader, "isHtcDevice",
-                    Context.class, new XC_MethodHook() {
+                    new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             param.setResult(true);
@@ -137,9 +147,7 @@ public class X_Mod implements IXposedHookLoadPackage {
                         }
                     });
 					
-			
-
-            XposedHelpers.findAndHookMethod(CLASS_COMMON_MF_MAIN_ACTIVITY, lpparam.classLoader,
+			XposedHelpers.findAndHookMethod(CLASS_COMMON_MF_MAIN_ACTIVITY, lpparam.classLoader,
                     "checkCompatibility", new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -161,7 +169,7 @@ public class X_Mod implements IXposedHookLoadPackage {
                 "enable3dScene", new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        param.setResult(true);
+                        param.setResult(Boolean.TRUE);
                         }
                     });
 			 XposedHelpers.findAndHookMethod(CLASS_HDK0UTIL, lpparam.classLoader, "getSenseVersion",
@@ -176,7 +184,7 @@ public class X_Mod implements IXposedHookLoadPackage {
                     new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult(19.2f); //Guessing at this value, need to investigate
+                            param.setResult(6.0F); //Guessing at this value, need to investigate
                         }
                     });
 
