@@ -2,9 +2,11 @@ package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
+import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
@@ -12,7 +14,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 /**
  * The class to be loaded by Xposed.
  */
-public class X_Mod implements IXposedHookLoadPackage {
+public class X_Mod implements IXposedHookLoadPackage, IXposedHookZygoteInit {
     public static final String PKG_HTC_LAUNCHER = "com.htc.launcher";
     public static final String PKG_HTC_LIB0 = "com.htc.lib0";
     public static final String PKG_HTC_SOCIALNETWORK_UI = "com.htc.socialnetwork.common.utils.ui";
@@ -232,7 +234,21 @@ public class X_Mod implements IXposedHookLoadPackage {
                         }
                     });
 
-
         }
+    }
+
+    public static final String CLASS_ANDROID_CONTEXT = "android.content.Context";
+
+    @Override
+    public void initZygote(StartupParam startupParam) throws Throwable {
+        XposedHelpers.findAndHookMethod(CLASS_ANDROID_CONTEXT, null, // = use system ClassLoader
+                "sendBroadcast", Intent.class, String.class, new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        if (((String) param.args[1]).startsWith("com.htc.sense.permission.")) {
+                            param.args[1] = null;
+                        }
+                    }
+                });
     }
 }
