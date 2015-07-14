@@ -4,6 +4,7 @@ import android.content.Context;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
@@ -16,6 +17,8 @@ public class X_Mod implements IXposedHookLoadPackage {
 	public static final String CLASS_BF_SETTINGUTIL = "com.htc.launcher.util.SettingUtil";
 	public static final String CLASS_BF_LIB2 = "com.htc.lib2.Hms";
 	public static final String CLASS_BF_LIB0 = "com.htc.lib0.HDKLib0Util";
+	public static final String CLASS_BF_UDACT = "com.htc.socialnetwork.common.utils.ui.HMSUpdateActivity";
+	public static final String CLASS_BF_LOCK = "com.htc.blinklock.BlinkLockProvider";
 	
 	public static final String PKG_HTC_GALLERY = "com.htc.album";
 	public static final String CLASS_3DSCENE = "com.htc.sunny2.frameworks.base.widgets.SunnyScene";
@@ -89,7 +92,7 @@ public class X_Mod implements IXposedHookLoadPackage {
                     Context.class, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult(Boolean.TRUE);
+                            param.setResult(true);
                         }
                     });
 			
@@ -110,7 +113,7 @@ public class X_Mod implements IXposedHookLoadPackage {
                         }
                     });
 
-			XposedHelpers.findAndHookMethod(CLASS_BF_LIB2, lpparam.classLoader, "isHTCDevice",
+			XposedHelpers.findAndHookMethod(CLASS_BF_LIB2, lpparam.classLoader, "isHtcDevice",
                     new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -133,9 +136,19 @@ public class X_Mod implements IXposedHookLoadPackage {
                             param.setResult(true);
                         }
                     });
+					
+			
 
             XposedHelpers.findAndHookMethod(CLASS_COMMON_MF_MAIN_ACTIVITY, lpparam.classLoader,
                     "checkCompatibility", new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            param.setResult(true);
+                        }
+                    });
+					
+			XposedHelpers.findAndHookMethod(CLASS_BF_LOCK, lpparam.classLoader,
+                    "checkPermission", new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             param.setResult(true);
