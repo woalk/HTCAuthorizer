@@ -21,6 +21,7 @@ public class X_Mod implements IXposedHookLoadPackage {
 	public static final String CLASS_BF_LIB0 = "com.htc.lib0.HDKLib0Util";
 	public static final String CLASS_BF_UDACT = "com.htc.socialnetwork.common.utils.ui.HMSUpdateActivity";
 	public static final String CLASS_BF_LOCK = "com.htc.blinklock.BlinkLockProvider";
+    public static final String CLASS_BF_PROFILEBRIEF = "com.htc.themepicker.model.ProfileBrief";
 	
 	public static final String PKG_HTC_GALLERY = "com.htc.album";
 	public static final String CLASS_3DSCENE = "com.htc.sunny2.frameworks.base.widgets.SunnyScene";
@@ -157,6 +158,14 @@ public class X_Mod implements IXposedHookLoadPackage {
 					
 			XposedHelpers.findAndHookMethod(CLASS_BF_LOCK, lpparam.classLoader,
                     "checkPermission", new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            param.setResult(true);
+                        }
+                    });
+
+            XposedHelpers.findAndHookMethod(CLASS_BF_PROFILEBRIEF, lpparam.classLoader,
+                    "isHtc", new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             param.setResult(true);
