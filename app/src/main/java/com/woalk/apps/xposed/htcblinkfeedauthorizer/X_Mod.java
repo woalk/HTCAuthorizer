@@ -265,7 +265,8 @@ public class X_Mod implements IXposedHookLoadPackage, IXposedHookZygoteInit {
                 "sendBroadcast", Intent.class, String.class, new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        if (((String) param.args[1]).startsWith("com.htc.")) {
+                        String param1 = (String) param.args[1];
+                        if (param1 != null && param1.startsWith("com.htc.")) {
                             param.args[1] = null;
                         }
                     }
@@ -276,7 +277,8 @@ public class X_Mod implements IXposedHookLoadPackage, IXposedHookZygoteInit {
                 new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        if (((String) param.args[2]).startsWith("com.htc.")) {
+                        String param2 = (String) param.args[2];
+                        if (param2 != null && param2.startsWith("com.htc.")) {
                             param.args[2] = null;
                         }
                     }
