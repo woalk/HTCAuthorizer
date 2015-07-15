@@ -138,33 +138,6 @@ public class X_Mod implements IXposedHookLoadPackage {
                         }
                     });
 
-//everything below this line is not in the original modification and can probably go
-
-
-            XposedHelpers.findAndHookMethod(CLASS_HDK0UTIL, lpparam.classLoader, "isHEPDevice",
-                    Context.class, new XC_MethodHook() {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult(Boolean.TRUE);
-                        }
-                    });
-					
-			//I suspect this is critical
-            XposedHelpers.findAndHookMethod(CLASS_HDK0UTIL, lpparam.classLoader, "isODMDevice",
-                    Context.class, new XC_MethodHook() {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult(Boolean.FALSE);
-                        }
-                    });
-
-            XposedHelpers.findAndHookMethod(CLASS_BF_LOCK, lpparam.classLoader,
-                    "checkPermission", Context.class, String.class, String.class, new XC_MethodHook() {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult(true);
-                        }
-                    });
 
 
 
