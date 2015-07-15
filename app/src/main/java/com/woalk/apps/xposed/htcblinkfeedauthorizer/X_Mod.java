@@ -262,7 +262,7 @@ public class X_Mod implements IXposedHookLoadPackage, IXposedHookZygoteInit {
                 "sendBroadcast", Intent.class, String.class, new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        if (((String) param.args[1]).startsWith("com.htc.sense.permission.")) {
+                        if (((String) param.args[1]).startsWith("com.htc.")) {
                             param.args[1] = null;
                         }
                     }
