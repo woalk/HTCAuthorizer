@@ -1,15 +1,10 @@
 package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Handler;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
-import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
@@ -17,7 +12,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 /**
  * The class to be loaded by Xposed.
  */
-public class X_Mod implements IXposedHookLoadPackage, IXposedHookZygoteInit {
+public class X_Mod implements IXposedHookLoadPackage {
     public static final String PKG_HTC_LAUNCHER = "com.htc.launcher";
     public static final String PKG_HTC_LIB0 = "com.htc.lib0";
     public static final String PKG_HTC_SOCIALNETWORK_UI = "com.htc.socialnetwork.common.utils.ui";
@@ -25,15 +20,12 @@ public class X_Mod implements IXposedHookLoadPackage, IXposedHookZygoteInit {
     public static final String CLASS_BF_HELPER = PKG_HTC_LAUNCHER + ".util.HspUpdateHelper";
     public static final String CLASS_BF_SETTINGUTIL = PKG_HTC_LAUNCHER + ".util.SettingUtil";
     public static final String CLASS_BF_LIB2 = "com.htc.lib2.Hms";
-    public static final String CLASS_BF_LIB0 = PKG_HTC_LIB0 + ".HDKLib0Util";
     public static final String CLASS_BF_UDACT = PKG_HTC_SOCIALNETWORK_UI + ".HMSUpdateActivity";
     public static final String CLASS_BF_LOCK = "com.htc.blinklock.BlinkLockProvider";
     public static final String CLASS_BF_PROFILEBRIEF = "com.htc.themepicker.model.ProfileBrief";
 
     public static final String PKG_HTC_GALLERY = "com.htc.album";
     public static final String CLASS_3DSCENE = "com.htc.sunny2.frameworks.base.widgets.SunnyScene";
-
-    public static final String PKG_HTC_CAMERA = "com.htc.camera";
 
     public static final String PKG_HTC_FB = "com.htc.sense.socialnetwork.facebook";
     public static final String CLASS_METHOD_E = "com.htc.socialnetwork.facebook" +
@@ -57,49 +49,25 @@ public class X_Mod implements IXposedHookLoadPackage, IXposedHookZygoteInit {
         // First section contains common checks found in all HTC Apps
         // Need to see if OR statements are best, or if we can just check for com.htc.* apps
         if (lpparam.packageName.equals(PKG_HTC_LAUNCHER)) {
-            XposedHelpers.findAndHookMethod(CLASS_HDK0UTIL, lpparam.classLoader, "getSenseVersion",
-                    new XC_MethodHook() {
+
+            XposedHelpers.findAndHookMethod(CLASS_BF_HELPER, lpparam.classLoader, "isHSPCompatible",
+                     new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult(7.0f);
-                        }
-                    });
-
-            XposedHelpers.findAndHookMethod(CLASS_HDK0UTIL, lpparam.classLoader,
-                    "getHDKBaseVersion", new XC_MethodHook() {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult(19.2f); //Guessing at this value, need to investigate
-                        }
-                    });
-
-            XposedHelpers.findAndHookMethod(CLASS_HDK0UTIL, lpparam.classLoader, "isHTCDevice",
-                    new XC_MethodHook() {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult(true);
-                        }
-                    });
-
-            XposedHelpers.findAndHookMethod(CLASS_BF_UDACT, lpparam.classLoader, "onCreate",
-                    Bundle.class, new XC_MethodHook() {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            ((Activity) param.thisObject).getIntent().setAction("ANY_ACTION");
-                        }
-                    });
-
-
-            XposedHelpers.findAndHookMethod(CLASS_HDK0UTIL, lpparam.classLoader, "isStockUIDevice",
-                    Context.class, new XC_MethodHook() {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult(Boolean.FALSE);
+                            param.setResult(Boolean.TRUE);
                         }
                     });
 
             XposedHelpers.findAndHookMethod(CLASS_BF_HELPER, lpparam.classLoader, "isHSPCompatible",
                     Context.class, new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            param.setResult(Boolean.TRUE);
+                        }
+                    });
+
+            XposedHelpers.findAndHookMethod(CLASS_BF_HELPER, lpparam.classLoader, "isHSPCompatible",
+                    Context.class, boolean.class, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             param.setResult(Boolean.TRUE);
@@ -114,18 +82,7 @@ public class X_Mod implements IXposedHookLoadPackage, IXposedHookZygoteInit {
                         }
                     });
 
-            XposedHelpers.findAndHookMethod(CLASS_HDK0UTIL, lpparam.classLoader, "isHEPDevice",
-                    Context.class, new XC_MethodHook() {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult(Boolean.TRUE);
-                        }
-                    });
-					
-			//I suspect this is critical
-
-
-            XposedHelpers.findAndHookMethod(CLASS_BF_LIB2, lpparam.classLoader, "isHtcDevice",
+            XposedHelpers.findAndHookMethod(CLASS_HDK0UTIL, lpparam.classLoader, "isHTCDevice",
                     new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -133,11 +90,11 @@ public class X_Mod implements IXposedHookLoadPackage, IXposedHookZygoteInit {
                         }
                     });
 
-            XposedHelpers.findAndHookMethod(CLASS_HDK0UTIL, lpparam.classLoader, "isODMDevice",
-                    Context.class, new XC_MethodHook() {
+            XposedHelpers.findAndHookMethod(CLASS_BF_LIB2, lpparam.classLoader, "isHtcDevice",
+                    new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult(Boolean.FALSE);
+                            param.setResult(true);
                         }
                     });
 
@@ -157,11 +114,11 @@ public class X_Mod implements IXposedHookLoadPackage, IXposedHookZygoteInit {
                         }
                     });
 
-            XposedHelpers.findAndHookMethod(CLASS_BF_LOCK, lpparam.classLoader,
-                    "checkPermission", new XC_MethodHook() {
+            XposedHelpers.findAndHookMethod(CLASS_BF_UDACT, lpparam.classLoader, "onCreate",
+                    Bundle.class, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult(true);
+                            ((Activity) param.thisObject).getIntent().setAction("ANY_ACTION");
                         }
                     });
 
@@ -181,52 +138,36 @@ public class X_Mod implements IXposedHookLoadPackage, IXposedHookZygoteInit {
                         }
                     });
 
-        } else if (lpparam.packageName.equals(PKG_HTC_GALLERY)) {
-            //This check enables duo fx - tie to a toggle in UI
-            XposedHelpers.findAndHookMethod(CLASS_3DSCENE, lpparam.classLoader,
-                    "enable3dScene", new XC_MethodHook() {
+//everything below this line is not in the original modification and can probably go
+
+
+            XposedHelpers.findAndHookMethod(CLASS_HDK0UTIL, lpparam.classLoader, "isHEPDevice",
+                    Context.class, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             param.setResult(Boolean.TRUE);
                         }
                     });
-            XposedHelpers.findAndHookMethod(CLASS_HDK0UTIL, lpparam.classLoader, "getSenseVersion",
-                    new XC_MethodHook() {
+					
+			//I suspect this is critical
+            XposedHelpers.findAndHookMethod(CLASS_HDK0UTIL, lpparam.classLoader, "isODMDevice",
+                    Context.class, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult(7.0f);
+                            param.setResult(Boolean.FALSE);
                         }
                     });
 
-            XposedHelpers.findAndHookMethod(CLASS_HDK0UTIL, lpparam.classLoader,
-                    "getHDKBaseVersion", new XC_MethodHook() {
+            XposedHelpers.findAndHookMethod(CLASS_BF_LOCK, lpparam.classLoader,
+                    "checkPermission", Context.class, String.class, String.class, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult(6.0F); //Guessing at this value, need to investigate
+                            param.setResult(true);
                         }
                     });
-            try
-            {
-                XposedHelpers.findAndHookMethod(CLASS_HDK0UTIL, lpparam.classLoader, "isHTCDevice",
-                        new XC_MethodHook() {
-                            @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                                param.setResult(true);
-                            }
-                        });
 
-                XposedHelpers.findAndHookMethod(CLASS_HDK0UTIL, lpparam.classLoader, "isStockUIDevice",
-                        Context.class, new XC_MethodHook() {
-                            @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                                param.setResult(Boolean.FALSE);
-                            }
-                        });
-            }
-            catch (Throwable e)
-            {
-                e.printStackTrace();
-            }
+
+
 
         } else if (lpparam.packageName.equals(PKG_HTC_FB)) {
             XposedHelpers.findAndHookMethod(CLASS_METHOD_E, lpparam.classLoader,
@@ -257,31 +198,5 @@ public class X_Mod implements IXposedHookLoadPackage, IXposedHookZygoteInit {
         }
     }
 
-    public static final String CLASS_ANDROID_CONTEXT = "android.content.ContextWrapper";
 
-    @Override
-    public void initZygote(StartupParam startupParam) throws Throwable {
-        XposedHelpers.findAndHookMethod(CLASS_ANDROID_CONTEXT, null, // = use system ClassLoader
-                "sendBroadcast", Intent.class, String.class, new XC_MethodHook() {
-                    @Override
-                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        String param1 = (String) param.args[1];
-                        if (param1 != null && param1.startsWith("com.htc.")) {
-                            param.args[1] = null;
-                        }
-                    }
-                });
-
-        XposedHelpers.findAndHookMethod(CLASS_ANDROID_CONTEXT, null, "registerReceiver",
-                BroadcastReceiver.class, IntentFilter.class, String.class, Handler.class,
-                new XC_MethodHook() {
-                    @Override
-                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        String param2 = (String) param.args[2];
-                        if (param2 != null && param2.startsWith("com.htc.")) {
-                            param.args[2] = null;
-                        }
-                    }
-                });
-    }
 }
