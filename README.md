@@ -35,6 +35,9 @@ I recommend the last one, it is the best integrated way of installing an Xposed 
 (C) 2015 Alexander "Woalk" Köster
          http://woalk.com
          xda-developers user woalk
+(C) 2015 GitHub user d8ahazard
+         xda-developers user DigitalHigh
+
 Licensed under GNU GPL v2.
 A copy of the license can be found in this repository under `LICENSE`.
 
