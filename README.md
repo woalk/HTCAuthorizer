@@ -4,14 +4,14 @@ This [Xposed Module](http://repo.xposed.info/) removes the message
 
 !["Unauthorized device - This app is not compatible with your phone."](http://ext.woalk.de/img/github/htcblinkfeedunauth.png)
 
-from [HTC BlinkFeed/Sense Home](https://play.google.com/store/apps/details?id=com.htc.launcher&hl=en).
+from [HTC BlinkFeed/Sense Home](https://play.google.com/store/apps/details?id=com.htc.launcher&hl=en) and other HTC apps.
 
 ###Requirements
 This app requires Android 5 or 5.1 Lollipop and the **correct** Xposed Framework
 for [5.0](http://forum.xda-developers.com/showthread.php?t=3034811)
 or [5.1](http://forum.xda-developers.com/showthread.php?t=3072979).
 
-Furthermore, this requires obviously HTC BlinkFeed/Sense Home.
+Furthermore, this requires obviously HTC Sense (7) apps.
 
 Also, this Xposed Module **does not** make a really incompatible device compatible.
 It just circumvents an occurring problem with HTC's "copy protection" of BlinkFeed's Sense libraries,
@@ -19,10 +19,10 @@ where a usually compatible, legal HTC device gets this message without justifica
 
 ###Version
 The currently supported BlinkFeed/Sense Home version is
-**`7.0.518379`**,
-which is **not** the most recent Play Store version.
+**`7.12.563037`**.
 
-This may be updated over time.
+Other Sense apps currently supported:
+- *will be updated*
 
 ###Download
 You can download this module from either the GitHub release page (see on top of the page -> Releases),

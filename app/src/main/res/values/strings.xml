@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HTC BlinkFeed Authorizer</string>
+    <string name="app_name">HTC Authorizer</string>
     <string name="app_description">Removes an unjustified \"Unauthorized device\" message of HTC
-        BlinkFeed (Sense Home) on legal HTC devices.</string>
+        Sense apps on legal HTC devices.</string>
 </resources>
