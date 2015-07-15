@@ -1,9 +1,12 @@
 package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
@@ -264,6 +267,17 @@ public class X_Mod implements IXposedHookLoadPackage, IXposedHookZygoteInit {
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         if (((String) param.args[1]).startsWith("com.htc.")) {
                             param.args[1] = null;
+                        }
+                    }
+                });
+
+        XposedHelpers.findAndHookMethod(CLASS_ANDROID_CONTEXT, null, "registerReceiver",
+                BroadcastReceiver.class, IntentFilter.class, String.class, Handler.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        if (((String) param.args[2]).startsWith("com.htc.")) {
+                            param.args[2] = null;
                         }
                     }
                 });
