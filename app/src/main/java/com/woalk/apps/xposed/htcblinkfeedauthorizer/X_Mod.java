@@ -26,6 +26,7 @@ public class X_Mod implements IXposedHookLoadPackage {
 
     public static final String PKG_HTC_CAMERA = "com.htc.camera";
     public static final String CLASS_HTC_LIB3 = "com.htc.lib3.android.os.HtcEnvironment";
+
     public static final String PKG_HTC_GALLERY = "com.htc.album";
     public static final String CLASS_3DSCENE = "com.htc.sunny2.frameworks.base.widgets.SunnyScene";
 
@@ -140,10 +141,6 @@ public class X_Mod implements IXposedHookLoadPackage {
                         }
                     });
 
-
-
-
-
         }
 
         if (lpparam.packageName.equals(PKG_HTC_FB)) {
@@ -175,6 +172,7 @@ public class X_Mod implements IXposedHookLoadPackage {
                     });
 
         }
+
         if (lpparam.packageName.equals(PKG_HTC_CAMERA)) {
 
             XposedHelpers.findAndHookMethod(CLASS_HTC_LIB3, lpparam.classLoader,
