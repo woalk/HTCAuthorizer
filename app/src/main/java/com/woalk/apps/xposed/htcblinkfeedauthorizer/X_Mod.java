@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
@@ -137,33 +138,58 @@ public class X_Mod implements IXposedHookLoadPackage {
                             param.setResult(true);
                         }
                     });
+
         } else if (lpparam.packageName.equals(PKG_HTC_FB)) {
-            XposedHelpers.findAndHookMethod(CLASS_FB_BASE_ACTIVITY, lpparam.classLoader,
-                    "e", new XC_MethodHook() {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult(true);
-                        }
-                    });
+            try {
+                XposedBridge.log("HTC Auth: FB hooking now!");
 
-        }
+                XposedHelpers.findAndHookMethod(CLASS_FB_BASE_ACTIVITY, lpparam.classLoader,
+                        "e", new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws
+                                    Throwable {
 
-        if (lpparam.packageName.equals(PKG_HTC_GPLUS)) {
-            XposedHelpers.findAndHookMethod(CLASS_GPLUS_ACTIVITY, lpparam.classLoader,
-                    "f", new XC_MethodHook() {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult(true);
-                        }
-                    });
+                                param.setResult(true);
+                            }
+                        });
 
-            XposedHelpers.findAndHookMethod(CLASS_GPLUS_HMSUPDATE, lpparam.classLoader,
-                    "g", new XC_MethodHook() {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult(null);
-                        }
-                    });
+                XposedBridge.log("HTC Auth: FB is alive! Stab it in the heart!");
+            } catch (Throwable e) {
+                e.printStackTrace();
+                XposedBridge.log("HTC Auth: No FB here.");
+            }
+
+            try {
+                XposedBridge.log("HTC Auth: G+ hooking now!");
+
+                XposedHelpers.findAndHookMethod(CLASS_GPLUS_ACTIVITY, lpparam.classLoader,
+                        "f", new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+
+                                XposedBridge.log("HTC Auth: G+ hook f() called");
+                                XposedHelpers.setBooleanField(param.thisObject, "a", true);
+                                param.setResult(true);
+                            }
+                        });
+
+                XposedHelpers.findAndHookMethod(CLASS_GPLUS_HMSUPDATE, lpparam.classLoader,
+                        "onCreate", Bundle.class, new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+                                XposedBridge.log("HTC Auth: G+ hook onCreate(Bundle) called");
+                                ((Activity) param.thisObject).getIntent().setAction("ANY_ACTION");
+                            }
+                        });
+
+                XposedBridge.log("HTC Auth: G+ is alive!");
+            } catch (Throwable e) {
+                e.printStackTrace();
+                XposedBridge.log("HTC Auth: No G+ here.");
+            }
+
         } else if (lpparam.packageName.equals(PKG_HTC_CAMERA)) {
 
             XposedHelpers.findAndHookMethod(CLASS_HTC_LIB3, lpparam.classLoader,
