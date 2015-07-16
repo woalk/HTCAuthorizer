@@ -184,7 +184,23 @@ public class X_Mod implements IXposedHookLoadPackage {
                             param.setResult(Boolean.TRUE);
                         }
                     });
+/*
+            XposedHelpers.findAndHookMethod(CLASS_HTC_LIB3, lpparam.classLoader,
+                    "getRemovableStorageDirectory", new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            param.setResult("/external_sd");
+                        }
+                    });
 
+            XposedHelpers.findAndHookMethod(CLASS_HTC_LIB3, lpparam.classLoader,
+                    "getRemovableStorageState", new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            param.setResult("MOUNTED");
+                        }
+                    });
+*/
         }
     }
 
