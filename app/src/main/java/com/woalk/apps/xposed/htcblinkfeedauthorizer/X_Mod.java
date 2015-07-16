@@ -195,13 +195,15 @@ public class X_Mod implements IXposedHookLoadPackage {
             }
 
             try {
+                XposedBridge.log("HTC Auth: Insta hooking now!");
+
                 XposedHelpers.findAndHookMethod(CLASS_INSTAGRAM_LIB2_A, lpparam.classLoader, "a",
                         new XC_MethodHook() {
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
 
                                 param.setResult(7.0f);
-                                XposedBridge.log("Exec " + CLASS_INSTAGRAM_LIB2_A + ".a()");
+                                XposedBridge.log("HTC Auth: Insta hook a() called");
                             }
                         });
 
@@ -211,7 +213,7 @@ public class X_Mod implements IXposedHookLoadPackage {
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
                                 param.setResult(true);
-                                XposedBridge.log("Exec " + CLASS_INSTAGRAM_LIB2_A + ".b()");
+                                XposedBridge.log("HTC Auth: Insta hook b() called");
                             }
                         });
 
@@ -221,11 +223,14 @@ public class X_Mod implements IXposedHookLoadPackage {
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
                                 param.setResult(true);
-                                XposedBridge.log("Exec " + CLASS_INSTAGRAM_ACTIVITY + ".d()");
+                                XposedBridge.log("HTC Auth: Insta hook d() called");
                             }
                         });
+
+                XposedBridge.log("HTC Auth: Insta is alive!");
             } catch (Throwable e) {
                 e.printStackTrace();
+                XposedBridge.log("HTC Auth: No Insta here.");
             }
 
         } else if (lpparam.packageName.equals(PKG_HTC_CAMERA)) {
