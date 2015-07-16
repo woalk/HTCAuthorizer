@@ -24,6 +24,8 @@ public class X_Mod implements IXposedHookLoadPackage {
     public static final String CLASS_BF_LOCK = "com.htc.blinklock.BlinkLockProvider";
     public static final String CLASS_BF_PROFILEBRIEF = "com.htc.themepicker.model.ProfileBrief";
 
+    public static final String PKG_HTC_CAMERA = "com.htc.camera";
+    public static final String CLASS_HTC_LIB3 = "com.htc.lib3.android.os.HtcEnvironment";
     public static final String PKG_HTC_GALLERY = "com.htc.album";
     public static final String CLASS_3DSCENE = "com.htc.sunny2.frameworks.base.widgets.SunnyScene";
 
@@ -142,7 +144,9 @@ public class X_Mod implements IXposedHookLoadPackage {
 
 
 
-        } else if (lpparam.packageName.equals(PKG_HTC_FB)) {
+        }
+
+        if (lpparam.packageName.equals(PKG_HTC_FB)) {
             XposedHelpers.findAndHookMethod(CLASS_METHOD_E, lpparam.classLoader,
                     "e", new XC_MethodHook() {
                         @Override
@@ -151,7 +155,9 @@ public class X_Mod implements IXposedHookLoadPackage {
                         }
                     });
 
-        } else if (lpparam.packageName.equals(PKG_HTC_GPLUS)) {
+        }
+
+        if (lpparam.packageName.equals(PKG_HTC_GPLUS)) {
             XposedHelpers.findAndHookMethod(CLASS_GPLUS_MAINACTIVITY, lpparam.classLoader,
                     "f", new XC_MethodHook() {
                         @Override
@@ -165,6 +171,17 @@ public class X_Mod implements IXposedHookLoadPackage {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             param.setResult(null);
+                        }
+                    });
+
+        }
+        if (lpparam.packageName.equals(PKG_HTC_CAMERA)) {
+
+            XposedHelpers.findAndHookMethod(CLASS_HTC_LIB3, lpparam.classLoader,
+                    "hasRemovableStorageSlot", new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            param.setResult(Boolean.TRUE);
                         }
                     });
 
