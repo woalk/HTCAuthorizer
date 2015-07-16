@@ -137,10 +137,7 @@ public class X_Mod implements IXposedHookLoadPackage {
                             param.setResult(true);
                         }
                     });
-
-        }
-
-        if (lpparam.packageName.equals(PKG_HTC_FB)) {
+        } else if (lpparam.packageName.equals(PKG_HTC_FB)) {
             XposedHelpers.findAndHookMethod(CLASS_FB_BASE_ACTIVITY, lpparam.classLoader,
                     "e", new XC_MethodHook() {
                         @Override
@@ -167,10 +164,7 @@ public class X_Mod implements IXposedHookLoadPackage {
                             param.setResult(null);
                         }
                     });
-
-        }
-
-        if (lpparam.packageName.equals(PKG_HTC_CAMERA)) {
+        } else if (lpparam.packageName.equals(PKG_HTC_CAMERA)) {
 
             XposedHelpers.findAndHookMethod(CLASS_HTC_LIB3, lpparam.classLoader,
                     "hasRemovableStorageSlot", new XC_MethodHook() {
