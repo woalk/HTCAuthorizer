@@ -31,14 +31,11 @@ public class X_Mod implements IXposedHookLoadPackage {
     public static final String CLASS_3DSCENE = "com.htc.sunny2.frameworks.base.widgets.SunnyScene";
 
     public static final String PKG_HTC_FB = "com.htc.sense.socialnetwork.facebook";
-    public static final String CLASS_METHOD_E = "com.htc.socialnetwork.facebook" +
-            ".FacebookBaseActivity";
+    public static final String CLASS_FB_BASE_ACTIVITY = PKG_HTC_FB + ".FacebookBaseActivity";
 
     public static final String PKG_HTC_GPLUS = "com.htc.socialnetwork.googleplus";
-    public static final String CLASS_GPLUS_MAINACTIVITY = "com.htc.socialnetwork.googleplus" +
-            ".GooglePlusActivity";
-    public static final String CLASS_GPLUS_HMSUPDATE = "com.htc.socialnetwork.googleplus" +
-            ".HMSUpdateActivity";
+    public static final String CLASS_GPLUS_ACTIVITY = PKG_HTC_GPLUS + ".GooglePlusActivity";
+    public static final String CLASS_GPLUS_HMSUPDATE = PKG_HTC_GPLUS + ".HMSUpdateActivity";
 
     public static final String PKG_HTC_INSTAGRAM = "com.htc.sense.socialnetwork.instagram";
 
@@ -144,7 +141,7 @@ public class X_Mod implements IXposedHookLoadPackage {
         }
 
         if (lpparam.packageName.equals(PKG_HTC_FB)) {
-            XposedHelpers.findAndHookMethod(CLASS_METHOD_E, lpparam.classLoader,
+            XposedHelpers.findAndHookMethod(CLASS_FB_BASE_ACTIVITY, lpparam.classLoader,
                     "e", new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -155,7 +152,7 @@ public class X_Mod implements IXposedHookLoadPackage {
         }
 
         if (lpparam.packageName.equals(PKG_HTC_GPLUS)) {
-            XposedHelpers.findAndHookMethod(CLASS_GPLUS_MAINACTIVITY, lpparam.classLoader,
+            XposedHelpers.findAndHookMethod(CLASS_GPLUS_ACTIVITY, lpparam.classLoader,
                     "f", new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
