@@ -51,6 +51,15 @@ public class X_Mod implements IXposedHookLoadPackage {
             ".LinkedInActivity";
     public static final String CLASS_LINKEDIN_LIB2_A = PKG_HTC_LIB2 + ".a";
 
+    public static final String PKG_HTC_TWITTER = "com.htc.sense.socialnetwork.twitter";
+    public static final String PKG_HTC_TWITTER2 = "com.htc.htctwitter";
+    public static final String PKG_HTC_TWITTER_COMM = PKG_HTC_TWITTER2 + ".common";
+    public static final String CLASS_TWITTER_ACTIVITY = PKG_HTC_TWITTER2 +
+            ".TwitterActivity";
+    public static final String CLASS_TWITTER_HMSUPDATE = PKG_HTC_LINKEDIN_COMM +
+            ".HMSUpdateActivity";
+    public static final String CLASS_TWITTER_LIB2_A = PKG_HTC_LIB2 + ".a";
+
 
     public static final String CLASS_HDK0UTIL = PKG_HTC_LIB0 + ".HDKLib0Util";
     public static final String CLASS_BASE_ACTIVITY = PKG_HTC_SOCIALNETWORK_UI + ".BaseActivity";
@@ -259,6 +268,47 @@ public class X_Mod implements IXposedHookLoadPackage {
                         });
 
                 XposedHelpers.findAndHookMethod(CLASS_LINKEDIN_HMSUPDATE, lpparam.classLoader,
+                        "onCreate", Bundle.class, new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+                                ((Activity) param.thisObject).getIntent().setAction("ANY_ACTION");
+                            }
+                        });
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+
+        } else if (lpparam.packageName.equals(PKG_HTC_TWITTER2)) {
+
+            try {
+                XposedHelpers.findAndHookMethod(CLASS_TWITTER_LIB2_A, lpparam.classLoader, "a",
+                        new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                                param.setResult(7.0f);
+                            }
+                        });
+
+                XposedHelpers.findAndHookMethod(CLASS_TWITTER_LIB2_A, lpparam.classLoader, "b",
+                        new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+                                param.setResult(true);
+                            }
+                        });
+
+                XposedHelpers.findAndHookMethod(CLASS_TWITTER_ACTIVITY, lpparam.classLoader, "d",
+                        new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+                                param.setResult(true);
+                            }
+                        });
+
+                XposedHelpers.findAndHookMethod(CLASS_TWITTER_HMSUPDATE, lpparam.classLoader,
                         "onCreate", Bundle.class, new XC_MethodHook() {
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws
