@@ -36,6 +36,8 @@ public class X_Mod implements IXposedHookLoadPackage {
     public static final String PKG_HTC_GPLUS_APP = "com.htc.sense.socialnetwork.googleplus";
     public static final String PKG_HTC_GPLUS = "com.htc.socialnetwork.googleplus";
     public static final String CLASS_GPLUS_ACTIVITY = PKG_HTC_GPLUS + ".GooglePlusActivity";
+    public static final String CLASS_GPLUS_DEEPLINK_ACTIVITY = PKG_HTC_GPLUS +
+            ".DeeplinkRedirectActivity";
     public static final String CLASS_GPLUS_HMSUPDATE = PKG_HTC_GPLUS + ".HMSUpdateActivity";
 
     public static final String PKG_HTC_INSTAGRAM = "com.htc.sense.socialnetwork.instagram";
@@ -184,6 +186,16 @@ public class X_Mod implements IXposedHookLoadPackage {
             try {
                 XposedHelpers.findAndHookMethod(CLASS_GPLUS_ACTIVITY, lpparam.classLoader,
                         "f", new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+                                XposedHelpers.setBooleanField(param.thisObject, "a", true);
+                                param.setResult(true);
+                            }
+                        });
+
+                XposedHelpers.findAndHookMethod(CLASS_GPLUS_DEEPLINK_ACTIVITY, lpparam.classLoader,
+                        "d", new XC_MethodHook() {
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
