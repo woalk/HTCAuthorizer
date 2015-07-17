@@ -34,6 +34,7 @@ public class X_Mod implements IXposedHookLoadPackage {
     public static final String PKG_HTC_FB = "com.htc.sense.socialnetwork.facebook";
     public static final String CLASS_FB_BASE_ACTIVITY = PKG_HTC_FB + ".FacebookBaseActivity";
 
+    public static final String PKG_HTC_GPLUS_APP = "com.htc.sense.socialnetwork.googleplus";
     public static final String PKG_HTC_GPLUS = "com.htc.socialnetwork.googleplus";
     public static final String CLASS_GPLUS_ACTIVITY = PKG_HTC_GPLUS + ".GooglePlusActivity";
     public static final String CLASS_GPLUS_HMSUPDATE = PKG_HTC_GPLUS + ".HMSUpdateActivity";
@@ -162,6 +163,7 @@ public class X_Mod implements IXposedHookLoadPackage {
                 e.printStackTrace();
                 XposedBridge.log("HTC Auth: No FB here.");
             }
+        } else if (lpparam.packageName.equals(PKG_HTC_GPLUS_APP)) {
 
             try {
                 XposedBridge.log("HTC Auth: G+ hooking now!");
