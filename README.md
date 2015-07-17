@@ -21,8 +21,16 @@ where a usually compatible, legal HTC device gets this message without justifica
 The currently supported BlinkFeed/Sense Home version is
 **`7.12.563037`**.
 
+The current BlinkFeed/Sense Home plug-ins supported:
+- Facebook for HTC Sense
+- Twitter for HTC Sense
+- Google+ for HTC Sense
+- LinkedIn for HTC Sense
+- Instagram for HTC Sense
+All of them in their currently newest version (`7.00.4xxxxx`/`7.00.5xxxxx`).
+
 Other Sense apps currently supported:
-- *will be updated*
+- *none yet. Be patient!*
 
 ###Download
 You can download this module from either the GitHub release page (see on top of the page -> Releases),
