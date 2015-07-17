@@ -56,7 +56,7 @@ public class X_Mod implements IXposedHookLoadPackage {
     public static final String PKG_HTC_TWITTER_COMM = PKG_HTC_TWITTER2 + ".common";
     public static final String CLASS_TWITTER_ACTIVITY = PKG_HTC_TWITTER2 +
             ".TwitterActivity";
-    public static final String CLASS_TWITTER_HMSUPDATE = PKG_HTC_LINKEDIN_COMM +
+    public static final String CLASS_TWITTER_HMSUPDATE = PKG_HTC_TWITTER_COMM +
             ".HMSUpdateActivity";
     public static final String CLASS_TWITTER_LIB2_A = PKG_HTC_LIB2 + ".a";
 
@@ -279,7 +279,7 @@ public class X_Mod implements IXposedHookLoadPackage {
                 e.printStackTrace();
             }
 
-        } else if (lpparam.packageName.equals(PKG_HTC_TWITTER2)) {
+        } else if (lpparam.packageName.equals(PKG_HTC_TWITTER)) {
 
             try {
                 XposedHelpers.findAndHookMethod(CLASS_TWITTER_LIB2_A, lpparam.classLoader, "a",
