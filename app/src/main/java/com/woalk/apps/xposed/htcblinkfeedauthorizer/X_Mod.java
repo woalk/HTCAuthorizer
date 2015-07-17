@@ -21,7 +21,6 @@ public class X_Mod implements IXposedHookLoadPackage {
     public static final String CLASS_BF_SETTINGUTIL = PKG_HTC_LAUNCHER + ".util.SettingUtil";
     public static final String CLASS_BF_LIB2 = "com.htc.lib2.Hms";
     public static final String CLASS_BF_UDACT = PKG_HTC_SOCIALNETWORK_UI + ".HMSUpdateActivity";
-    public static final String CLASS_BF_LOCK = "com.htc.blinklock.BlinkLockProvider";
     public static final String CLASS_BF_PROFILEBRIEF = "com.htc.themepicker.model.ProfileBrief";
 
     public static final String PKG_HTC_CAMERA = "com.htc.camera";
@@ -38,7 +37,6 @@ public class X_Mod implements IXposedHookLoadPackage {
     public static final String CLASS_GPLUS_ACTIVITY = PKG_HTC_GPLUS + ".GooglePlusActivity";
     public static final String CLASS_GPLUS_DEEPLINK_ACTIVITY = PKG_HTC_GPLUS +
             ".DeeplinkRedirectActivity";
-    public static final String CLASS_GPLUS_HMSUPDATE = PKG_HTC_GPLUS + ".HMSUpdateActivity";
 
     public static final String PKG_HTC_INSTAGRAM = "com.htc.sense.socialnetwork.instagram";
     public static final String PKG_HTC_INSTAGRAM_COMM = PKG_HTC_INSTAGRAM + ".common";
@@ -48,13 +46,10 @@ public class X_Mod implements IXposedHookLoadPackage {
     public static final String PKG_HTC_LINKEDIN_COMM = PKG_HTC_LINKEDIN + ".common";
     public static final String CLASS_LINKEDIN_ACTIVITY = PKG_HTC_LINKEDIN_COMM +
             ".LinkedInActivity";
-    public static final String CLASS_LINKEDIN_HMSUPDATE = PKG_HTC_LINKEDIN_COMM +
-            ".LinkedInActivity";
     public static final String CLASS_LINKEDIN_LIB2_A = PKG_HTC_LIB2 + ".a";
 
     public static final String PKG_HTC_TWITTER = "com.htc.sense.socialnetwork.twitter";
     public static final String PKG_HTC_TWITTER2 = "com.htc.htctwitter";
-    public static final String PKG_HTC_TWITTER_COMM = PKG_HTC_TWITTER2 + ".common";
     public static final String CLASS_TWITTER_ACTIVITY = PKG_HTC_TWITTER2 +
             ".TwitterActivity";
     public static final String CLASS_TWITTER_DEEPLINK_ACTIVITY = PKG_HTC_TWITTER2 +
@@ -67,8 +62,6 @@ public class X_Mod implements IXposedHookLoadPackage {
             ".CommonMfMainActivity";
 
     public static final String CLASS_INSTAGRAM_ACTIVITY = PKG_HTC_INSTAGRAM_COMM +
-            ".InstagramActivity";
-    public static final String CLASS_INSTAGRAM_HMSUPDATE = PKG_HTC_INSTAGRAM_COMM +
             ".InstagramActivity";
     public static final String CLASS_INSTAGRAM_LIB2_A = PKG_HTC_LIB2 + ".a";
 
@@ -265,15 +258,6 @@ public class X_Mod implements IXposedHookLoadPackage {
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
                                 param.setResult(true);
-                            }
-                        });
-
-                XposedHelpers.findAndHookMethod(CLASS_LINKEDIN_HMSUPDATE, lpparam.classLoader,
-                        "onCreate", Bundle.class, new XC_MethodHook() {
-                            @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws
-                                    Throwable {
-                                ((Activity) param.thisObject).getIntent().setAction("ANY_ACTION");
                             }
                         });
             } catch (Throwable e) {
