@@ -146,36 +146,28 @@ public class X_Mod implements IXposedHookLoadPackage {
                     });
 
         } else if (lpparam.packageName.equals(PKG_HTC_FB)) {
-            try {
-                XposedBridge.log("HTC Auth: FB hooking now!");
 
+            try {
                 XposedHelpers.findAndHookMethod(CLASS_FB_BASE_ACTIVITY, lpparam.classLoader,
                         "e", new XC_MethodHook() {
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
-
                                 param.setResult(true);
                             }
                         });
-
-                XposedBridge.log("HTC Auth: FB is alive! Stab it in the heart!");
             } catch (Throwable e) {
                 e.printStackTrace();
-                XposedBridge.log("HTC Auth: No FB here.");
             }
+
         } else if (lpparam.packageName.equals(PKG_HTC_GPLUS_APP)) {
 
             try {
-                XposedBridge.log("HTC Auth: G+ hooking now!");
-
                 XposedHelpers.findAndHookMethod(CLASS_GPLUS_ACTIVITY, lpparam.classLoader,
                         "f", new XC_MethodHook() {
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
-
-                                XposedBridge.log("HTC Auth: G+ hook f() called");
                                 XposedHelpers.setBooleanField(param.thisObject, "a", true);
                                 param.setResult(true);
                             }
@@ -186,28 +178,21 @@ public class X_Mod implements IXposedHookLoadPackage {
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
-                                XposedBridge.log("HTC Auth: G+ hook onCreate(Bundle) called");
                                 ((Activity) param.thisObject).getIntent().setAction("ANY_ACTION");
                             }
                         });
-
-                XposedBridge.log("HTC Auth: G+ is alive!");
             } catch (Throwable e) {
                 e.printStackTrace();
-                XposedBridge.log("HTC Auth: No G+ here.");
             }
+
         } else if (lpparam.packageName.equals(PKG_HTC_INSTAGRAM_APP)) {
 
             try {
-                XposedBridge.log("HTC Auth: Insta hooking now!");
-
                 XposedHelpers.findAndHookMethod(CLASS_INSTAGRAM_LIB2_A, lpparam.classLoader, "a",
                         new XC_MethodHook() {
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-
                                 param.setResult(7.0f);
-                                XposedBridge.log("HTC Auth: Insta hook a() called");
                             }
                         });
 
@@ -217,7 +202,6 @@ public class X_Mod implements IXposedHookLoadPackage {
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
                                 param.setResult(true);
-                                XposedBridge.log("HTC Auth: Insta hook b() called");
                             }
                         });
 
@@ -227,14 +211,10 @@ public class X_Mod implements IXposedHookLoadPackage {
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
                                 param.setResult(true);
-                                XposedBridge.log("HTC Auth: Insta hook d() called");
                             }
                         });
-
-                XposedBridge.log("HTC Auth: Insta is alive!");
             } catch (Throwable e) {
                 e.printStackTrace();
-                XposedBridge.log("HTC Auth: No Insta here.");
             }
 
         } else if (lpparam.packageName.equals(PKG_HTC_CAMERA)) {
