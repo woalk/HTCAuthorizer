@@ -39,8 +39,8 @@ public class X_Mod implements IXposedHookLoadPackage {
     public static final String CLASS_GPLUS_ACTIVITY = PKG_HTC_GPLUS + ".GooglePlusActivity";
     public static final String CLASS_GPLUS_HMSUPDATE = PKG_HTC_GPLUS + ".HMSUpdateActivity";
 
-    public static final String PKG_HTC_INSTAGRAM_APP = "com.htc.sense.socialnetwork.instagram";
-    public static final String PKG_HTC_INSTAGRAM = "com.htc.socialnetwork.instagram";
+    public static final String PKG_HTC_INSTAGRAM = "com.htc.sense.socialnetwork.instagram";
+    public static final String PKG_HTC_INSTAGRAM_COMM = PKG_HTC_INSTAGRAM + ".common";
     public static final String PKG_HTC_LIB2 = "com.htc.lib2";
 
     public static final String CLASS_HDK0UTIL = PKG_HTC_LIB0 + ".HDKLib0Util";
@@ -48,7 +48,10 @@ public class X_Mod implements IXposedHookLoadPackage {
     public static final String CLASS_COMMON_MF_MAIN_ACTIVITY = PKG_HTC_SOCIALNETWORK_UI +
             ".CommonMfMainActivity";
 
-    public static final String CLASS_INSTAGRAM_ACTIVITY = PKG_HTC_INSTAGRAM + ".InstagramActivity";
+    public static final String CLASS_INSTAGRAM_ACTIVITY = PKG_HTC_INSTAGRAM_COMM +
+            ".InstagramActivity";
+    public static final String CLASS_INSTAGRAM_HMSUPDATE = PKG_HTC_INSTAGRAM_COMM +
+            ".InstagramActivity";
     public static final String CLASS_INSTAGRAM_LIB2_A = PKG_HTC_LIB2 + ".a";
 
     @Override
@@ -185,7 +188,7 @@ public class X_Mod implements IXposedHookLoadPackage {
                 e.printStackTrace();
             }
 
-        } else if (lpparam.packageName.equals(PKG_HTC_INSTAGRAM_APP)) {
+        } else if (lpparam.packageName.equals(PKG_HTC_INSTAGRAM)) {
 
             try {
                 XposedHelpers.findAndHookMethod(CLASS_INSTAGRAM_LIB2_A, lpparam.classLoader, "a",
@@ -211,6 +214,15 @@ public class X_Mod implements IXposedHookLoadPackage {
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
                                 param.setResult(true);
+                            }
+                        });
+
+                XposedHelpers.findAndHookMethod(CLASS_INSTAGRAM_HMSUPDATE, lpparam.classLoader,
+                        "onCreate", Bundle.class, new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+                                ((Activity) param.thisObject).getIntent().setAction("ANY_ACTION");
                             }
                         });
             } catch (Throwable e) {
