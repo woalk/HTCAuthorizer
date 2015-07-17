@@ -43,6 +43,15 @@ public class X_Mod implements IXposedHookLoadPackage {
     public static final String PKG_HTC_INSTAGRAM_COMM = PKG_HTC_INSTAGRAM + ".common";
     public static final String PKG_HTC_LIB2 = "com.htc.lib2";
 
+    public static final String PKG_HTC_LINKEDIN = "com.htc.sense.linkedin";
+    public static final String PKG_HTC_LINKEDIN_COMM = PKG_HTC_LINKEDIN + ".common";
+    public static final String CLASS_LINKEDIN_ACTIVITY = PKG_HTC_LINKEDIN_COMM +
+            ".LinkedInActivity";
+    public static final String CLASS_LINKEDIN_HMSUPDATE = PKG_HTC_LINKEDIN_COMM +
+            ".LinkedInActivity";
+    public static final String CLASS_LINKEDIN_LIB2_A = PKG_HTC_LIB2 + ".a";
+
+
     public static final String CLASS_HDK0UTIL = PKG_HTC_LIB0 + ".HDKLib0Util";
     public static final String CLASS_BASE_ACTIVITY = PKG_HTC_SOCIALNETWORK_UI + ".BaseActivity";
     public static final String CLASS_COMMON_MF_MAIN_ACTIVITY = PKG_HTC_SOCIALNETWORK_UI +
@@ -219,6 +228,48 @@ public class X_Mod implements IXposedHookLoadPackage {
             } catch (Throwable e) {
                 e.printStackTrace();
             }
+
+        } else if (lpparam.packageName.equals(PKG_HTC_LINKEDIN)) {
+
+            try {
+                XposedHelpers.findAndHookMethod(CLASS_LINKEDIN_LIB2_A, lpparam.classLoader, "a",
+                        new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                                param.setResult(7.0f);
+                            }
+                        });
+
+                XposedHelpers.findAndHookMethod(CLASS_LINKEDIN_LIB2_A, lpparam.classLoader, "b",
+                        new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+                                param.setResult(true);
+                            }
+                        });
+
+                XposedHelpers.findAndHookMethod(CLASS_LINKEDIN_ACTIVITY, lpparam.classLoader, "d",
+                        new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+                                param.setResult(true);
+                            }
+                        });
+
+                XposedHelpers.findAndHookMethod(CLASS_LINKEDIN_HMSUPDATE, lpparam.classLoader,
+                        "onCreate", Bundle.class, new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+                                ((Activity) param.thisObject).getIntent().setAction("ANY_ACTION");
+                            }
+                        });
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+
 
         } else if (lpparam.packageName.equals(PKG_HTC_CAMERA)) {
 
