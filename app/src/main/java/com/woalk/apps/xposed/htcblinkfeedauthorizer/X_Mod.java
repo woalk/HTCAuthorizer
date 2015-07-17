@@ -216,15 +216,6 @@ public class X_Mod implements IXposedHookLoadPackage {
                                 param.setResult(true);
                             }
                         });
-
-                XposedHelpers.findAndHookMethod(CLASS_INSTAGRAM_HMSUPDATE, lpparam.classLoader,
-                        "onCreate", Bundle.class, new XC_MethodHook() {
-                            @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws
-                                    Throwable {
-                                ((Activity) param.thisObject).getIntent().setAction("ANY_ACTION");
-                            }
-                        });
             } catch (Throwable e) {
                 e.printStackTrace();
             }
