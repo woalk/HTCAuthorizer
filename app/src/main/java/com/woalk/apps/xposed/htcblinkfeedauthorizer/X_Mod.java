@@ -225,6 +225,7 @@ public class X_Mod implements IXposedHookLoadPackage {
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
+                                XposedHelpers.setBooleanField(param.thisObject, "b_", true);
                                 param.setResult(true);
                             }
                         });
