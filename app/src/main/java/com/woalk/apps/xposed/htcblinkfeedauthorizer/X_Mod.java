@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
@@ -56,9 +55,8 @@ public class X_Mod implements IXposedHookLoadPackage {
     public static final String PKG_HTC_TWITTER_COMM = PKG_HTC_TWITTER2 + ".common";
     public static final String CLASS_TWITTER_ACTIVITY = PKG_HTC_TWITTER2 +
             ".TwitterActivity";
-    public static final String CLASS_TWITTER_HMSUPDATE = PKG_HTC_TWITTER_COMM +
-            ".HMSUpdateActivity";
-    public static final String CLASS_TWITTER_LIB2_A = PKG_HTC_LIB2 + ".a";
+    public static final String CLASS_TWITTER_DEEPLINK_ACTIVITY = PKG_HTC_TWITTER2 +
+            ".DeeplinkRedirectActivity";
 
 
     public static final String CLASS_HDK0UTIL = PKG_HTC_LIB0 + ".HDKLib0Util";
@@ -273,27 +271,22 @@ public class X_Mod implements IXposedHookLoadPackage {
         } else if (lpparam.packageName.equals(PKG_HTC_TWITTER)) {
 
             try {
-                XposedHelpers.findAndHookMethod(CLASS_TWITTER_LIB2_A, lpparam.classLoader, "a",
-                        new XC_MethodHook() {
-                            @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                                param.setResult(7.0f);
-                            }
-                        });
-
-                XposedHelpers.findAndHookMethod(CLASS_TWITTER_LIB2_A, lpparam.classLoader, "b",
-                        new XC_MethodHook() {
-                            @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws
-                                    Throwable {
-                                param.setResult(true);
-                            }
-                        });
                 XposedHelpers.findAndHookMethod(CLASS_TWITTER_ACTIVITY, lpparam.classLoader, "d",
                         new XC_MethodHook() {
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
+                                XposedHelpers.setBooleanField(param.thisObject, "a", true);
+                                param.setResult(true);
+                            }
+                        });
+
+                XposedHelpers.findAndHookMethod(CLASS_TWITTER_DEEPLINK_ACTIVITY,
+                        lpparam.classLoader, "b", new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+                                XposedHelpers.setBooleanField(param.thisObject, "a", true);
                                 param.setResult(true);
                             }
                         });
