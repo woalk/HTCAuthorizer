@@ -299,8 +299,23 @@ public class X_Mod implements IXposedHookLoadPackage {
                 e.printStackTrace();
             }
 
-        } else if (lpparam.packageName.equals(PKG_HTC_CAMERA)) {
+        }
 
+        if (lpparam.packageName.startsWith("com.htc.")) {
+
+            try {
+                XposedHelpers.findAndHookMethod(CLASS_HDK0UTIL, lpparam.classLoader,
+                        "getHDKBaseVersion", new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+                                param.setResult(19.0f);
+                            }
+                        });
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+/*
             XposedHelpers.findAndHookMethod(CLASS_HTC_LIB3, lpparam.classLoader,
                     "hasRemovableStorageSlot", new XC_MethodHook() {
                         @Override
