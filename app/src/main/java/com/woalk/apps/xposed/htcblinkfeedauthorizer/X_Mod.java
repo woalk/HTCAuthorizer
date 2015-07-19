@@ -323,7 +323,7 @@ public class X_Mod implements IXposedHookLoadPackage {
                             param.setResult(Boolean.TRUE);
                         }
                     });
-/*
+
             XposedHelpers.findAndHookMethod(CLASS_HTC_LIB3, lpparam.classLoader,
                     "getRemovableStorageDirectory", new XC_MethodHook() {
                         @Override

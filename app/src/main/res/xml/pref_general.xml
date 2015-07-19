@@ -1,3 +1,31 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <PreferenceCategory
+        android:title="@string/pref_cat_storage">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="has_ext"
+            android:summary="@string/pref_storage_ext_check_summary"
+            android:title="@string/pref_storage_ext_check_title"/>
+        <EditTextPreference
+            android:defaultValue="/storage/ext_sd"
+            android:dependency="has_ext"
+            android:inputType="textNoSuggestions"
+            android:key="ext_dir"
+            android:summary=""
+            android:title="@string/pref_storage_ext_path_title"/>
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="has_usb"
+            android:summary="@string/pref_storage_usb_check_summary"
+            android:title="@string/pref_storage_usb_check_title"/>
+        <EditTextPreference
+            android:defaultValue="/storage/usb"
+            android:dependency="has_usb"
+            android:inputType="textNoSuggestions"
+            android:key="usb_dir"
+            android:summary=""
+            android:title="@string/pref_storage_usb_path_title"/>
+    </PreferenceCategory>
+
 </PreferenceScreen>
