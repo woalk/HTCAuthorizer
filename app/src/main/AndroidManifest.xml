@@ -1,17 +1,29 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.woalk.apps.xposed.htcblinkfeedauthorizer">
+<manifest package="com.woalk.apps.xposed.htcblinkfeedauthorizer"
+          xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <application android:allowBackup="true"
-                 android:label="@string/app_name">
+    <application
+        android:allowBackup="true"
+        android:icon="@android:drawable/sym_def_app_icon"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme">
         <meta-data
             android:name="xposedmodule"
-            android:value="true" />
+            android:value="true"/>
         <meta-data
             android:name="xposeddescription"
-            android:value="@string/app_description" />
+            android:value="@string/app_description"/>
         <meta-data
             android:name="xposedminversion"
-            android:value="64" />
+            android:value="64"/>
+
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
