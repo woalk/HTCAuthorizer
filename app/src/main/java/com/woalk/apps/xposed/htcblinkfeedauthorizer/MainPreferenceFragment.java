@@ -1,5 +1,6 @@
 package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
@@ -13,6 +14,10 @@ public class MainPreferenceFragment extends PreferenceFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getPreferenceManager().setSharedPreferencesName(SettingsHelper.PREFERENCE_FILE);
+        //noinspection deprecation
+        getPreferenceManager().setSharedPreferencesMode(Context.MODE_WORLD_READABLE);
 
         getPreferenceManager().getSharedPreferences()
                 .registerOnSharedPreferenceChangeListener(this);
