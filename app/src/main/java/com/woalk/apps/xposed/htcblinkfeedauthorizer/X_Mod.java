@@ -345,7 +345,9 @@ public class X_Mod implements IXposedHookLoadPackage {
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param)
                                     throws Throwable {
-                                param.setResult(Environment.getExternalStorageDirectory());
+                                param.setResult(!Environment.isExternalStorageRemovable() ?
+                                        Environment.getExternalStorageDirectory()
+                                        : null);
                             }
                         });
             } catch (Throwable e) {
@@ -357,7 +359,9 @@ public class X_Mod implements IXposedHookLoadPackage {
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param)
                                     throws Throwable {
-                                param.setResult(Environment.getExternalStorageState());
+                                param.setResult(Environment.isExternalStorageRemovable() ?
+                                        Environment.getExternalStorageState()
+                                        : Environment.MEDIA_UNKNOWN);
                             }
                         });
             } catch (Throwable e) {
@@ -372,6 +376,7 @@ public class X_Mod implements IXposedHookLoadPackage {
                             protected void beforeHookedMethod(MethodHookParam param)
                                     throws Throwable {
                                 param.setResult(mSettings.getPref_has_ext());
+                                XposedBridge.log(String.valueOf(mSettings.getPref_has_ext()));
                             }
                         });
             } catch (Throwable e) {
@@ -383,7 +388,8 @@ public class X_Mod implements IXposedHookLoadPackage {
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param)
                                     throws Throwable {
-                                param.setResult(new File(mSettings.getPref_ext_path()));
+                                param.setResult(mSettings.getPref_has_ext() ?
+                                        new File(mSettings.getPref_ext_path()) : null);
                             }
                         });
             } catch (Throwable e) {
@@ -395,8 +401,10 @@ public class X_Mod implements IXposedHookLoadPackage {
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param)
                                     throws Throwable {
-                                param.setResult(Environment.getExternalStorageState(
-                                        new File(mSettings.getPref_ext_path())));
+                                param.setResult(mSettings.getPref_has_ext() ?
+                                        Environment.getExternalStorageState(
+                                                new File(mSettings.getPref_ext_path()))
+                                        : Environment.MEDIA_UNKNOWN);
                             }
                         });
             } catch (Throwable e) {
@@ -422,7 +430,8 @@ public class X_Mod implements IXposedHookLoadPackage {
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param)
                                     throws Throwable {
-                                param.setResult(new File(mSettings.getPref_usb_path()));
+                                param.setResult(mSettings.getPref_has_usb() ?
+                                        new File(mSettings.getPref_usb_path()) : null);
                             }
                         });
             } catch (Throwable e) {
@@ -434,8 +443,10 @@ public class X_Mod implements IXposedHookLoadPackage {
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param)
                                     throws Throwable {
-                                param.setResult(Environment.getExternalStorageState(
-                                        new File(mSettings.getPref_usb_path())));
+                                param.setResult(mSettings.getPref_has_usb() ?
+                                        Environment.getExternalStorageState(
+                                                new File(mSettings.getPref_usb_path()))
+                                        : Environment.MEDIA_UNKNOWN);
                             }
                         });
             } catch (Throwable e) {
