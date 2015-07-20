@@ -2,6 +2,7 @@ package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
@@ -23,6 +24,14 @@ public class MainPreferenceFragment extends PreferenceFragment
                 .registerOnSharedPreferenceChangeListener(this);
 
         addPreferencesFromResource(R.xml.pref_general);
+
+        try {
+            findPreference("version").setSummary(getActivity().getPackageManager()
+                    .getPackageInfo(getActivity().getPackageName(), 0).versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+            findPreference("version").setSummary("ERROR");
+            e.printStackTrace();
+        }
 
         setAllPreferenceValuesToSummary(getPreferenceScreen());
     }
