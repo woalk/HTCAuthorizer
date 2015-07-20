@@ -3,6 +3,9 @@ package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Environment;
+
+import java.io.File;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
@@ -299,32 +302,156 @@ public class X_Mod implements IXposedHookLoadPackage {
                 e.printStackTrace();
             }
 
-        } else if (lpparam.packageName.equals(PKG_HTC_CAMERA)) {
+        }
 
-            XposedHelpers.findAndHookMethod(CLASS_HTC_LIB3, lpparam.classLoader,
-                    "hasRemovableStorageSlot", new XC_MethodHook() {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult(Boolean.TRUE);
-                        }
-                    });
-/*
-            XposedHelpers.findAndHookMethod(CLASS_HTC_LIB3, lpparam.classLoader,
-                    "getRemovableStorageDirectory", new XC_MethodHook() {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult("/external_sd");
-                        }
-                    });
+        if (lpparam.packageName.startsWith("com.htc.")) {
 
-            XposedHelpers.findAndHookMethod(CLASS_HTC_LIB3, lpparam.classLoader,
-                    "getRemovableStorageState", new XC_MethodHook() {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult("MOUNTED");
-                        }
-                    });
-*/
+            // Enable HDK operations
+            try {
+                XposedHelpers.findAndHookMethod(CLASS_HDK0UTIL, lpparam.classLoader,
+                        "getHDKBaseVersion", new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+                                param.setResult(19.0f);
+                            }
+                        });
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+
+            // Following: HTC-specific methods that resolve different storage types
+            // try-catch for each necessary because not every HTC app uses all of them
+
+            // Phone storage (non-removable) => internal sdcard
+            try {
+                XposedHelpers.findAndHookMethod(CLASS_HTC_LIB3, lpparam.classLoader,
+                        "hasPhoneStorage", new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
+                                // Checks PRIMARY "external" storage.
+                                // Android recognizes INTERNAL sdcard as primary external storage.
+                                // If no internal sdcard, primary storage would be real sdcard.
+                                param.setResult(!Environment.isExternalStorageRemovable());
+                            }
+                        });
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+            try {
+                XposedHelpers.findAndHookMethod(CLASS_HTC_LIB3, lpparam.classLoader,
+                        "getPhoneStorageDirectory", new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
+                                param.setResult(!Environment.isExternalStorageRemovable() ?
+                                        Environment.getExternalStorageDirectory()
+                                        : null);
+                            }
+                        });
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+            try {
+                XposedHelpers.findAndHookMethod(CLASS_HTC_LIB3, lpparam.classLoader,
+                        "getPhoneStorageState", new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
+                                param.setResult(Environment.isExternalStorageRemovable() ?
+                                        Environment.getExternalStorageState()
+                                        : Environment.MEDIA_UNKNOWN);
+                            }
+                        });
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+
+            // Removable storage => external sdcard
+            try {
+                XposedHelpers.findAndHookMethod(CLASS_HTC_LIB3, lpparam.classLoader,
+                        "hasRemovableStorageSlot", new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
+                                param.setResult(mSettings.getPref_has_ext());
+                                XposedBridge.log(String.valueOf(mSettings.getPref_has_ext()));
+                            }
+                        });
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+            try {
+                XposedHelpers.findAndHookMethod(CLASS_HTC_LIB3, lpparam.classLoader,
+                        "getRemovableStorageDirectory", new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
+                                param.setResult(mSettings.getPref_has_ext() ?
+                                        new File(mSettings.getPref_ext_path()) : null);
+                            }
+                        });
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+            try {
+                XposedHelpers.findAndHookMethod(CLASS_HTC_LIB3, lpparam.classLoader,
+                        "getRemovableStorageState", new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
+                                param.setResult(mSettings.getPref_has_ext() ?
+                                        Environment.getExternalStorageState(
+                                                new File(mSettings.getPref_ext_path()))
+                                        : Environment.MEDIA_UNKNOWN);
+                            }
+                        });
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+
+            // USB storage (OTG)
+            try {
+                XposedHelpers.findAndHookMethod(CLASS_HTC_LIB3, lpparam.classLoader,
+                        "hasUsbDeviceSlot", new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
+                                param.setResult(mSettings.getPref_has_usb());
+                            }
+                        });
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+            try {
+                XposedHelpers.findAndHookMethod(CLASS_HTC_LIB3, lpparam.classLoader,
+                        "getUsbDeviceDirectory", new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
+                                param.setResult(mSettings.getPref_has_usb() ?
+                                        new File(mSettings.getPref_usb_path()) : null);
+                            }
+                        });
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+            try {
+                XposedHelpers.findAndHookMethod(CLASS_HTC_LIB3, lpparam.classLoader,
+                        "getUsbDeviceState", new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
+                                param.setResult(mSettings.getPref_has_usb() ?
+                                        Environment.getExternalStorageState(
+                                                new File(mSettings.getPref_usb_path()))
+                                        : Environment.MEDIA_UNKNOWN);
+                            }
+                        });
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
         }
     }
 

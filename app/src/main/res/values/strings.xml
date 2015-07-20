@@ -1,5 +1,17 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
     <string name="app_name">HTC Authorizer</string>
     <string name="app_description">Removes an unjustified \"Unauthorized device\" message of HTC
         Sense apps on legal HTC devices.</string>
+
+    <!-- Preferences -->
+    <string name="pref_cat_storage">Storage options</string>
+    <string name="pref_storage_ext_check_title">Enable external storage</string>
+    <string name="pref_storage_ext_check_summary">Enable to say HTC apps that your device
+        has an external storage.</string>
+    <string name="pref_storage_ext_path_title">External storage path</string>
+    <string name="pref_storage_usb_check_title">Enable USB storage</string>
+    <string name="pref_storage_usb_check_summary">Enable to say HTC apps that your device
+        supports USB storage (USB-OTG).</string>
+    <string name="pref_storage_usb_path_title">USB storage path</string>
+
 </resources>
