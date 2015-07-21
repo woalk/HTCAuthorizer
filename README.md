@@ -1,4 +1,5 @@
-#HTC Authorizer
+#Sensify
+###Formerly *HTC Authorizer*
 ##Xposed Module
 This [Xposed Module](http://repo.xposed.info/) removes the message
 

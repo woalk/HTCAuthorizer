@@ -1,7 +1,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-    <string name="app_name">HTC Authorizer</string>
-    <string name="app_description">Removes an unjustified \"Unauthorized device\" message of HTC
-        Sense apps on legal HTC devices.</string>
+    <string name="app_name">Sensify Xposed</string>
+    <string name="app_description">Integration for Sense apps into AOSP and other ROMs.</string>
 
     <!-- Preferences -->
     <string name="pref_reboot_info">Currently, all settings need a reboot to apply.</string>
