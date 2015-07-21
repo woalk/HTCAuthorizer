@@ -2,21 +2,35 @@ package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
+import android.content.res.XResources;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.Preference;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.io.File;
 
+import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
+import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 /**
  * The class to be loaded by Xposed.
  */
-public class X_Mod implements IXposedHookLoadPackage {
+public class X_Mod
+        implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
     public static final String PKG_HTC_LAUNCHER = "com.htc.launcher";
     public static final String PKG_HTC_LIB0 = "com.htc.lib0";
     public static final String PKG_HTC_SOCIALNETWORK_UI = "com.htc.socialnetwork.common.utils.ui";
@@ -302,6 +316,49 @@ public class X_Mod implements IXposedHookLoadPackage {
                 e.printStackTrace();
             }
 
+        } else if (lpparam.packageName.equals(PKG_SETTINGS)
+                && mSettings.getCachedPref_use_themes()) {
+            XposedHelpers.findAndHookMethod(Preference.class, "setIcon", Drawable.class,
+                    new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            Drawable d = (Drawable) param.args[0];
+                            BitmapDrawable b = new BitmapDrawable(((Preference) param.thisObject)
+                                    .getContext().getResources(), Common.drawableToBitmap(d));
+                            b.setTint(mSettings.getThemeColor(2));
+                            param.args[0] = b;
+                        }
+                    });
+
+            XposedHelpers.findAndHookMethod(CLASS_SETTINGS_DASHBOARD_SUMMARY, lpparam.classLoader,
+                    "updateTileView", Context.class, Resources.class, CLASS_SETTINGS_DASHBOARD_TILE,
+                    ImageView.class, TextView.class, TextView.class, new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            ImageView iV = (ImageView) param.args[3];
+                            Drawable d = iV.getDrawable();
+                            BitmapDrawable b = new BitmapDrawable((Resources) param.args[1],
+                                    Common.drawableToBitmap(d));
+                            b.setTint(mSettings.getThemeColor(2));
+                            iV.setImageDrawable(b);
+                        }
+                    });
+
+            XposedHelpers.findAndHookMethod(CLASS_SETTINGS_SEARCH_RESULTS_ADAPTER,
+                    lpparam.classLoader, "getView", int.class, View.class, ViewGroup.class,
+                    new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            ViewGroup v = (ViewGroup) param.getResult();
+                            ImageView iV = Common.findFirstImageView(v);
+                            if (iV == null) return;
+                            Drawable d = iV.getDrawable();
+                            BitmapDrawable b = new BitmapDrawable(iV.getContext().getResources(),
+                                    Common.drawableToBitmap(d));
+                            b.setTint(mSettings.getThemeColor(2));
+                            iV.setImageDrawable(b);
+                        }
+                    });
         }
 
         if (lpparam.packageName.startsWith("com.htc.")) {
@@ -441,5 +498,58 @@ public class X_Mod implements IXposedHookLoadPackage {
         }
     }
 
+    public static final String PKG_SYSTEMUI = "com.android.systemui";
+    public static final String PKG_SETTINGS = "com.android.settings";
+    public static final String CLASS_SETTINGS_DASHBOARD_SUMMARY = PKG_SETTINGS +
+            ".dashboard.DashboardSummary";
+    public static final String CLASS_SETTINGS_DASHBOARD_TILE = PKG_SETTINGS +
+            ".dashboard.DashboardTile";
+    public static final String CLASS_SETTINGS_SEARCH_RESULTS_SUMMARY = PKG_SETTINGS +
+            ".dashboard.SearchResultsSummary";
+    public static final String CLASS_SETTINGS_SEARCH_RESULTS_ADAPTER =
+            CLASS_SETTINGS_SEARCH_RESULTS_SUMMARY + "$SearchResultsAdapter";
 
+    @Override
+    public void handleInitPackageResources(XC_InitPackageResources.InitPackageResourcesParam
+                                                   resparam) throws Throwable {
+        if (!mSettings.getCachedPref_use_themes())
+            return;
+
+        if (resparam.packageName.equals(PKG_SYSTEMUI)) {
+            XposedBridge.log("SystemUI resources replaced.");
+            resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_primary_color",
+                    mSettings.getThemeColor(2));
+            resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_secondary_color",
+                    mSettings.getThemeColor(2));
+            resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_accent_color",
+                    mSettings.getThemeColor(2));
+        } else if (resparam.packageName.equals(PKG_SETTINGS)) {
+            XposedBridge.log("Settings resources replaced.");
+            resparam.res.setReplacement(PKG_SETTINGS, "color", "theme_primary",
+                    mSettings.getThemeColor(3));
+            resparam.res.setReplacement(PKG_SETTINGS, "color", "theme_primary_dark",
+                    Common.enlightColor(mSettings.getThemeColor(3), 0.6f));
+            resparam.res.setReplacement(PKG_SETTINGS, "color", "theme_accent",
+                    mSettings.getThemeColor(2));
+            resparam.res.setReplacement(PKG_SETTINGS, "color", "switchbar_background_color",
+                    mSettings.getThemeColor(3));
+            resparam.res.setReplacement(PKG_SETTINGS, "color", "switch_accent_color",
+                    mSettings.getThemeColor(4));
+        }
+    }
+
+    @Override
+    public void initZygote(StartupParam startupParam) throws Throwable {
+        if (!mSettings.getCachedPref_use_themes())
+            return;
+
+        XResources.setSystemWideReplacement("android", "color", "material_blue_grey_900",
+                mSettings.getThemeColor(3));
+        XResources.setSystemWideReplacement("android", "color", "material_blue_grey_950",
+                Common.enlightColor(mSettings.getThemeColor(3), 0.6f));
+        XResources.setSystemWideReplacement("android", "color", "material_deep_teal_500",
+                mSettings.getThemeColor(2));
+        XResources.setSystemWideReplacement("android", "color", "material_deep_teal_200",
+                Common.enlightColor(mSettings.getThemeColor(1), 1.5f));
+    }
 }

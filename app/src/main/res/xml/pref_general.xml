@@ -29,6 +29,15 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:title="@string/pref_cat_themes">
+        <SwitchPreference
+            android:key="use_themes"
+            android:title="@string/pref_themes_check_title"
+            android:summary="@string/pref_themes_check_summary"
+            android:defaultValue="false"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:title="@string/pref_cat_about">
         <Preference
             android:key="version"
