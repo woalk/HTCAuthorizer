@@ -1,0 +1,3 @@
+[submodule "lib/android-colorpicker"]
+	path = lib/android-colorpicker
+	url = https://github.com/woalk/android-colorpicker

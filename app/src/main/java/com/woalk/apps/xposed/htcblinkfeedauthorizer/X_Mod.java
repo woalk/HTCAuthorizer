@@ -518,9 +518,9 @@ public class X_Mod
         if (resparam.packageName.equals(PKG_SYSTEMUI)) {
             XposedBridge.log("SystemUI resources replaced.");
             resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_primary_color",
-                    mSettings.getThemeColor(2));
+                    mSettings.getCachedPref_systemui_color2());
             resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_secondary_color",
-                    mSettings.getThemeColor(2));
+                    mSettings.getCachedPref_systemui_color1());
             resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_accent_color",
                     mSettings.getThemeColor(2));
         } else if (resparam.packageName.equals(PKG_SETTINGS)) {

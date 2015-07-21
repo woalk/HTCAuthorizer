@@ -17,6 +17,12 @@
     <string name="pref_themes_check_title">Use Themes for default Material apps</string>
     <string name="pref_themes_check_summary">Material apps without own brand colors will be
         tinted according to current HTC Theme.</string>
+    <string name="pref_themes_systemui_color1_title">SystemUI background color 1</string>
+    <string name="pref_themes_systemui_color1_summary">Color to use for Android\'s notification
+        panel header.\nSet the last color of the dialog to use your Theme\'s color.</string>
+    <string name="pref_themes_systemui_color2_title">SystemUI background color 2</string>
+    <string name="pref_themes_systemui_color2_summary">Color to use for Android\'s quick settings.
+        \nSet the last color of the dialog to use your Theme\'s color.</string>
     <string name="pref_cat_about">About</string>
     <string name="pref_about_version_title">Version</string>
     <string name="pref_about_dev_title">Authors</string>

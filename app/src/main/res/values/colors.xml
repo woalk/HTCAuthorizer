@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--suppress AndroidDomInspection -->
+<resources>
+    <color name="theme1">#ff263238</color>
+    <color name="theme2">#ff21272b</color>
+    <color name="theme3">#ff009688</color>
+    <color name="theme4">#050505</color>
+    <color name="theme5">#000</color>
+    <color name="theme6">#444</color>
+    <color name="theme7">#555</color>
+    <color name="theme8">#fe0189cd</color>
+</resources>

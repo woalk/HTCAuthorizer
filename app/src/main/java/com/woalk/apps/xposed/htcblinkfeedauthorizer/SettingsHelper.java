@@ -13,6 +13,8 @@ public class SettingsHelper {
     private int theme_color2;
     private int theme_color3;
     private int theme_color4;
+    private int systemui_color1;
+    private int systemui_color2;
 
     public SettingsHelper() {
         mPref = new XSharedPreferences(PACKAGE_NAME, PREFERENCE_FILE);
@@ -33,6 +35,9 @@ public class SettingsHelper {
         theme_color2 = themePref.getInt("full_theme_colo2", 0);
         theme_color3 = themePref.getInt("full_theme_colo3", 0);
         theme_color4 = themePref.getInt("full_theme_colo4", 0);
+
+        systemui_color1 = getPref_systemui_color1();
+        systemui_color2 = getPref_systemui_color2();
     }
 
     public boolean getPref_has_ext() {
@@ -72,5 +77,29 @@ public class SettingsHelper {
             default:
                 return 0;
         }
+    }
+
+    public int getCachedPref_systemui_color1() {
+        int color = systemui_color1;
+        if (color == 0xfe0189cd) {
+            color = getThemeColor(1);
+        }
+        return color;
+    }
+
+    protected int getPref_systemui_color1() {
+        return mPref.getInt("systemui_color1", 0);
+    }
+
+    public int getCachedPref_systemui_color2() {
+        int color = systemui_color2;
+        if (color == 0xfe0189cd) {
+            color = Common.enlightColor(getThemeColor(1), 0.6f);
+        }
+        return color;
+    }
+
+    protected int getPref_systemui_color2() {
+        return mPref.getInt("systemui_color2", 0);
     }
 }

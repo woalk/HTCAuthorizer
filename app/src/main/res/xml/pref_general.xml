@@ -1,4 +1,5 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:woalk="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
         android:title="@string/pref_cat_storage">
@@ -35,6 +36,24 @@
             android:title="@string/pref_themes_check_title"
             android:summary="@string/pref_themes_check_summary"
             android:defaultValue="false"/>
+        <com.woalk.apps.lib.colorpicker.ColorPreference
+            android:key="systemui_color1"
+            android:title="@string/pref_themes_systemui_color1_title"
+            android:summary="@string/pref_themes_systemui_color1_summary"
+            woalk:dialogTitle="@string/pref_themes_systemui_color1_title"
+            woalk:colors="@array/theme_colors"
+            woalk:columns="4"
+            woalk:allowCustomColor="true"
+            android:defaultValue="@color/theme1"/>
+        <com.woalk.apps.lib.colorpicker.ColorPreference
+            android:key="systemui_color2"
+            android:title="@string/pref_themes_systemui_color2_title"
+            android:summary="@string/pref_themes_systemui_color2_summary"
+            woalk:dialogTitle="@string/pref_themes_systemui_color2_title"
+            woalk:colors="@array/theme_colors"
+            woalk:columns="4"
+            woalk:allowCustomColor="true"
+            android:defaultValue="@color/theme2"/>
     </PreferenceCategory>
 
     <PreferenceCategory

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer-array name="theme_colors">
+        <item>@color/theme1</item>
+        <item>@color/theme2</item>
+        <item>@color/theme3</item>
+        <item>@color/theme4</item>
+        <item>@color/theme5</item>
+        <item>@color/theme6</item>
+        <item>@color/theme7</item>
+        <item>@color/theme8</item>
+    </integer-array>
+</resources>
