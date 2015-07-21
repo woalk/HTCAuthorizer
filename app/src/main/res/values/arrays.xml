@@ -9,5 +9,6 @@
         <item>@color/theme6</item>
         <item>@color/theme7</item>
         <item>@color/theme8</item>
+        <item>@color/theme9</item>
     </integer-array>
 </resources>
