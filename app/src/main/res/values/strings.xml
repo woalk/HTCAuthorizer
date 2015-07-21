@@ -4,6 +4,7 @@
         Sense apps on legal HTC devices.</string>
 
     <!-- Preferences -->
+    <string name="pref_reboot_info">Currently, all settings need a reboot to apply.</string>
     <string name="pref_cat_storage">Storage options</string>
     <string name="pref_storage_ext_check_title">Enable external storage</string>
     <string name="pref_storage_ext_check_summary">Enable to say HTC apps that your device

@@ -1,6 +1,10 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
                   xmlns:woalk="http://schemas.android.com/apk/res-auto">
 
+    <Preference
+        android:summary="@string/pref_reboot_info"
+        android:selectable="false"/>
+
     <PreferenceCategory
         android:title="@string/pref_cat_storage">
         <SwitchPreference
