@@ -517,12 +517,16 @@ public class X_Mod
 
         if (resparam.packageName.equals(PKG_SYSTEMUI)) {
             XposedBridge.log("SystemUI resources replaced.");
+            int colorAccent = mSettings.getAccentColor();
             resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_primary_color",
                     mSettings.getCachedPref_systemui_color2());
             resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_secondary_color",
                     mSettings.getCachedPref_systemui_color1());
             resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_accent_color",
-                    mSettings.getThemeColor(2));
+                    colorAccent);
+            resparam.res.setReplacement(PKG_SYSTEMUI, "color", "qs_detail_progress_track",
+                    Color.argb(0x99, Color.red(colorAccent), Color.green(colorAccent),
+                            Color.blue(colorAccent)));
         } else if (resparam.packageName.equals(PKG_SETTINGS)) {
             XposedBridge.log("Settings resources replaced.");
             resparam.res.setReplacement(PKG_SETTINGS, "color", "theme_primary",
