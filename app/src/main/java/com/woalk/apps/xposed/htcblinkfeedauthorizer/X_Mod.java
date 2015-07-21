@@ -1,7 +1,9 @@
 package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.XResources;
 import android.graphics.Color;
@@ -40,6 +42,9 @@ public class X_Mod
     public static final String CLASS_BF_LIB2 = "com.htc.lib2.Hms";
     public static final String CLASS_BF_UDACT = PKG_HTC_SOCIALNETWORK_UI + ".HMSUpdateActivity";
     public static final String CLASS_BF_PROFILEBRIEF = "com.htc.themepicker.model.ProfileBrief";
+    public static final String CLASS_BF_MIXINGTHEMECOLOR = "com.htc.themepicker.util" +
+            ".MixingThemeColorUtil";
+    public static final String CLASS_BF_THEME = "com.htc.themepicker.model.Theme";
 
     public static final String PKG_HTC_CAMERA = "com.htc.camera";
     public static final String CLASS_HTC_LIB3 = "com.htc.lib3.android.os.HtcEnvironment";
@@ -183,6 +188,39 @@ public class X_Mod
                             param.setResult(true);
                         }
                     });
+
+            // Theme permissions hook
+            XC_MethodHook xc_permission = new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    File file = new File(((Context) param.args[0]).getApplicationInfo().dataDir +
+                            "/shared_prefs/mixing_theme_color_preference.xml");
+                    if (!file.setReadable(true, false)) {
+                        XposedBridge.log("Sensify: Setting read permission failed!");
+                    } else {
+                        XposedBridge.log("Sensify: Setting read permission success! " +
+                                file.getAbsolutePath());
+                    }
+                }
+            };
+
+            XposedHelpers.findAndHookMethod(CLASS_BF_MIXINGTHEMECOLOR, lpparam.classLoader,
+                    "updateFullThemecolor", Context.class, CLASS_BF_THEME, xc_permission);
+
+            XposedHelpers.findAndHookMethod(CLASS_BF_MIXINGTHEMECOLOR, lpparam.classLoader,
+                    "clearFullThemeColor", Context.class, xc_permission);
+
+            XposedHelpers.findAndHookMethod(CLASS_BF_MIXINGTHEMECOLOR, lpparam.classLoader,
+                    "getCurrentApplyColorBitmap", Context.class, xc_permission);
+
+            XposedHelpers.findAndHookMethod(CLASS_BF_MIXINGTHEMECOLOR, lpparam.classLoader,
+                    "getCustomColor", Context.class, xc_permission);
+
+            XposedHelpers.findAndHookMethod(CLASS_BF_MIXINGTHEMECOLOR, lpparam.classLoader,
+                    "getFullThemeColor", Context.class, xc_permission);
+
+            XposedHelpers.findAndHookMethod(CLASS_BF_MIXINGTHEMECOLOR, lpparam.classLoader,
+                    "updateCustomColor", Context.class, int.class, xc_permission);
 
         } else if (lpparam.packageName.equals(PKG_HTC_FB)) {
 
