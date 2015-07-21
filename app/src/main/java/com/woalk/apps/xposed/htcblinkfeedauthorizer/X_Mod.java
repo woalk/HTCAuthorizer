@@ -306,20 +306,6 @@ public class X_Mod implements IXposedHookLoadPackage {
 
         if (lpparam.packageName.startsWith("com.htc.")) {
 
-            // Enable HDK operations
-            try {
-                XposedHelpers.findAndHookMethod(CLASS_HDK0UTIL, lpparam.classLoader,
-                        "getHDKBaseVersion", new XC_MethodHook() {
-                            @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws
-                                    Throwable {
-                                param.setResult(19.0f);
-                            }
-                        });
-            } catch (Throwable e) {
-                e.printStackTrace();
-            }
-
             // Following: HTC-specific methods that resolve different storage types
             // try-catch for each necessary because not every HTC app uses all of them
 
