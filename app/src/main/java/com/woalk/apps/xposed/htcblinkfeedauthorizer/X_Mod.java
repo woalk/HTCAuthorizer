@@ -325,7 +325,7 @@ public class X_Mod
                             Drawable d = (Drawable) param.args[0];
                             BitmapDrawable b = new BitmapDrawable(((Preference) param.thisObject)
                                     .getContext().getResources(), Common.drawableToBitmap(d));
-                            b.setTint(mSettings.getThemeColor(2));
+                            b.setTint(mSettings.getAccentColor());
                             param.args[0] = b;
                         }
                     });
@@ -339,7 +339,7 @@ public class X_Mod
                             Drawable d = iV.getDrawable();
                             BitmapDrawable b = new BitmapDrawable((Resources) param.args[1],
                                     Common.drawableToBitmap(d));
-                            b.setTint(mSettings.getThemeColor(2));
+                            b.setTint(mSettings.getAccentColor());
                             iV.setImageDrawable(b);
                         }
                     });
@@ -355,7 +355,7 @@ public class X_Mod
                             Drawable d = iV.getDrawable();
                             BitmapDrawable b = new BitmapDrawable(iV.getContext().getResources(),
                                     Common.drawableToBitmap(d));
-                            b.setTint(mSettings.getThemeColor(2));
+                            b.setTint(mSettings.getAccentColor());
                             iV.setImageDrawable(b);
                         }
                     });
@@ -530,15 +530,15 @@ public class X_Mod
         } else if (resparam.packageName.equals(PKG_SETTINGS)) {
             XposedBridge.log("Settings resources replaced.");
             resparam.res.setReplacement(PKG_SETTINGS, "color", "theme_primary",
-                    mSettings.getThemeColor(3));
+                    mSettings.getPrimaryColor());
             resparam.res.setReplacement(PKG_SETTINGS, "color", "theme_primary_dark",
-                    Common.enlightColor(mSettings.getThemeColor(3), 0.6f));
+                    mSettings.getPrimaryDarkColor());
             resparam.res.setReplacement(PKG_SETTINGS, "color", "theme_accent",
-                    mSettings.getThemeColor(2));
+                    mSettings.getAccentColor());
             resparam.res.setReplacement(PKG_SETTINGS, "color", "switchbar_background_color",
-                    mSettings.getThemeColor(3));
+                    mSettings.getPrimaryDarkColor());
             resparam.res.setReplacement(PKG_SETTINGS, "color", "switch_accent_color",
-                    mSettings.getThemeColor(4));
+                    mSettings.getAccentColor());
         }
     }
 
@@ -548,12 +548,12 @@ public class X_Mod
             return;
 
         XResources.setSystemWideReplacement("android", "color", "material_blue_grey_900",
-                mSettings.getThemeColor(3));
+                mSettings.getPrimaryColor());
         XResources.setSystemWideReplacement("android", "color", "material_blue_grey_950",
-                Common.enlightColor(mSettings.getThemeColor(3), 0.6f));
+                mSettings.getPrimaryDarkColor());
         XResources.setSystemWideReplacement("android", "color", "material_deep_teal_500",
-                mSettings.getThemeColor(2));
+                mSettings.getAccentColor());
         XResources.setSystemWideReplacement("android", "color", "material_deep_teal_200",
-                Common.enlightColor(mSettings.getThemeColor(1), 1.5f));
+                Common.enlightColor(mSettings.getAccentColor(), 1.5f));
     }
 }

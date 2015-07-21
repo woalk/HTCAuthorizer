@@ -15,6 +15,7 @@ public class SettingsHelper {
     private int theme_color4;
     private int systemui_color1;
     private int systemui_color2;
+    private boolean use_launcher_theme;
 
     public SettingsHelper() {
         mPref = new XSharedPreferences(PACKAGE_NAME, PREFERENCE_FILE);
@@ -38,6 +39,8 @@ public class SettingsHelper {
 
         systemui_color1 = getPref_systemui_color1();
         systemui_color2 = getPref_systemui_color2();
+
+        use_launcher_theme = getPref_use_launcher_theme();
     }
 
     public boolean getPref_has_ext() {
@@ -64,7 +67,7 @@ public class SettingsHelper {
         return mPref.getBoolean("use_themes", false);
     }
 
-    public int getThemeColor(int index) {
+    protected int getThemeColor(int index) {
         switch (index) {
             case 1:
                 return theme_color1;
@@ -77,6 +80,28 @@ public class SettingsHelper {
             default:
                 return 0;
         }
+    }
+
+    public boolean getCachedPref_use_launcher_theme() {
+        return use_launcher_theme;
+    }
+
+    protected boolean getPref_use_launcher_theme() {
+        return mPref.getBoolean("use_launcher_theme", false);
+    }
+
+    public int getPrimaryColor() {
+        return getThemeColor(getCachedPref_use_launcher_theme() ? 1 : 3);
+    }
+
+    public int getPrimaryDarkColor() {
+        return getCachedPref_use_launcher_theme() ? getThemeColor(4)
+                : Common.enlightColor(getThemeColor(3), 0.6f);
+    }
+
+    public int getAccentColor() {
+        return getCachedPref_use_launcher_theme() ? Common.enlightColor(getThemeColor(1), 1.25f)
+                : getThemeColor(2);
     }
 
     public int getCachedPref_systemui_color1() {
