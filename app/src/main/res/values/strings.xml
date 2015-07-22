@@ -2,6 +2,11 @@
     <string name="app_name">Sensify Xposed</string>
     <string name="app_description">Integration for Sense apps into AOSP and other ROMs.</string>
 
+    <string name="warn_no_hsp_title">Install HTC Service Pack</string>
+    <string name="warn_no_hsp_content">You don\'t have HTC Service Pack installed.
+        \nMost HTC apps need HTC Service Pack to work correctly.
+        \nDo you want to download it now?</string>
+
     <!-- Preferences -->
     <string name="pref_reboot_info">Currently, all settings need a reboot to apply.</string>
     <string name="pref_cat_general">General</string>
