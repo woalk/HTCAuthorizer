@@ -373,6 +373,7 @@ public class X_Mod
 
         } else if (lpparam.packageName.equals(PKG_SETTINGS)
                 && mSettings.getCachedPref_use_themes()) {
+
             XposedHelpers.findAndHookMethod(Preference.class, "setIcon", Drawable.class,
                     new XC_MethodHook() {
                         @Override
@@ -414,6 +415,16 @@ public class X_Mod
                             iV.setImageDrawable(b);
                         }
                     });
+
+            XposedHelpers.findAndHookMethod(CLASS_SETTINGS_CHARTNETWORK, lpparam.classLoader,
+                    "setChartColor", int.class, int.class, int.class, new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            param.args[1] = mSettings.getAccentColor();
+                            param.args[2] = Common.enlightColor(mSettings.getAccentColor(), 1.5f);
+                        }
+                    });
+
 
         } else if (lpparam.packageName.equals(PKG_VENDING)) {
 
@@ -604,6 +615,8 @@ public class X_Mod
             ".dashboard.SearchResultsSummary";
     public static final String CLASS_SETTINGS_SEARCH_RESULTS_ADAPTER =
             CLASS_SETTINGS_SEARCH_RESULTS_SUMMARY + "$SearchResultsAdapter";
+    public static final String CLASS_SETTINGS_CHARTNETWORK = PKG_SETTINGS +
+            ".widget.ChartNetworkSeriesView";
 
     @Override
     public void handleInitPackageResources(XC_InitPackageResources.InitPackageResourcesParam
@@ -622,6 +635,9 @@ public class X_Mod
             resparam.res.setReplacement(PKG_SYSTEMUI, "color", "qs_detail_progress_track",
                     Color.argb(0x99, Color.red(colorAccent), Color.green(colorAccent),
                             Color.blue(colorAccent)));
+            resparam.res.setReplacement(PKG_SYSTEMUI, "color",
+                    "notification_material_background_media_default_color",
+                    mSettings.getCachedPref_systemui_color2());
         } else if (resparam.packageName.equals(PKG_SETTINGS)) {
             resparam.res.setReplacement(PKG_SETTINGS, "color", "theme_primary",
                     mSettings.getPrimaryColor());
