@@ -1,5 +1,56 @@
 <resources>
-    <string name="app_name">HTC Authorizer</string>
-    <string name="app_description">Removes an unjustified \"Unauthorized device\" message of HTC
-        Sense apps on legal HTC devices.</string>
+    <string name="app_name">Sensify Xposed</string>
+    <string name="app_description">Integration for Sense apps into AOSP and other ROMs.</string>
+
+    <string name="warn_no_hsp_title">Install HTC Service Pack</string>
+    <string name="warn_no_hsp_content">You don\'t have HTC Service Pack installed.
+        \nMost HTC apps need HTC Service Pack to work correctly.
+        \nDo you want to download it now?</string>
+
+    <!-- Preferences -->
+    <string name="pref_reboot_info">Currently, all settings need a reboot to apply.</string>
+    <string name="pref_cat_general">General</string>
+    <string name="pref_general_always_active_title">Show always active mods</string>
+    <string name="pref_general_always_active_window">Always active mods</string>
+    <string name="pref_always_active_authorize_title">Authorize HTC apps</string>
+    <string name="pref_always_active_authorize_summary">Removes the \"Unauthorized device\"
+        message from the following HTC apps:
+        \nHTC Sense Home, Facebook for HTC Sense, Google+ for HTC Sense, LinkedIn for HTC Sense,
+        Twitter for HTC Sense, HTC Themes.</string>
+    <string name="pref_always_active_vending_title">Allow downloading of HTC apps</string>
+    <string name="pref_always_active_vending_summary">Allows to search and download HTC apps in
+        Google Play Store, removes the \"not compatible\" message on the install page.</string>
+    <string name="pref_cat_storage">Storage options</string>
+    <string name="pref_storage_ext_check_title">Enable external storage</string>
+    <string name="pref_storage_ext_check_summary">Tell HTC apps that your device
+        has an external storage.</string>
+    <string name="pref_storage_ext_path_title">External storage path</string>
+    <string name="pref_storage_usb_check_title">Enable USB storage</string>
+    <string name="pref_storage_usb_check_summary">Tell HTC apps that your device
+        supports USB storage (USB-OTG).</string>
+    <string name="pref_storage_usb_path_title">USB storage path</string>
+    <string name="pref_cat_themes">HTC Themes</string>
+    <string name="pref_themes_check_title">Use Themes for Material apps</string>
+    <string name="pref_themes_check_summary">Material apps without specific colors will be
+        tinted according to current HTC Theme.</string>
+    <string name="pref_themes_use_launcher_title">Use Launcher Theme</string>
+    <string name="pref_themes_use_launcher_summary">Do not use the app theme, but the Sense Home
+        theme of HTC Themes to tint Material apps.</string>
+    <string name="pref_themes_systemui_color1_title">SystemUI primary color</string>
+    <string name="pref_themes_systemui_color1_summary">Color to use for Android\'s notification
+        panel header.\nSet the last color of the dialog to use your Theme\'s color.</string>
+    <string name="pref_themes_systemui_color2_title">SystemUI secondary color</string>
+    <string name="pref_themes_systemui_color2_summary">Color to use for Android\'s quick settings.
+        \nSet the last color of the dialog to use your Theme\'s color (automatically takes care of
+        darkening it).</string>
+    <string name="pref_themes_systemui_use_launcher_title">Use Launcher Theme for SystemUI</string>
+    <string name="pref_themes_systemui_use_launcher_summary">Use Sense Home\'s Theme also
+        for SystemUI if you selected to use Theme color for SystemUI.</string>
+    <string name="pref_cat_about">About</string>
+    <string name="pref_about_version_title">Version</string>
+    <string name="pref_about_dev_title">Authors</string>
+    <string name="pref_about_dev_summary">&#169; 2015 Woalk, DigitalHigh
+        \nLicensed under GNU GPL v2.
+        \nSee at github.com/woalk/HTCAuthorizer</string>
+
 </resources>

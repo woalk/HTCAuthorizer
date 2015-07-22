@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/pref_general_always_active_title">
+    <Preference
+        android:summary="@string/pref_always_active_authorize_summary"
+        android:title="@string/pref_always_active_authorize_title"/>
+    <Preference
+        android:summary="@string/pref_always_active_vending_summary"
+        android:title="@string/pref_always_active_vending_title"/>
+</PreferenceScreen>

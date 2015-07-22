@@ -1,4 +1,5 @@
-#HTC Authorizer
+#Sensify
+###Formerly *HTC Authorizer*
 ##Xposed Module
 This [Xposed Module](http://repo.xposed.info/) removes the message
 
@@ -6,16 +7,17 @@ This [Xposed Module](http://repo.xposed.info/) removes the message
 
 from [HTC BlinkFeed/Sense Home](https://play.google.com/store/apps/details?id=com.htc.launcher&hl=en) and other HTC apps.
 
+Also, it integrates some Sense features into pure AOSP ROMs!
+
 ###Requirements
 This app requires Android 5 or 5.1 Lollipop and the **correct** Xposed Framework
 for [5.0](http://forum.xda-developers.com/showthread.php?t=3034811)
 or [5.1](http://forum.xda-developers.com/showthread.php?t=3072979).
 
-Furthermore, this requires obviously HTC Sense (7) apps.
+Furthermore, this requires obviously HTC Sense (7) apps and HTC Service Pack.
+It should work on any ROM. HTC apps do not need to be installed as system apps.
 
-Also, this Xposed Module **does not** make a really incompatible device compatible.
-It just circumvents an occurring problem with HTC's "copy protection" of BlinkFeed's Sense libraries,
-where a usually compatible, legal HTC device gets this message without justification.
+However, for some features, an AOSP ROM is needed.
 
 ###Version
 The currently supported BlinkFeed/Sense Home version is
@@ -30,7 +32,8 @@ The current BlinkFeed/Sense Home plug-ins supported:
 All of them in their currently newest version (`7.00.4xxxxx`/`7.00.5xxxxx`).
 
 Other Sense apps currently supported:
-- *none yet. Be patient!*
+- Camera: Allow saving to external storage.
+- Themes: Use HTC Themes to theme your AOSP system!
 
 ###Download
 You can download this module from either the GitHub release page (see on top of the page -> Releases),
