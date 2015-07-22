@@ -627,9 +627,15 @@ public class X_Mod
 
         XResources.setSystemWideReplacement("android", "color", "material_blue_grey_900",
                 mSettings.getPrimaryColor());
+        XResources.setSystemWideReplacement("android", "color", "primary_material_dark",
+                mSettings.getPrimaryColor());
         XResources.setSystemWideReplacement("android", "color", "material_blue_grey_950",
                 mSettings.getPrimaryDarkColor());
+        XResources.setSystemWideReplacement("android", "color", "primary_dark_material_dark",
+                mSettings.getPrimaryDarkColor());
         XResources.setSystemWideReplacement("android", "color", "material_deep_teal_500",
+                mSettings.getAccentColor());
+        XResources.setSystemWideReplacement("android", "color", "accent_material_dark",
                 mSettings.getAccentColor());
         XResources.setSystemWideReplacement("android", "color", "material_deep_teal_200",
                 Common.enlightColor(mSettings.getAccentColor(), 1.5f));
