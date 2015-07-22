@@ -6,6 +6,13 @@
         android:selectable="false"/>
 
     <PreferenceCategory
+        android:title="@string/pref_cat_general">
+        <Preference
+            android:key="always_active"
+            android:title="@string/pref_general_always_active_title"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:title="@string/pref_cat_storage">
         <SwitchPreference
             android:defaultValue="false"

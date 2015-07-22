@@ -4,6 +4,17 @@
 
     <!-- Preferences -->
     <string name="pref_reboot_info">Currently, all settings need a reboot to apply.</string>
+    <string name="pref_cat_general">General</string>
+    <string name="pref_general_always_active_title">Show always active mods</string>
+    <string name="pref_general_always_active_window">Always active mods</string>
+    <string name="pref_always_active_authorize_title">Authorize HTC apps</string>
+    <string name="pref_always_active_authorize_summary">Removes the \"Unauthorized device\"
+        message from the following HTC apps:
+        \nHTC Sense Home, Facebook for HTC Sense, Google+ for HTC Sense, LinkedIn for HTC Sense,
+        Twitter for HTC Sense, HTC Themes.</string>
+    <string name="pref_always_active_vending_title">Allow downloading of HTC apps</string>
+    <string name="pref_always_active_vending_summary">Allows to search and download HTC apps in
+        Google Play Store, removes the \"not compatible\" message on the install page.</string>
     <string name="pref_cat_storage">Storage options</string>
     <string name="pref_storage_ext_check_title">Enable external storage</string>
     <string name="pref_storage_ext_check_summary">Tell HTC apps that your device

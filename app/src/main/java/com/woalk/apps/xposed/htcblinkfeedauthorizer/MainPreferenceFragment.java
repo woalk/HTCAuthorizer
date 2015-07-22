@@ -1,6 +1,7 @@
 package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -11,10 +12,18 @@ import android.preference.PreferenceGroup;
 
 public class MainPreferenceFragment extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
+    public static final String EXTRA_SUBSCREEN_ID = "subscreen_id";
+    public static final int SUBSCREEN_ID_ALWAYS_ACTIVE = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (getArguments() != null
+                && getArguments().getInt(EXTRA_SUBSCREEN_ID) == SUBSCREEN_ID_ALWAYS_ACTIVE) {
+            addPreferencesFromResource(R.xml.pref_always_active);
+            return;
+        }
 
         getPreferenceManager().setSharedPreferencesName(SettingsHelper.PREFERENCE_FILE);
         //noinspection deprecation
@@ -24,6 +33,17 @@ public class MainPreferenceFragment extends PreferenceFragment
                 .registerOnSharedPreferenceChangeListener(this);
 
         addPreferencesFromResource(R.xml.pref_general);
+
+        findPreference("always_active").setOnPreferenceClickListener(
+                new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                intent.putExtra(EXTRA_SUBSCREEN_ID, SUBSCREEN_ID_ALWAYS_ACTIVE);
+                startActivity(intent);
+                return true;
+            }
+        });
 
         try {
             findPreference("version").setSummary(getActivity().getPackageManager()
