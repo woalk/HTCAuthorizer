@@ -51,11 +51,13 @@
             android:key="use_launcher_theme"
             android:title="@string/pref_themes_use_launcher_title"
             android:summary="@string/pref_themes_use_launcher_summary"
+            android:dependency="use_themes"
             android:defaultValue="false"/>
         <com.woalk.apps.lib.colorpicker.ColorPreference
             android:key="systemui_color1"
             android:title="@string/pref_themes_systemui_color1_title"
             android:summary="@string/pref_themes_systemui_color1_summary"
+            android:dependency="use_themes"
             woalk:dialogTitle="@string/pref_themes_systemui_color1_title"
             woalk:colors="@array/theme_colors"
             woalk:columns="4"
@@ -65,6 +67,7 @@
             android:key="systemui_color2"
             android:title="@string/pref_themes_systemui_color2_title"
             android:summary="@string/pref_themes_systemui_color2_summary"
+            android:dependency="use_themes"
             woalk:dialogTitle="@string/pref_themes_systemui_color2_title"
             woalk:colors="@array/theme_colors"
             woalk:columns="4"
@@ -74,6 +77,7 @@
             android:key="systemui_use_launcher_theme"
             android:title="@string/pref_themes_systemui_use_launcher_title"
             android:summary="@string/pref_themes_systemui_use_launcher_summary"
+            android:dependency="use_themes"
             android:defaultValue="true"/>
     </PreferenceCategory>
 
