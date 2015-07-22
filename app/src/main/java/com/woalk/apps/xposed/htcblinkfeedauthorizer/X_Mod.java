@@ -629,13 +629,19 @@ public class X_Mod
                 mSettings.getPrimaryColor());
         XResources.setSystemWideReplacement("android", "color", "primary_material_dark",
                 mSettings.getPrimaryColor());
+//        XResources.setSystemWideReplacement("android", "color", "primary_material_light",
+//                Common.enlightColor(mSettings.getPrimaryColor(), 2.25f));
         XResources.setSystemWideReplacement("android", "color", "material_blue_grey_950",
                 mSettings.getPrimaryDarkColor());
         XResources.setSystemWideReplacement("android", "color", "primary_dark_material_dark",
                 mSettings.getPrimaryDarkColor());
+//        XResources.setSystemWideReplacement("android", "color", "primary_dark_material_light",
+//                Common.enlightColor(mSettings.getPrimaryColor(), 1.65f));
         XResources.setSystemWideReplacement("android", "color", "material_deep_teal_500",
                 mSettings.getAccentColor());
         XResources.setSystemWideReplacement("android", "color", "accent_material_dark",
+                mSettings.getAccentColor());
+        XResources.setSystemWideReplacement("android", "color", "accent_material_light",
                 mSettings.getAccentColor());
         XResources.setSystemWideReplacement("android", "color", "material_deep_teal_200",
                 Common.enlightColor(mSettings.getAccentColor(), 1.5f));
