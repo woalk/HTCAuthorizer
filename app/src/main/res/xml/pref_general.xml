@@ -70,6 +70,11 @@
             woalk:columns="4"
             woalk:allowCustomColor="true"
             android:defaultValue="@color/theme2"/>
+        <CheckBoxPreference
+            android:key="systemui_use_launcher_theme"
+            android:title="@string/pref_themes_systemui_use_launcher_title"
+            android:summary="@string/pref_themes_systemui_use_launcher_summary"
+            android:defaultValue="true"/>
     </PreferenceCategory>
 
     <PreferenceCategory

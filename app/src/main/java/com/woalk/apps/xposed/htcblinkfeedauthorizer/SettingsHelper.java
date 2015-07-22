@@ -20,6 +20,7 @@ public class SettingsHelper {
     private int systemui_color1;
     private int systemui_color2;
     private boolean use_launcher_theme;
+    private boolean systemui_use_launcher_theme;
 
     public SettingsHelper() {
         mPref = new XSharedPreferences(PACKAGE_NAME, PREFERENCE_FILE);
@@ -45,6 +46,7 @@ public class SettingsHelper {
         systemui_color2 = getPref_systemui_color2();
 
         use_launcher_theme = getPref_use_launcher_theme();
+        systemui_use_launcher_theme = getPref_systemui_use_launcher_theme();
     }
 
     public boolean getPref_has_ext() {
@@ -94,13 +96,29 @@ public class SettingsHelper {
         return mPref.getBoolean("use_launcher_theme", false);
     }
 
+    public boolean getCachedPref_systemui_use_launcher_theme() {
+        return systemui_use_launcher_theme;
+    }
+
+    protected boolean getPref_systemui_use_launcher_theme() {
+        return mPref.getBoolean("systemui_use_launcher_theme", false);
+    }
+
     public int getPrimaryColor() {
-        int c = getThemeColor(getCachedPref_use_launcher_theme() ? 1 : 3);
+        return getPrimaryColor(getCachedPref_use_launcher_theme());
+    }
+
+    public int getPrimaryColor(boolean launcher) {
+        int c = getThemeColor(launcher ? 1 : 3);
         return c == 0 ? DEFAULT_THEME_COLOR : c;
     }
 
     public int getPrimaryDarkColor() {
         return Common.enlightColor(getPrimaryColor(), 0.6f);
+    }
+
+    public int getPrimaryDarkColor(boolean launcher) {
+        return Common.enlightColor(getPrimaryColor(launcher), 0.6f);
     }
 
     public int getAccentColor() {
@@ -112,7 +130,7 @@ public class SettingsHelper {
     public int getCachedPref_systemui_color1() {
         int color = systemui_color1;
         if (color == PLACEHOLDER_THEME_COLOR) {
-            color = getPrimaryColor();
+            color = getPrimaryColor(getCachedPref_systemui_use_launcher_theme());
         }
         return color;
     }
@@ -124,7 +142,7 @@ public class SettingsHelper {
     public int getCachedPref_systemui_color2() {
         int color = systemui_color2;
         if (color == PLACEHOLDER_THEME_COLOR) {
-            color = getPrimaryDarkColor();
+            color = getPrimaryDarkColor(getCachedPref_systemui_use_launcher_theme());
         }
         return color;
     }

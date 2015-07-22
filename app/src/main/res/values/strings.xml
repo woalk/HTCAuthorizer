@@ -43,6 +43,9 @@
     <string name="pref_themes_systemui_color2_summary">Color to use for Android\'s quick settings.
         \nSet the last color of the dialog to use your Theme\'s color (automatically takes care of
         darkening it).</string>
+    <string name="pref_themes_systemui_use_launcher_title">Use Launcher Theme for SystemUI</string>
+    <string name="pref_themes_systemui_use_launcher_summary">Use Sense Home\'s Theme also
+        for SystemUI if you selected to use Theme color for SystemUI.</string>
     <string name="pref_cat_about">About</string>
     <string name="pref_about_version_title">Version</string>
     <string name="pref_about_dev_title">Authors</string>
