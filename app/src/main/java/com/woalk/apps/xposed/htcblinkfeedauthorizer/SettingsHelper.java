@@ -7,6 +7,8 @@ public class SettingsHelper {
     protected static final String PREFERENCE_FILE = "main";
     protected static final String PREFERENCE_THEME = "sensify_theme";
 
+    public static final int DEFAULT_THEME_COLOR = 0xff0e5e8c;
+
     private final XSharedPreferences mPref;
 
     private boolean cachedPref_use_themes;
@@ -92,17 +94,18 @@ public class SettingsHelper {
     }
 
     public int getPrimaryColor() {
-        return getThemeColor(getCachedPref_use_launcher_theme() ? 1 : 3);
+        int c = getThemeColor(getCachedPref_use_launcher_theme() ? 1 : 3);
+        return c == 0 ? DEFAULT_THEME_COLOR : c;
     }
 
     public int getPrimaryDarkColor() {
-        return getCachedPref_use_launcher_theme() ? getThemeColor(4)
-                : Common.enlightColor(getThemeColor(3), 0.6f);
+        return Common.enlightColor(getPrimaryColor(), 0.6f);
     }
 
     public int getAccentColor() {
-        return getCachedPref_use_launcher_theme() ? Common.enlightColor(getThemeColor(1), 1.25f)
+        int c = getCachedPref_use_launcher_theme() ? Common.enlightColor(getThemeColor(1), 1.25f)
                 : getThemeColor(2);
+        return c == 0 ? Common.enlightColor(DEFAULT_THEME_COLOR, 1.25f) : c;
     }
 
     public int getCachedPref_systemui_color1() {
