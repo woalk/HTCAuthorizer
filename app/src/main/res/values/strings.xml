@@ -12,16 +12,16 @@
     <string name="pref_storage_usb_check_summary">Enable external USB storage (OTG) for HTC apps.</string>
     <string name="pref_storage_usb_path_title">USB storage path</string>
     <string name="pref_cat_themes">HTC Themes</string>
-    <string name="pref_themes_check_title">Use Themes for default Material apps</string>
-    <string name="pref_themes_check_summary">Material apps without own brand colors will be
+    <string name="pref_themes_check_title">Use Themes for Material apps</string>
+    <string name="pref_themes_check_summary">Material apps without specific colors will be
         tinted according to current HTC Theme.</string>
     <string name="pref_themes_use_launcher_title">Use Launcher Theme</string>
     <string name="pref_themes_use_launcher_summary">Do not use the app theme, but the Sense Home
         theme of HTC Themes to tint Material apps.</string>
-    <string name="pref_themes_systemui_color1_title">SystemUI background color 1</string>
+    <string name="pref_themes_systemui_color1_title">SystemUI primary color</string>
     <string name="pref_themes_systemui_color1_summary">Color to use for Android\'s notification
         panel header.\nSet the last color of the dialog to use your Theme\'s color.</string>
-    <string name="pref_themes_systemui_color2_title">SystemUI background color 2</string>
+    <string name="pref_themes_systemui_color2_title">SystemUI secondary color</string>
     <string name="pref_themes_systemui_color2_summary">Color to use for Android\'s quick settings.
         \nSet the last color of the dialog to use your Theme\'s color.</string>
     <string name="pref_cat_about">About</string>
