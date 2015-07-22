@@ -5,6 +5,7 @@ import de.robv.android.xposed.XSharedPreferences;
 public class SettingsHelper {
     protected static final String PACKAGE_NAME = "com.woalk.apps.xposed.htcblinkfeedauthorizer";
     protected static final String PREFERENCE_FILE = "main";
+    protected static final String PREFERENCE_THEME = "sensify_theme";
 
     private final XSharedPreferences mPref;
 
@@ -31,7 +32,7 @@ public class SettingsHelper {
 
     public void loadTheme() {
         XSharedPreferences themePref = new XSharedPreferences(X_Mod.PKG_HTC_LAUNCHER,
-                "mixing_theme_color_preference");
+                PREFERENCE_THEME);
         theme_color1 = themePref.getInt("full_theme_colo1", 0);
         theme_color2 = themePref.getInt("full_theme_colo2", 0);
         theme_color3 = themePref.getInt("full_theme_colo3", 0);

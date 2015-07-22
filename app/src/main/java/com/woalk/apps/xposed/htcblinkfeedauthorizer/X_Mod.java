@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
+import java.util.Map;
 
 import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
@@ -190,37 +191,44 @@ public class X_Mod
                     });
 
             // Theme permissions hook
-            XC_MethodHook xc_permission = new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    File file = new File(((Context) param.args[0]).getApplicationInfo().dataDir +
-                            "/shared_prefs/mixing_theme_color_preference.xml");
-                    if (!file.setReadable(true, false)) {
-                        XposedBridge.log("Sensify: Setting read permission failed!");
-                    } else {
-                        XposedBridge.log("Sensify: Setting read permission success! " +
-                                file.getAbsolutePath());
-                    }
-                }
-            };
+            XposedHelpers.findAndHookMethod(CLASS_BF_MIXINGTHEMECOLOR, lpparam.classLoader,
+                    "updateFullThemecolor", Context.class, CLASS_BF_THEME, new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            SharedPreferences theme_in = ((Context) param.args[0])
+                                    .getSharedPreferences("mixing_theme_color_preference",
+                                            Context.MODE_PRIVATE);
+                            //noinspection deprecation
+                            @SuppressLint("WorldReadableFiles")
+                            SharedPreferences.Editor theme_out = ((Context) param.args[0])
+                                    .getSharedPreferences(SettingsHelper.PREFERENCE_THEME,
+                                            Context.MODE_WORLD_READABLE).edit();
+                            for (Map.Entry<String, ?> x : theme_in.getAll().entrySet()) {
+                                if (x.getValue() instanceof Integer) {
+                                    theme_out.putInt(x.getKey(), (Integer) x.getValue());
+                                }
+                            }
+                            theme_out.apply();
+                        }
+                    });
 
             XposedHelpers.findAndHookMethod(CLASS_BF_MIXINGTHEMECOLOR, lpparam.classLoader,
-                    "updateFullThemecolor", Context.class, CLASS_BF_THEME, xc_permission);
+                    "clearFullThemeColor", Context.class, new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            //noinspection deprecation
+                            @SuppressLint("WorldReadableFiles")
+                            SharedPreferences theme = ((Context) param.args[0])
+                                    .getSharedPreferences(SettingsHelper.PREFERENCE_THEME,
+                                            Context.MODE_WORLD_READABLE);
+                            SharedPreferences.Editor theme_edit = theme.edit();
+                            for (String x : theme.getAll().keySet()) {
+                                theme_edit.remove(x);
+                            }
+                            theme_edit.apply();
+                        }
+                    });
 
-            XposedHelpers.findAndHookMethod(CLASS_BF_MIXINGTHEMECOLOR, lpparam.classLoader,
-                    "clearFullThemeColor", Context.class, xc_permission);
-
-            XposedHelpers.findAndHookMethod(CLASS_BF_MIXINGTHEMECOLOR, lpparam.classLoader,
-                    "getCurrentApplyColorBitmap", Context.class, xc_permission);
-
-            XposedHelpers.findAndHookMethod(CLASS_BF_MIXINGTHEMECOLOR, lpparam.classLoader,
-                    "getCustomColor", Context.class, xc_permission);
-
-            XposedHelpers.findAndHookMethod(CLASS_BF_MIXINGTHEMECOLOR, lpparam.classLoader,
-                    "getFullThemeColor", Context.class, xc_permission);
-
-            XposedHelpers.findAndHookMethod(CLASS_BF_MIXINGTHEMECOLOR, lpparam.classLoader,
-                    "updateCustomColor", Context.class, int.class, xc_permission);
 
         } else if (lpparam.packageName.equals(PKG_HTC_FB)) {
 
