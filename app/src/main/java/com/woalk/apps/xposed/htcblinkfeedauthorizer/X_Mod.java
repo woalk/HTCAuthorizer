@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.FeatureInfo;
 import android.content.res.Resources;
 import android.content.res.XResources;
 import android.graphics.Color;
@@ -87,6 +88,14 @@ public class X_Mod
     public static final String CLASS_INSTAGRAM_ACTIVITY = PKG_HTC_INSTAGRAM_COMM +
             ".InstagramActivity";
     public static final String CLASS_INSTAGRAM_LIB2_A = PKG_HTC_LIB2 + ".a";
+
+    public static final String PKG_VENDING = "com.android.vending";
+    public static final String PKG_FINSKY = "com.google.android.finsky";
+    public static final String PKG_FINSKY_API = "com.google.android.finsky.api.model";
+    public static final String CLASS_FINSKY_LIBRARY_UTILS = PKG_FINSKY + ".utils.LibraryUtils";
+    public static final String CLASS_FINSKY_DOCUMENT = PKG_FINSKY_API + ".Document";
+    public static final String CLASS_FINSKY_DFETOC = PKG_FINSKY_API + ".DfeToc";
+    public static final String CLASS_FINSKY_LIBRARY = PKG_FINSKY + ".library.Library";
 
     private final SettingsHelper mSettings;
 
@@ -403,6 +412,22 @@ public class X_Mod
                             iV.setImageDrawable(b);
                         }
                     });
+
+        } else if (lpparam.packageName.equals(PKG_VENDING)) {
+
+            XposedHelpers.findAndHookMethod(CLASS_FINSKY_LIBRARY_UTILS,
+                    lpparam.classLoader, "isAvailable", CLASS_FINSKY_DOCUMENT, CLASS_FINSKY_DFETOC,
+                    CLASS_FINSKY_LIBRARY, new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            Object doc = param.args[0];
+                            String id = (String) XposedHelpers.callMethod(doc, "getDocId");
+                            if (id.startsWith("com.htc.")) {
+                                param.setResult(true);
+                            }
+                        }
+                    });
+
         }
 
         if (lpparam.packageName.startsWith("com.htc.")) {
@@ -583,6 +608,18 @@ public class X_Mod
         }
     }
 
+    public static final String CLASS_PACKAGEMANAGER = "android.app.ApplicationPackageManager";
+    public static final String PKG_HTC_FEATURE = "com.htc.software";
+    public static final String[] HTC_FEATURES = new String[] {
+            PKG_HTC_FEATURE + ".HTC",
+            PKG_HTC_FEATURE + ".Sense6.0",
+            PKG_HTC_FEATURE + ".M8UL",
+            PKG_HTC_FEATURE + ".M8WL",
+            PKG_HTC_FEATURE + ".IHSense",
+            PKG_HTC_FEATURE + ".hdk",
+            PKG_HTC_FEATURE + ".hdk2"
+    };
+
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable {
         if (!mSettings.getCachedPref_use_themes())
@@ -596,5 +633,20 @@ public class X_Mod
                 mSettings.getAccentColor());
         XResources.setSystemWideReplacement("android", "color", "material_deep_teal_200",
                 Common.enlightColor(mSettings.getAccentColor(), 1.5f));
+
+        XposedHelpers.findAndHookMethod(CLASS_PACKAGEMANAGER, null, "getSystemAvailableFeatures",
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        FeatureInfo[] sys = (FeatureInfo[]) param.getResult();
+                        FeatureInfo[] fs = new FeatureInfo[sys.length + HTC_FEATURES.length];
+                        System.arraycopy(sys, 0, fs, 0, sys.length);
+                        for (int i = sys.length; i < sys.length + HTC_FEATURES.length; i++) {
+                            fs[i] = new FeatureInfo();
+                            fs[i].name = HTC_FEATURES[i - sys.length];
+                        }
+                        param.setResult(fs);
+                    }
+                });
     }
 }
