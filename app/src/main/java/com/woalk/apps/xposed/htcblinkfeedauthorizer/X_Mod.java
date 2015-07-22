@@ -24,7 +24,6 @@ import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
@@ -92,7 +91,6 @@ public class X_Mod
     private final SettingsHelper mSettings;
 
     public X_Mod() {
-        XposedBridge.log("HTC Auth: Created preference instance.");
         mSettings = new SettingsHelper();
     }
 
@@ -465,7 +463,6 @@ public class X_Mod
                             protected void beforeHookedMethod(MethodHookParam param)
                                     throws Throwable {
                                 param.setResult(mSettings.getPref_has_ext());
-                                XposedBridge.log(String.valueOf(mSettings.getPref_has_ext()));
                             }
                         });
             } catch (Throwable e) {
@@ -562,7 +559,6 @@ public class X_Mod
             return;
 
         if (resparam.packageName.equals(PKG_SYSTEMUI)) {
-            XposedBridge.log("SystemUI resources replaced.");
             int colorAccent = mSettings.getAccentColor();
             resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_primary_color",
                     mSettings.getCachedPref_systemui_color2());
@@ -574,7 +570,6 @@ public class X_Mod
                     Color.argb(0x99, Color.red(colorAccent), Color.green(colorAccent),
                             Color.blue(colorAccent)));
         } else if (resparam.packageName.equals(PKG_SETTINGS)) {
-            XposedBridge.log("Settings resources replaced.");
             resparam.res.setReplacement(PKG_SETTINGS, "color", "theme_primary",
                     mSettings.getPrimaryColor());
             resparam.res.setReplacement(PKG_SETTINGS, "color", "theme_primary_dark",
