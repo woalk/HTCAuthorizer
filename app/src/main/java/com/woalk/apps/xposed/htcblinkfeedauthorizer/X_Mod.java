@@ -430,8 +430,8 @@ public class X_Mod
 
         }
 
-        if (lpparam.packageName.startsWith("com.htc.")) {
-
+        if (lpparam.packageName.equals(PKG_HTC_GALLERY)
+                || lpparam.packageName.equals(PKG_HTC_CAMERA)) {
             // Following: HTC-specific methods that resolve different storage types
             // try-catch for each necessary because not every HTC app uses all of them
 
