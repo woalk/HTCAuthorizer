@@ -8,6 +8,7 @@ public class SettingsHelper {
     protected static final String PREFERENCE_THEME = "sensify_theme";
 
     public static final int DEFAULT_THEME_COLOR = 0xff0e5e8c;
+    public static final int PLACEHOLDER_THEME_COLOR = 0xfe0189cd;
 
     private final XSharedPreferences mPref;
 
@@ -110,8 +111,8 @@ public class SettingsHelper {
 
     public int getCachedPref_systemui_color1() {
         int color = systemui_color1;
-        if (color == 0xfe0189cd) {
-            color = getThemeColor(1);
+        if (color == PLACEHOLDER_THEME_COLOR) {
+            color = getPrimaryColor();
         }
         return color;
     }
@@ -122,8 +123,8 @@ public class SettingsHelper {
 
     public int getCachedPref_systemui_color2() {
         int color = systemui_color2;
-        if (color == 0xfe0189cd) {
-            color = Common.enlightColor(getThemeColor(1), 0.6f);
+        if (color == PLACEHOLDER_THEME_COLOR) {
+            color = getPrimaryDarkColor();
         }
         return color;
     }

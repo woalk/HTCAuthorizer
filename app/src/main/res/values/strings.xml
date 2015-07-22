@@ -41,7 +41,8 @@
         panel header.\nSet the last color of the dialog to use your Theme\'s color.</string>
     <string name="pref_themes_systemui_color2_title">SystemUI secondary color</string>
     <string name="pref_themes_systemui_color2_summary">Color to use for Android\'s quick settings.
-        \nSet the last color of the dialog (the blue one) to use your Theme\'s color.</string>
+        \nSet the last color of the dialog to use your Theme\'s color (automatically takes care of
+        darkening it).</string>
     <string name="pref_cat_about">About</string>
     <string name="pref_about_version_title">Version</string>
     <string name="pref_about_dev_title">Authors</string>

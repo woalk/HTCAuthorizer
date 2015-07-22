@@ -10,6 +10,7 @@ import android.content.res.XResources;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.Preference;
@@ -25,6 +26,7 @@ import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
@@ -428,6 +430,32 @@ public class X_Mod
                         }
                     });
 
+        } else if (lpparam.packageName.equals(SettingsHelper.PACKAGE_NAME)) {
+
+            XposedHelpers.findAndHookMethod("com.woalk.apps.lib.colorpicker.ColorPickerSwatch",
+                    lpparam.classLoader, "setColor", int.class, new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            if ((int) param.args[0] == SettingsHelper.PLACEHOLDER_THEME_COLOR)
+                                param.args[0] = mSettings.getPrimaryColor();
+                        }
+                    });
+
+            XposedHelpers.findAndHookMethod("com.woalk.apps.lib.colorpicker.ColorPreference",
+                    lpparam.classLoader, "onCreateView", ViewGroup.class, new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            if (XposedHelpers.getIntField(param.thisObject, "mCurrentValue")
+                                    == SettingsHelper.PLACEHOLDER_THEME_COLOR) {
+                                int color = mSettings.getPrimaryColor();
+                                View mColorView = (View) XposedHelpers.getObjectField(
+                                        param.thisObject, "mColorView");
+                                ((ShapeDrawable) mColorView.getBackground()).getPaint()
+                                        .setColor(color);
+                            }
+                        }
+                    });
+
         }
 
         if (lpparam.packageName.equals(PKG_HTC_GALLERY)
@@ -605,6 +633,9 @@ public class X_Mod
                     mSettings.getPrimaryDarkColor());
             resparam.res.setReplacement(PKG_SETTINGS, "color", "switch_accent_color",
                     mSettings.getAccentColor());
+        } else if (resparam.packageName.equals(SettingsHelper.PACKAGE_NAME)) {
+            resparam.res.setReplacement(SettingsHelper.PACKAGE_NAME, "color", "theme9",
+                    mSettings.getPrimaryColor());
         }
     }
 
