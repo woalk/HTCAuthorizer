@@ -1,4 +1,4 @@
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<resources>
     <string name="app_name">Sensify Xposed</string>
     <string name="app_description">Integration for Sense apps into AOSP and other ROMs.</string>
 
@@ -6,11 +6,11 @@
     <string name="pref_reboot_info">Currently, all settings need a reboot to apply.</string>
     <string name="pref_cat_storage">Storage options</string>
     <string name="pref_storage_ext_check_title">Enable external storage</string>
-    <string name="pref_storage_ext_check_summary">Enable to say HTC apps that your device
+    <string name="pref_storage_ext_check_summary">Tell HTC apps that your device
         has an external storage.</string>
     <string name="pref_storage_ext_path_title">External storage path</string>
     <string name="pref_storage_usb_check_title">Enable USB storage</string>
-    <string name="pref_storage_usb_check_summary">Enable to say HTC apps that your device
+    <string name="pref_storage_usb_check_summary">Tell HTC apps that your device
         supports USB storage (USB-OTG).</string>
     <string name="pref_storage_usb_path_title">USB storage path</string>
     <string name="pref_cat_themes">HTC Themes</string>
@@ -22,10 +22,11 @@
         theme of HTC Themes to tint Material apps.</string>
     <string name="pref_themes_systemui_color1_title">SystemUI background color 1</string>
     <string name="pref_themes_systemui_color1_summary">Color to use for Android\'s notification
-        panel header.\nSet the last color of the dialog to use your Theme\'s color.</string>
+        panel header.\nSet the last color of the dialog (the blue one) to use your Theme\'s color.
+    </string>
     <string name="pref_themes_systemui_color2_title">SystemUI background color 2</string>
     <string name="pref_themes_systemui_color2_summary">Color to use for Android\'s quick settings.
-        \nSet the last color of the dialog to use your Theme\'s color.</string>
+        \nSet the last color of the dialog (the blue one) to use your Theme\'s color.</string>
     <string name="pref_cat_about">About</string>
     <string name="pref_about_version_title">Version</string>
     <string name="pref_about_dev_title">Authors</string>
