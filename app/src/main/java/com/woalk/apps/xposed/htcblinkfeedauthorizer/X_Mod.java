@@ -45,6 +45,7 @@ public class X_Mod
     public static final String CLASS_BF_LIB2 = "com.htc.lib2.Hms";
     public static final String CLASS_BF_UDACT = PKG_HTC_SOCIALNETWORK_UI + ".HMSUpdateActivity";
     public static final String CLASS_BF_PROFILEBRIEF = "com.htc.themepicker.model.ProfileBrief";
+    public static final String CLASS_BF_HTTPHELPER = "com.htc.themepicker.server.engine.http.HttpHelper";
     public static final String CLASS_BF_MIXINGTHEMECOLOR = "com.htc.themepicker.util" +
             ".MixingThemeColorUtil";
     public static final String CLASS_BF_THEME = "com.htc.themepicker.model.Theme";
@@ -196,6 +197,13 @@ public class X_Mod
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             param.setResult(true);
+                        }
+                    });
+
+            XposedHelpers.findAndHookMethod(CLASS_BF_HTTPHELPER, lpparam.classLoader, "checkInvalidToken", new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            param.setResult(false);
                         }
                     });
 
