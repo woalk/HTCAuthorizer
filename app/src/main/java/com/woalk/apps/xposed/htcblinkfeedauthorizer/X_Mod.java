@@ -88,10 +88,6 @@ public class X_Mod
     public static final String CLASS_IME_ASDK = PKG_HTC_IME + ".NonAndroidSDK$HtcAdded";
     public static final String CLASS_IME_AAB = "com.htc.a.a";
 
-    public static final String PKG_HTC_FILEMANAGER = "com.htc.filemanager";
-    public static final String CLASS_FILEMANAGER_A = "com.htc.lib3.a.a.a";
-    public static final String CLASS_FILEMANAGER_AA = "com.htc.a.a";
-    
     public static final String CLASS_HDK0UTIL = PKG_HTC_LIB0 + ".HDKLib0Util";
     public static final String CLASS_BASE_ACTIVITY = PKG_HTC_SOCIALNETWORK_UI + ".BaseActivity";
     public static final String CLASS_COMMON_MF_MAIN_ACTIVITY = PKG_HTC_SOCIALNETWORK_UI +
@@ -563,45 +559,6 @@ public class X_Mod
 
         }
 
-        if (lpparam.packageName.equals(PKG_HTC_FILEMANAGER)) {
-
-            try {
-                //Return Sense version for pre-storage check.
-                XposedHelpers.findAndHookMethod(CLASS_FILEMANAGER_AA, lpparam.classLoader,
-                        "b", new XC_MethodHook() {
-                            @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws
-                                    Throwable {
-                                param.setResult(7.0f);
-                            }
-                        });
-
-//    This method "j" is what HTC FIle Manager uses to look at the file parameters like Camera does.
-//    See the full comment for method source.
-//
-//                XposedHelpers.findAndHookMethod(CLASS_FILEMANAGER_A, lpparam.classLoader,
-//                        "j", new XC_MethodHook() {
-//                            @Override
-//                            protected void beforeHookedMethod(MethodHookParam param) throws
-//                                    Throwable {
-//                                XposedHelpers.setStaticField(param.thisObject, "b", true);
-//                                XposedHelpers.setBooleanField(param.thisObject, "c", true);
-//                                XposedHelpers.setBooleanField(param.thisObject, "d", true);
-//                                XposedHelpers.setBooleanField(param.thisObject, "e", true);
-//                                XposedHelpers.setBooleanField(param.thisObject, "f", true);
-//                                XposedHelpers.setBooleanField(param.thisObject, "g", true);
-//                                XposedHelpers.setBooleanField(param.thisObject, "h", true);
-//                                XposedHelpers.setBooleanField(param.thisObject, "i", true);
-//                                XposedHelpers.setBooleanField(param.thisObject, "j", true);
-//
-//                            }
-//                        });
-
-            } catch (Throwable e) {
-                e.printStackTrace();
-            }
-
-        }
         if (lpparam.packageName.equals(PKG_HTC_GALLERY)
                 || lpparam.packageName.equals(PKG_HTC_CAMERA)) {
             // Following: HTC-specific methods that resolve different storage types
