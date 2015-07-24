@@ -84,6 +84,9 @@ public class X_Mod
     public static final String CLASS_TWITTER_DEEPLINK_ACTIVITY = PKG_HTC_TWITTER2 +
             ".DeeplinkRedirectActivity";
 
+    public static final String PKG_HTC_IME = "com.htc.sense.ime";
+    public static final String CLASS_IME_ASDK = PKG_HTC_IME + ".NonAndroidSDK$HtcAdded";
+    public static final String CLASS_IME_AAB = "com.htc.a.a";
 
     public static final String CLASS_HDK0UTIL = PKG_HTC_LIB0 + ".HDKLib0Util";
     public static final String CLASS_BASE_ACTIVITY = PKG_HTC_SOCIALNETWORK_UI + ".BaseActivity";
@@ -391,6 +394,69 @@ public class X_Mod
                                 param.setResult(true);
                             }
                         });
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+
+        } else if (lpparam.packageName.equals(PKG_HTC_IME)) {
+
+            try {
+                XposedHelpers.findAndHookMethod(CLASS_IME_ASDK, lpparam.classLoader,
+                        "isHTCDevice", new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+                                param.setResult(true);
+                            }
+                        });
+
+                XposedHelpers.findAndHookMethod(CLASS_IME_ASDK, lpparam.classLoader,
+                        "isODMevice", Context.class, new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+                                param.setResult(true);
+                            }
+                        });
+
+
+                XposedHelpers.findAndHookMethod(CLASS_IME_AAB, lpparam.classLoader,
+                        "a", Context.class, new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+                                param.setResult(true);
+                            }
+                        });
+
+                XposedHelpers.findAndHookMethod(CLASS_IME_AAB, lpparam.classLoader,
+                        "b", new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+                                param.setResult(true);
+                            }
+                        });
+
+                XposedHelpers.findAndHookMethod(CLASS_IME_AAB, lpparam.classLoader,
+                        "b", Context.class, new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+                                param.setResult(true);
+                            }
+                        });
+
+                XposedHelpers.findAndHookMethod(CLASS_IME_AAB, lpparam.classLoader,
+                        "c", new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+                                param.setResult(7.0f);
+                            }
+                        });
+
+
             } catch (Throwable e) {
                 e.printStackTrace();
             }
