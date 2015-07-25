@@ -122,7 +122,11 @@ public class SettingsHelper {
     }
 
     public int getAccentColor() {
-        int c = getCachedPref_use_launcher_theme() ? Common.enlightColor(getThemeColor(1), 1.25f)
+        return getAccentColor(getCachedPref_use_launcher_theme());
+    }
+
+    public int getAccentColor(boolean launcher) {
+        int c = launcher ? Common.enlightColor(getThemeColor(1), 1.25f)
                 : getThemeColor(2);
         return c == 0 ? Common.enlightColor(DEFAULT_THEME_COLOR, 1.25f) : c;
     }
