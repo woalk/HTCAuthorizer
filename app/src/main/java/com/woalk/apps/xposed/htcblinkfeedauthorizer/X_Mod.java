@@ -701,6 +701,7 @@ public class X_Mod
 
     public static final String PKG_SYSTEMUI = "com.android.systemui";
     public static final String PKG_SETTINGS = "com.android.settings";
+    public static final String PKG_GOOGLEIME = "com.google.android.inputmethod.latin";
     public static final String CLASS_SETTINGS_DASHBOARD_SUMMARY = PKG_SETTINGS +
             ".dashboard.DashboardSummary";
     public static final String CLASS_SETTINGS_DASHBOARD_TILE = PKG_SETTINGS +
@@ -743,6 +744,30 @@ public class X_Mod
                     mSettings.getPrimaryDarkColor());
             resparam.res.setReplacement(PKG_SETTINGS, "color", "switch_accent_color",
                     mSettings.getAccentColor());
+        } else if (resparam.packageName.equals(PKG_GOOGLEIME)) {
+            resparam.res.setReplacement(PKG_GOOGLEIME, "color", "gesture_trail_color_lxx_light",
+                    mSettings.getAccentColor());
+            resparam.res.setReplacement(PKG_GOOGLEIME, "color", "sliding_key_input_preview_color_lxx_light",
+                    mSettings.getAccentColor());
+            resparam.res.setReplacement(PKG_GOOGLEIME, "color", "highlight_color_lxx_dark",
+                    mSettings.getAccentColor());
+            resparam.res.setReplacement(PKG_GOOGLEIME, "color", "gesture_trail_color_lxx_dark",
+                    mSettings.getAccentColor());
+            resparam.res.setReplacement(PKG_GOOGLEIME, "color", "sliding_key_input_preview_color_lxx_dark",
+                    mSettings.getAccentColor());
+            resparam.res.setReplacement(PKG_GOOGLEIME, "color", "key_background_pressed_lxx_dark",
+                    mSettings.getPrimaryColor());
+            resparam.res.setReplacement(PKG_GOOGLEIME, "color", "gesture_floating_preview_color_lxx_dark",
+                    mSettings.getPrimaryColor());
+            resparam.res.setReplacement(PKG_GOOGLEIME, "color", "emoji_tab_page_indicator_background_lxx_dark",
+                    mSettings.getPrimaryColor());
+            resparam.res.setReplacement(PKG_GOOGLEIME, "color", "suggest_word_background_selected_lxx_dark",
+                    mSettings.getPrimaryColor());
+            resparam.res.setReplacement(PKG_GOOGLEIME, "color", "key_background_lxx_dark",
+                    mSettings.getPrimaryDarkColor());
+
+
+
         } else if (resparam.packageName.equals(SettingsHelper.PACKAGE_NAME)) {
             resparam.res.setReplacement(SettingsHelper.PACKAGE_NAME, "color", "theme9",
                     mSettings.getPrimaryColor());
