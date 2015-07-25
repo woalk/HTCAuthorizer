@@ -886,7 +886,7 @@ public class X_Mod
 
             Logger.v("Replaced Theme resources for Settings app.");
         } else if (resparam.packageName.equals(SettingsHelper.PACKAGE_NAME)) {
-            Logger.v("Recplacing Theme resources for module.");
+            Logger.v("Replacing Theme resources for module.");
 
             resparam.res.setReplacement(SettingsHelper.PACKAGE_NAME, "color", "theme9",
                     mSettings.getPrimaryColor(mSettings.getPref_systemui_use_launcher_theme()));
