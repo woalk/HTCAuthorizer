@@ -154,4 +154,26 @@ public class SettingsHelper {
     protected int getPref_systemui_color2() {
         return mPref.getInt("systemui_color2", 0);
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + "//"
+                + "modPrefFile=" + mPref.getFile().toString() + "//" + "theme:" + theme_toString();
+    }
+
+    public String theme_toString() {
+        if (getCachedPref_use_themes()) {
+            return "use=false";
+        }
+        return "use=true;"
+                + "primary=" + getPrimaryColor(false) + ";"
+                + "primaryD=" + getPrimaryDarkColor(false) + ";"
+                + "accent=" + getAccentColor(false) + ";"
+                + "Lprimary=" + getPrimaryColor(true) + ";"
+                + "LprimaryD=" + getPrimaryDarkColor(true) + ";"
+                + "Laccent=" + getAccentColor(true) + ";"
+                + "useL=" + getCachedPref_use_launcher_theme() + ";"
+                + "systemUI1=" + getCachedPref_systemui_color1() + ";"
+                + "systemUI2=" + getCachedPref_systemui_color2();
+    }
 }
