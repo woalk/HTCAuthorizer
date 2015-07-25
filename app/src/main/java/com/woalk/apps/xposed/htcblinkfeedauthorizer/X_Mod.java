@@ -204,13 +204,17 @@ public class X_Mod
                             param.setResult(true);
                         }
                     });
+            try {
+                XposedHelpers.findAndHookMethod(CLASS_BF_HTTPHELPER, lpparam.classLoader, "checkInvalidToken", new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                                param.setResult(false);
+                            }
+                        });
 
-            XposedHelpers.findAndHookMethod(CLASS_BF_HTTPHELPER, lpparam.classLoader, "checkInvalidToken", new XC_MethodHook() {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult(false);
-                        }
-                    });
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
 
             // Theme permissions hook
             XposedHelpers.findAndHookMethod(CLASS_BF_MIXINGTHEMECOLOR, lpparam.classLoader,
