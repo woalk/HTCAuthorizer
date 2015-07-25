@@ -124,8 +124,8 @@ public class X_Mod
                      new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            Logger.logHook(param);
                             param.setResult(Boolean.TRUE);
+                            Logger.logHookAfter(param);
                         }
                     });
 
@@ -133,8 +133,8 @@ public class X_Mod
                     Context.class, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            Logger.logHook(param);
                             param.setResult(Boolean.TRUE);
+                            Logger.logHookAfter(param);
                         }
                     });
 
@@ -142,8 +142,8 @@ public class X_Mod
                     Context.class, boolean.class, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            Logger.logHook(param);
                             param.setResult(Boolean.TRUE);
+                            Logger.logHookAfter(param);
                         }
                     });
 
@@ -151,8 +151,8 @@ public class X_Mod
                     "isHtcDevice", new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            Logger.logHook(param);
                             param.setResult(true);
+                            Logger.logHookAfter(param);
                         }
                     });
 
@@ -160,8 +160,8 @@ public class X_Mod
                     new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            Logger.logHook(param);
                             param.setResult(true);
+                            Logger.logHookAfter(param);
                         }
                     });
 
@@ -169,8 +169,8 @@ public class X_Mod
                     new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            Logger.logHook(param);
                             param.setResult(true);
+                            Logger.logHookAfter(param);
                         }
                     });
 
@@ -178,8 +178,8 @@ public class X_Mod
                     "checkCompatibility", new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            Logger.logHook(param);
                             param.setResult(true);
+                            Logger.logHookAfter(param);
                         }
                     });
 
@@ -187,8 +187,8 @@ public class X_Mod
                     "checkCompatibility", new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            Logger.logHook(param);
                             param.setResult(true);
+                            Logger.logHookAfter(param);
                         }
                     });
 
@@ -196,8 +196,8 @@ public class X_Mod
                     Bundle.class, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            Logger.logHook(param);
                             ((Activity) param.thisObject).getIntent().setAction("ANY_ACTION");
+                            Logger.logHookAfter(param);
                         }
                     });
 
@@ -205,8 +205,8 @@ public class X_Mod
                     "isHtc", new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            Logger.logHook(param);
                             param.setResult(true);
+                            Logger.logHookAfter(param);
                         }
                     });
 
@@ -214,8 +214,8 @@ public class X_Mod
                     CLASS_BF_PROFILEBRIEF, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            Logger.logHook(param);
                             param.setResult(true);
+                            Logger.logHookAfter(param);
                         }
                     });
 
@@ -273,9 +273,9 @@ public class X_Mod
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
-                                Logger.logHook(param);
                                 XposedHelpers.setBooleanField(param.thisObject, "b", true);
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -284,10 +284,10 @@ public class X_Mod
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
-                                Logger.logHook(param);
                                 XposedHelpers.setBooleanField(param.thisObject, "e", true);
                                 ((Activity) param.thisObject).getIntent().setAction("ANY_ACTION");
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -307,9 +307,9 @@ public class X_Mod
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
-                                Logger.logHook(param);
                                 XposedHelpers.setBooleanField(param.thisObject, "a", true);
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -318,9 +318,9 @@ public class X_Mod
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
-                                Logger.logHook(param);
                                 XposedHelpers.setBooleanField(param.thisObject, "a", true);
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -339,8 +339,8 @@ public class X_Mod
                         new XC_MethodHook() {
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                                Logger.logHook(param);
                                 param.setResult(7.0f);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -349,8 +349,8 @@ public class X_Mod
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
-                                Logger.logHook(param);
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -359,9 +359,9 @@ public class X_Mod
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
-                                Logger.logHook(param);
                                 XposedHelpers.setBooleanField(param.thisObject, "b_", true);
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -380,8 +380,8 @@ public class X_Mod
                         new XC_MethodHook() {
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                                Logger.logHook(param);
                                 param.setResult(7.0f);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -390,8 +390,8 @@ public class X_Mod
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
-                                Logger.logHook(param);
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -400,8 +400,8 @@ public class X_Mod
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
-                                Logger.logHook(param);
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -421,9 +421,9 @@ public class X_Mod
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
-                                Logger.logHook(param);
                                 XposedHelpers.setBooleanField(param.thisObject, "a", true);
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -432,9 +432,9 @@ public class X_Mod
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
-                                Logger.logHook(param);
                                 XposedHelpers.setBooleanField(param.thisObject, "a", true);
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -454,8 +454,8 @@ public class X_Mod
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
-                                Logger.logHook(param);
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -464,8 +464,8 @@ public class X_Mod
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
-                                Logger.logHook(param);
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -475,8 +475,8 @@ public class X_Mod
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
-                                Logger.logHook(param);
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -485,8 +485,8 @@ public class X_Mod
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
-                                Logger.logHook(param);
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -495,8 +495,8 @@ public class X_Mod
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
-                                Logger.logHook(param);
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -505,8 +505,8 @@ public class X_Mod
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
-                                Logger.logHook(param);
                                 param.setResult(7.0f);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -540,13 +540,13 @@ public class X_Mod
                     ImageView.class, TextView.class, TextView.class, new XC_MethodHook() {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            Logger.logHook(param);
                             ImageView iV = (ImageView) param.args[3];
                             Drawable d = iV.getDrawable();
                             BitmapDrawable b = new BitmapDrawable((Resources) param.args[1],
                                     Common.drawableToBitmap(d));
                             b.setTint(mSettings.getAccentColor());
                             iV.setImageDrawable(b);
+                            Logger.logHookAfter(param);
                         }
                     });
 
@@ -555,7 +555,6 @@ public class X_Mod
                     new XC_MethodHook() {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            Logger.logHook(param);
                             ViewGroup v = (ViewGroup) param.getResult();
                             ImageView iV = Common.findFirstImageView(v);
                             if (iV == null) return;
@@ -564,6 +563,7 @@ public class X_Mod
                                     Common.drawableToBitmap(d));
                             b.setTint(mSettings.getAccentColor());
                             iV.setImageDrawable(b);
+                            Logger.logHookAfter(param);
                         }
                     });
 
@@ -571,9 +571,9 @@ public class X_Mod
                     "setChartColor", int.class, int.class, int.class, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            Logger.logHook(param);
                             param.args[1] = mSettings.getAccentColor();
                             param.args[2] = Common.enlightColor(mSettings.getAccentColor(), 1.5f);
+                            Logger.logHookAfter(param);
                         }
                     });
 
@@ -588,11 +588,12 @@ public class X_Mod
                     CLASS_FINSKY_LIBRARY, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            Logger.logHook(param);
                             Object doc = param.args[0];
                             String id = (String) XposedHelpers.callMethod(doc, "getDocId");
                             if (id.startsWith("com.htc.")) {
+                                Logger.logHook(param);
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         }
                     });
@@ -608,10 +609,10 @@ public class X_Mod
                     lpparam.classLoader, "setColor", int.class, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            Logger.logHook(param);
                             if ((int) param.args[0] == SettingsHelper.PLACEHOLDER_THEME_COLOR)
                                 param.args[0] = mSettings.getPrimaryColor(
                                         mSettings.getPref_systemui_use_launcher_theme());
+                            Logger.logHookAfter(param);
                         }
                     });
 
@@ -619,7 +620,6 @@ public class X_Mod
                     lpparam.classLoader, "onCreateView", ViewGroup.class, new XC_MethodHook() {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            Logger.logHook(param);
                             if (XposedHelpers.getIntField(param.thisObject, "mCurrentValue")
                                     == SettingsHelper.PLACEHOLDER_THEME_COLOR) {
                                 int color = mSettings.getPrimaryColor(
@@ -628,6 +628,7 @@ public class X_Mod
                                         param.thisObject, "mColorView");
                                 ((ShapeDrawable) mColorView.getBackground()).getPaint()
                                         .setColor(color);
+                                Logger.logHookAfter(param);
                             }
                         }
                     });
@@ -636,7 +637,6 @@ public class X_Mod
                     lpparam.classLoader, "onColorSelected", int.class, new XC_MethodHook() {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            Logger.logHook(param);
                             if ((int) param.args[0] == SettingsHelper.PLACEHOLDER_THEME_COLOR) {
                                 int color = mSettings.getPrimaryColor(
                                         mSettings.getPref_systemui_use_launcher_theme());
@@ -644,6 +644,7 @@ public class X_Mod
                                         param.thisObject, "mColorView");
                                 ((ShapeDrawable) mColorView.getBackground()).getPaint()
                                         .setColor(color);
+                                Logger.logHookAfter(param);
                             }
                         }
                     });
@@ -672,6 +673,7 @@ public class X_Mod
                                 // Android recognizes INTERNAL sdcard as primary external storage.
                                 // If no internal sdcard, primary storage would be real sdcard.
                                 param.setResult(!Environment.isExternalStorageRemovable());
+                                Logger.logHookAfter(param);
                             }
                         });
                 hooks++;
@@ -689,6 +691,7 @@ public class X_Mod
                                 param.setResult(!Environment.isExternalStorageRemovable() ?
                                         Environment.getExternalStorageDirectory()
                                         : null);
+                                Logger.logHookAfter(param);
                             }
                         });
                 hooks++;
@@ -706,6 +709,7 @@ public class X_Mod
                                 param.setResult(Environment.isExternalStorageRemovable() ?
                                         Environment.getExternalStorageState()
                                         : Environment.MEDIA_UNKNOWN);
+                                Logger.logHookAfter(param);
                             }
                         });
                 hooks++;
@@ -723,6 +727,7 @@ public class X_Mod
                                     throws Throwable {
                                 Logger.logHook(param);
                                 param.setResult(mSettings.getPref_has_ext());
+                                Logger.logHookAfter(param);
                             }
                         });
                 hooks++;
@@ -739,6 +744,7 @@ public class X_Mod
                                 Logger.logHook(param);
                                 param.setResult(mSettings.getPref_has_ext() ?
                                         new File(mSettings.getPref_ext_path()) : null);
+                                Logger.logHookAfter(param);
                             }
                         });
                 hooks++;
@@ -757,6 +763,7 @@ public class X_Mod
                                         Environment.getExternalStorageState(
                                                 new File(mSettings.getPref_ext_path()))
                                         : Environment.MEDIA_UNKNOWN);
+                                Logger.logHookAfter(param);
                             }
                         });
                 hooks++;
@@ -774,6 +781,7 @@ public class X_Mod
                                     throws Throwable {
                                 Logger.logHook(param);
                                 param.setResult(mSettings.getPref_has_usb());
+                                Logger.logHookAfter(param);
                             }
                         });
                 hooks++;
@@ -790,6 +798,7 @@ public class X_Mod
                                 Logger.logHook(param);
                                 param.setResult(mSettings.getPref_has_usb() ?
                                         new File(mSettings.getPref_usb_path()) : null);
+                                Logger.logHookAfter(param);
                             }
                         });
                 hooks++;
@@ -808,6 +817,7 @@ public class X_Mod
                                         Environment.getExternalStorageState(
                                                 new File(mSettings.getPref_usb_path()))
                                         : Environment.MEDIA_UNKNOWN);
+                                Logger.logHookAfter(param);
                             }
                         });
                 hooks++;
@@ -944,6 +954,7 @@ public class X_Mod
                             fs[i].name = HTC_FEATURES[i - sys.length];
                         }
                         param.setResult(fs);
+                        Logger.logHookAfter(param);
                     }
                 });
 

@@ -78,6 +78,11 @@ public class Logger {
                 param.getResult(), getArrayString(param.args));
     }
 
+    public static void logHookAfter(XC_MethodHook.MethodHookParam param) {
+        v("Method hook %s ended, post-result=%s;args=%s", param.method.getName(),
+                param.getResult(), getArrayString(param.args));
+    }
+
     public static String getArrayString(Object[] array) {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
