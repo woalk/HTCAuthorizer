@@ -162,18 +162,18 @@ public class SettingsHelper {
     }
 
     public String theme_toString() {
-        if (getCachedPref_use_themes()) {
+        if (!getCachedPref_use_themes()) {
             return "use=false";
         }
         return "use=true;"
-                + "primary=" + getPrimaryColor(false) + ";"
-                + "primaryD=" + getPrimaryDarkColor(false) + ";"
-                + "accent=" + getAccentColor(false) + ";"
-                + "Lprimary=" + getPrimaryColor(true) + ";"
-                + "LprimaryD=" + getPrimaryDarkColor(true) + ";"
-                + "Laccent=" + getAccentColor(true) + ";"
+                + "primary=" + Logger.getLogColorString(getPrimaryColor(false)) + ";"
+                + "primaryD=" + Logger.getLogColorString(getPrimaryDarkColor(false)) + ";"
+                + "accent=" + Logger.getLogColorString(getAccentColor(false)) + ";"
+                + "Lprimary=" + Logger.getLogColorString(getPrimaryColor(true)) + ";"
+                + "LprimaryD=" + Logger.getLogColorString(getPrimaryDarkColor(true)) + ";"
+                + "Laccent=" + Logger.getLogColorString(getAccentColor(true)) + ";"
                 + "useL=" + getCachedPref_use_launcher_theme() + ";"
-                + "systemUI1=" + getCachedPref_systemui_color1() + ";"
-                + "systemUI2=" + getCachedPref_systemui_color2();
+                + "systemUI1=" + Logger.getLogColorString(getCachedPref_systemui_color1()) + ";"
+                + "systemUI2=" + Logger.getLogColorString(getCachedPref_systemui_color2());
     }
 }

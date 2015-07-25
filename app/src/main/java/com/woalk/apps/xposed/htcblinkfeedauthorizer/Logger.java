@@ -62,4 +62,8 @@ public class Logger {
     public static void logTheme(SettingsHelper settings) {
         v("Theme is: %s", settings.theme_toString());
     }
+
+    public static String getLogColorString(int color) {
+        return String.valueOf(color) + ":#" + Integer.toHexString(color).toUpperCase();
+    }
 }
