@@ -1,6 +1,6 @@
 #Sensify
 ###Formerly *HTC Authorizer*
-##Xposed Module
+##Xposed Module [![Build Status](https://travis-ci.org/woalk/HTCAuthorizer.svg?branch=master)](https://travis-ci.org/woalk/HTCAuthorizer)
 This [Xposed Module](http://repo.xposed.info/) removes the message
 
 !["Unauthorized device - This app is not compatible with your phone."](http://ext.woalk.de/img/github/htcblinkfeedunauth.png)
