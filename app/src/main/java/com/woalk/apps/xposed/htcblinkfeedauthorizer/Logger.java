@@ -2,6 +2,8 @@ package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
 import android.util.Log;
 
+import de.robv.android.xposed.XC_MethodHook;
+
 /**
  * Class for general logging and other debug methods.
  */
@@ -59,8 +61,32 @@ public class Logger {
         }
     }
 
+    public static void logStart() {
+        v("------------------------------");
+        v("Sensify startup. X_Mod loaded.");
+        v("Version %s", Common.versionName);
+        v("by Woalk & Digitalhigh");
+        v("------------------------------");
+    }
+
     public static void logTheme(SettingsHelper settings) {
         v("Theme is: %s", settings.theme_toString());
+    }
+
+    public static void logHook(XC_MethodHook.MethodHookParam param) {
+        v("Method hook %s executed, pre-result=%s;args=%s", param.method.getName(),
+                param.getResult(), getArrayString(param.args));
+    }
+
+    public static String getArrayString(Object[] array) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        for (Object o : array) {
+            sb.append(o)
+                .append(",");
+        }
+        sb.append("}");
+        return sb.toString();
     }
 
     public static String getLogColorString(int color) {

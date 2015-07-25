@@ -13,6 +13,8 @@ public class Common {
     private Common() {
     }
 
+    public static final String versionName = "2.0";
+
     /**
      * Convert a {@link Drawable} into an {@link Bitmap} object.
      * <p>
