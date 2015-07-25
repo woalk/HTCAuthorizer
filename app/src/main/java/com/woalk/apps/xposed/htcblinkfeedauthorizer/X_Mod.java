@@ -612,7 +612,6 @@ public class X_Mod
                             if ((int) param.args[0] == SettingsHelper.PLACEHOLDER_THEME_COLOR)
                                 param.args[0] = mSettings.getPrimaryColor(
                                         mSettings.getPref_systemui_use_launcher_theme());
-                            Logger.logHookAfter(param);
                         }
                     });
 
@@ -628,7 +627,6 @@ public class X_Mod
                                         param.thisObject, "mColorView");
                                 ((ShapeDrawable) mColorView.getBackground()).getPaint()
                                         .setColor(color);
-                                Logger.logHookAfter(param);
                             }
                         }
                     });
@@ -644,7 +642,6 @@ public class X_Mod
                                         param.thisObject, "mColorView");
                                 ((ShapeDrawable) mColorView.getBackground()).getPaint()
                                         .setColor(color);
-                                Logger.logHookAfter(param);
                             }
                         }
                     });
