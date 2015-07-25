@@ -530,7 +530,8 @@ public class X_Mod
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             if ((int) param.args[0] == SettingsHelper.PLACEHOLDER_THEME_COLOR)
-                                param.args[0] = mSettings.getPrimaryColor();
+                                param.args[0] = mSettings.getPrimaryColor(
+                                        mSettings.getPref_systemui_use_launcher_theme());
                         }
                     });
 
@@ -540,7 +541,23 @@ public class X_Mod
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                             if (XposedHelpers.getIntField(param.thisObject, "mCurrentValue")
                                     == SettingsHelper.PLACEHOLDER_THEME_COLOR) {
-                                int color = mSettings.getPrimaryColor();
+                                int color = mSettings.getPrimaryColor(
+                                        mSettings.getCachedPref_systemui_use_launcher_theme());
+                                View mColorView = (View) XposedHelpers.getObjectField(
+                                        param.thisObject, "mColorView");
+                                ((ShapeDrawable) mColorView.getBackground()).getPaint()
+                                        .setColor(color);
+                            }
+                        }
+                    });
+
+            XposedHelpers.findAndHookMethod("com.woalk.apps.lib.colorpicker.ColorPreference",
+                    lpparam.classLoader, "onColorSelected", int.class, new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            if ((int) param.args[0] == SettingsHelper.PLACEHOLDER_THEME_COLOR) {
+                                int color = mSettings.getPrimaryColor(
+                                        mSettings.getPref_systemui_use_launcher_theme());
                                 View mColorView = (View) XposedHelpers.getObjectField(
                                         param.thisObject, "mColorView");
                                 ((ShapeDrawable) mColorView.getBackground()).getPaint()
@@ -591,7 +608,7 @@ public class X_Mod
                         "getPhoneStorageState", new XC_MethodHook() {
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param)
-                                    throws Throwable {
+                            throws Throwable {
                                 param.setResult(Environment.isExternalStorageRemovable() ?
                                         Environment.getExternalStorageState()
                                         : Environment.MEDIA_UNKNOWN);
@@ -702,7 +719,7 @@ public class X_Mod
 
     @Override
     public void handleInitPackageResources(XC_InitPackageResources.InitPackageResourcesParam
-                                                   resparam) throws Throwable {
+                                                       resparam) throws Throwable {
         if (!mSettings.getCachedPref_use_themes())
             return;
 
@@ -733,7 +750,7 @@ public class X_Mod
                     mSettings.getAccentColor());
         } else if (resparam.packageName.equals(SettingsHelper.PACKAGE_NAME)) {
             resparam.res.setReplacement(SettingsHelper.PACKAGE_NAME, "color", "theme9",
-                    mSettings.getPrimaryColor());
+                    mSettings.getPrimaryColor(mSettings.getPref_systemui_use_launcher_theme()));
         }
     }
 
