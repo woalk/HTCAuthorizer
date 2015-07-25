@@ -675,12 +675,13 @@ public class X_Mod
     public static final String PKG_HTC_FEATURE = "com.htc.software";
     public static final String[] HTC_FEATURES = new String[] {
             PKG_HTC_FEATURE + ".HTC",
-            PKG_HTC_FEATURE + ".Sense6.0",
+            PKG_HTC_FEATURE + ".Sense7.0",
             PKG_HTC_FEATURE + ".M8UL",
             PKG_HTC_FEATURE + ".M8WL",
             PKG_HTC_FEATURE + ".IHSense",
             PKG_HTC_FEATURE + ".hdk",
-            PKG_HTC_FEATURE + ".hdk2"
+            PKG_HTC_FEATURE + ".hdk2",
+            PKG_HTC_FEATURE + ".hdk3"
     };
 
     @Override
