@@ -57,6 +57,8 @@ public class X_Mod
 
     public static final String PKG_HTC_FB = "com.htc.sense.socialnetwork.facebook";
     public static final String CLASS_FB_BASE_ACTIVITY = PKG_HTC_FB + ".FacebookBaseActivity";
+    public static final String CLASS_FB_BASE_ACTIVITY2 = "com.htc.socialnetwork.facebook.FacebookBaseActivity";
+    public static final String CLASS_FB_UPDATE = "com.htc.socialnetwork.facebook.HMSUpdateActivity";
 
     public static final String PKG_HTC_GPLUS_APP = "com.htc.sense.socialnetwork.googleplus";
     public static final String PKG_HTC_GPLUS = "com.htc.socialnetwork.googleplus";
@@ -242,14 +244,28 @@ public class X_Mod
         } else if (lpparam.packageName.equals(PKG_HTC_FB)) {
 
             try {
-                XposedHelpers.findAndHookMethod(CLASS_FB_BASE_ACTIVITY, lpparam.classLoader,
+                
+                XposedHelpers.findAndHookMethod(CLASS_FB_BASE_ACTIVITY2, lpparam.classLoader,
                         "e", new XC_MethodHook() {
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
+                                XposedHelpers.setBooleanField(param.thisObject, "b", true);
                                 param.setResult(true);
                             }
                         });
+
+                XposedHelpers.findAndHookMethod(CLASS_FB_UPDATE, lpparam.classLoader,
+                        "onCreate", new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+                                XposedHelpers.setBooleanField(param.thisObject, "e", true);
+                                ((Activity) param.thisObject).getIntent().setAction("ANY_ACTION");
+                                param.setResult(true);
+                            }
+                        });
+
             } catch (Throwable e) {
                 e.printStackTrace();
             }
