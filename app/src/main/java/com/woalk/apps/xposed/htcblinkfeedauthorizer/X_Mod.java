@@ -111,6 +111,7 @@ public class X_Mod
 
     private final SettingsHelper mSettings;
 
+
     public X_Mod() {
         mSettings = new SettingsHelper();
     }
@@ -249,8 +250,8 @@ public class X_Mod
                     });
 
             try {
-                
-                if (mSettings.getPref_force_rotate()) {
+
+                if (new SettingsHelper().getPref_force_rotate()) {
                     XposedBridge.log("Trying rotation");
                     XposedHelpers.findAndHookMethod(Activity.class, "setRequestedOrientation", int.class, new XC_MethodHook() {
                         @Override

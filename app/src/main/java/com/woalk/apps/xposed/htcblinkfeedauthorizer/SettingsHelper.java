@@ -25,6 +25,7 @@ public class SettingsHelper {
 
     public SettingsHelper() {
         mPref = new XSharedPreferences(PACKAGE_NAME, PREFERENCE_FILE);
+
         loadCachePrefs();
         if (getCachedPref_use_themes()) {
             loadTheme();
