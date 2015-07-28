@@ -13,6 +13,7 @@ public class SettingsHelper {
     private final XSharedPreferences mPref;
 
     private boolean cachedPref_use_themes;
+    private boolean cachedPref_force_rotate;
     private int theme_color1;
     private int theme_color2;
     private int theme_color3;
@@ -32,6 +33,7 @@ public class SettingsHelper {
 
     public void loadCachePrefs() {
         cachedPref_use_themes = getPref_use_themes();
+        cachedPref_force_rotate = getPref_force_rotate();
     }
 
     public void loadTheme() {
@@ -49,9 +51,7 @@ public class SettingsHelper {
         systemui_use_launcher_theme = getPref_systemui_use_launcher_theme();
     }
 
-    public boolean getPref_has_ext() {
-        return mPref.getBoolean("has_ext", false);
-    }
+    public boolean getPref_has_ext() { return mPref.getBoolean("has_ext", false); }
 
     public String getPref_ext_path() {
         return mPref.getString("ext_path", "/storage/ext_sd");
@@ -65,13 +65,11 @@ public class SettingsHelper {
         return mPref.getString("usb_path", "/storage/usb");
     }
 
-    public boolean getCachedPref_use_themes() {
-        return cachedPref_use_themes;
-    }
+    public boolean getCachedPref_use_themes() { return cachedPref_use_themes; }
 
-    protected boolean getPref_use_themes() {
-        return mPref.getBoolean("use_themes", false);
-    }
+    protected boolean getPref_use_themes() { return mPref.getBoolean("use_themes", false); }
+
+    public boolean getPref_force_rotate() { return mPref.getBoolean("force_rotate", false); }
 
     protected int getThemeColor(int index) {
         switch (index) {
@@ -95,6 +93,8 @@ public class SettingsHelper {
     protected boolean getPref_use_launcher_theme() {
         return mPref.getBoolean("use_launcher_theme", false);
     }
+
+
 
     public boolean getCachedPref_systemui_use_launcher_theme() {
         return systemui_use_launcher_theme;

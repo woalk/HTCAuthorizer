@@ -10,6 +10,8 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
 public class MainPreferenceFragment extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
     public static final String EXTRA_SUBSCREEN_ID = "subscreen_id";
@@ -62,9 +64,50 @@ public class MainPreferenceFragment extends PreferenceFragment
         Preference pref = findPreference(key);
         if (pref instanceof EditTextPreference) {
             pref.setSummary(((EditTextPreference) pref).getText());
+        } else if (key.contains("force_rotate")) {
+            killPackage("com.htc.launcher");
         }
     }
+    private void killPackage(String packageToKill) {
 
+        Process su = null;
+
+        // get superuser
+        try {
+
+            su = Runtime.getRuntime().exec("su");
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+
+        }
+
+        // kill given package
+        if (su != null ){
+
+            try {
+
+                DataOutputStream os = new DataOutputStream(su.getOutputStream());
+                os.writeBytes("pkill " + packageToKill + "\n");
+                os.flush();
+                os.writeBytes("exit\n");
+                os.flush();
+                su.waitFor();
+
+            } catch (IOException e) {
+
+                e.printStackTrace();
+
+            } catch (InterruptedException e) {
+
+                e.printStackTrace();
+
+            }
+        }
+
+
+    }
     /**
      * Set a preference's summary text to the value it holds.
      * <br/><br/>

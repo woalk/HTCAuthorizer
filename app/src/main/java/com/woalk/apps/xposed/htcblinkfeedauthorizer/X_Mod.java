@@ -21,12 +21,17 @@ import android.widget.TextView;
 
 import java.io.File;
 import java.util.Map;
+import java.lang.*;
+
+
+import static de.robv.android.xposed.XposedHelpers.getAdditionalInstanceField;
 
 import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
@@ -243,6 +248,23 @@ public class X_Mod
                         }
                     });
 
+            try {
+                
+                if (mSettings.getPref_force_rotate()) {
+                    XposedBridge.log("Trying rotation");
+                    XposedHelpers.findAndHookMethod(Activity.class, "setRequestedOrientation", int.class, new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            int i=2; //2 being ORIENTATION_USER, 4 ORIENTATION_SENSOR
+                            param.args[0] = i;
+                        }
+                    });
+                } else {
+                    XposedBridge.log("Rotation seems to be disabled");
+                }
+            } catch (Throwable e) {
+                XposedBridge.log(e);
+            }
 
         } else if (lpparam.packageName.equals(PKG_HTC_FB)) {
 

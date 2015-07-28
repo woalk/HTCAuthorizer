@@ -10,6 +10,9 @@
     <!-- Preferences -->
     <string name="pref_reboot_info">Currently, all settings need a reboot to apply.</string>
     <string name="pref_cat_general">General</string>
+    <string name="pref_cat_rotate">Rotation</string>
+    <string name="pref_rotate_title">Rotation</string>
+    <string name="pref_rotate_summary">Enable sensor rotation on home</string>
     <string name="pref_general_always_active_title">Show always active mods</string>
     <string name="pref_general_always_active_window">Always active mods</string>
     <string name="pref_always_active_authorize_title">Authorize HTC apps</string>
