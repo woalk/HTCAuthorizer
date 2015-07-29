@@ -419,25 +419,6 @@ public class X_Mod
         } else if (lpparam.packageName.equals(PKG_HTC_CAMERA)) {
             XposedBridge.log("Trying to hook camera.");
             try {
-                XposedHelpers.findAndHookMethod(CLASS_CAMERA_ZOECAPTUREMODE, lpparam.classLoader, "checkZoeSupportState",
-                        new XC_MethodHook() {
-                            @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws
-                                    Throwable {
-                                     param.setResult(true);
-                            }
-                        });
-                XposedBridge.log("Trying second method.");
-                XposedHelpers.findAndHookMethod(CLASS_CAMERA_CAMERACONTROLLER, lpparam.classLoader, "isZoeSupported",
-                        new XC_MethodHook() {
-                            @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws
-                                    Throwable {
-                                     param.setResult(true);
-
-
-                            }
-                        });
                 XposedHelpers.findAndHookMethod(CLASS_CAMERA_FEATUREFILE, lpparam.classLoader, "setStringValue", String.class, String.class,
                         new XC_MethodHook() {
                             @Override
@@ -452,6 +433,27 @@ public class X_Mod
                             }
                         });
 
+                XposedHelpers.findAndHookMethod(CLASS_CAMERA_ZOECAPTUREMODE, lpparam.classLoader, "checkZoeSupportState",
+                        new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+                                XposedBridge.log("Setting Zoe Support State to true.");
+                                param.setResult(true);
+                            }
+                        });
+
+                XposedHelpers.findAndHookMethod(CLASS_CAMERA_CAMERACONTROLLER, lpparam.classLoader, "isZoeSupported",
+                        new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+                                XposedBridge.log("Setting isZoeSupported to true.");
+                                param.setResult(true);
+
+
+                            }
+                        });
 
 
             } catch (Throwable e) {
