@@ -6,6 +6,18 @@
     <string name="warn_no_hsp_content">You don\'t have HTC Service Pack installed.
         \nMost HTC apps need HTC Service Pack to work correctly.
         \nDo you want to download it now?</string>
+    <string name="warn_logs_title">About these logs</string>
+    <string name="warn_logs_content">The logs you can export with this app are helpful, but
+        not the most helpful way to give information about problems to us developers.
+        \nAndroid does not keep the full log, always just the last parts. This is a
+        decision for environment, because you cannot always write the full log to storage,
+        it destroys flash storage and battery life.
+        \nSo, if you want to post this log, beware to save it as immediately as possible
+        after the problem you face occurred. Maybe reboot, wait a bit until your system is
+        fully up, reproduce the problem and then save the log.
+        \nIf you want to help us the most, attach your device to a PC, reboot your device,
+        and start Logcat into a file. Google will help you doing that if you don\'t know how.
+    </string>
 
     <!-- Preferences -->
     <string name="pref_reboot_info">Currently, all settings need a reboot to apply.</string>
@@ -21,6 +33,15 @@
     <string name="pref_always_active_vending_summary">Allows to search and download HTC apps in
         Google Play Store, removes the \"not compatible\" message on the install page.</string>
     <string name="pref_cat_storage">Storage options</string>
+    <string name="pref_cat_debug">Debugging</string>
+    <string name="pref_debug_show_log_title">Show log</string>
+    <string name="pref_debug_show_log_summary">Show the system logcat of Sensify. Requires
+        root permission to read system-wide.</string>
+    <string name="pref_debug_export_log_title">Save system log</string>
+    <string name="pref_debug_export_log_summary">Save the system logcat to storage to include it
+        in a bug report. Requires root permission to read system-wide.</string>
+    <string name="pref_debug_export_log_toast">Saved system log to file \'%s\'.</string>
+    <string name="pref_debug_export_log_error">Error while saving log!</string>
     <string name="pref_storage_ext_check_title">Enable external storage</string>
     <string name="pref_storage_ext_check_summary">Tell HTC apps that your device
         has an external storage.</string>
@@ -52,5 +73,6 @@
     <string name="pref_about_dev_summary">&#169; 2015 Woalk, DigitalHigh
         \nLicensed under GNU GPL v2.
         \nSee at github.com/woalk/HTCAuthorizer</string>
+    <string name="title_activity_log">Logs</string>
 
 </resources>

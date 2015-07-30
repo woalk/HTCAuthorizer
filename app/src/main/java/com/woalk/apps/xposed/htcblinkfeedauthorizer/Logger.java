@@ -1,6 +1,22 @@
 package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
+import android.content.Context;
+import android.os.AsyncTask;
+import android.os.Environment;
+import android.text.Html;
 import android.util.Log;
+import android.webkit.WebView;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 import de.robv.android.xposed.XC_MethodHook;
 
@@ -98,5 +114,90 @@ public class Logger {
 
     public static String getLogColorString(int color) {
         return String.valueOf(color) + ":#" + Integer.toHexString(color).toUpperCase();
+    }
+
+    // v---- READING ----v \\
+
+    public static void readLogcat(final WebView tv) {
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... params) {
+                try {
+                    Process process = Runtime.getRuntime().exec(new String[]{"su",  "-c",
+                            "logcat -d -s Sensify:*"});
+                    BufferedReader bufferedReader = new BufferedReader(
+                            new InputStreamReader(process.getInputStream()));
+
+                    Thread.sleep(5);
+
+                    StringBuilder log = new StringBuilder();
+                    String line;
+                    while ((line = bufferedReader.readLine()) != null) {
+                        int bracket = line.indexOf(")") + 1;
+                        String color = "grey";
+                        boolean allLineColor = false;
+                        if (line.startsWith("W/")) {
+                            color = "orange";
+                            allLineColor = true;
+                        } else if (line.startsWith("E/")) {
+                            color = "red";
+                            allLineColor = true;
+                        }
+                        log.append("<font color=\"")
+                                .append(color)
+                                .append("\">")
+                                .append(line.substring(0, bracket))
+                                .append(allLineColor ? "<strong>" : "</font>")
+                                .append(line.substring(bracket))
+                                .append(allLineColor ? "</strong></font>" : "")
+                                .append("<br/>");
+                    }
+                    return log.toString();
+                } catch (Throwable e) {
+                    e("Could not read log file in module.", e);
+                    return "Could not read log file.\n" + e.toString();
+                }
+            }
+
+            @Override
+            protected void onPostExecute(String html) {
+                final String mimeType = "text/html";
+                final String encoding = "UTF-8";
+                tv.loadDataWithBaseURL("", html, mimeType, encoding, "");
+            }
+        }.execute();
+    }
+
+    public static String saveLogcat(final Context context) {
+        String date = new SimpleDateFormat("yyyy-MM-dd-hh-mm", Locale.getDefault())
+                .format(Calendar.getInstance().getTime());
+        final File file = new File(context.getExternalFilesDir(null), "logcat-" + date + ".txt");
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    if (Common.isExternalStorageWritable()) {
+                        Process process = Runtime.getRuntime().exec(new String[]{"su", "-c",
+                                "logcat -d -v time"});
+                        BufferedReader bufferedReader = new BufferedReader(
+                                new InputStreamReader(process.getInputStream()));
+                        OutputStream os = new FileOutputStream(file);
+
+                        Thread.sleep(5);
+
+                        String line;
+                        while ((line = bufferedReader.readLine()) != null) {
+                            os.write((line + "\n").getBytes(StandardCharsets.UTF_8));
+                        }
+                        os.close();
+                    }
+                    return null;
+                } catch (Throwable e) {
+                    e("Could not save log in module.", e);
+                    return null;
+                }
+            }
+        }.execute();
+        return file.getAbsolutePath();
     }
 }
