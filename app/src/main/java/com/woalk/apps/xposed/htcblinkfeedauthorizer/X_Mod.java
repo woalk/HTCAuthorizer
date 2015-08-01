@@ -21,7 +21,6 @@ import android.widget.TextView;
 
 import java.io.File;
 import java.util.Map;
-import java.lang.*;
 
 import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
@@ -60,7 +59,8 @@ public class X_Mod
 
     public static final String PKG_HTC_FB = "com.htc.sense.socialnetwork.facebook";
     public static final String CLASS_FB_BASE_ACTIVITY = PKG_HTC_FB + ".FacebookBaseActivity";
-    public static final String CLASS_FB_BASE_ACTIVITY2 = "com.htc.socialnetwork.facebook.FacebookBaseActivity";
+    public static final String CLASS_FB_BASE_ACTIVITY2 = "com.htc.socialnetwork.facebook" +
+            ".FacebookBaseActivity";
     public static final String CLASS_FB_UPDATE = "com.htc.socialnetwork.facebook.HMSUpdateActivity";
 
     public static final String PKG_HTC_GPLUS_APP = "com.htc.sense.socialnetwork.googleplus";
@@ -125,7 +125,7 @@ public class X_Mod
             Logger.v("Load hooks for Sense Home...");
 
             XposedHelpers.findAndHookMethod(CLASS_BF_HELPER, lpparam.classLoader, "isHSPCompatible",
-                     new XC_MethodHook() {
+                    new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             param.setResult(Boolean.TRUE);
@@ -268,13 +268,15 @@ public class X_Mod
 
                 if (new SettingsHelper().getPref_force_rotate()) {
                     Logger.v("Loading hook for BlinkFeed rotation.");
-                    XposedHelpers.findAndHookMethod(Activity.class, "setRequestedOrientation", int.class, new XC_MethodHook() {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            // ORIENTATION_USER = 2, ORIENTATION_SENSOR = 4
-                            param.args[0] = 4;
-                        }
-                    });
+                    XposedHelpers.findAndHookMethod(Activity.class, "setRequestedOrientation",
+                            int.class, new XC_MethodHook() {
+                                @Override
+                                protected void beforeHookedMethod(MethodHookParam param) throws
+                                        Throwable {
+                                    // ORIENTATION_USER = 2, ORIENTATION_SENSOR = 4
+                                    param.args[0] = 4;
+                                }
+                            });
                 } else {
                     Logger.v("Rotation seems to be disabled");
                 }
@@ -289,7 +291,7 @@ public class X_Mod
             Logger.v("Load hooks for Facebook...");
 
             try {
-                
+
                 XposedHelpers.findAndHookMethod(CLASS_FB_BASE_ACTIVITY2, lpparam.classLoader,
                         "e", new XC_MethodHook() {
                             @Override
@@ -360,7 +362,8 @@ public class X_Mod
                 XposedHelpers.findAndHookMethod(CLASS_INSTAGRAM_LIB2_A, lpparam.classLoader, "a",
                         new XC_MethodHook() {
                             @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
                                 param.setResult(7.0f);
                                 Logger.logHookAfter(param);
                             }
@@ -369,8 +372,8 @@ public class X_Mod
                 XposedHelpers.findAndHookMethod(CLASS_INSTAGRAM_LIB2_A, lpparam.classLoader, "b",
                         new XC_MethodHook() {
                             @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws
-                                    Throwable {
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
                                 param.setResult(true);
                                 Logger.logHookAfter(param);
                             }
@@ -401,7 +404,8 @@ public class X_Mod
                 XposedHelpers.findAndHookMethod(CLASS_LINKEDIN_LIB2_A, lpparam.classLoader, "a",
                         new XC_MethodHook() {
                             @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
                                 param.setResult(7.0f);
                                 Logger.logHookAfter(param);
                             }
@@ -410,8 +414,8 @@ public class X_Mod
                 XposedHelpers.findAndHookMethod(CLASS_LINKEDIN_LIB2_A, lpparam.classLoader, "b",
                         new XC_MethodHook() {
                             @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws
-                                    Throwable {
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
                                 param.setResult(true);
                                 Logger.logHookAfter(param);
                             }
@@ -441,8 +445,8 @@ public class X_Mod
                 XposedHelpers.findAndHookMethod(CLASS_TWITTER_ACTIVITY, lpparam.classLoader, "d",
                         new XC_MethodHook() {
                             @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws
-                                    Throwable {
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
                                 XposedHelpers.setBooleanField(param.thisObject, "a", true);
                                 param.setResult(true);
                                 Logger.logHookAfter(param);
@@ -452,8 +456,8 @@ public class X_Mod
                 XposedHelpers.findAndHookMethod(CLASS_TWITTER_DEEPLINK_ACTIVITY,
                         lpparam.classLoader, "b", new XC_MethodHook() {
                             @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws
-                                    Throwable {
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
                                 XposedHelpers.setBooleanField(param.thisObject, "a", true);
                                 param.setResult(true);
                                 Logger.logHookAfter(param);
@@ -766,7 +770,7 @@ public class X_Mod
                         "getPhoneStorageState", new XC_MethodHook() {
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param)
-                            throws Throwable {
+                                    throws Throwable {
                                 Logger.logHook(param);
                                 param.setResult(Environment.isExternalStorageRemovable() ?
                                         Environment.getExternalStorageState()
@@ -908,7 +912,7 @@ public class X_Mod
 
     @Override
     public void handleInitPackageResources(XC_InitPackageResources.InitPackageResourcesParam
-                                                       resparam) throws Throwable {
+                                                   resparam) throws Throwable {
         if (!mSettings.getCachedPref_use_themes())
             return;
 
@@ -959,7 +963,7 @@ public class X_Mod
 
     public static final String CLASS_PACKAGEMANAGER = "android.app.ApplicationPackageManager";
     public static final String PKG_HTC_FEATURE = "com.htc.software";
-    public static final String[] HTC_FEATURES = new String[] {
+    public static final String[] HTC_FEATURES = new String[]{
             PKG_HTC_FEATURE + ".HTC",
             PKG_HTC_FEATURE + ".Sense7.0",
             PKG_HTC_FEATURE + ".M8UL",
