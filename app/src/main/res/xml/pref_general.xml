@@ -13,6 +13,22 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:title="@string/pref_cat_debug">
+        <Preference
+            android:key="show_log"
+            android:title="@string/pref_debug_show_log_title"
+            android:summary="@string/pref_debug_show_log_summary"/>
+        <Preference
+            android:key="export_log"
+            android:title="@string/pref_debug_export_log_title"
+            android:summary="@string/pref_debug_export_log_summary"/>
+        <Preference
+            android:key="log_loc"
+            android:enabled="false"
+            android:summary=""/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:title="@string/pref_cat_storage">
         <SwitchPreference
             android:defaultValue="false"

@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -12,6 +13,8 @@ import android.widget.ImageView;
 public class Common {
     private Common() {
     }
+
+    public static final String versionName = "2.0";
 
     /**
      * Convert a {@link Drawable} into an {@link Bitmap} object.
@@ -85,5 +88,14 @@ public class Common {
         Color.RGBToHSV(Color.red(color), Color.green(color), Color.blue(color), hsv);
         hsv[2] = hsv[2] * multiplier;
         return Color.HSVToColor(hsv);
+    }
+
+    /* Checks if external storage is available for read and write */
+    public static boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            return true;
+        }
+        return false;
     }
 }

@@ -107,7 +107,9 @@ public class X_Mod
     private final SettingsHelper mSettings;
 
     public X_Mod() {
+        Logger.logStart();
         mSettings = new SettingsHelper();
+        Logger.v("Loaded preference instance %s", mSettings.toString());
     }
 
     @Override
@@ -116,11 +118,14 @@ public class X_Mod
         // Need to see if OR statements are best, or if we can just check for com.htc.* apps
         if (lpparam.packageName.equals(PKG_HTC_LAUNCHER)) {
 
+            Logger.v("Load hooks for Sense Home...");
+
             XposedHelpers.findAndHookMethod(CLASS_BF_HELPER, lpparam.classLoader, "isHSPCompatible",
                      new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             param.setResult(Boolean.TRUE);
+                            Logger.logHookAfter(param);
                         }
                     });
 
@@ -129,6 +134,7 @@ public class X_Mod
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             param.setResult(Boolean.TRUE);
+                            Logger.logHookAfter(param);
                         }
                     });
 
@@ -137,6 +143,7 @@ public class X_Mod
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             param.setResult(Boolean.TRUE);
+                            Logger.logHookAfter(param);
                         }
                     });
 
@@ -145,6 +152,7 @@ public class X_Mod
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             param.setResult(true);
+                            Logger.logHookAfter(param);
                         }
                     });
 
@@ -153,6 +161,7 @@ public class X_Mod
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             param.setResult(true);
+                            Logger.logHookAfter(param);
                         }
                     });
 
@@ -161,6 +170,7 @@ public class X_Mod
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             param.setResult(true);
+                            Logger.logHookAfter(param);
                         }
                     });
 
@@ -169,6 +179,7 @@ public class X_Mod
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             param.setResult(true);
+                            Logger.logHookAfter(param);
                         }
                     });
 
@@ -177,6 +188,7 @@ public class X_Mod
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             param.setResult(true);
+                            Logger.logHookAfter(param);
                         }
                     });
 
@@ -185,6 +197,7 @@ public class X_Mod
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             ((Activity) param.thisObject).getIntent().setAction("ANY_ACTION");
+                            Logger.logHookAfter(param);
                         }
                     });
 
@@ -193,6 +206,7 @@ public class X_Mod
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             param.setResult(true);
+                            Logger.logHookAfter(param);
                         }
                     });
 
@@ -201,6 +215,7 @@ public class X_Mod
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             param.setResult(true);
+                            Logger.logHookAfter(param);
                         }
                     });
 
@@ -209,6 +224,7 @@ public class X_Mod
                     "updateFullThemecolor", Context.class, CLASS_BF_THEME, new XC_MethodHook() {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            Logger.logHook(param);
                             SharedPreferences theme_in = ((Context) param.args[0])
                                     .getSharedPreferences("mixing_theme_color_preference",
                                             Context.MODE_PRIVATE);
@@ -230,6 +246,7 @@ public class X_Mod
                     "clearFullThemeColor", Context.class, new XC_MethodHook() {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            Logger.logHook(param);
                             //noinspection deprecation
                             @SuppressLint("WorldReadableFiles")
                             SharedPreferences theme = ((Context) param.args[0])
@@ -243,8 +260,11 @@ public class X_Mod
                         }
                     });
 
+            Logger.v("All hooks for Sense Home loaded.");
 
         } else if (lpparam.packageName.equals(PKG_HTC_FB)) {
+
+            Logger.v("Load hooks for Facebook...");
 
             try {
                 
@@ -255,6 +275,7 @@ public class X_Mod
                                     Throwable {
                                 XposedHelpers.setBooleanField(param.thisObject, "b", true);
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -266,14 +287,19 @@ public class X_Mod
                                 XposedHelpers.setBooleanField(param.thisObject, "e", true);
                                 ((Activity) param.thisObject).getIntent().setAction("ANY_ACTION");
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
 
+                Logger.v("All hooks for Facebook loaded.");
+
             } catch (Throwable e) {
-                e.printStackTrace();
+                Logger.w("Facebook hooks could not be loaded.", e);
             }
 
         } else if (lpparam.packageName.equals(PKG_HTC_GPLUS_APP)) {
+
+            Logger.v("Load hooks for Google+...");
 
             try {
                 XposedHelpers.findAndHookMethod(CLASS_GPLUS_ACTIVITY, lpparam.classLoader,
@@ -283,6 +309,7 @@ public class X_Mod
                                     Throwable {
                                 XposedHelpers.setBooleanField(param.thisObject, "a", true);
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -293,13 +320,19 @@ public class X_Mod
                                     Throwable {
                                 XposedHelpers.setBooleanField(param.thisObject, "a", true);
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
+
+                Logger.v("All hooks for Google+ loaded.");
+
             } catch (Throwable e) {
-                e.printStackTrace();
+                Logger.w("Google+ hooks could not be loaded.", e);
             }
 
         } else if (lpparam.packageName.equals(PKG_HTC_INSTAGRAM)) {
+
+            Logger.v("Load hooks for Instagram...");
 
             try {
                 XposedHelpers.findAndHookMethod(CLASS_INSTAGRAM_LIB2_A, lpparam.classLoader, "a",
@@ -307,6 +340,7 @@ public class X_Mod
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                                 param.setResult(7.0f);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -316,6 +350,7 @@ public class X_Mod
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -326,13 +361,19 @@ public class X_Mod
                                     Throwable {
                                 XposedHelpers.setBooleanField(param.thisObject, "b_", true);
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
+
+                Logger.v("All hooks for Instagram loaded.");
+
             } catch (Throwable e) {
-                e.printStackTrace();
+                Logger.w("Instagram hooks could not be loaded.", e);
             }
 
         } else if (lpparam.packageName.equals(PKG_HTC_LINKEDIN)) {
+
+            Logger.v("Load hooks for LinkedIn...");
 
             try {
                 XposedHelpers.findAndHookMethod(CLASS_LINKEDIN_LIB2_A, lpparam.classLoader, "a",
@@ -340,6 +381,7 @@ public class X_Mod
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                                 param.setResult(7.0f);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -349,6 +391,7 @@ public class X_Mod
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -358,13 +401,19 @@ public class X_Mod
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
+
+                Logger.v("All hooks for LinkedIn loaded.");
+
             } catch (Throwable e) {
-                e.printStackTrace();
+                Logger.w("LinkedIn hooks could not be loaded.", e);
             }
 
         } else if (lpparam.packageName.equals(PKG_HTC_TWITTER)) {
+
+            Logger.v("Load hooks for Twitter...");
 
             try {
                 XposedHelpers.findAndHookMethod(CLASS_TWITTER_ACTIVITY, lpparam.classLoader, "d",
@@ -374,6 +423,7 @@ public class X_Mod
                                     Throwable {
                                 XposedHelpers.setBooleanField(param.thisObject, "a", true);
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -384,13 +434,19 @@ public class X_Mod
                                     Throwable {
                                 XposedHelpers.setBooleanField(param.thisObject, "a", true);
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
+
+                Logger.v("All hooks for Twitter loaded.");
+
             } catch (Throwable e) {
-                e.printStackTrace();
+                Logger.w("Twitter hooks could not be loaded.", e);
             }
 
         } else if (lpparam.packageName.equals(PKG_HTC_IME)) {
+
+            Logger.v("Load hooks for HTC IME...");
 
             try {
                 XposedHelpers.findAndHookMethod(CLASS_IME_ASDK, lpparam.classLoader,
@@ -399,6 +455,7 @@ public class X_Mod
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -408,6 +465,7 @@ public class X_Mod
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -418,6 +476,7 @@ public class X_Mod
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -427,6 +486,7 @@ public class X_Mod
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -436,6 +496,7 @@ public class X_Mod
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -445,21 +506,27 @@ public class X_Mod
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
                                 param.setResult(7.0f);
+                                Logger.logHookAfter(param);
                             }
                         });
 
+                Logger.v("All hooks for HTC IME loaded.");
 
             } catch (Throwable e) {
-                e.printStackTrace();
+                Logger.w("HTC IME hooks could not be loaded.", e);
             }
 
         } else if (lpparam.packageName.equals(PKG_SETTINGS)
                 && mSettings.getCachedPref_use_themes()) {
 
+            Logger.v("Load hooks to tint Settings app's icons with the Theme loaded at boot...");
+            Logger.logTheme(mSettings);
+
             XposedHelpers.findAndHookMethod(Preference.class, "setIcon", Drawable.class,
                     new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            Logger.logHook(param);
                             Drawable d = (Drawable) param.args[0];
                             BitmapDrawable b = new BitmapDrawable(((Preference) param.thisObject)
                                     .getContext().getResources(), Common.drawableToBitmap(d));
@@ -479,6 +546,7 @@ public class X_Mod
                                     Common.drawableToBitmap(d));
                             b.setTint(mSettings.getAccentColor());
                             iV.setImageDrawable(b);
+                            Logger.logHookAfter(param);
                         }
                     });
 
@@ -495,6 +563,7 @@ public class X_Mod
                                     Common.drawableToBitmap(d));
                             b.setTint(mSettings.getAccentColor());
                             iV.setImageDrawable(b);
+                            Logger.logHookAfter(param);
                         }
                     });
 
@@ -504,11 +573,15 @@ public class X_Mod
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             param.args[1] = mSettings.getAccentColor();
                             param.args[2] = Common.enlightColor(mSettings.getAccentColor(), 1.5f);
+                            Logger.logHookAfter(param);
                         }
                     });
 
+            Logger.v("All hooks to tint Settings app's icons loaded.");
 
         } else if (lpparam.packageName.equals(PKG_VENDING)) {
+
+            Logger.v("Load Play Store hooks...");
 
             XposedHelpers.findAndHookMethod(CLASS_FINSKY_LIBRARY_UTILS,
                     lpparam.classLoader, "isAvailable", CLASS_FINSKY_DOCUMENT, CLASS_FINSKY_DFETOC,
@@ -518,12 +591,19 @@ public class X_Mod
                             Object doc = param.args[0];
                             String id = (String) XposedHelpers.callMethod(doc, "getDocId");
                             if (id.startsWith("com.htc.")) {
+                                Logger.logHook(param);
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         }
                     });
 
+            Logger.v("All Play Store hooks loaded.");
+
         } else if (lpparam.packageName.equals(SettingsHelper.PACKAGE_NAME)) {
+
+            Logger.v("Load module's hooks...");
+            Logger.logTheme(mSettings);
 
             XposedHelpers.findAndHookMethod("com.woalk.apps.lib.colorpicker.ColorPickerSwatch",
                     lpparam.classLoader, "setColor", int.class, new XC_MethodHook() {
@@ -566,10 +646,15 @@ public class X_Mod
                         }
                     });
 
+            Logger.v("Module's hooks loaded.");
+
         }
 
         if (lpparam.packageName.equals(PKG_HTC_GALLERY)
                 || lpparam.packageName.equals(PKG_HTC_CAMERA)) {
+            Logger.v("Loading storage hooks for package %s.", lpparam.packageName);
+            int hooks = 0;
+
             // Following: HTC-specific methods that resolve different storage types
             // try-catch for each necessary because not every HTC app uses all of them
 
@@ -580,14 +665,18 @@ public class X_Mod
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param)
                                     throws Throwable {
+                                Logger.logHook(param);
                                 // Checks PRIMARY "external" storage.
                                 // Android recognizes INTERNAL sdcard as primary external storage.
                                 // If no internal sdcard, primary storage would be real sdcard.
                                 param.setResult(!Environment.isExternalStorageRemovable());
+                                Logger.logHookAfter(param);
                             }
                         });
+                hooks++;
             } catch (Throwable e) {
-                e.printStackTrace();
+                Logger.i("A storage hook failed for package %s.", lpparam.packageName);
+                Logger.i("hasPhoneStorage() hook", e);
             }
             try {
                 XposedHelpers.findAndHookMethod(CLASS_HTC_LIB3, lpparam.classLoader,
@@ -595,13 +684,17 @@ public class X_Mod
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param)
                                     throws Throwable {
+                                Logger.logHook(param);
                                 param.setResult(!Environment.isExternalStorageRemovable() ?
                                         Environment.getExternalStorageDirectory()
                                         : null);
+                                Logger.logHookAfter(param);
                             }
                         });
+                hooks++;
             } catch (Throwable e) {
-                e.printStackTrace();
+                Logger.i("A storage hook failed for package %s.", lpparam.packageName);
+                Logger.i("getPhoneStorageDirectory() hook", e);
             }
             try {
                 XposedHelpers.findAndHookMethod(CLASS_HTC_LIB3, lpparam.classLoader,
@@ -609,13 +702,17 @@ public class X_Mod
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param)
                             throws Throwable {
+                                Logger.logHook(param);
                                 param.setResult(Environment.isExternalStorageRemovable() ?
                                         Environment.getExternalStorageState()
                                         : Environment.MEDIA_UNKNOWN);
+                                Logger.logHookAfter(param);
                             }
                         });
+                hooks++;
             } catch (Throwable e) {
-                e.printStackTrace();
+                Logger.i("A storage hook failed for package %s.", lpparam.packageName);
+                Logger.i("getPhoneStorageState() hook", e);
             }
 
             // Removable storage => external sdcard
@@ -625,11 +722,15 @@ public class X_Mod
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param)
                                     throws Throwable {
+                                Logger.logHook(param);
                                 param.setResult(mSettings.getPref_has_ext());
+                                Logger.logHookAfter(param);
                             }
                         });
+                hooks++;
             } catch (Throwable e) {
-                e.printStackTrace();
+                Logger.i("A storage hook failed for package %s.", lpparam.packageName);
+                Logger.i("hasRemovableStorageSlot() hook", e);
             }
             try {
                 XposedHelpers.findAndHookMethod(CLASS_HTC_LIB3, lpparam.classLoader,
@@ -637,12 +738,16 @@ public class X_Mod
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param)
                                     throws Throwable {
+                                Logger.logHook(param);
                                 param.setResult(mSettings.getPref_has_ext() ?
                                         new File(mSettings.getPref_ext_path()) : null);
+                                Logger.logHookAfter(param);
                             }
                         });
+                hooks++;
             } catch (Throwable e) {
-                e.printStackTrace();
+                Logger.i("A storage hook failed for package %s.", lpparam.packageName);
+                Logger.i("getRemovableStorageDirectory() hook", e);
             }
             try {
                 XposedHelpers.findAndHookMethod(CLASS_HTC_LIB3, lpparam.classLoader,
@@ -650,14 +755,18 @@ public class X_Mod
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param)
                                     throws Throwable {
+                                Logger.logHook(param);
                                 param.setResult(mSettings.getPref_has_ext() ?
                                         Environment.getExternalStorageState(
                                                 new File(mSettings.getPref_ext_path()))
                                         : Environment.MEDIA_UNKNOWN);
+                                Logger.logHookAfter(param);
                             }
                         });
+                hooks++;
             } catch (Throwable e) {
-                e.printStackTrace();
+                Logger.i("A storage hook failed for package %s.", lpparam.packageName);
+                Logger.i("getRemovableStorageState() hook", e);
             }
 
             // USB storage (OTG)
@@ -667,11 +776,15 @@ public class X_Mod
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param)
                                     throws Throwable {
+                                Logger.logHook(param);
                                 param.setResult(mSettings.getPref_has_usb());
+                                Logger.logHookAfter(param);
                             }
                         });
+                hooks++;
             } catch (Throwable e) {
-                e.printStackTrace();
+                Logger.i("A storage hook failed for package %s.", lpparam.packageName);
+                Logger.i("hasUsbDeviceSlot() hook", e);
             }
             try {
                 XposedHelpers.findAndHookMethod(CLASS_HTC_LIB3, lpparam.classLoader,
@@ -679,12 +792,16 @@ public class X_Mod
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param)
                                     throws Throwable {
+                                Logger.logHook(param);
                                 param.setResult(mSettings.getPref_has_usb() ?
                                         new File(mSettings.getPref_usb_path()) : null);
+                                Logger.logHookAfter(param);
                             }
                         });
+                hooks++;
             } catch (Throwable e) {
-                e.printStackTrace();
+                Logger.i("A storage hook failed for package %s.", lpparam.packageName);
+                Logger.i("getUsbDeviceDirectory() hook", e);
             }
             try {
                 XposedHelpers.findAndHookMethod(CLASS_HTC_LIB3, lpparam.classLoader,
@@ -692,15 +809,22 @@ public class X_Mod
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param)
                                     throws Throwable {
+                                Logger.logHook(param);
                                 param.setResult(mSettings.getPref_has_usb() ?
                                         Environment.getExternalStorageState(
                                                 new File(mSettings.getPref_usb_path()))
                                         : Environment.MEDIA_UNKNOWN);
+                                Logger.logHookAfter(param);
                             }
                         });
+                hooks++;
             } catch (Throwable e) {
-                e.printStackTrace();
+                Logger.i("A storage hook failed for package %s.", lpparam.packageName);
+                Logger.i("getUsbDeviceState() hook", e);
             }
+
+            Logger.v("All storage hooks processed for package %s, loaded %d/9.",
+                    lpparam.packageName, hooks);
         }
     }
 
@@ -724,6 +848,9 @@ public class X_Mod
             return;
 
         if (resparam.packageName.equals(PKG_SYSTEMUI)) {
+            Logger.v("Replacing Theme resources for SystemUI.");
+            Logger.logTheme(mSettings);
+
             int colorAccent = mSettings.getAccentColor();
             resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_primary_color",
                     mSettings.getCachedPref_systemui_color2());
@@ -737,7 +864,12 @@ public class X_Mod
             resparam.res.setReplacement(PKG_SYSTEMUI, "color",
                     "notification_material_background_media_default_color",
                     mSettings.getCachedPref_systemui_color2());
+
+            Logger.v("Replaced Theme resources for SystemUI.");
         } else if (resparam.packageName.equals(PKG_SETTINGS)) {
+            Logger.v("Replacing Theme resources for Settings app.");
+            Logger.logTheme(mSettings);
+
             resparam.res.setReplacement(PKG_SETTINGS, "color", "theme_primary",
                     mSettings.getPrimaryColor());
             resparam.res.setReplacement(PKG_SETTINGS, "color", "theme_primary_dark",
@@ -748,9 +880,15 @@ public class X_Mod
                     mSettings.getPrimaryDarkColor());
             resparam.res.setReplacement(PKG_SETTINGS, "color", "switch_accent_color",
                     mSettings.getAccentColor());
+
+            Logger.v("Replaced Theme resources for Settings app.");
         } else if (resparam.packageName.equals(SettingsHelper.PACKAGE_NAME)) {
+            Logger.v("Replacing Theme resources for module.");
+
             resparam.res.setReplacement(SettingsHelper.PACKAGE_NAME, "color", "theme9",
                     mSettings.getPrimaryColor(mSettings.getPref_systemui_use_launcher_theme()));
+
+            Logger.v("Replaced Theme resources for module.");
         }
     }
 
@@ -769,8 +907,13 @@ public class X_Mod
 
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable {
-        if (!mSettings.getCachedPref_use_themes())
+        if (!mSettings.getCachedPref_use_themes()) {
+            Logger.v("Themes are turned off in module settings.");
             return;
+        }
+
+        Logger.v("Replacing system-wide Theme resources.");
+        Logger.logTheme(mSettings);
 
         XResources.setSystemWideReplacement("android", "color", "material_blue_grey_900",
                 mSettings.getPrimaryColor());
@@ -793,6 +936,9 @@ public class X_Mod
         XResources.setSystemWideReplacement("android", "color", "material_deep_teal_200",
                 Common.enlightColor(mSettings.getAccentColor(), 1.5f));
 
+        Logger.v("Theme resources replaced.");
+        Logger.v("Loading hook to add HTC features to system feature list...");
+
         XposedHelpers.findAndHookMethod(CLASS_PACKAGEMANAGER, null, "getSystemAvailableFeatures",
                 new XC_MethodHook() {
                     @Override
@@ -805,7 +951,10 @@ public class X_Mod
                             fs[i].name = HTC_FEATURES[i - sys.length];
                         }
                         param.setResult(fs);
+                        Logger.logHookAfter(param);
                     }
                 });
+
+        Logger.v("System feature list hook loaded.");
     }
 }

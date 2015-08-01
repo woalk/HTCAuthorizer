@@ -1,6 +1,8 @@
 package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -14,6 +16,7 @@ public class MainPreferenceFragment extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
     public static final String EXTRA_SUBSCREEN_ID = "subscreen_id";
     public static final int SUBSCREEN_ID_ALWAYS_ACTIVE = 1;
+    private static final String KEY_LOG_WARN_SHOWN = "log_warn";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,14 +39,54 @@ public class MainPreferenceFragment extends PreferenceFragment
 
         findPreference("always_active").setOnPreferenceClickListener(
                 new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                Intent intent = new Intent(getActivity(), MainActivity.class);
-                intent.putExtra(EXTRA_SUBSCREEN_ID, SUBSCREEN_ID_ALWAYS_ACTIVE);
-                startActivity(intent);
-                return true;
-            }
-        });
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        Intent intent = new Intent(getActivity(), MainActivity.class);
+                        intent.putExtra(EXTRA_SUBSCREEN_ID, SUBSCREEN_ID_ALWAYS_ACTIVE);
+                        startActivity(intent);
+                        return true;
+                    }
+                });
+
+        findPreference("show_log").setOnPreferenceClickListener(
+                new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        Intent intent = new Intent(getActivity(), LogActivity.class);
+                        startActivity(intent);
+                        return true;
+                    }
+                });
+
+        final Preference logLoc = findPreference("log_loc");
+
+        findPreference("export_log").setOnPreferenceClickListener(
+                new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        if (getPreferenceManager().getSharedPreferences()
+                                .getBoolean(KEY_LOG_WARN_SHOWN, false)) {
+                            saveLog(logLoc);
+                            return true;
+                        }
+                        new AlertDialog.Builder(getActivity())
+                                .setTitle(R.string.warn_logs_title)
+                                .setMessage(R.string.warn_logs_content)
+                                .setPositiveButton(android.R.string.ok,
+                                        new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                getPreferenceManager().getSharedPreferences().edit()
+                                                        .putBoolean(KEY_LOG_WARN_SHOWN, true)
+                                                        .apply();
+                                                saveLog(logLoc);
+                                            }
+                                })
+                                .create()
+                                .show();
+                        return true;
+                    }
+                });
 
         try {
             findPreference("version").setSummary(getActivity().getPackageManager()
@@ -98,5 +141,16 @@ public class MainPreferenceFragment extends PreferenceFragment
                 setPreferenceValueToSummary(pref);
             }
         }
+    }
+
+    private void saveLog(Preference logLoc) {
+        String file = Logger.saveLogcat(getActivity());
+        logLoc.setEnabled(true);
+        if (file == null) {
+            logLoc.setSummary(R.string.pref_debug_export_log_error);
+            return;
+        }
+        logLoc.setSummary(String.format(
+                getString(R.string.pref_debug_export_log_toast), file));
     }
 }
