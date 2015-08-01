@@ -23,14 +23,10 @@ import java.io.File;
 import java.util.Map;
 import java.lang.*;
 
-
-import static de.robv.android.xposed.XposedHelpers.getAdditionalInstanceField;
-
 import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
@@ -275,8 +271,8 @@ public class X_Mod
                     XposedHelpers.findAndHookMethod(Activity.class, "setRequestedOrientation", int.class, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            int i=2; //2 being ORIENTATION_USER, 4 ORIENTATION_SENSOR
-                            param.args[0] = i;
+                            // ORIENTATION_USER = 2, ORIENTATION_SENSOR = 4
+                            param.args[0] = 4;
                         }
                     });
                 } else {
@@ -475,11 +471,11 @@ public class X_Mod
             Logger.v("Load hooks for Camera...");
 
             try {
-                XposedHelpers.findAndHookMethod(CLASS_CAMERA_FEATUREFILE, lpparam.classLoader, "setStringValue", String.class, String.class,
-                        new XC_MethodHook() {
+                XposedHelpers.findAndHookMethod(CLASS_CAMERA_FEATUREFILE, lpparam.classLoader,
+                        "setStringValue", String.class, String.class, new XC_MethodHook() {
                             @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws
-                                    Throwable {
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
                                 if (param.args[0].equals("zoe-supported")) {
                                     param.args[1] = "true";
                                     Logger.logHookAfter(param);
@@ -487,25 +483,22 @@ public class X_Mod
                             }
                         });
 
-                XposedHelpers.findAndHookMethod(CLASS_CAMERA_ZOECAPTUREMODE, lpparam.classLoader, "checkZoeSupportState",
-                        new XC_MethodHook() {
+                XposedHelpers.findAndHookMethod(CLASS_CAMERA_ZOECAPTUREMODE, lpparam.classLoader,
+                        "checkZoeSupportState", new XC_MethodHook() {
                             @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws
-                                    Throwable {
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
                                 param.setResult(true);
                                 Logger.logHookAfter(param);
                             }
                         });
 
-                XposedHelpers.findAndHookMethod(CLASS_CAMERA_CAMERACONTROLLER, lpparam
-                                .classLoader, "isZoeSupported",
-                        new XC_MethodHook() {
+                XposedHelpers.findAndHookMethod(CLASS_CAMERA_CAMERACONTROLLER, lpparam.classLoader,
+                        "isZoeSupported", new XC_MethodHook() {
                             @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws
-                                    Throwable {
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
                                 param.setResult(true);
-
-
                                 Logger.logHookAfter(param);
                             }
                         });
