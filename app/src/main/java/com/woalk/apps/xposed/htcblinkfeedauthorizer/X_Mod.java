@@ -21,12 +21,17 @@ import android.widget.TextView;
 
 import java.io.File;
 import java.util.Map;
+import java.lang.*;
+
+
+import static de.robv.android.xposed.XposedHelpers.getAdditionalInstanceField;
 
 import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
@@ -51,6 +56,9 @@ public class X_Mod
 
     public static final String PKG_HTC_CAMERA = "com.htc.camera";
     public static final String CLASS_HTC_LIB3 = "com.htc.lib3.android.os.HtcEnvironment";
+    public static final String CLASS_CAMERA_ZOECAPTUREMODE = "com.htc.camera.zoe.ZoeCaptureMode";
+    public static final String CLASS_CAMERA_CAMERACONTROLLER = "com.htc.camera.CameraController";
+    public static final String CLASS_CAMERA_FEATUREFILE = "com.htc.camera.CameraFeatureFile";
 
     public static final String PKG_HTC_GALLERY = "com.htc.album";
     public static final String CLASS_3DSCENE = "com.htc.sunny2.frameworks.base.widgets.SunnyScene";
@@ -105,6 +113,7 @@ public class X_Mod
     public static final String CLASS_FINSKY_LIBRARY = PKG_FINSKY + ".library.Library";
 
     private final SettingsHelper mSettings;
+
 
     public X_Mod() {
         Logger.logStart();
@@ -259,6 +268,24 @@ public class X_Mod
                             theme_edit.apply();
                         }
                     });
+
+            try {
+
+                if (new SettingsHelper().getPref_force_rotate()) {
+                    XposedBridge.log("Trying rotation");
+                    XposedHelpers.findAndHookMethod(Activity.class, "setRequestedOrientation", int.class, new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            int i=2; //2 being ORIENTATION_USER, 4 ORIENTATION_SENSOR
+                            param.args[0] = i;
+                        }
+                    });
+                } else {
+                    XposedBridge.log("Rotation seems to be disabled");
+                }
+            } catch (Throwable e) {
+                XposedBridge.log(e);
+            }
 
             Logger.v("All hooks for Sense Home loaded.");
 
@@ -442,6 +469,51 @@ public class X_Mod
 
             } catch (Throwable e) {
                 Logger.w("Twitter hooks could not be loaded.", e);
+            }
+
+        } else if (lpparam.packageName.equals(PKG_HTC_CAMERA)) {
+            XposedBridge.log("Trying to hook camera.");
+            try {
+                XposedHelpers.findAndHookMethod(CLASS_CAMERA_FEATUREFILE, lpparam.classLoader, "setStringValue", String.class, String.class,
+                        new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+                                if (param.args[0].equals("zoe-supported")) {
+                                    XposedBridge.log("Found it, changing.");
+                                    param.args[1] = "true";
+                                } else {
+                                    XposedBridge.log("Close, but no cigar.");
+                                }
+                            }
+                        });
+
+                XposedHelpers.findAndHookMethod(CLASS_CAMERA_ZOECAPTUREMODE, lpparam.classLoader, "checkZoeSupportState",
+                        new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+                                XposedBridge.log("Setting Zoe Support State to true.");
+                                param.setResult(true);
+                            }
+                        });
+
+                XposedHelpers.findAndHookMethod(CLASS_CAMERA_CAMERACONTROLLER, lpparam
+                                .classLoader, "isZoeSupported",
+                        new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+                                XposedBridge.log("Setting isZoeSupported to true.");
+                                param.setResult(true);
+
+
+                            }
+                        });
+
+
+            } catch (Throwable e) {
+                e.printStackTrace();
             }
 
         } else if (lpparam.packageName.equals(PKG_HTC_IME)) {
