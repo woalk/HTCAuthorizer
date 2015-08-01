@@ -31,7 +31,6 @@ import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
-import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
@@ -272,7 +271,7 @@ public class X_Mod
             try {
 
                 if (new SettingsHelper().getPref_force_rotate()) {
-                    XposedBridge.log("Trying rotation");
+                    Logger.v("Loading hook for BlinkFeed rotation.");
                     XposedHelpers.findAndHookMethod(Activity.class, "setRequestedOrientation", int.class, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -281,10 +280,10 @@ public class X_Mod
                         }
                     });
                 } else {
-                    XposedBridge.log("Rotation seems to be disabled");
+                    Logger.v("Rotation seems to be disabled");
                 }
             } catch (Throwable e) {
-                XposedBridge.log(e);
+                Logger.w("Rotation hook not loaded.", e);
             }
 
             Logger.v("All hooks for Sense Home loaded.");
@@ -472,7 +471,9 @@ public class X_Mod
             }
 
         } else if (lpparam.packageName.equals(PKG_HTC_CAMERA)) {
-            XposedBridge.log("Trying to hook camera.");
+
+            Logger.v("Load hooks for Camera...");
+
             try {
                 XposedHelpers.findAndHookMethod(CLASS_CAMERA_FEATUREFILE, lpparam.classLoader, "setStringValue", String.class, String.class,
                         new XC_MethodHook() {
@@ -480,10 +481,8 @@ public class X_Mod
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
                                 if (param.args[0].equals("zoe-supported")) {
-                                    XposedBridge.log("Found it, changing.");
                                     param.args[1] = "true";
-                                } else {
-                                    XposedBridge.log("Close, but no cigar.");
+                                    Logger.logHookAfter(param);
                                 }
                             }
                         });
@@ -493,8 +492,8 @@ public class X_Mod
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
-                                XposedBridge.log("Setting Zoe Support State to true.");
                                 param.setResult(true);
+                                Logger.logHookAfter(param);
                             }
                         });
 
@@ -504,16 +503,17 @@ public class X_Mod
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
-                                XposedBridge.log("Setting isZoeSupported to true.");
                                 param.setResult(true);
 
 
+                                Logger.logHookAfter(param);
                             }
                         });
 
+                Logger.v("All hooks for Camera loaded.");
 
             } catch (Throwable e) {
-                e.printStackTrace();
+                Logger.w("Camera hooks could not be loaded.", e);
             }
 
         } else if (lpparam.packageName.equals(PKG_HTC_IME)) {
