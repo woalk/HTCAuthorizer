@@ -5,10 +5,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import java.io.IOException;
 
 public class Common {
     private Common() {
@@ -97,5 +100,19 @@ public class Common {
             return true;
         }
         return false;
+    }
+
+    public static void killPackage(final String packageToKill) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    Runtime.getRuntime().exec(new String[]{"su", "-c", "pkill " + packageToKill});
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }.execute();
     }
 }

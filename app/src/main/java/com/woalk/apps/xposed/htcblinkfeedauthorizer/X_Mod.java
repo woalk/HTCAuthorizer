@@ -291,7 +291,6 @@ public class X_Mod
             Logger.v("Load hooks for Facebook...");
 
             try {
-
                 XposedHelpers.findAndHookMethod(CLASS_FB_BASE_ACTIVITY2, lpparam.classLoader,
                         "e", new XC_MethodHook() {
                             @Override
