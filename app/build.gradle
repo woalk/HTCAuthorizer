@@ -1,5 +1,19 @@
 apply plugin: 'com.android.application'
 
+def getVersionName = { ->
+    try {
+        def stdout = new ByteArrayOutputStream();
+        exec {
+            commandLine 'git', 'describe', '--long', '--dirty'
+            standardOutput = stdout;
+        }
+        return stdout.toString().trim().substring(1);
+    }
+    catch (ignored) {
+        return null;
+    }
+}
+
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
@@ -9,7 +23,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 22
         versionCode 3
-        versionName "2.0"
+        versionName getVersionName()
     }
     buildTypes {
         release {
