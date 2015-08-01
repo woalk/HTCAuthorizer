@@ -972,11 +972,34 @@ public class X_Mod
 
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable {
-        if (!mSettings.getCachedPref_use_themes()) {
+        if (mSettings.getCachedPref_use_themes()) {
+            replaceSystemWideThemes();
+        } else {
             Logger.v("Themes are turned off in module settings.");
-            return;
         }
 
+        Logger.v("Loading hook to add HTC features to system feature list...");
+
+        XposedHelpers.findAndHookMethod(CLASS_PACKAGEMANAGER, null, "getSystemAvailableFeatures",
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        FeatureInfo[] sys = (FeatureInfo[]) param.getResult();
+                        FeatureInfo[] fs = new FeatureInfo[sys.length + HTC_FEATURES.length];
+                        System.arraycopy(sys, 0, fs, 0, sys.length);
+                        for (int i = sys.length; i < sys.length + HTC_FEATURES.length; i++) {
+                            fs[i] = new FeatureInfo();
+                            fs[i].name = HTC_FEATURES[i - sys.length];
+                        }
+                        param.setResult(fs);
+                        Logger.logHookAfter(param);
+                    }
+                });
+
+        Logger.v("System feature list hook loaded.");
+    }
+
+    private void replaceSystemWideThemes() {
         Logger.v("Replacing system-wide Theme resources.");
         Logger.logTheme(mSettings);
 
@@ -1002,24 +1025,5 @@ public class X_Mod
                 Common.enlightColor(mSettings.getAccentColor(), 1.5f));
 
         Logger.v("Theme resources replaced.");
-        Logger.v("Loading hook to add HTC features to system feature list...");
-
-        XposedHelpers.findAndHookMethod(CLASS_PACKAGEMANAGER, null, "getSystemAvailableFeatures",
-                new XC_MethodHook() {
-                    @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                        FeatureInfo[] sys = (FeatureInfo[]) param.getResult();
-                        FeatureInfo[] fs = new FeatureInfo[sys.length + HTC_FEATURES.length];
-                        System.arraycopy(sys, 0, fs, 0, sys.length);
-                        for (int i = sys.length; i < sys.length + HTC_FEATURES.length; i++) {
-                            fs[i] = new FeatureInfo();
-                            fs[i].name = HTC_FEATURES[i - sys.length];
-                        }
-                        param.setResult(fs);
-                        Logger.logHookAfter(param);
-                    }
-                });
-
-        Logger.v("System feature list hook loaded.");
     }
 }
