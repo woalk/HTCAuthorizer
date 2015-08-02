@@ -517,16 +517,6 @@ public class X_Mod
                             }
                         });
 
-                XposedHelpers.findAndHookMethod(CLASS_CAMERA_DISPLAYDEVICE, lpparam.classLoader,
-                        "isMTKPlatform", new XC_MethodHook() {
-                            @Override
-                            protected void beforeHookedMethod(MethodHookParam param)
-                                    throws Throwable {
-                                param.setResult(true);
-                                Logger.logHookAfter(param);
-                            }
-                        });
-
                 Logger.v("All hooks for Camera loaded.");
 
             } catch (Throwable e) {
