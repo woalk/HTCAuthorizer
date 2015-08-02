@@ -33,7 +33,9 @@ All of them in their currently newest version (`7.00.4xxxxx`/`7.00.5xxxxx`).
 
 Other Sense apps currently supported:
 - Camera: Allow saving to external storage.
+- Gallery: Allow accessing/modifying different storages.
 - Themes: Use HTC Themes to theme your AOSP system!
+- IME: Use the newest version of the Sense Keyboard.
 
 ###Download
 You can download this module from either the GitHub release page (see on top of the page -> Releases),
