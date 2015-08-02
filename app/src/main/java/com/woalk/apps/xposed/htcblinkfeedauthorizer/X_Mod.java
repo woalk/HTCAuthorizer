@@ -53,6 +53,7 @@ public class X_Mod
     public static final String CLASS_CAMERA_ZOECAPTUREMODE = "com.htc.camera.zoe.ZoeCaptureMode";
     public static final String CLASS_CAMERA_CAMERACONTROLLER = "com.htc.camera.CameraController";
     public static final String CLASS_CAMERA_FEATUREFILE = "com.htc.camera.CameraFeatureFile";
+    public static final String CLASS_CAMERA_DISPLAYDEVICE = "com.htc.camera.DisplayDevice";
 
     public static final String PKG_HTC_GALLERY = "com.htc.album";
     public static final String CLASS_3DSCENE = "com.htc.sunny2.frameworks.base.widgets.SunnyScene";
@@ -498,6 +499,26 @@ public class X_Mod
 
                 XposedHelpers.findAndHookMethod(CLASS_CAMERA_CAMERACONTROLLER, lpparam.classLoader,
                         "isZoeSupported", new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
+                                param.setResult(true);
+                                Logger.logHookAfter(param);
+                            }
+                        });
+
+                XposedHelpers.findAndHookMethod(CLASS_CAMERA_DISPLAYDEVICE, lpparam.classLoader,
+                        "isHtcDevice", new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
+                                param.setResult(true);
+                                Logger.logHookAfter(param);
+                            }
+                        });
+
+                XposedHelpers.findAndHookMethod(CLASS_CAMERA_DISPLAYDEVICE, lpparam.classLoader,
+                        "isMTKPlatform", new XC_MethodHook() {
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param)
                                     throws Throwable {
