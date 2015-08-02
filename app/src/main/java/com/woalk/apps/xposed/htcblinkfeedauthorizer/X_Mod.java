@@ -26,7 +26,6 @@ import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
@@ -51,13 +50,18 @@ public class X_Mod
 
     public static final String PKG_HTC_CAMERA = "com.htc.camera";
     public static final String CLASS_HTC_LIB3 = "com.htc.lib3.android.os.HtcEnvironment";
+    public static final String CLASS_CAMERA_ZOECAPTUREMODE = "com.htc.camera.zoe.ZoeCaptureMode";
+    public static final String CLASS_CAMERA_CAMERACONTROLLER = "com.htc.camera.CameraController";
+    public static final String CLASS_CAMERA_FEATUREFILE = "com.htc.camera.CameraFeatureFile";
+    public static final String CLASS_CAMERA_DISPLAYDEVICE = "com.htc.camera.DisplayDevice";
 
     public static final String PKG_HTC_GALLERY = "com.htc.album";
     public static final String CLASS_3DSCENE = "com.htc.sunny2.frameworks.base.widgets.SunnyScene";
 
     public static final String PKG_HTC_FB = "com.htc.sense.socialnetwork.facebook";
     public static final String CLASS_FB_BASE_ACTIVITY = PKG_HTC_FB + ".FacebookBaseActivity";
-    public static final String CLASS_FB_BASE_ACTIVITY2 = "com.htc.socialnetwork.facebook.FacebookBaseActivity";
+    public static final String CLASS_FB_BASE_ACTIVITY2 = "com.htc.socialnetwork.facebook" +
+            ".FacebookBaseActivity";
     public static final String CLASS_FB_UPDATE = "com.htc.socialnetwork.facebook.HMSUpdateActivity";
 
     public static final String PKG_HTC_GPLUS_APP = "com.htc.sense.socialnetwork.googleplus";
@@ -106,6 +110,7 @@ public class X_Mod
 
     private final SettingsHelper mSettings;
 
+
     public X_Mod() {
         Logger.logStart();
         mSettings = new SettingsHelper();
@@ -121,7 +126,7 @@ public class X_Mod
             Logger.v("Load hooks for Sense Home...");
 
             XposedHelpers.findAndHookMethod(CLASS_BF_HELPER, lpparam.classLoader, "isHSPCompatible",
-                     new XC_MethodHook() {
+                    new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             param.setResult(Boolean.TRUE);
@@ -260,6 +265,26 @@ public class X_Mod
                         }
                     });
 
+            try {
+
+                if (new SettingsHelper().getPref_force_rotate()) {
+                    Logger.v("Loading hook for BlinkFeed rotation.");
+                    XposedHelpers.findAndHookMethod(Activity.class, "setRequestedOrientation",
+                            int.class, new XC_MethodHook() {
+                                @Override
+                                protected void beforeHookedMethod(MethodHookParam param) throws
+                                        Throwable {
+                                    // ORIENTATION_USER = 2, ORIENTATION_SENSOR = 4
+                                    param.args[0] = 4;
+                                }
+                            });
+                } else {
+                    Logger.v("Rotation seems to be disabled");
+                }
+            } catch (Throwable e) {
+                Logger.w("Rotation hook not loaded.", e);
+            }
+
             Logger.v("All hooks for Sense Home loaded.");
 
         } else if (lpparam.packageName.equals(PKG_HTC_FB)) {
@@ -267,7 +292,6 @@ public class X_Mod
             Logger.v("Load hooks for Facebook...");
 
             try {
-                
                 XposedHelpers.findAndHookMethod(CLASS_FB_BASE_ACTIVITY2, lpparam.classLoader,
                         "e", new XC_MethodHook() {
                             @Override
@@ -338,7 +362,8 @@ public class X_Mod
                 XposedHelpers.findAndHookMethod(CLASS_INSTAGRAM_LIB2_A, lpparam.classLoader, "a",
                         new XC_MethodHook() {
                             @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
                                 param.setResult(7.0f);
                                 Logger.logHookAfter(param);
                             }
@@ -347,8 +372,8 @@ public class X_Mod
                 XposedHelpers.findAndHookMethod(CLASS_INSTAGRAM_LIB2_A, lpparam.classLoader, "b",
                         new XC_MethodHook() {
                             @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws
-                                    Throwable {
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
                                 param.setResult(true);
                                 Logger.logHookAfter(param);
                             }
@@ -379,7 +404,8 @@ public class X_Mod
                 XposedHelpers.findAndHookMethod(CLASS_LINKEDIN_LIB2_A, lpparam.classLoader, "a",
                         new XC_MethodHook() {
                             @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
                                 param.setResult(7.0f);
                                 Logger.logHookAfter(param);
                             }
@@ -388,8 +414,8 @@ public class X_Mod
                 XposedHelpers.findAndHookMethod(CLASS_LINKEDIN_LIB2_A, lpparam.classLoader, "b",
                         new XC_MethodHook() {
                             @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws
-                                    Throwable {
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
                                 param.setResult(true);
                                 Logger.logHookAfter(param);
                             }
@@ -419,8 +445,8 @@ public class X_Mod
                 XposedHelpers.findAndHookMethod(CLASS_TWITTER_ACTIVITY, lpparam.classLoader, "d",
                         new XC_MethodHook() {
                             @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws
-                                    Throwable {
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
                                 XposedHelpers.setBooleanField(param.thisObject, "a", true);
                                 param.setResult(true);
                                 Logger.logHookAfter(param);
@@ -430,8 +456,8 @@ public class X_Mod
                 XposedHelpers.findAndHookMethod(CLASS_TWITTER_DEEPLINK_ACTIVITY,
                         lpparam.classLoader, "b", new XC_MethodHook() {
                             @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws
-                                    Throwable {
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
                                 XposedHelpers.setBooleanField(param.thisObject, "a", true);
                                 param.setResult(true);
                                 Logger.logHookAfter(param);
@@ -442,6 +468,59 @@ public class X_Mod
 
             } catch (Throwable e) {
                 Logger.w("Twitter hooks could not be loaded.", e);
+            }
+
+        } else if (lpparam.packageName.equals(PKG_HTC_CAMERA)) {
+
+            Logger.v("Load hooks for Camera...");
+
+            try {
+                XposedHelpers.findAndHookMethod(CLASS_CAMERA_FEATUREFILE, lpparam.classLoader,
+                        "setStringValue", String.class, String.class, new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
+                                if (param.args[0].equals("zoe-supported")) {
+                                    param.args[1] = "true";
+                                    Logger.logHookAfter(param);
+                                }
+                            }
+                        });
+
+                XposedHelpers.findAndHookMethod(CLASS_CAMERA_ZOECAPTUREMODE, lpparam.classLoader,
+                        "checkZoeSupportState", new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
+                                param.setResult(true);
+                                Logger.logHookAfter(param);
+                            }
+                        });
+
+                XposedHelpers.findAndHookMethod(CLASS_CAMERA_CAMERACONTROLLER, lpparam.classLoader,
+                        "isZoeSupported", new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
+                                param.setResult(true);
+                                Logger.logHookAfter(param);
+                            }
+                        });
+
+                XposedHelpers.findAndHookMethod(CLASS_CAMERA_DISPLAYDEVICE, lpparam.classLoader,
+                        "isHtcDevice", new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
+                                param.setResult(true);
+                                Logger.logHookAfter(param);
+                            }
+                        });
+
+                Logger.v("All hooks for Camera loaded.");
+
+            } catch (Throwable e) {
+                Logger.w("Camera hooks could not be loaded.", e);
             }
 
         } else if (lpparam.packageName.equals(PKG_HTC_IME)) {
@@ -701,7 +780,7 @@ public class X_Mod
                         "getPhoneStorageState", new XC_MethodHook() {
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param)
-                            throws Throwable {
+                                    throws Throwable {
                                 Logger.logHook(param);
                                 param.setResult(Environment.isExternalStorageRemovable() ?
                                         Environment.getExternalStorageState()
@@ -843,7 +922,7 @@ public class X_Mod
 
     @Override
     public void handleInitPackageResources(XC_InitPackageResources.InitPackageResourcesParam
-                                                       resparam) throws Throwable {
+                                                   resparam) throws Throwable {
         if (!mSettings.getCachedPref_use_themes())
             return;
 
@@ -894,7 +973,7 @@ public class X_Mod
 
     public static final String CLASS_PACKAGEMANAGER = "android.app.ApplicationPackageManager";
     public static final String PKG_HTC_FEATURE = "com.htc.software";
-    public static final String[] HTC_FEATURES = new String[] {
+    public static final String[] HTC_FEATURES = new String[]{
             PKG_HTC_FEATURE + ".HTC",
             PKG_HTC_FEATURE + ".Sense7.0",
             PKG_HTC_FEATURE + ".M8UL",
@@ -907,11 +986,34 @@ public class X_Mod
 
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable {
-        if (!mSettings.getCachedPref_use_themes()) {
+        if (mSettings.getCachedPref_use_themes()) {
+            replaceSystemWideThemes();
+        } else {
             Logger.v("Themes are turned off in module settings.");
-            return;
         }
 
+        Logger.v("Loading hook to add HTC features to system feature list...");
+
+        XposedHelpers.findAndHookMethod(CLASS_PACKAGEMANAGER, null, "getSystemAvailableFeatures",
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        FeatureInfo[] sys = (FeatureInfo[]) param.getResult();
+                        FeatureInfo[] fs = new FeatureInfo[sys.length + HTC_FEATURES.length];
+                        System.arraycopy(sys, 0, fs, 0, sys.length);
+                        for (int i = sys.length; i < sys.length + HTC_FEATURES.length; i++) {
+                            fs[i] = new FeatureInfo();
+                            fs[i].name = HTC_FEATURES[i - sys.length];
+                        }
+                        param.setResult(fs);
+                        Logger.logHookAfter(param);
+                    }
+                });
+
+        Logger.v("System feature list hook loaded.");
+    }
+
+    private void replaceSystemWideThemes() {
         Logger.v("Replacing system-wide Theme resources.");
         Logger.logTheme(mSettings);
 
@@ -937,24 +1039,5 @@ public class X_Mod
                 Common.enlightColor(mSettings.getAccentColor(), 1.5f));
 
         Logger.v("Theme resources replaced.");
-        Logger.v("Loading hook to add HTC features to system feature list...");
-
-        XposedHelpers.findAndHookMethod(CLASS_PACKAGEMANAGER, null, "getSystemAvailableFeatures",
-                new XC_MethodHook() {
-                    @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                        FeatureInfo[] sys = (FeatureInfo[]) param.getResult();
-                        FeatureInfo[] fs = new FeatureInfo[sys.length + HTC_FEATURES.length];
-                        System.arraycopy(sys, 0, fs, 0, sys.length);
-                        for (int i = sys.length; i < sys.length + HTC_FEATURES.length; i++) {
-                            fs[i] = new FeatureInfo();
-                            fs[i].name = HTC_FEATURES[i - sys.length];
-                        }
-                        param.setResult(fs);
-                        Logger.logHookAfter(param);
-                    }
-                });
-
-        Logger.v("System feature list hook loaded.");
     }
 }

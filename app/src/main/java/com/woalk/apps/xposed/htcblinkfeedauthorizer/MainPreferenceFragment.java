@@ -11,7 +11,6 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
-
 public class MainPreferenceFragment extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
     public static final String EXTRA_SUBSCREEN_ID = "subscreen_id";
@@ -84,6 +83,18 @@ public class MainPreferenceFragment extends PreferenceFragment
                                 })
                                 .create()
                                 .show();
+                        return true;
+                    }
+                });
+
+        findPreference("kill_launcher").setOnPreferenceClickListener(
+                new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        Common.killPackage("com.htc.launcher");
+                        Intent intent = new Intent(Intent.ACTION_MAIN);
+                        intent.addCategory(Intent.CATEGORY_HOME);
+                        startActivity(intent);
                         return true;
                     }
                 });

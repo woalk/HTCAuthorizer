@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Sensify Xposed</string>
     <string name="app_description">Integration for Sense apps into AOSP and other ROMs.</string>
+    <string name="title_activity_log">Logs</string>
 
     <string name="warn_no_hsp_title">Install HTC Service Pack</string>
     <string name="warn_no_hsp_content">You don\'t have HTC Service Pack installed.
@@ -20,7 +21,8 @@
     </string>
 
     <!-- Preferences -->
-    <string name="pref_reboot_info">Currently, all settings need a reboot to apply.</string>
+    <string name="pref_reboot_info">Currently, all settings, except those explicitly declared
+        otherwise, need a reboot to apply.</string>
     <string name="pref_cat_general">General</string>
     <string name="pref_general_always_active_title">Show always active mods</string>
     <string name="pref_general_always_active_window">Always active mods</string>
@@ -32,6 +34,12 @@
     <string name="pref_always_active_vending_title">Allow downloading of HTC apps</string>
     <string name="pref_always_active_vending_summary">Allows to search and download HTC apps in
         Google Play Store, removes the \"not compatible\" message on the install page.</string>
+    <string name="pref_cat_rotate">Rotation</string>
+    <string name="pref_rotate_force_rotate_title">Rotation</string>
+    <string name="pref_rotate_force_rotate_summary">Enable launcher rotation of Sense Home.</string>
+    <string name="pref_rotate_kill_launcher_title">Restart Sense Home</string>
+    <string name="pref_rotate_kill_launcher_summary">Immediately apply changes to this setting by
+        restarting Sense Home. Requires root permission.</string>
     <string name="pref_cat_storage">Storage options</string>
     <string name="pref_cat_debug">Debugging</string>
     <string name="pref_debug_show_log_title">Show log</string>
@@ -73,6 +81,5 @@
     <string name="pref_about_dev_summary">&#169; 2015 Woalk, DigitalHigh
         \nLicensed under GNU GPL v2.
         \nSee at github.com/woalk/HTCAuthorizer</string>
-    <string name="title_activity_log">Logs</string>
 
 </resources>
