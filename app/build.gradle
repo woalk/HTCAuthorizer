@@ -26,7 +26,7 @@ android {
         applicationId "com.woalk.apps.xposed.htcblinkfeedauthorizer"
         minSdkVersion 21
         targetSdkVersion 22
-        versionCode 3
+        versionCode 4
         versionName getVersionName()
     }
     buildTypes {
