@@ -59,3 +59,4 @@ This application comes AS-IS.
 The USER HIMSELF is RESPONSIBLE FOR ANY DAMAGE to his software, device, ...
 Even while it is very unlikely that such a thing happens with this small app.
 ```
+Additionally, this modules is in no way created, developed, or associated in any way with HTC Corporation, HTC United States, or any of it's affiliates.  No HTC code was used in the making of this module, and no support or warranty should be considered in the use of this module in conjunction with any HTC products or software.  This module is developed for research purposes only, and any and all activities outside of these purposes may potentially constitute a violation of the HTC Terms-of-service (TOS).  This module does not modify any HTC Code, and does not in any way change or modify any part of the HTC Sign-in process.  This is facilitated by the installation of the MyHTC Application, which is freely obtainable in multiple locations on the internet.
