@@ -2,3 +2,6 @@
 [submodule "lib/ColorPickerPreference"]
 	path = lib/ColorPickerPreference
 	url = https://github.com/d8ahazard/android-ColorPickerPreference.git
+[submodule "lib/material-color-picker"]
+	path = lib/material-color-picker
+	url = https://github.com/d8ahazard/material-color-picker.git
