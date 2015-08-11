@@ -1,3 +1,4 @@
-[submodule "lib/android-colorpicker"]
-	path = lib/android-colorpicker
-	url = https://github.com/woalk/android-colorpicker
+
+[submodule "lib/ColorPickerPreference"]
+	path = lib/ColorPickerPreference
+	url = https://github.com/d8ahazard/android-ColorPickerPreference.git

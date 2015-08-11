@@ -65,16 +65,21 @@
     <string name="pref_themes_use_launcher_title">Use Launcher Theme</string>
     <string name="pref_themes_use_launcher_summary">Do not use the app theme, but the Sense Home
         theme of HTC Themes to tint Material apps.</string>
-    <string name="pref_themes_systemui_color1_title">SystemUI primary color</string>
+    <string name="pref_themes_systemui_color1_title">Primary color</string>
     <string name="pref_themes_systemui_color1_summary">Color to use for Android\'s notification
-        panel header.\nSet the last color of the dialog to use your Theme\'s color.</string>
-    <string name="pref_themes_systemui_color2_title">SystemUI secondary color</string>
+        panel header.</string>
+    <string name="pref_themes_systemui_color2_title">Secondary color</string>
     <string name="pref_themes_systemui_color2_summary">Color to use for Android\'s quick settings.
-        \nSet the last color of the dialog to use your Theme\'s color (automatically takes care of
-        darkening it).</string>
-    <string name="pref_themes_systemui_use_launcher_title">Use Launcher Theme for SystemUI</string>
-    <string name="pref_themes_systemui_use_launcher_summary">Use Sense Home\'s Theme also
-        for SystemUI if you selected to use Theme color for SystemUI.</string>
+        </string>
+    <string name="pref_themes_systemui_color3_title">Primary Accent Color</string>
+    <string name="pref_themes_systemui_color3_summary">Color to use for accent items like buttons.
+        </string>
+    <string name="pref_themes_systemui_color4_title">Secondary Accent Color</string>
+    <string name="pref_themes_systemui_color4_summary">Color to use for accent items like slider backgrounds.
+        </string>
+    <string name="pref_themes_systemui_use_launcher_title">Theme SystemUI</string>
+    <string name="pref_themes_systemui_use_launcher_summary">Use Theme colors
+        for SystemUI.</string>
     <string name="pref_cat_about">About</string>
     <string name="pref_about_version_title">Version</string>
     <string name="pref_about_dev_title">Authors</string>
