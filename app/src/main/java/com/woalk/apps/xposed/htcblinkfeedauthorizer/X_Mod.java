@@ -698,8 +698,8 @@ public class X_Mod
                     "setChartColor", int.class, int.class, int.class, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.args[1] = mSettings.getAccentColor();
-                            param.args[2] = Common.enlightColor(mSettings.getAccentColor(), 1.5f);
+                            param.args[1] = mSettings.getCachedPref_systemui_color1();
+                            param.args[2] = mSettings.getCachedPref_systemui_color2();
                             Logger.logHookAfter(param);
                         }
                     });
