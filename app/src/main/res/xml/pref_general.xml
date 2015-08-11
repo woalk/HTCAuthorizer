@@ -78,7 +78,22 @@
             android:defaultValue="false"/>
 
         <Preference
-            android:key="SWITCH"
+            android:key="CP1"
+            android:title="@string/pref_themes_check_title"
+            android:summary="@string/pref_themes_check_summary"
+            />
+        <Preference
+            android:key="CP2"
+            android:title="@string/pref_themes_check_title"
+            android:summary="@string/pref_themes_check_summary"
+            />
+        <Preference
+            android:key="CP3"
+            android:title="@string/pref_themes_check_title"
+            android:summary="@string/pref_themes_check_summary"
+            />
+        <Preference
+            android:key="CP4"
             android:title="@string/pref_themes_check_title"
             android:summary="@string/pref_themes_check_summary"
             />

@@ -147,16 +147,15 @@ public class XMLHelper {
                     }
                     if (xpp.getName().contains("2")) {
                         Logger.i(xhtag + "Add color to array - index 1" + color);
-                        Theme.add(1, mixThemeColor(Theme.get(0), color, 1.2f));
+                        Theme.add(1, color);
                     }
                     if (xpp.getName().contains("3")) {
                         Logger.i(xhtag + "Add color to array - index 2" + color);
-                        Theme.add(2, mixThemeColor(Theme.get(0), color, 0.6f));
+                        Theme.add(2, color);
                     }
                     if (xpp.getName().contains("4")) {
-                        mixThemeColor(Theme.get(0), color, 1.2f);
                         Logger.i(xhtag + "Add color to array - index 3" + color);
-                        Theme.add(3, mixThemeColor(Theme.get(0), color, 0.3f));
+                        Theme.add(3, color);
                     }
                 }
                 Logger.i(xhtag + "moving to next tag event");

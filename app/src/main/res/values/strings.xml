@@ -23,7 +23,10 @@
     <!-- Preferences -->
     <string name="pref_reboot_info">Currently, all settings, except those explicitly declared
         otherwise, need a reboot to apply.</string>
-    <string name="SWITCH">SWITCH</string>
+    <string name="CP1">CP1</string>
+    <string name="CP2">CP2</string>
+    <string name="CP3">CP3</string>
+    <string name="CP4">CP4</string>
     <string name="pref_cat_general">General</string>
     <string name="pref_general_always_active_title">Show always active mods</string>
     <string name="pref_general_always_active_window">Always active mods</string>

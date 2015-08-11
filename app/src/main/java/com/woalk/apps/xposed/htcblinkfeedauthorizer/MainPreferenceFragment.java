@@ -11,11 +11,10 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
-import android.text.Layout;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.anjithsasindran.materialcolorpicker.ColorPickerActivity;
 
@@ -33,6 +32,10 @@ public class MainPreferenceFragment extends PreferenceFragment
     public Integer color2;
     public Integer color3;
     public Integer color4;
+    static final int COLOR_SELECTION_COMPLETE = 1;  // The request code
+    static final int COLOR_SELECTION_CANCELLED = 2;  // The request code
+    private ImageView iv1;
+    private ImageView iv;
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -52,15 +55,94 @@ public class MainPreferenceFragment extends PreferenceFragment
                 .registerOnSharedPreferenceChangeListener(this);
 
         addPreferencesFromResource(R.xml.pref_general);
-        Preference button = (Preference) findPreference(getString(R.string.SWITCH));
-        button.setWidgetLayoutResource(R.layout.custom_pref);
+        Preference button1 = findPreference(getString(R.string.CP1));
+        Preference button2 = findPreference(getString(R.string.CP2));
+        Preference button3 = findPreference(getString(R.string.CP3));
+        Preference button4 = findPreference(getString(R.string.CP4));
+        View v1 = button1.getView(null, null);
+        View v2 = button2.getView(null, null);
+        View v3 = button3.getView(null, null);
+        View v4 = button4.getView(null, null);
+        ImageView vb1 = (ImageView) v1.findViewById(R.id.button);
+        ImageView vb2 = (ImageView) v2.findViewById(R.id.button);
+        ImageView vb3 = (ImageView) v3.findViewById(R.id.button);
+        ImageView vb4 = (ImageView) v4.findViewById(R.id.button);
+        button1.setWidgetLayoutResource(R.layout.custom_pref);
+        button2.setWidgetLayoutResource(R.layout.custom_pref);
+        button3.setWidgetLayoutResource(R.layout.custom_pref);
+        button4.setWidgetLayoutResource(R.layout.custom_pref);
         updateFromXML(getActivity());
-        findPreference(getString(R.string.SWITCH)).setOnPreferenceClickListener(
+        Logger.d("Digitalhigh: Oncreate: colors are " + color1 + ", " + color2 + ", " + color3 + ", and " + color4);
+        //vb1.setColorFilter(color1);
+        //vb2.setColorFilter(color2);
+        //vb3.setColorFilter(color3);
+        //vb4.setColorFilter(color4);
+
+        findPreference(getString(R.string.CP1)).setOnPreferenceClickListener(
                 new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
                         Intent intent = new Intent(getActivity(), ColorPickerActivity.class);
-                        startActivity(intent);
+                        intent.putExtra("Prefname", "systemui_color1");
+                        try {
+                            intent.putExtra("Current", xw.readFromXML(0));
+                            Logger.d("MainPref: Passing sui1 color of " + xw.readFromXML(0));
+                            Logger.d("MainPref: Alt. value is color of " + color1);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        startActivityForResult(intent, COLOR_SELECTION_COMPLETE);
+                        return true;
+                    }
+                });
+        findPreference(getString(R.string.CP2)).setOnPreferenceClickListener(
+                new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        Intent intent = new Intent(getActivity(), ColorPickerActivity.class);
+                        intent.putExtra("Prefname","systemui_color2");
+                        try {
+                            intent.putExtra("Current", xw.readFromXML(1));
+                            Logger.d("MainPref: Passing sui2 color of " + xw.readFromXML(1));
+                            Logger.d("MainPref: Alt. value is color of " + color2 );
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        startActivityForResult(intent, COLOR_SELECTION_COMPLETE);
+                        return true;
+                    }
+                });
+        findPreference(getString(R.string.CP3)).setOnPreferenceClickListener(
+                new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        Intent intent = new Intent(getActivity(), ColorPickerActivity.class);
+                        intent.putExtra("Prefname","systemui_color3");
+                        try {
+                            intent.putExtra("Current", xw.readFromXML(2));
+                            Logger.d("MainPref: Passing sui3 color of " + xw.readFromXML(2));
+                            Logger.d("MainPref: Alt. value is color of " + color3);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        startActivityForResult(intent, COLOR_SELECTION_COMPLETE);
+                        return true;
+                    }
+                });
+        findPreference(getString(R.string.CP4)).setOnPreferenceClickListener(
+                new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        Intent intent = new Intent(getActivity(), ColorPickerActivity.class);
+                        intent.putExtra("Prefname","systemui_color4");
+                        try {
+                            intent.putExtra("Current", xw.readFromXML(3));
+                            Logger.d("MainPref: Passing sui4 color of " + xw.readFromXML(3));
+                            Logger.d("MainPref: Alt. value is color of " + color4);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        startActivityForResult(intent, COLOR_SELECTION_COMPLETE);
                         return true;
                     }
                 });
@@ -159,10 +241,23 @@ public class MainPreferenceFragment extends PreferenceFragment
         }
     }
 
-
-
-
-
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == COLOR_SELECTION_COMPLETE) {
+            if (resultCode == COLOR_SELECTION_COMPLETE) {
+                Bundle res = data.getExtras();
+                String colorname = res.getString("Name");
+                Integer result = res.getInt("Color");
+                Logger.d("Digitalhigh: color data for " + colorname + " " + result);
+                Toast.makeText(getActivity(), "Color for " + colorname + " " + result + " has been saved.", Toast.LENGTH_SHORT).show();
+                xw.WriteToXML(colorname, result);
+                updateFromXML(getActivity());
+            } else if (resultCode == COLOR_SELECTION_CANCELLED) {
+                Logger.d("Digitalhigh: color selection cancelled");
+            }
+        }
+    }
 
     public void updateFromXML(Context context) {
         SharedPreferences sharedPref = context.getSharedPreferences("main", Context.MODE_PRIVATE);
