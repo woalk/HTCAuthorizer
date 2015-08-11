@@ -322,7 +322,7 @@ public class X_Mod
                                 protected void beforeHookedMethod(MethodHookParam param) throws
                                         Throwable {
                                     // ORIENTATION_USER = 2, ORIENTATION_SENSOR = 4
-                                    param.args[0] = 4;
+                                    param.args[0] = 2;
                                 }
                             });
                 } else {
