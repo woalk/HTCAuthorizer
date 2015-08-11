@@ -34,13 +34,13 @@ import javax.xml.transform.stream.StreamResult;
 public class XMLHelper {
     public Integer default1 = -31321439;
     public static final String basekey = "systemui_color";
-    public static final String swtag = "XMLHelper: ";
-    String filename = "userData.xml";
+    public static final String xhtag = "XMLHelper: ";
+    String filename = "themeColors.xml";
     File file = new File(Environment.getExternalStorageDirectory(), filename);
     final ArrayList<Integer> Theme = new ArrayList<>();
 
     public void WriteToXML(String keyname, Integer theme1) {
-        Logger.d(swtag + "Trying to set " + keyname + " to " + theme1);
+        Logger.d(xhtag + "Trying to set " + keyname + " to " + theme1);
         checkXMLExists();
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = null;
@@ -54,7 +54,7 @@ public class XMLHelper {
             assert docBuilder != null;
             doc = docBuilder.parse(file);
         } catch (SAXException | NullPointerException | IOException e) {
-            Logger.e(swtag + "" + e);
+            Logger.e(xhtag + "" + e);
         }
         // Change the content of node
         assert doc != null;
@@ -73,9 +73,9 @@ public class XMLHelper {
         DOMSource source = new DOMSource(doc);
         try {
             transformer.transform(source, result);
-            Logger.d(swtag + "Key set.");
+            Logger.d(xhtag + "Key set.");
         } catch (TransformerException e) {
-            Logger.e(swtag + "" + e);
+            Logger.e(xhtag + "" + e);
         }
 
 
@@ -83,12 +83,12 @@ public class XMLHelper {
 
     public Integer readFromXML(Integer theme) throws IOException {
         XmlPullParserFactory factory = null;
-        Logger.i(swtag + "Starting readfromfile for integer " + theme);
+        Logger.i(xhtag + "Starting readfromfile for integer " + theme);
         try {
             factory = XmlPullParserFactory.newInstance();
         } catch (XmlPullParserException e) {
             e.printStackTrace();
-            Logger.e(swtag + "XPPException " + e);
+            Logger.e(xhtag + "XPPException " + e);
         }
         assert factory != null;
         factory.setNamespaceAware(true);
@@ -97,7 +97,7 @@ public class XMLHelper {
             xpp = factory.newPullParser();
         } catch (XmlPullParserException e) {
             e.printStackTrace();
-            Logger.e(swtag + "XPPException " + e);
+            Logger.e(xhtag + "XPPException " + e);
         }
 
         try {
@@ -107,7 +107,7 @@ public class XMLHelper {
                 fis = new FileInputStream(file);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
-                Logger.e(swtag + "FilenotFound " + e);
+                Logger.e(xhtag + "FilenotFound " + e);
             }
 
             // set the input for the parser using an InputStreamReader
@@ -121,62 +121,62 @@ public class XMLHelper {
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 if (eventType == XmlPullParser.START_TAG) {
                     currentTag = xpp.getName();
-                    Logger.i(swtag + "Start tag, name: " + currentTag);
+                    Logger.i(xhtag + "Start tag, name: " + currentTag);
                 } else if (eventType == XmlPullParser.TEXT) {
                     if (currentTag != null) {
-                        Logger.i(swtag + "Start text read of " + currentTag);
+                        Logger.i(xhtag + "Start text read of " + currentTag);
                         if (currentTag.contains("systemui_color")) {
                             if (isInteger(xpp.getText())) {
                                 color = Integer.valueOf(xpp.getText());
-                                Logger.i(swtag + "Set color " + currentTag + color);
+                                Logger.i(xhtag + "Set color " + currentTag + color);
                             }
                         }
                     }
                 } else if (eventType == XmlPullParser.END_TAG) {
-                    Logger.i(swtag + "End tag, name: " + xpp.getName());
+                    Logger.i(xhtag + "End tag, name: " + xpp.getName());
                     if (xpp.getName().contains("1")) {
-                        Logger.i(swtag + "Add color to array - index 0" + color);
+                        Logger.i(xhtag + "Add color to array - index 0" + color);
                         Theme.add(0, color);
                     }
                     if (xpp.getName().contains("2")) {
-                        Logger.i(swtag + "Add color to array - index 1" + color);
+                        Logger.i(xhtag + "Add color to array - index 1" + color);
                         Theme.add(1, color);
                     }
                     if (xpp.getName().contains("3")) {
-                        Logger.i(swtag + "Add color to array - index 2" + color);
+                        Logger.i(xhtag + "Add color to array - index 2" + color);
                         Theme.add(2, color);
                     }
                     if (xpp.getName().contains("4")) {
-                        Logger.i(swtag + "Add color to array - index 3" + color);
+                        Logger.i(xhtag + "Add color to array - index 3" + color);
                         Theme.add(3, color);
                     }
                 }
-                Logger.i(swtag + "moving to next tag event");
+                Logger.i(xhtag + "moving to next tag event");
                 eventType = xpp.next();
             }
 
             switch (theme) {
                 case 1:
-                    Logger.i(swtag + "trying to return for int 1, color " + Theme.get(0));
+                    Logger.i(xhtag + "trying to return for int 1, color " + Theme.get(0));
                     return Theme.get(0);
                 case 2:
-                    Logger.i(swtag + "trying to return for int 2, color " + Theme.get(1));
+                    Logger.i(xhtag + "trying to return for int 2, color " + Theme.get(1));
                     return Theme.get(1);
                 case 3:
-                    Logger.i(swtag + "trying to return for int 3, color " + Theme.get(2));
+                    Logger.i(xhtag + "trying to return for int 3, color " + Theme.get(2));
                     return Theme.get(2);
                 case 4:
-                    Logger.i(swtag + "trying to return for int 4, color " + Theme.get(3));
+                    Logger.i(xhtag + "trying to return for int 4, color " + Theme.get(3));
                     return Theme.get(3);
                 default:
-                    Logger.i(swtag + "trying to return for default, color " + Theme.get(1));
+                    Logger.i(xhtag + "trying to return for default, color " + Theme.get(1));
                     return Theme.get(0);
             }
         } catch (XmlPullParserException e) {
-            Logger.e(swtag + "Error" + e);
+            Logger.e(xhtag + "Error" + e);
         }
 
-        Logger.e(swtag + "Error, returning null.");
+        Logger.e(xhtag + "Error, returning null.");
         return null;
     }
 
@@ -206,11 +206,11 @@ public class XMLHelper {
 
 
             } catch (IOException e) {
-                Logger.e(swtag + "error " + e);
+                Logger.e(xhtag + "error " + e);
 
             }
         } else {
-            Logger.d(swtag + "file " + file.getPath() + " already exists.");
+            Logger.d(xhtag + "file " + file.getPath() + " already exists.");
 
         }
     }
