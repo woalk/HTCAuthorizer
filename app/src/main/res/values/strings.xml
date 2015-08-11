@@ -30,7 +30,7 @@
     <string name="pref_always_active_authorize_summary">Removes the \"Unauthorized device\"
         message from the following HTC apps:
         \nHTC Sense Home, Facebook for HTC Sense, Google+ for HTC Sense, LinkedIn for HTC Sense,
-        Twitter for HTC Sense, HTC Themes.</string>
+        Twitter for HTC Sense, HTC Themes, HTC Keyboard.</string>
     <string name="pref_always_active_vending_title">Allow downloading of HTC apps</string>
     <string name="pref_always_active_vending_summary">Allows to search and download HTC apps in
         Google Play Store, removes the \"not compatible\" message on the install page.</string>
