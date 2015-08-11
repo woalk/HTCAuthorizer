@@ -11,6 +11,13 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
+import android.text.Layout;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+
+import com.anjithsasindran.materialcolorpicker.ColorPickerActivity;
 
 import net.margaritov.preference.colorpicker.ColorPickerPreference;
 
@@ -27,7 +34,7 @@ public class MainPreferenceFragment extends PreferenceFragment
     public Integer color3;
     public Integer color4;
 
-    @Override
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -45,8 +52,18 @@ public class MainPreferenceFragment extends PreferenceFragment
                 .registerOnSharedPreferenceChangeListener(this);
 
         addPreferencesFromResource(R.xml.pref_general);
-
+        Preference button = (Preference) findPreference(getString(R.string.SWITCH));
+        button.setWidgetLayoutResource(R.layout.custom_pref);
         updateFromXML(getActivity());
+        findPreference(getString(R.string.SWITCH)).setOnPreferenceClickListener(
+                new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        Intent intent = new Intent(getActivity(), ColorPickerActivity.class);
+                        startActivity(intent);
+                        return true;
+                    }
+                });
 
         findPreference("always_active").setOnPreferenceClickListener(
                 new Preference.OnPreferenceClickListener() {
@@ -143,6 +160,10 @@ public class MainPreferenceFragment extends PreferenceFragment
     }
 
 
+
+
+
+
     public void updateFromXML(Context context) {
         SharedPreferences sharedPref = context.getSharedPreferences("main", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -209,6 +230,7 @@ public class MainPreferenceFragment extends PreferenceFragment
         logLoc.setSummary(String.format(
                 getString(R.string.pref_debug_export_log_toast), file));
     }
+
 
 
 }

@@ -1,2 +1,4 @@
 include ':app', ':ColorPickerPreference'
 project(':ColorPickerPreference').projectDir = new File('lib/ColorPickerPreference/ColorPickerPreference')
+include ':app', ':material-color-picker'
+project(':material-color-picker').projectDir = new File('lib/material-color-picker/app')

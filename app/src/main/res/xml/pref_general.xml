@@ -77,6 +77,12 @@
             android:summary="@string/pref_themes_check_summary"
             android:defaultValue="false"/>
 
+        <Preference
+            android:key="SWITCH"
+            android:title="@string/pref_themes_check_title"
+            android:summary="@string/pref_themes_check_summary"
+            />
+
         <net.margaritov.preference.colorpicker.ColorPickerPreference
             android:key="systemui_color1"
             android:title="@string/pref_themes_systemui_color1_title"

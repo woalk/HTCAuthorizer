@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    android:weightSum="10"
+    android:baselineAligned="false" android:orientation="horizontal"
+    android:gravity="right">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView" />
+
+    <ImageView
+        android:background="@drawable/ovalbutton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/button"
+        android:padding="2dp" />
+</LinearLayout>
+

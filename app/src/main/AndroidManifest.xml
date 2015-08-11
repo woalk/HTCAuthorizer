@@ -39,6 +39,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.woalk.apps.xposed.htcblinkfeedauthorizer.MainActivity"/>
         </activity>
+        <activity
+            android:name="com.anjithsasindran.materialcolorpicker.ColorPickerActivity"
+            android:label="@string/title_activity_log"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.woalk.apps.xposed.htcblinkfeedauthorizer.MainActivity"/>
+        </activity>
     </application>
 
 </manifest>
