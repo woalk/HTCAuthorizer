@@ -40,6 +40,7 @@ public class XMLHelper {
     File directory = new File(Environment.getExternalStorageDirectory().toString() + path);
     File file = new File(directory + filename);
 
+
     public XMLHelper() {
         checkXMLExists();
     }
@@ -132,7 +133,7 @@ public class XMLHelper {
                     if (currentTag != null) {
                         Logger.i(xhtag + "Start text read of " + currentTag);
                         if (currentTag.contains("systemui_color")) {
-                            if (isInteger(xpp.getText())) {
+                            if (Common.isInteger(xpp.getText())) {
                                 color = Integer.valueOf(xpp.getText());
                                 Logger.i(xhtag + "Set color " + currentTag + color);
                             }
@@ -146,15 +147,16 @@ public class XMLHelper {
                     }
                     if (xpp.getName().contains("2")) {
                         Logger.i(xhtag + "Add color to array - index 1" + color);
-                        Theme.add(1, color);
+                        Theme.add(1, mixThemeColor(Theme.get(0), color, 1.2f));
                     }
                     if (xpp.getName().contains("3")) {
                         Logger.i(xhtag + "Add color to array - index 2" + color);
-                        Theme.add(2, color);
+                        Theme.add(2, mixThemeColor(Theme.get(0), color, 0.6f));
                     }
                     if (xpp.getName().contains("4")) {
+                        mixThemeColor(Theme.get(0), color, 1.2f);
                         Logger.i(xhtag + "Add color to array - index 3" + color);
-                        Theme.add(3, color);
+                        Theme.add(3, mixThemeColor(Theme.get(0), color, 0.3f));
                     }
                 }
                 Logger.i(xhtag + "moving to next tag event");
@@ -227,28 +229,13 @@ public class XMLHelper {
         }
     }
 
-    public static boolean isInteger(String str) {
-        if (str == null) {
-            return false;
+    public static int mixThemeColor(Integer p, Integer s, Float f) {
+        if (p.intValue() == s.intValue()) {
+            Logger.i(xhtag + "Theme color not unique, mixing.");
+            return Common.enlightColor(p, f);
+        } else {
+            Logger.i(xhtag + "Theme color is unique, returning.");
+            return s;
         }
-        int length = str.length();
-        if (length == 0) {
-            return false;
-        }
-        int i = 0;
-        if (str.charAt(0) == '-') {
-            if (length == 1) {
-                return false;
-            }
-            i = 1;
-        }
-        for (; i < length; i++) {
-            char c = str.charAt(i);
-            if (c <= '/' || c >= ':') {
-                return false;
-            }
-        }
-        return true;
     }
-
 }
