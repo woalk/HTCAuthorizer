@@ -45,6 +45,7 @@ public class X_Mod
     public static final String CLASS_BF_MIXINGTHEMECOLOR = "com.htc.themepicker.util" +
             ".MixingThemeColorUtil";
     public static final String CLASS_BF_THEME = "com.htc.themepicker.model.Theme";
+    public static final String STRING_REBOOT = "Theme Applied, please reboot.";
 
     public static final String PKG_HTC_CAMERA = "com.htc.camera";
     public static final String CLASS_HTC_LIB3 = "com.htc.lib3.android.os.HtcEnvironment";
@@ -1045,6 +1046,13 @@ public class X_Mod
                         color3);
 
                 Logger.v("Replaced Theme resources for module.");
+            } else if (resparam.packageName.equals(PKG_HTC_LAUNCHER)) {
+                Logger.v("Replacing string resource for Sense Home.");
+
+                resparam.res.setReplacement(PKG_HTC_LAUNCHER, "string", "msg_full_theme_applied",
+                        STRING_REBOOT);
+
+                Logger.v("Replaced string resource for Sense Home.");
             }
         }
     }
