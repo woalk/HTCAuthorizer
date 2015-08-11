@@ -11,11 +11,21 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
+
+import net.margaritov.preference.colorpicker.ColorPickerPreference;
+
+import java.io.IOException;
+
 public class MainPreferenceFragment extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
     public static final String EXTRA_SUBSCREEN_ID = "subscreen_id";
     public static final int SUBSCREEN_ID_ALWAYS_ACTIVE = 1;
     private static final String KEY_LOG_WARN_SHOWN = "log_warn";
+    private static final XMLHelper xw = new XMLHelper();
+    public Integer color1;
+    public Integer color2;
+    public Integer color3;
+    public Integer color4;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,6 +45,8 @@ public class MainPreferenceFragment extends PreferenceFragment
                 .registerOnSharedPreferenceChangeListener(this);
 
         addPreferencesFromResource(R.xml.pref_general);
+
+        updateFromXML(getActivity());
 
         findPreference("always_active").setOnPreferenceClickListener(
                 new Preference.OnPreferenceClickListener() {
@@ -80,7 +92,7 @@ public class MainPreferenceFragment extends PreferenceFragment
                                                         .apply();
                                                 saveLog(logLoc);
                                             }
-                                })
+                                        })
                                 .create()
                                 .show();
                         return true;
@@ -110,6 +122,11 @@ public class MainPreferenceFragment extends PreferenceFragment
         setAllPreferenceValuesToSummary(getPreferenceScreen());
     }
 
+    public void onResume() {
+        super.onResume();
+        updateFromXML(getActivity());
+    }
+
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         // update value shown in summary
@@ -117,6 +134,36 @@ public class MainPreferenceFragment extends PreferenceFragment
         if (pref instanceof EditTextPreference) {
             pref.setSummary(((EditTextPreference) pref).getText());
         }
+        if (pref instanceof ColorPickerPreference) {
+            if (pref.getKey().contains("systemui_color")) {
+                Integer value = sharedPreferences.getInt(key, 0);
+                xw.WriteToXML(pref.getKey(), value);
+            }
+        }
+    }
+
+
+    public void updateFromXML(Context context) {
+        SharedPreferences sharedPref = context.getSharedPreferences("main", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        Logger.i("Digitalhigh: Starting Editor");
+
+        try {
+            color1 = xw.readFromXML(0);
+            color2 = xw.readFromXML(1);
+            color3 = xw.readFromXML(2);
+            color4 = xw.readFromXML(3);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Logger.e("Error reading from file" + e);
+        }
+        Logger.i("Digitalhigh: Colors set to " + color1 + " " + color2 + " " + color3 + " " + color4);
+        editor.putInt("systemui_color1", color1);
+        editor.putInt("systemui_color2", color2);
+        editor.putInt("systemui_color3", color3);
+        editor.putInt("systemui_color4", color4);
+
+        editor.apply();
     }
 
     /**
@@ -124,8 +171,9 @@ public class MainPreferenceFragment extends PreferenceFragment
      * <br/><br/>
      * <b>Works for:</b><br/>
      * <ul>
-     *     <li>{@link EditTextPreference}</li>
+     * <li>{@link EditTextPreference}</li>
      * </ul>
+     *
      * @param pref The {@link Preference} to check and edit, if possible.
      */
     public static void setPreferenceValueToSummary(Preference pref) {
@@ -139,8 +187,9 @@ public class MainPreferenceFragment extends PreferenceFragment
      * <br/><br/>
      * <b>Works for:</b><br/>
      * <ul>
-     *     <li>{@link EditTextPreference}</li>
+     * <li>{@link EditTextPreference}</li>
      * </ul>
+     *
      * @param prefG The {@link PreferenceGroup} to iterate over, check and edit, if possible.
      */
     public static void setAllPreferenceValuesToSummary(PreferenceGroup prefG) {
@@ -157,11 +206,9 @@ public class MainPreferenceFragment extends PreferenceFragment
     private void saveLog(Preference logLoc) {
         String file = Logger.saveLogcat(getActivity());
         logLoc.setEnabled(true);
-        if (file == null) {
-            logLoc.setSummary(R.string.pref_debug_export_log_error);
-            return;
-        }
         logLoc.setSummary(String.format(
                 getString(R.string.pref_debug_export_log_toast), file));
     }
+
+
 }

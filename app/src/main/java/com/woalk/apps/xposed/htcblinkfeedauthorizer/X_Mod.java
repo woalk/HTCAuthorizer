@@ -7,10 +7,8 @@ import android.content.SharedPreferences;
 import android.content.pm.FeatureInfo;
 import android.content.res.Resources;
 import android.content.res.XResources;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ShapeDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.Preference;
@@ -56,10 +54,8 @@ public class X_Mod
     public static final String CLASS_CAMERA_DISPLAYDEVICE = "com.htc.camera.DisplayDevice";
 
     public static final String PKG_HTC_GALLERY = "com.htc.album";
-    public static final String CLASS_3DSCENE = "com.htc.sunny2.frameworks.base.widgets.SunnyScene";
 
     public static final String PKG_HTC_FB = "com.htc.sense.socialnetwork.facebook";
-    public static final String CLASS_FB_BASE_ACTIVITY = PKG_HTC_FB + ".FacebookBaseActivity";
     public static final String CLASS_FB_BASE_ACTIVITY2 = "com.htc.socialnetwork.facebook" +
             ".FacebookBaseActivity";
     public static final String CLASS_FB_UPDATE = "com.htc.socialnetwork.facebook.HMSUpdateActivity";
@@ -108,12 +104,45 @@ public class X_Mod
     public static final String CLASS_FINSKY_DFETOC = PKG_FINSKY_API + ".DfeToc";
     public static final String CLASS_FINSKY_LIBRARY = PKG_FINSKY + ".library.Library";
 
+    public static final String PKG_SYSTEMUI = "com.android.systemui";
+    public static final String PKG_SETTINGS = "com.android.settings";
+    public static final String PKG_DIALER = "com.google.android.dialer";
+    public static final String PKG_DIALER2 = "com.android.dialer";
+    public static final String PKG_CONTACTS = "com.android.contacts";
+    public static final String PKG_GOOGLECONTACTS = "com.google.android.contacts";
+    public static final String PKG_LATINIME = "com.android.inputmethod.latin";
+    public static final String PKG_LATINIMEGOOGLE = "com.google.android.inputmethod.latin";
+    public static final String CLASS_SETTINGS_DASHBOARD_SUMMARY = PKG_SETTINGS +
+            ".dashboard.DashboardSummary";
+    public static final String CLASS_SETTINGS_DASHBOARD_TILE = PKG_SETTINGS +
+            ".dashboard.DashboardTile";
+    public static final String CLASS_SETTINGS_SEARCH_RESULTS_SUMMARY = PKG_SETTINGS +
+            ".dashboard.SearchResultsSummary";
+    public static final String CLASS_SETTINGS_SEARCH_RESULTS_ADAPTER =
+            CLASS_SETTINGS_SEARCH_RESULTS_SUMMARY + "$SearchResultsAdapter";
+    public static final String CLASS_SETTINGS_CHARTNETWORK = PKG_SETTINGS +
+            ".widget.ChartNetworkSeriesView";
+    public static final String CLASS_PACKAGEMANAGER = "android.app.ApplicationPackageManager";
+    public static final String PKG_HTC_FEATURE = "com.htc.software";
+    public static final String[] HTC_FEATURES = new String[]{
+            PKG_HTC_FEATURE + ".HTC",
+            PKG_HTC_FEATURE + ".Sense7.0",
+            PKG_HTC_FEATURE + ".M8UL",
+            PKG_HTC_FEATURE + ".M8WL",
+            PKG_HTC_FEATURE + ".IHSense",
+            PKG_HTC_FEATURE + ".hdk",
+            PKG_HTC_FEATURE + ".hdk2",
+            PKG_HTC_FEATURE + ".hdk3"
+    };
     private final SettingsHelper mSettings;
-
+    public XMLHelper xh;
 
     public X_Mod() {
         Logger.logStart();
         mSettings = new SettingsHelper();
+        xh = new XMLHelper();
+
+
         Logger.v("Loaded preference instance %s", mSettings.toString());
     }
 
@@ -230,6 +259,7 @@ public class X_Mod
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                             Logger.logHook(param);
+                            Logger.v("Digitalhigh: HTC theme Hooked");
                             SharedPreferences theme_in = ((Context) param.args[0])
                                     .getSharedPreferences("mixing_theme_color_preference",
                                             Context.MODE_PRIVATE);
@@ -239,8 +269,25 @@ public class X_Mod
                                     .getSharedPreferences(SettingsHelper.PREFERENCE_THEME,
                                             Context.MODE_WORLD_READABLE).edit();
                             for (Map.Entry<String, ?> x : theme_in.getAll().entrySet()) {
+                                Logger.v("Digitalhigh: Reading HTC Theme " + x.getKey() + " " + x.getValue());
                                 if (x.getValue() instanceof Integer) {
-                                    theme_out.putInt(x.getKey(), (Integer) x.getValue());
+                                    Logger.v("Digitalhigh: Trying to pass HTC theme to writer " + x.getKey() + " " + x.getValue());
+                                    if (x.getKey().contains("1")) {
+                                        Logger.v("Digitalhigh: Found key containing 1");
+                                        xh.WriteToXML("systemui_color1", (Integer) x.getValue());
+                                    } else if (x.getKey().contains("2")) {
+                                        Logger.v("Digitalhigh: Found key containing 1");
+                                        xh.WriteToXML("systemui_color2", (Integer) x.getValue());
+                                    } else if (x.getKey().contains("3")) {
+                                        Logger.v("Digitalhigh: Found key containing 1");
+                                        xh.WriteToXML("systemui_color3", (Integer) x.getValue());
+                                    } else if (x.getKey().contains("4")) {
+                                        Logger.v("Digitalhigh: Found key containing 1");
+                                        xh.WriteToXML("systemui_color4", (Integer) x.getValue());
+                                    }
+
+                                } else {
+                                    Logger.e("Digitalhigh: Error reading HTC Theme");
                                 }
                             }
                             theme_out.apply();
@@ -600,7 +647,7 @@ public class X_Mod
 
             Logger.v("Load hooks to tint Settings app's icons with the Theme loaded at boot...");
             Logger.logTheme(mSettings);
-
+            final int color3 = mSettings.getCachedPref_systemui_color3();
             XposedHelpers.findAndHookMethod(Preference.class, "setIcon", Drawable.class,
                     new XC_MethodHook() {
                         @Override
@@ -609,7 +656,7 @@ public class X_Mod
                             Drawable d = (Drawable) param.args[0];
                             BitmapDrawable b = new BitmapDrawable(((Preference) param.thisObject)
                                     .getContext().getResources(), Common.drawableToBitmap(d));
-                            b.setTint(mSettings.getAccentColor());
+                            b.setTint(color3);
                             param.args[0] = b;
                         }
                     });
@@ -623,7 +670,7 @@ public class X_Mod
                             Drawable d = iV.getDrawable();
                             BitmapDrawable b = new BitmapDrawable((Resources) param.args[1],
                                     Common.drawableToBitmap(d));
-                            b.setTint(mSettings.getAccentColor());
+                            b.setTint(color3);
                             iV.setImageDrawable(b);
                             Logger.logHookAfter(param);
                         }
@@ -640,7 +687,7 @@ public class X_Mod
                             Drawable d = iV.getDrawable();
                             BitmapDrawable b = new BitmapDrawable(iV.getContext().getResources(),
                                     Common.drawableToBitmap(d));
-                            b.setTint(mSettings.getAccentColor());
+                            b.setTint(color3);
                             iV.setImageDrawable(b);
                             Logger.logHookAfter(param);
                         }
@@ -678,54 +725,6 @@ public class X_Mod
                     });
 
             Logger.v("All Play Store hooks loaded.");
-
-        } else if (lpparam.packageName.equals(SettingsHelper.PACKAGE_NAME)) {
-
-            Logger.v("Load module's hooks...");
-            Logger.logTheme(mSettings);
-
-            XposedHelpers.findAndHookMethod("com.woalk.apps.lib.colorpicker.ColorPickerSwatch",
-                    lpparam.classLoader, "setColor", int.class, new XC_MethodHook() {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            if ((int) param.args[0] == SettingsHelper.PLACEHOLDER_THEME_COLOR)
-                                param.args[0] = mSettings.getPrimaryColor(
-                                        mSettings.getPref_systemui_use_launcher_theme());
-                        }
-                    });
-
-            XposedHelpers.findAndHookMethod("com.woalk.apps.lib.colorpicker.ColorPreference",
-                    lpparam.classLoader, "onCreateView", ViewGroup.class, new XC_MethodHook() {
-                        @Override
-                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            if (XposedHelpers.getIntField(param.thisObject, "mCurrentValue")
-                                    == SettingsHelper.PLACEHOLDER_THEME_COLOR) {
-                                int color = mSettings.getPrimaryColor(
-                                        mSettings.getCachedPref_systemui_use_launcher_theme());
-                                View mColorView = (View) XposedHelpers.getObjectField(
-                                        param.thisObject, "mColorView");
-                                ((ShapeDrawable) mColorView.getBackground()).getPaint()
-                                        .setColor(color);
-                            }
-                        }
-                    });
-
-            XposedHelpers.findAndHookMethod("com.woalk.apps.lib.colorpicker.ColorPreference",
-                    lpparam.classLoader, "onColorSelected", int.class, new XC_MethodHook() {
-                        @Override
-                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            if ((int) param.args[0] == SettingsHelper.PLACEHOLDER_THEME_COLOR) {
-                                int color = mSettings.getPrimaryColor(
-                                        mSettings.getPref_systemui_use_launcher_theme());
-                                View mColorView = (View) XposedHelpers.getObjectField(
-                                        param.thisObject, "mColorView");
-                                ((ShapeDrawable) mColorView.getBackground()).getPaint()
-                                        .setColor(color);
-                            }
-                        }
-                    });
-
-            Logger.v("Module's hooks loaded.");
 
         }
 
@@ -907,82 +906,148 @@ public class X_Mod
         }
     }
 
-    public static final String PKG_SYSTEMUI = "com.android.systemui";
-    public static final String PKG_SETTINGS = "com.android.settings";
-    public static final String CLASS_SETTINGS_DASHBOARD_SUMMARY = PKG_SETTINGS +
-            ".dashboard.DashboardSummary";
-    public static final String CLASS_SETTINGS_DASHBOARD_TILE = PKG_SETTINGS +
-            ".dashboard.DashboardTile";
-    public static final String CLASS_SETTINGS_SEARCH_RESULTS_SUMMARY = PKG_SETTINGS +
-            ".dashboard.SearchResultsSummary";
-    public static final String CLASS_SETTINGS_SEARCH_RESULTS_ADAPTER =
-            CLASS_SETTINGS_SEARCH_RESULTS_SUMMARY + "$SearchResultsAdapter";
-    public static final String CLASS_SETTINGS_CHARTNETWORK = PKG_SETTINGS +
-            ".widget.ChartNetworkSeriesView";
-
     @Override
     public void handleInitPackageResources(XC_InitPackageResources.InitPackageResourcesParam
                                                    resparam) throws Throwable {
-        if (!mSettings.getCachedPref_use_themes())
-            return;
+        int color1 = mSettings.getCachedPref_systemui_color1();
+        int color2 = mSettings.getCachedPref_systemui_color2();
+        int color3 = mSettings.getCachedPref_systemui_color3();
+        int color4 = mSettings.getCachedPref_systemui_color4();
 
-        if (resparam.packageName.equals(PKG_SYSTEMUI)) {
-            Logger.v("Replacing Theme resources for SystemUI.");
-            Logger.logTheme(mSettings);
+        if (mSettings.getCachedPref_use_themes()) {
 
-            int colorAccent = mSettings.getAccentColor();
-            resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_primary_color",
-                    mSettings.getCachedPref_systemui_color2());
-            resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_secondary_color",
-                    mSettings.getCachedPref_systemui_color1());
-            resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_accent_color",
-                    colorAccent);
-            resparam.res.setReplacement(PKG_SYSTEMUI, "color", "qs_detail_progress_track",
-                    Color.argb(0x99, Color.red(colorAccent), Color.green(colorAccent),
-                            Color.blue(colorAccent)));
-            resparam.res.setReplacement(PKG_SYSTEMUI, "color",
-                    "notification_material_background_media_default_color",
-                    mSettings.getCachedPref_systemui_color2());
+            if (resparam.packageName.equals(PKG_SYSTEMUI) && mSettings.getPref_systemui_use_launcher_theme()) {
+                Logger.v("Replacing Theme resources for SystemUI.");
+                Logger.logTheme(mSettings);
 
-            Logger.v("Replaced Theme resources for SystemUI.");
-        } else if (resparam.packageName.equals(PKG_SETTINGS)) {
-            Logger.v("Replacing Theme resources for Settings app.");
-            Logger.logTheme(mSettings);
+                resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_primary_color",
+                        color1);
+                resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_secondary_color",
+                        color2);
+                resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_accent_color",
+                        color3);
+                resparam.res.setReplacement(PKG_SYSTEMUI, "color", "qs_detail_progress_track",
+                        color4);
+                resparam.res.setReplacement(PKG_SYSTEMUI, "color", "notification_material_background_media_default_color",
+                        color2);
 
-            resparam.res.setReplacement(PKG_SETTINGS, "color", "theme_primary",
-                    mSettings.getPrimaryColor());
-            resparam.res.setReplacement(PKG_SETTINGS, "color", "theme_primary_dark",
-                    mSettings.getPrimaryDarkColor());
-            resparam.res.setReplacement(PKG_SETTINGS, "color", "theme_accent",
-                    mSettings.getAccentColor());
-            resparam.res.setReplacement(PKG_SETTINGS, "color", "switchbar_background_color",
-                    mSettings.getPrimaryDarkColor());
-            resparam.res.setReplacement(PKG_SETTINGS, "color", "switch_accent_color",
-                    mSettings.getAccentColor());
+                Logger.v("Replaced Theme resources for SystemUI.");
+            } else if (resparam.packageName.equals(PKG_SETTINGS)) {
+                Logger.v("Replacing Theme resources for Settings app.");
+                Logger.logTheme(mSettings);
 
-            Logger.v("Replaced Theme resources for Settings app.");
-        } else if (resparam.packageName.equals(SettingsHelper.PACKAGE_NAME)) {
-            Logger.v("Replacing Theme resources for module.");
+                resparam.res.setReplacement(PKG_SETTINGS, "color", "theme_primary",
+                        color1);
+                resparam.res.setReplacement(PKG_SETTINGS, "color", "theme_primary_dark",
+                        color2);
+                resparam.res.setReplacement(PKG_SETTINGS, "color", "theme_accent",
+                        color3);
+                resparam.res.setReplacement(PKG_SETTINGS, "color", "switchbar_background_color",
+                        color2);
+                resparam.res.setReplacement(PKG_SETTINGS, "color", "switch_accent_color",
+                        color4);
 
-            resparam.res.setReplacement(SettingsHelper.PACKAGE_NAME, "color", "theme9",
-                    mSettings.getPrimaryColor(mSettings.getPref_systemui_use_launcher_theme()));
+                Logger.v("Replaced Theme resources for Settings app.");
+            } else if (resparam.packageName.equals(PKG_DIALER)) {
+                Logger.v("Replacing Theme resources for Dialer app.");
+                Logger.logTheme(mSettings);
 
-            Logger.v("Replaced Theme resources for module.");
+                resparam.res.setReplacement(PKG_DIALER2, "color", "wallet_highlighted_text_holo_light",
+                        color1);
+                resparam.res.setReplacement(PKG_DIALER2, "color", "wallet_highlighted_text_holo_dark",
+                        color2);
+                resparam.res.setReplacement(PKG_DIALER2, "color", "wallet_holo_blue_light",
+                        color1);
+                resparam.res.setReplacement(PKG_DIALER2, "color", "wallet_link_text_light",
+                        color1);
+                resparam.res.setReplacement(PKG_DIALER2, "color", "dialer_theme_color",
+                        color1);
+                resparam.res.setReplacement(PKG_DIALER2, "color", "dialer_theme_color_dark",
+                        color2);
+                resparam.res.setReplacement(PKG_DIALER2, "color", "dialtacts_theme_color",
+                        color1);
+                resparam.res.setReplacement(PKG_DIALER2, "color", "actionbar_background_color_dark",
+                        color2);
+                resparam.res.setReplacement(PKG_DIALER2, "color", "call_log_voicemail_highlight_color",
+                        color4);
+                resparam.res.setReplacement(PKG_DIALER2, "color", "call_log_extras_text_color",
+                        color1);
+                resparam.res.setReplacement(PKG_DIALER2, "color", "voicemail_playback_seek_bar_already_played",
+                        color4);
+                resparam.res.setReplacement(PKG_DIALER2, "color", "item_selected",
+                        color1);
+
+                Logger.v("Replaced Theme resources for Dialer app.");
+            } else if (resparam.packageName.equals(PKG_GOOGLECONTACTS)) {
+                Logger.v("Replacing Theme resources for Contacts app.");
+                resparam.res.setReplacement(PKG_CONTACTS, "color", "dialer_theme_color",
+                        color1);
+                resparam.res.setReplacement(PKG_CONTACTS, "color", "wallet_holo_blue_light",
+                        color1);
+                resparam.res.setReplacement(PKG_CONTACTS, "color", "dialer_theme_color_dark",
+                        color2);
+                resparam.res.setReplacement(PKG_CONTACTS, "color", "primary_color",
+                        color1);
+                resparam.res.setReplacement(PKG_CONTACTS, "color", "primary_color_dark",
+                        color2);
+                resparam.res.setReplacement(PKG_CONTACTS, "color", "action_bar_background",
+                        color1);
+                resparam.res.setReplacement(PKG_CONTACTS, "color", "dialtacts_theme_color",
+                        color2);
+
+                Logger.v("Replaced Theme resources for Contacts app.");
+
+            } else if (resparam.packageName.equals(PKG_LATINIMEGOOGLE)) {
+                Logger.v("Replacing Theme resources for Google Keyboard.");
+                resparam.res.setReplacement(PKG_LATINIME, "color", "key_background_lxx_dark",
+                        color1);
+                resparam.res.setReplacement(PKG_LATINIME, "color", "key_text_color_lxx_light",
+                        color2);
+                resparam.res.setReplacement(PKG_LATINIME, "color", "key_functional_text_color_lxx_light",
+                        color2);
+                resparam.res.setReplacement(PKG_LATINIME, "color", "key_text_inactive_color_lxx_light",
+                        color1);
+                resparam.res.setReplacement(PKG_LATINIME, "color", "key_hint_letter_color_lxx_light",
+                        color2);
+                resparam.res.setReplacement(PKG_LATINIME, "color", "language_on_spacebar_text_color_lxx_light",
+                        color2);
+                resparam.res.setReplacement(PKG_LATINIME, "color", "auto_correct_color_lxx_light",
+                        color2);
+                resparam.res.setReplacement(PKG_LATINIME, "color", "typed_word_color_lxx_light",
+                        color2);
+                resparam.res.setReplacement(PKG_LATINIME, "color", "suggested_word_color_lxx_light",
+                        color2);
+                resparam.res.setReplacement(PKG_LATINIME, "color", "key_background_pressed_lxx_light",
+                        color2);
+                resparam.res.setReplacement(PKG_LATINIME, "color", "suggested_word_color_lxx_light",
+                        color2);
+                resparam.res.setReplacement(PKG_LATINIME, "color", "highlight_color_lxx_light",
+                        color2);
+                resparam.res.setReplacement(PKG_LATINIME, "color", "gesture_trail_color_lxx_light",
+                        color3);
+                resparam.res.setReplacement(PKG_LATINIME, "color", "sliding_key_input_preview_color_lxx_light",
+                        color2);
+                resparam.res.setReplacement(PKG_LATINIME, "color", "sliding_key_input_preview_color_lxx_dark",
+                        color2);
+                resparam.res.setReplacement(PKG_LATINIME, "color", "gesture_trail_color_lxx_dark",
+                        color2);
+
+                Logger.v("Replaced Theme resources for Contacts app.");
+
+            } else if (resparam.packageName.equals(SettingsHelper.PACKAGE_NAME)) {
+                Logger.v("Replacing Theme resources for module.");
+
+                resparam.res.setReplacement(SettingsHelper.PACKAGE_NAME, "color", "theme1",
+                        color1);
+                resparam.res.setReplacement(SettingsHelper.PACKAGE_NAME, "color", "theme2",
+                        color2);
+                resparam.res.setReplacement(SettingsHelper.PACKAGE_NAME, "color", "theme3",
+                        color3);
+
+                Logger.v("Replaced Theme resources for module.");
+            }
         }
     }
-
-    public static final String CLASS_PACKAGEMANAGER = "android.app.ApplicationPackageManager";
-    public static final String PKG_HTC_FEATURE = "com.htc.software";
-    public static final String[] HTC_FEATURES = new String[]{
-            PKG_HTC_FEATURE + ".HTC",
-            PKG_HTC_FEATURE + ".Sense7.0",
-            PKG_HTC_FEATURE + ".M8UL",
-            PKG_HTC_FEATURE + ".M8WL",
-            PKG_HTC_FEATURE + ".IHSense",
-            PKG_HTC_FEATURE + ".hdk",
-            PKG_HTC_FEATURE + ".hdk2",
-            PKG_HTC_FEATURE + ".hdk3"
-    };
 
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable {
@@ -1014,29 +1079,33 @@ public class X_Mod
     }
 
     private void replaceSystemWideThemes() {
+        int color1 = mSettings.getCachedPref_systemui_color1();
+        int color2 = mSettings.getCachedPref_systemui_color2();
+        int color3 = mSettings.getCachedPref_systemui_color3();
+        int color4 = mSettings.getCachedPref_systemui_color4();
         Logger.v("Replacing system-wide Theme resources.");
         Logger.logTheme(mSettings);
 
         XResources.setSystemWideReplacement("android", "color", "material_blue_grey_900",
-                mSettings.getPrimaryColor());
+                color1);
         XResources.setSystemWideReplacement("android", "color", "primary_material_dark",
-                mSettings.getPrimaryColor());
+                color2);
 //        XResources.setSystemWideReplacement("android", "color", "primary_material_light",
 //                Common.enlightColor(mSettings.getPrimaryColor(), 2.25f));
         XResources.setSystemWideReplacement("android", "color", "material_blue_grey_950",
-                mSettings.getPrimaryDarkColor());
+                color1);
         XResources.setSystemWideReplacement("android", "color", "primary_dark_material_dark",
-                mSettings.getPrimaryDarkColor());
+                color2);
 //        XResources.setSystemWideReplacement("android", "color", "primary_dark_material_light",
 //                Common.enlightColor(mSettings.getPrimaryColor(), 1.65f));
         XResources.setSystemWideReplacement("android", "color", "material_deep_teal_500",
-                mSettings.getAccentColor());
+                color2);
         XResources.setSystemWideReplacement("android", "color", "accent_material_dark",
-                mSettings.getAccentColor());
+                color4);
         XResources.setSystemWideReplacement("android", "color", "accent_material_light",
-                mSettings.getAccentColor());
+                color3);
         XResources.setSystemWideReplacement("android", "color", "material_deep_teal_200",
-                Common.enlightColor(mSettings.getAccentColor(), 1.5f));
+                color2);
 
         Logger.v("Theme resources replaced.");
     }
