@@ -113,7 +113,7 @@ public class Logger {
     }
 
     public static String getLogColorString(int color) {
-        return String.valueOf(color) + ":#" + Integer.toHexString(color).toUpperCase();
+        return String.valueOf(color) + ":#" + Integer.toHexString(color).toUpperCase(Locale.getDefault());
     }
 
     // v---- READING ----v \\
