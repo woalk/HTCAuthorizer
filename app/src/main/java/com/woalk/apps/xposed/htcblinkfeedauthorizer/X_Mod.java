@@ -113,6 +113,7 @@ public class X_Mod
     public static final String PKG_GOOGLECONTACTS = "com.google.android.contacts";
     public static final String PKG_LATINIME = "com.android.inputmethod.latin";
     public static final String PKG_LATINIMEGOOGLE = "com.google.android.inputmethod.latin";
+    public static final String PKG_SENSIFY = "com.woalk.apps.xposed.htcblinkfeedauthorizer";
     public static final String CLASS_SETTINGS_DASHBOARD_SUMMARY = PKG_SETTINGS +
             ".dashboard.DashboardSummary";
     public static final String CLASS_SETTINGS_DASHBOARD_TILE = PKG_SETTINGS +
@@ -258,6 +259,9 @@ public class X_Mod
             XposedHelpers.findAndHookMethod(CLASS_BF_MIXINGTHEMECOLOR, lpparam.classLoader,
                     "updateFullThemecolor", Context.class, CLASS_BF_THEME, new XC_MethodHook() {
                         @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            Common.killPackage(PKG_SENSIFY);
+                        }
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                             Logger.logHook(param);
                             Logger.v("Digitalhigh: HTC theme Hooked");
@@ -930,7 +934,7 @@ public class X_Mod
                 resparam.res.setReplacement(PKG_SYSTEMUI, "color", "qs_detail_progress_track",
                         color4);
                 resparam.res.setReplacement(PKG_SYSTEMUI, "color", "notification_material_background_media_default_color",
-                        color2);
+                        color1);
 
                 Logger.v("Replaced Theme resources for SystemUI.");
             } else if (resparam.packageName.equals(PKG_SETTINGS)) {
@@ -944,9 +948,9 @@ public class X_Mod
                 resparam.res.setReplacement(PKG_SETTINGS, "color", "theme_accent",
                         color3);
                 resparam.res.setReplacement(PKG_SETTINGS, "color", "switchbar_background_color",
-                        color2);
-                resparam.res.setReplacement(PKG_SETTINGS, "color", "switch_accent_color",
                         color4);
+                resparam.res.setReplacement(PKG_SETTINGS, "color", "switch_accent_color",
+                        color3);
 
                 Logger.v("Replaced Theme resources for Settings app.");
             } else if (resparam.packageName.equals(PKG_DIALER)) {
