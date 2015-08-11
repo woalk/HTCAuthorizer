@@ -5,7 +5,7 @@
 build/
 *.iml
 *.lca
-
+/lib
 /lib/colorpickerpreference
 /lib/android-colorpicker
 /lib/materia-color-picker
