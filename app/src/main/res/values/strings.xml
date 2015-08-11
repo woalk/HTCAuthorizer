@@ -62,9 +62,6 @@
     <string name="pref_themes_check_title">Use Themes for Material apps</string>
     <string name="pref_themes_check_summary">Material apps without specific colors will be
         tinted according to current HTC Theme.</string>
-    <string name="pref_themes_use_launcher_title">Use Launcher Theme</string>
-    <string name="pref_themes_use_launcher_summary">Do not use the app theme, but the Sense Home
-        theme of HTC Themes to tint Material apps.</string>
     <string name="pref_themes_systemui_color1_title">Primary color</string>
     <string name="pref_themes_systemui_color1_summary">Color to use for Android\'s notification
         panel header.</string>
