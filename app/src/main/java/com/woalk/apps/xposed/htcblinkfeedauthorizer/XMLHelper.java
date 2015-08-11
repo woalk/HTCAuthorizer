@@ -35,13 +35,19 @@ public class XMLHelper {
     public Integer default1 = -31321439;
     public static final String basekey = "systemui_color";
     public static final String xhtag = "XMLHelper: ";
-    String filename = "themeColors.xml";
-    File file = new File(Environment.getExternalStorageDirectory(), filename);
+    String filename = "/themeColors.xml";
+    String path = "/Sensify";
+    File directory = new File(Environment.getExternalStorageDirectory().toString() + path);
+    File file = new File(directory + filename);
+
+    public XMLHelper() {
+        checkXMLExists();
+    }
+
     final ArrayList<Integer> Theme = new ArrayList<>();
 
     public void WriteToXML(String keyname, Integer theme1) {
         Logger.d(xhtag + "Trying to set " + keyname + " to " + theme1);
-        checkXMLExists();
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = null;
         try {
@@ -83,7 +89,7 @@ public class XMLHelper {
 
     public Integer readFromXML(Integer theme) throws IOException {
         XmlPullParserFactory factory = null;
-        Logger.i(xhtag + "Starting readfromfile for integer " + theme);
+        Logger.i(xhtag + "Starting readfromXML for integer " + theme);
         try {
             factory = XmlPullParserFactory.newInstance();
         } catch (XmlPullParserException e) {
@@ -182,34 +188,40 @@ public class XMLHelper {
 
 
     public void checkXMLExists() {
-        if (!file.exists()) {
-            try {
-                Logger.d("Sensify: Creating file " + file.getPath());
-                FileOutputStream fileos = new FileOutputStream(file);
-                XmlSerializer xmlSerializer = Xml.newSerializer();
-                xmlSerializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
-                StringWriter writer = new StringWriter();
-                xmlSerializer.setOutput(writer);
-                xmlSerializer.startDocument("UTF-8", true);
-                xmlSerializer.startTag(null, "theme");
-                for (int x=1; x<5; x++) {
-                    xmlSerializer.startTag(null, basekey + x);
-                    xmlSerializer.text(Integer.toString(default1));
-                    xmlSerializer.endTag(null, basekey + 1);
+        if (!file.exists()) try {
+            Logger.d("Sensify: Creating file " + file.getPath());
+            if (!directory.exists()) {
+                if (directory.mkdirs()) {
+                    Logger.d(xhtag + "Directory Successfully created.");
+                    FileOutputStream fileos = new FileOutputStream(file);
+                    XmlSerializer xmlSerializer = Xml.newSerializer();
+                    xmlSerializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
+                    StringWriter writer = new StringWriter();
+                    xmlSerializer.setOutput(writer);
+                    xmlSerializer.startDocument("UTF-8", true);
+                    xmlSerializer.startTag(null, "theme");
+                    for (int x = 1; x < 5; x++) {
+                        xmlSerializer.startTag(null, basekey + x);
+                        xmlSerializer.text(Integer.toString(default1));
+                        xmlSerializer.endTag(null, basekey + x);
+                    }
+                    xmlSerializer.endTag(null, "theme");
+                    xmlSerializer.endDocument();
+                    xmlSerializer.flush();
+                    String dataWrite = writer.toString();
+                    fileos.write(dataWrite.getBytes());
+                    fileos.close();
+                } else {
+                    Logger.e(xhtag + "Problem creating directory");
+                    throw new FileNotFoundException();
                 }
-                xmlSerializer.endTag(null, "theme");
-                xmlSerializer.endDocument();
-                xmlSerializer.flush();
-                String dataWrite = writer.toString();
-                fileos.write(dataWrite.getBytes());
-                fileos.close();
-
-
-            } catch (IOException e) {
-                Logger.e(xhtag + "error " + e);
-
             }
-        } else {
+
+        } catch (IOException e) {
+            Logger.e(xhtag + "error " + e);
+
+        }
+        else {
             Logger.d(xhtag + "file " + file.getPath() + " already exists.");
 
         }
