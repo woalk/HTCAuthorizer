@@ -12,7 +12,6 @@ public class SettingsHelper {
     private final XSharedPreferences mPref;
 
     private boolean cachedPref_use_themes;
-    private static final String shkey = "SettingsHelper: ";
 
     public SettingsHelper() {
         mPref = new XSharedPreferences(PACKAGE_NAME, PREFERENCE_FILE);
@@ -25,7 +24,6 @@ public class SettingsHelper {
     public void loadCachePrefs() {
         cachedPref_use_themes = getPref_use_themes();
     }
-
 
 
     public boolean getPref_has_ext() {
@@ -57,7 +55,6 @@ public class SettingsHelper {
     }
 
 
-
     public boolean getCachedPref_systemui_use_launcher_theme() {
         return getPref_systemui_use_launcher_theme();
     }
@@ -65,7 +62,6 @@ public class SettingsHelper {
     protected boolean getPref_systemui_use_launcher_theme() {
         return mPref.getBoolean("systemui_use_launcher_theme", false);
     }
-
 
 
     protected int getPref_systemui_color1() {
@@ -120,7 +116,7 @@ public class SettingsHelper {
         }
         return "use=true;"
 
-                 + "useL=" + getCachedPref_systemui_use_launcher_theme() + ";"
+                + "useL=" + getCachedPref_systemui_use_launcher_theme() + ";"
                 + "systemUI1=" + Logger.getLogColorString(getCachedPref_systemui_color1()) + ";"
                 + "systemUI2=" + Logger.getLogColorString(getCachedPref_systemui_color2());
     }
