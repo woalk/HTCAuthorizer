@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 public class CustomPreference extends Preference {
-    public Integer myTheme = null;
+    private int myTheme;
     private ImageView myView;
 
     public CustomPreference(Context context) {
@@ -26,15 +26,15 @@ public class CustomPreference extends Preference {
     public void onBindView(View rootView) {
         super.onBindView(rootView);
         myView = (ImageView) rootView.findViewById(R.id.button);
-
+        setMyColor(myTheme);
     }
 
     public void setMyColor(int themecolor) {
         myTheme = themecolor;
         Logger.d("CustomPreference: Color passed " + myTheme);
-        if ((myView != null) && (myTheme != null)) {
+        if (myView != null) {
             Logger.d("CustomPreference: It works!" + " " + myView + " and color of " + myTheme);
-            myView.setColorFilter(myTheme, android.graphics.PorterDuff.Mode.SRC_IN);
+            myView.setBackgroundColor(myTheme);
         } else {
             Logger.d("CustomPreference: Close, but no cigar!" + " " + myView + " and color of " + myTheme);
 

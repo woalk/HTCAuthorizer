@@ -259,9 +259,7 @@ public class X_Mod
             XposedHelpers.findAndHookMethod(CLASS_BF_MIXINGTHEMECOLOR, lpparam.classLoader,
                     "updateFullThemecolor", Context.class, CLASS_BF_THEME, new XC_MethodHook() {
                         @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            Common.killPackage(PKG_SENSIFY);
-                        }
+
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                             Logger.logHook(param);
                             Logger.v("Digitalhigh: HTC theme Hooked");

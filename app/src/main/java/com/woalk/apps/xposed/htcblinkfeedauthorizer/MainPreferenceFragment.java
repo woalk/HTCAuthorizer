@@ -11,9 +11,6 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
-import android.text.Layout;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -37,6 +34,10 @@ public class MainPreferenceFragment extends PreferenceFragment
     static final int COLOR_SELECTION_CANCELLED = 2;  // The request code
     private ImageView iv1;
     private ImageView iv;
+    private CustomPreference picker1;
+    private CustomPreference picker2;
+    private CustomPreference picker3;
+    private CustomPreference picker4;
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -56,20 +57,15 @@ public class MainPreferenceFragment extends PreferenceFragment
                 .registerOnSharedPreferenceChangeListener(this);
 
         addPreferencesFromResource(R.xml.pref_general);
-        CustomPreference picker1 = (CustomPreference) findPreference(getString(R.string.CP1));
-        CustomPreference picker2 = (CustomPreference) findPreference(getString(R.string.CP2));
-        CustomPreference picker3 = (CustomPreference) findPreference(getString(R.string.CP3));
-        CustomPreference picker4 = (CustomPreference) findPreference(getString(R.string.CP4));
-        updateFromXML(getActivity());
-        picker1.setMyColor(color1);
-        picker2.setMyColor(color2);
-        picker3.setMyColor(color3);
-        picker4.setMyColor(color4);
+        picker1 = (CustomPreference) findPreference(getString(R.string.CP1));
+        picker2 = (CustomPreference) findPreference(getString(R.string.CP2));
+        picker3 = (CustomPreference) findPreference(getString(R.string.CP3));
+        picker4 = (CustomPreference) findPreference(getString(R.string.CP4));
 
         Logger.d("Digitalhigh: Oncreate: colors are " + color1 + ", " + color2 + ", " + color3 + ", and " + color4);
 
 
-        findPreference(getString(R.string.CP1)).setOnPreferenceClickListener(
+        picker1.setOnPreferenceClickListener(
                 new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
@@ -86,16 +82,16 @@ public class MainPreferenceFragment extends PreferenceFragment
                         return true;
                     }
                 });
-        findPreference(getString(R.string.CP2)).setOnPreferenceClickListener(
+        picker2.setOnPreferenceClickListener(
                 new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
                         Intent intent = new Intent(getActivity(), ColorPickerActivity.class);
-                        intent.putExtra("Prefname","systemui_color2");
+                        intent.putExtra("Prefname", "systemui_color2");
                         try {
                             intent.putExtra("Current", xw.readFromXML(1));
                             Logger.d("MainPref: Passing sui2 color of " + xw.readFromXML(1));
-                            Logger.d("MainPref: Alt. value is color of " + color2 );
+                            Logger.d("MainPref: Alt. value is color of " + color2);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -103,12 +99,12 @@ public class MainPreferenceFragment extends PreferenceFragment
                         return true;
                     }
                 });
-        findPreference(getString(R.string.CP3)).setOnPreferenceClickListener(
+        picker3.setOnPreferenceClickListener(
                 new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
                         Intent intent = new Intent(getActivity(), ColorPickerActivity.class);
-                        intent.putExtra("Prefname","systemui_color3");
+                        intent.putExtra("Prefname", "systemui_color3");
                         try {
                             intent.putExtra("Current", xw.readFromXML(2));
                             Logger.d("MainPref: Passing sui3 color of " + xw.readFromXML(2));
@@ -120,12 +116,12 @@ public class MainPreferenceFragment extends PreferenceFragment
                         return true;
                     }
                 });
-        findPreference(getString(R.string.CP4)).setOnPreferenceClickListener(
+        picker4.setOnPreferenceClickListener(
                 new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
                         Intent intent = new Intent(getActivity(), ColorPickerActivity.class);
-                        intent.putExtra("Prefname","systemui_color4");
+                        intent.putExtra("Prefname", "systemui_color4");
                         try {
                             intent.putExtra("Current", xw.readFromXML(3));
                             Logger.d("MainPref: Passing sui4 color of " + xw.readFromXML(3));
@@ -217,6 +213,13 @@ public class MainPreferenceFragment extends PreferenceFragment
         updateFromXML(getActivity());
     }
 
+    private void updateViews() {
+        picker1.setMyColor(color1);
+        picker2.setMyColor(color2);
+        picker3.setMyColor(color3);
+        picker4.setMyColor(color4);
+    }
+
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         // update value shown in summary
@@ -266,12 +269,8 @@ public class MainPreferenceFragment extends PreferenceFragment
             Logger.e("Error reading from file" + e);
         }
         Logger.i("Digitalhigh: Colors set to " + color1 + " " + color2 + " " + color3 + " " + color4);
-        editor.putInt("systemui_color1", color1);
-        editor.putInt("systemui_color2", color2);
-        editor.putInt("systemui_color3", color3);
-        editor.putInt("systemui_color4", color4);
 
-        editor.apply();
+        updateViews();
     }
 
     /**
@@ -317,7 +316,6 @@ public class MainPreferenceFragment extends PreferenceFragment
         logLoc.setSummary(String.format(
                 getString(R.string.pref_debug_export_log_toast), file));
     }
-
 
 
 }

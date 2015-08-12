@@ -76,7 +76,7 @@
     <string name="pref_themes_systemui_color3_summary">Color to use for accent items like buttons.
         </string>
     <string name="pref_themes_systemui_color4_title">Secondary Accent Color</string>
-    <string name="pref_themes_systemui_color4_summary">Color to use for accent items like slider backgrounds.
+    <string name="pref_themes_systemui_color4_summary">Subcolor to use for accent items.
         </string>
     <string name="pref_themes_systemui_use_launcher_title">Theme SystemUI</string>
     <string name="pref_themes_systemui_use_launcher_summary">Use Theme colors
