@@ -77,25 +77,30 @@
             android:summary="@string/pref_themes_check_summary"
             android:defaultValue="false"/>
 
-        <Preference
+        <com.woalk.apps.xposed.htcblinkfeedauthorizer.CustomPreference
+            android:layout="@layout/custom_pref"
             android:key="CP1"
-            android:title="@string/pref_themes_check_title"
-            android:summary="@string/pref_themes_check_summary"
+            android:id="@+id/Picker1"
+            android:title="@string/pref_themes_systemui_color1_title"
+            android:summary="@string/pref_themes_systemui_color1_summary"
             />
-        <Preference
+        <com.woalk.apps.xposed.htcblinkfeedauthorizer.CustomPreference
+            android:layout="@layout/custom_pref"
             android:key="CP2"
-            android:title="@string/pref_themes_check_title"
-            android:summary="@string/pref_themes_check_summary"
+            android:title="@string/pref_themes_systemui_color2_title"
+            android:summary="@string/pref_themes_systemui_color2_summary"
             />
-        <Preference
+        <com.woalk.apps.xposed.htcblinkfeedauthorizer.CustomPreference
+            android:layout="@layout/custom_pref"
             android:key="CP3"
-            android:title="@string/pref_themes_check_title"
-            android:summary="@string/pref_themes_check_summary"
+            android:title="@string/pref_themes_systemui_color3_title"
+            android:summary="@string/pref_themes_systemui_color3_summary"
             />
-        <Preference
+        <com.woalk.apps.xposed.htcblinkfeedauthorizer.CustomPreference
+            layout="@layout/custom_pref"
             android:key="CP4"
-            android:title="@string/pref_themes_check_title"
-            android:summary="@string/pref_themes_check_summary"
+            android:title="@string/pref_themes_systemui_color4_title"
+            android:summary="@string/pref_themes_systemui_color4_summary"
             />
 
         <net.margaritov.preference.colorpicker.ColorPickerPreference

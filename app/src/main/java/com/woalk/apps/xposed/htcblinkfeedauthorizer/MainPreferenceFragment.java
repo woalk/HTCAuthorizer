@@ -11,6 +11,7 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
+import android.text.Layout;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -59,6 +60,7 @@ public class MainPreferenceFragment extends PreferenceFragment
         Preference button2 = findPreference(getString(R.string.CP2));
         Preference button3 = findPreference(getString(R.string.CP3));
         Preference button4 = findPreference(getString(R.string.CP4));
+
         View v1 = button1.getView(null, null);
         View v2 = button2.getView(null, null);
         View v3 = button3.getView(null, null);
@@ -67,16 +69,10 @@ public class MainPreferenceFragment extends PreferenceFragment
         ImageView vb2 = (ImageView) v2.findViewById(R.id.button);
         ImageView vb3 = (ImageView) v3.findViewById(R.id.button);
         ImageView vb4 = (ImageView) v4.findViewById(R.id.button);
-        button1.setWidgetLayoutResource(R.layout.custom_pref);
-        button2.setWidgetLayoutResource(R.layout.custom_pref);
-        button3.setWidgetLayoutResource(R.layout.custom_pref);
-        button4.setWidgetLayoutResource(R.layout.custom_pref);
+
         updateFromXML(getActivity());
         Logger.d("Digitalhigh: Oncreate: colors are " + color1 + ", " + color2 + ", " + color3 + ", and " + color4);
-        //vb1.setColorFilter(color1);
-        //vb2.setColorFilter(color2);
-        //vb3.setColorFilter(color3);
-        //vb4.setColorFilter(color4);
+
 
         findPreference(getString(R.string.CP1)).setOnPreferenceClickListener(
                 new Preference.OnPreferenceClickListener() {
@@ -244,6 +240,7 @@ public class MainPreferenceFragment extends PreferenceFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
+        Logger.d("Digitalhigh: Result received");
         if (requestCode == COLOR_SELECTION_COMPLETE) {
             if (resultCode == COLOR_SELECTION_COMPLETE) {
                 Bundle res = data.getExtras();
