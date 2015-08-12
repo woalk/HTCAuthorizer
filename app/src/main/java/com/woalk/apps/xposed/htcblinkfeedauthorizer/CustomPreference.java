@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 public class CustomPreference extends Preference {
     public Integer myTheme = null;
+    private ImageView myView;
 
     public CustomPreference(Context context) {
         super(context);
@@ -24,21 +25,19 @@ public class CustomPreference extends Preference {
     @Override
     public void onBindView(View rootView) {
         super.onBindView(rootView);
-        ImageView myView = (ImageView) rootView.findViewById(R.id.button);
-
-        if ((myView != null) && (myTheme != null)) {
-            Logger.d("CustomPreference: It works!" + " " + myView + " and color of " + myTheme);
-            myView.setBackgroundColor(myTheme);
-        } else {
-            Logger.d("CustomPreference: Close, but no cigar!" + " " + myView + " and color of " + myTheme);
-        }
+        myView = (ImageView) rootView.findViewById(R.id.button);
 
     }
-
 
     public void setMyColor(int themecolor) {
         myTheme = themecolor;
         Logger.d("CustomPreference: Color passed " + myTheme);
-    }
+        if ((myView != null) && (myTheme != null)) {
+            Logger.d("CustomPreference: It works!" + " " + myView + " and color of " + myTheme);
+            myView.setColorFilter(myTheme, android.graphics.PorterDuff.Mode.SRC_IN);
+        } else {
+            Logger.d("CustomPreference: Close, but no cigar!" + " " + myView + " and color of " + myTheme);
 
+        }
+    }
 }
