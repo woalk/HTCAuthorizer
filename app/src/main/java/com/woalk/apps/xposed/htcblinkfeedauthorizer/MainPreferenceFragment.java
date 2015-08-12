@@ -56,21 +56,16 @@ public class MainPreferenceFragment extends PreferenceFragment
                 .registerOnSharedPreferenceChangeListener(this);
 
         addPreferencesFromResource(R.xml.pref_general);
-        Preference button1 = findPreference(getString(R.string.CP1));
-        Preference button2 = findPreference(getString(R.string.CP2));
-        Preference button3 = findPreference(getString(R.string.CP3));
-        Preference button4 = findPreference(getString(R.string.CP4));
-
-        View v1 = button1.getView(null, null);
-        View v2 = button2.getView(null, null);
-        View v3 = button3.getView(null, null);
-        View v4 = button4.getView(null, null);
-        ImageView vb1 = (ImageView) v1.findViewById(R.id.button);
-        ImageView vb2 = (ImageView) v2.findViewById(R.id.button);
-        ImageView vb3 = (ImageView) v3.findViewById(R.id.button);
-        ImageView vb4 = (ImageView) v4.findViewById(R.id.button);
-
+        CustomPreference picker1 = (CustomPreference) findPreference(getString(R.string.CP1));
+        CustomPreference picker2 = (CustomPreference) findPreference(getString(R.string.CP2));
+        CustomPreference picker3 = (CustomPreference) findPreference(getString(R.string.CP3));
+        CustomPreference picker4 = (CustomPreference) findPreference(getString(R.string.CP4));
         updateFromXML(getActivity());
+        picker1.setMyColor(color1);
+        picker2.setMyColor(color2);
+        picker3.setMyColor(color3);
+        picker4.setMyColor(color4);
+
         Logger.d("Digitalhigh: Oncreate: colors are " + color1 + ", " + color2 + ", " + color3 + ", and " + color4);
 
 

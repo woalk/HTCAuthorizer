@@ -82,49 +82,31 @@
             android:key="CP1"
             android:id="@+id/Picker1"
             android:title="@string/pref_themes_systemui_color1_title"
+            android:dependency="has_usb"
             android:summary="@string/pref_themes_systemui_color1_summary"
             />
         <com.woalk.apps.xposed.htcblinkfeedauthorizer.CustomPreference
             android:layout="@layout/custom_pref"
             android:key="CP2"
+            android:id="@+id/Picker2"
             android:title="@string/pref_themes_systemui_color2_title"
             android:summary="@string/pref_themes_systemui_color2_summary"
             />
         <com.woalk.apps.xposed.htcblinkfeedauthorizer.CustomPreference
             android:layout="@layout/custom_pref"
             android:key="CP3"
+            android:id="@+id/Picker3"
             android:title="@string/pref_themes_systemui_color3_title"
             android:summary="@string/pref_themes_systemui_color3_summary"
             />
         <com.woalk.apps.xposed.htcblinkfeedauthorizer.CustomPreference
             layout="@layout/custom_pref"
             android:key="CP4"
+            android:id="@+id/Picker4"
             android:title="@string/pref_themes_systemui_color4_title"
             android:summary="@string/pref_themes_systemui_color4_summary"
             />
 
-        <net.margaritov.preference.colorpicker.ColorPickerPreference
-            android:key="systemui_color1"
-            android:title="@string/pref_themes_systemui_color1_title"
-            android:summary="@string/pref_themes_systemui_color1_summary"
-            android:defaultValue="@color/theme1" />
-
-        <net.margaritov.preference.colorpicker.ColorPickerPreference
-            android:key="systemui_color2"
-            android:title="@string/pref_themes_systemui_color2_title"
-            android:summary="@string/pref_themes_systemui_color2_summary"
-            android:defaultValue="@color/theme2" />
-
-        <net.margaritov.preference.colorpicker.ColorPickerPreference
-            android:key="systemui_color3"
-            android:title="@string/pref_themes_systemui_color3_title"
-            android:summary="@string/pref_themes_systemui_color3_summary"
-            android:defaultValue="@color/theme3" />
-        <net.margaritov.preference.colorpicker.ColorPickerPreference
-            android:key="systemui_color4"
-            android:title="@string/pref_themes_systemui_color4_title"
-            android:summary="@string/pref_themes_systemui_color4_summary"
-            android:defaultValue="@color/theme4" />
         <CheckBoxPreference
             android:key="systemui_use_launcher_theme"
             android:title="@string/pref_themes_systemui_use_launcher_title"
