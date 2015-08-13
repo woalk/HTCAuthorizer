@@ -102,7 +102,7 @@
             android:summary="@string/pref_themes_systemui_color3_summary"
             />
         <com.woalk.apps.xposed.htcblinkfeedauthorizer.CustomPreference
-            layout="@layout/custom_pref"
+            android:layout="@layout/custom_pref"
             android:key="CP4"
             android:id="@+id/Picker4"
             android:title="@string/pref_themes_systemui_color4_title"

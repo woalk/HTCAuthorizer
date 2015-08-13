@@ -27,6 +27,7 @@
     <string name="CP2">CP2</string>
     <string name="CP3">CP3</string>
     <string name="CP4">CP4</string>
+    <string name="CP5">CP5</string>
     <string name="pref_cat_general">General</string>
     <string name="pref_general_always_active_title">Show always active mods</string>
     <string name="pref_general_always_active_window">Always active mods</string>
@@ -72,11 +73,11 @@
     <string name="pref_themes_systemui_color2_title">Secondary color</string>
     <string name="pref_themes_systemui_color2_summary">Color to use for Android\'s quick settings.
         </string>
-    <string name="pref_themes_systemui_color3_title">Primary Accent Color</string>
+    <string name="pref_themes_systemui_color3_title">Accent Color 1</string>
     <string name="pref_themes_systemui_color3_summary">Color to use for accent items like buttons.
         </string>
-    <string name="pref_themes_systemui_color4_title">Secondary Accent Color</string>
-    <string name="pref_themes_systemui_color4_summary">Subcolor to use for accent items.
+    <string name="pref_themes_systemui_color4_title">Accent Color 2</string>
+    <string name="pref_themes_systemui_color4_summary">Color to use for items like slider backgrounds.
         </string>
     <string name="pref_themes_systemui_use_launcher_title">Theme SystemUI</string>
     <string name="pref_themes_systemui_use_launcher_summary">Use Theme colors
