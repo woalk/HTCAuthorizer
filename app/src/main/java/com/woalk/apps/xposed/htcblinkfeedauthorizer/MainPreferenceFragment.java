@@ -60,7 +60,7 @@ public class MainPreferenceFragment extends PreferenceFragment
         picker3 = (CustomPreference) findPreference(getString(R.string.CP3));
         picker4 = (CustomPreference) findPreference(getString(R.string.CP4));
 
-        Logger.d("Digitalhigh: Oncreate: colors are " + color1 + ", " + color2 + ", " + color3 + ", and " + color4);
+        Logger.d("MainPreferenceFragment: Oncreate: colors are " + color1 + ", " + color2 + ", " + color3 + ", and " + color4);
 
 
         picker1.setOnPreferenceClickListener(
@@ -208,7 +208,7 @@ public class MainPreferenceFragment extends PreferenceFragment
 
     public void onResume() {
         super.onResume();
-        updateFromXML();
+        updateFromXML(getActivity());
     }
 
     private void updateViews() {
@@ -231,24 +231,26 @@ public class MainPreferenceFragment extends PreferenceFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
-        Logger.d("Digitalhigh: Result received");
+        Logger.d("MainPreferenceFragment: Result received");
         if (requestCode == COLOR_SELECTION_COMPLETE) {
             if (resultCode == COLOR_SELECTION_COMPLETE) {
                 Bundle res = data.getExtras();
                 String colorname = res.getString("Name");
                 Integer result = res.getInt("Color");
-                Logger.d("Digitalhigh: color data for " + colorname + " " + result);
+                Logger.d("MainPreferenceFragment: color data for " + colorname + " " + result);
                 Toast.makeText(getActivity(), "Color for " + colorname + " " + result + " has been saved.", Toast.LENGTH_SHORT).show();
                 xw.WriteToXML(colorname, result);
-                updateFromXML();
+                updateFromXML(getActivity());
             } else if (resultCode == COLOR_SELECTION_CANCELLED) {
-                Logger.d("Digitalhigh: color selection cancelled");
+                Logger.d("MainPreferenceFragment: color selection cancelled");
             }
         }
     }
 
-    public void updateFromXML() {
-         Logger.i("Digitalhigh: Starting Editor");
+    public void updateFromXML(Context context) {
+        SharedPreferences sharedPref = context.getSharedPreferences("main", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+         Logger.i("MainPreferenceFragment: Starting Editor");
 
         try {
             color1 = xw.readFromXML(0);
@@ -259,9 +261,13 @@ public class MainPreferenceFragment extends PreferenceFragment
             e.printStackTrace();
             Logger.e("Error reading from file" + e);
         }
-        Logger.i("Digitalhigh: Colors set to " + color1 + " " + color2 + " " + color3 + " " + color4);
-
-        updateViews();
+        Logger.i("MainPreferenceFragment: Colors set to " + color1 + " " + color2 + " " + color3 + " " + color4);
+        editor.putInt("systemui_color1", color1);
+        editor.putInt("systemui_color2", color2);
+        editor.putInt("systemui_color3", color3);
+        editor.putInt("systemui_color4", color4);
+		updateViews();
+        editor.apply();
     }
 
     /**
