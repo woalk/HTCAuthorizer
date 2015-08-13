@@ -103,6 +103,7 @@ public class XMLHelper {
 
             // set the input for the parser using an InputStreamReader
             assert xpp != null;
+            assert fis != null;
             xpp.setInput(new InputStreamReader(fis));
 
             int eventType = xpp.getEventType();
