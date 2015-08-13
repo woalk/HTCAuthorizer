@@ -262,7 +262,7 @@ public class X_Mod
 
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                             Logger.logHook(param);
-                            Logger.v("Digitalhigh: HTC theme Hooked");
+                            Logger.v("X_Mod: HTC theme Hooked");
                             xh = new XMLHelper();
                             SharedPreferences theme_in = ((Context) param.args[0])
                                     .getSharedPreferences("mixing_theme_color_preference",
@@ -273,25 +273,25 @@ public class X_Mod
                                     .getSharedPreferences(SettingsHelper.PREFERENCE_THEME,
                                             Context.MODE_WORLD_READABLE).edit();
                             for (Map.Entry<String, ?> x : theme_in.getAll().entrySet()) {
-                                Logger.v("Digitalhigh: Reading HTC Theme " + x.getKey() + " " + x.getValue());
+                                Logger.v("X_Mod: Reading HTC Theme " + x.getKey() + " " + x.getValue());
                                 if (x.getValue() instanceof Integer) {
-                                    Logger.v("Digitalhigh: Trying to pass HTC theme to writer " + x.getKey() + " " + x.getValue());
+                                    Logger.v("X_Mod: Trying to pass HTC theme to writer " + x.getKey() + " " + x.getValue());
                                     if (x.getKey().contains("1")) {
-                                        Logger.v("Digitalhigh: Found key containing 1");
+                                        Logger.v("X_Mod: Found key containing 1");
                                         xh.WriteToXML("systemui_color1", (Integer) x.getValue());
                                     } else if (x.getKey().contains("2")) {
-                                        Logger.v("Digitalhigh: Found key containing 1");
+                                        Logger.v("X_Mod: Found key containing 1");
                                         xh.WriteToXML("systemui_color2", (Integer) x.getValue());
                                     } else if (x.getKey().contains("3")) {
-                                        Logger.v("Digitalhigh: Found key containing 1");
+                                        Logger.v("X_Mod: Found key containing 1");
                                         xh.WriteToXML("systemui_color3", (Integer) x.getValue());
                                     } else if (x.getKey().contains("4")) {
-                                        Logger.v("Digitalhigh: Found key containing 1");
+                                        Logger.v("X_Mod: Found key containing 1");
                                         xh.WriteToXML("systemui_color4", (Integer) x.getValue());
                                     }
 
                                 } else {
-                                    Logger.e("Digitalhigh: Error reading HTC Theme");
+                                    Logger.e("X_Mod: Error reading HTC Theme");
                                 }
                             }
                             theme_out.apply();
