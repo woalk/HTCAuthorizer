@@ -1,8 +1,10 @@
 package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
-import android.annotation.SuppressLint;
+
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.FeatureInfo;
 import android.content.res.Resources;
@@ -113,7 +115,6 @@ public class X_Mod
     public static final String PKG_GOOGLECONTACTS = "com.google.android.contacts";
     public static final String PKG_LATINIME = "com.android.inputmethod.latin";
     public static final String PKG_LATINIMEGOOGLE = "com.google.android.inputmethod.latin";
-    public static final String PKG_SENSIFY = "com.woalk.apps.xposed.htcblinkfeedauthorizer";
     public static final String CLASS_SETTINGS_DASHBOARD_SUMMARY = PKG_SETTINGS +
             ".dashboard.DashboardSummary";
     public static final String CLASS_SETTINGS_DASHBOARD_TILE = PKG_SETTINGS +
@@ -142,7 +143,6 @@ public class X_Mod
     public X_Mod() {
         Logger.logStart();
         mSettings = new SettingsHelper();
-
 
 
         Logger.v("Loaded preference instance %s", mSettings.toString());
@@ -268,10 +268,8 @@ public class X_Mod
                                     .getSharedPreferences("mixing_theme_color_preference",
                                             Context.MODE_PRIVATE);
                             //noinspection deprecation
-                            @SuppressLint("WorldReadableFiles")
-                            SharedPreferences.Editor theme_out = ((Context) param.args[0])
-                                    .getSharedPreferences(SettingsHelper.PREFERENCE_THEME,
-                                            Context.MODE_WORLD_READABLE).edit();
+
+
                             for (Map.Entry<String, ?> x : theme_in.getAll().entrySet()) {
                                 Logger.v("X_Mod: Reading HTC Theme " + x.getKey() + " " + x.getValue());
                                 if (x.getValue() instanceof Integer) {
@@ -280,39 +278,20 @@ public class X_Mod
                                         Logger.v("X_Mod: Found key containing 1");
                                         xh.WriteToXML("systemui_color1", (Integer) x.getValue());
                                     } else if (x.getKey().contains("2")) {
-                                        Logger.v("X_Mod: Found key containing 1");
+                                        Logger.v("X_Mod: Found key containing 2");
                                         xh.WriteToXML("systemui_color2", (Integer) x.getValue());
                                     } else if (x.getKey().contains("3")) {
-                                        Logger.v("X_Mod: Found key containing 1");
+                                        Logger.v("X_Mod: Found key containing 3");
                                         xh.WriteToXML("systemui_color3", (Integer) x.getValue());
                                     } else if (x.getKey().contains("4")) {
-                                        Logger.v("X_Mod: Found key containing 1");
+                                        Logger.v("X_Mod: Found key containing 4");
                                         xh.WriteToXML("systemui_color4", (Integer) x.getValue());
                                     }
-
-                                } else {
-                                    Logger.e("X_Mod: Error reading HTC Theme");
                                 }
                             }
-                            theme_out.apply();
-                        }
-                    });
 
-            XposedHelpers.findAndHookMethod(CLASS_BF_MIXINGTHEMECOLOR, lpparam.classLoader,
-                    "clearFullThemeColor", Context.class, new XC_MethodHook() {
-                        @Override
-                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            Logger.logHook(param);
-                            //noinspection deprecation
-                            @SuppressLint("WorldReadableFiles")
-                            SharedPreferences theme = ((Context) param.args[0])
-                                    .getSharedPreferences(SettingsHelper.PREFERENCE_THEME,
-                                            Context.MODE_WORLD_READABLE);
-                            SharedPreferences.Editor theme_edit = theme.edit();
-                            for (String x : theme.getAll().keySet()) {
-                                theme_edit.remove(x);
-                            }
-                            theme_edit.apply();
+
+
                         }
                     });
 
