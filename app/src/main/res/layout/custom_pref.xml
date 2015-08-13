@@ -1,55 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="80dip"
-    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
     android:gravity="center_vertical"
-    android:paddingEnd="?android:attr/scrollbarSize"
-    android:background="?android:attr/selectableItemBackground" >
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:paddingEnd="?android:attr/scrollbarSize">
 
     <ImageView
         android:id="@+android:id/icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        />
+        android:layout_gravity="center" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dip"
-        android:layout_marginEnd="6dip"
-        android:layout_marginTop="6dip"
-        android:layout_marginBottom="6dip"
-        android:layout_weight="0.72">
+        android:layout_marginBottom="6.0dip"
+        android:layout_marginEnd="6.0dip"
+        android:layout_marginStart="15.0dip"
+        android:layout_marginTop="6.0dip"
+        android:layout_weight="1.0"
+        android:paddingRight="10dip">
+        >
 
-        <TextView android:id="@+android:id/title"
-            android:layout_width="290dip"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:textAppearance="@android:style/TextAppearance"
-            android:ellipsize="marquee"
-            android:fadingEdge="horizontal"
-            android:paddingRight="10dip" />
-
-        <TextView android:id="@android:id/summary"
+        <TextView
+            android:id="@+android:id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@android:id/title"
+            android:ellipsize="marquee"
+            android:fadingEdge="horizontal"
+            android:singleLine="true"
+            android:textAppearance="@android:style/TextAppearance" />
+
+        <TextView
+            android:id="@android:id/summary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignStart="@android:id/title"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="?android:attr/textColorSecondary"
+            android:layout_below="@android:id/title"
             android:maxLines="4"
-            android:paddingRight="10dip" />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="?android:attr/textColorSecondary" />
+
 
     </RelativeLayout>
 
-    <!-- Preference should place its actual preference widget here. -->
-    <ImageView
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:id="@+id/button"
-        android:padding="2dp" />
+    <LinearLayout
+        android:id="@+id/widget_frame"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:padding="2dip">
 
+        <ImageView
+            android:id="@+id/button"
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
+
+    </LinearLayout>
+
+    <!-- Preference should place its actual preference widget here. -->
 
 
 </LinearLayout>
