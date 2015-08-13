@@ -2,6 +2,7 @@ package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
 import android.content.Context;
 import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.View;
@@ -34,7 +35,11 @@ public class CustomPreference extends Preference {
         Logger.d("CustomPreference: Color passed " + myTheme);
         if (myView != null) {
             Logger.d("CustomPreference: It works!" + " " + myView + " and color of " + myTheme);
-            myView.setBackgroundColor(myTheme);
+            ShapeDrawable sd = new ShapeDrawable(new OvalShape());
+            sd.setIntrinsicHeight(10);
+            sd.setIntrinsicWidth(10);
+            sd.getPaint().setColor(myTheme);
+            myView.setBackground(sd);
         } else {
             Logger.d("CustomPreference: Close, but no cigar!" + " " + myView + " and color of " + myTheme);
 

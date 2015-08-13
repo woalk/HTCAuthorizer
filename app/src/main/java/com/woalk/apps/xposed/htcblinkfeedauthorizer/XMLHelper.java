@@ -72,6 +72,7 @@ public class XMLHelper {
     }
 
     public Integer readFromXML(Integer theme) throws IOException {
+
         XmlPullParserFactory factory = null;
         Logger.i(xhtag + "Starting readfromXML for integer " + theme);
         try {
@@ -102,7 +103,6 @@ public class XMLHelper {
 
             // set the input for the parser using an InputStreamReader
             assert xpp != null;
-            assert fis != null;
             xpp.setInput(new InputStreamReader(fis));
 
             int eventType = xpp.getEventType();

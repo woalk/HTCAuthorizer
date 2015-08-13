@@ -142,7 +142,7 @@ public class X_Mod
     public X_Mod() {
         Logger.logStart();
         mSettings = new SettingsHelper();
-        xh = new XMLHelper();
+
 
 
         Logger.v("Loaded preference instance %s", mSettings.toString());
@@ -263,6 +263,7 @@ public class X_Mod
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                             Logger.logHook(param);
                             Logger.v("Digitalhigh: HTC theme Hooked");
+                            xh = new XMLHelper();
                             SharedPreferences theme_in = ((Context) param.args[0])
                                     .getSharedPreferences("mixing_theme_color_preference",
                                             Context.MODE_PRIVATE);

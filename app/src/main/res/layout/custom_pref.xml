@@ -23,7 +23,7 @@
         android:layout_weight="0.72">
 
         <TextView android:id="@+android:id/title"
-            android:layout_width="wrap_content"
+            android:layout_width="290dip"
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textAppearance="@android:style/TextAppearance"
@@ -45,7 +45,6 @@
 
     <!-- Preference should place its actual preference widget here. -->
     <ImageView
-        android:background="@drawable/ovalbutton"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:id="@+id/button"

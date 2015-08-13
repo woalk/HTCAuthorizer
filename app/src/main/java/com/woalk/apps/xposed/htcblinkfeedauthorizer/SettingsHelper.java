@@ -2,6 +2,8 @@ package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
 import android.graphics.Color;
 
+import java.io.IOException;
+
 import de.robv.android.xposed.XSharedPreferences;
 
 public class SettingsHelper {
@@ -10,14 +12,22 @@ public class SettingsHelper {
     protected static final String PREFERENCE_THEME = "sensify_theme";
 
     private final XSharedPreferences mPref;
+    private final XMLHelper xw;
 
     private boolean cachedPref_use_themes;
+
+    public Integer color1;
+    public Integer color2;
+    public Integer color3;
+    public Integer color4;
 
     public SettingsHelper() {
         mPref = new XSharedPreferences(PACKAGE_NAME, PREFERENCE_FILE);
 
         loadCachePrefs();
 
+        xw = new XMLHelper();
+        updateFromXML();
     }
 
 
@@ -65,7 +75,8 @@ public class SettingsHelper {
 
 
     protected int getPref_systemui_color1() {
-        int color = mPref.getInt("systemui_color1", 0);
+        int color = color1;
+        Logger.d("Settingshelper: color read is" + color1);
         return Color.rgb(Color.red(color), Color.green(color),
                 Color.blue(color));
     }
@@ -89,6 +100,7 @@ public class SettingsHelper {
     }
 
     public int getCachedPref_systemui_color1() {
+        Logger.d("Settingshelper: " + color1);
         return getPref_systemui_color1();
     }
 
@@ -121,5 +133,20 @@ public class SettingsHelper {
                 + "systemUI2=" + Logger.getLogColorString(getCachedPref_systemui_color2());
     }
 
+    public void updateFromXML() {
+        Logger.i("Digitalhigh: Starting Editor");
 
+        try {
+            color1 = xw.readFromXML(0);
+            color2 = xw.readFromXML(1);
+            color3 = xw.readFromXML(2);
+            color4 = xw.readFromXML(3);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Logger.e("Error reading from file" + e);
+        }
+        Logger.i("Digitalhigh: Colors set to " + color1 + " " + color2 + " " + color3 + " " + color4);
+
+
+    }
 }

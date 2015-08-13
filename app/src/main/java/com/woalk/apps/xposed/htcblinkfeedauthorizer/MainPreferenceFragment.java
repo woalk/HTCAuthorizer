@@ -16,8 +16,6 @@ import android.widget.Toast;
 
 import com.anjithsasindran.materialcolorpicker.ColorPickerActivity;
 
-import net.margaritov.preference.colorpicker.ColorPickerPreference;
-
 import java.io.IOException;
 
 public class MainPreferenceFragment extends PreferenceFragment
@@ -210,7 +208,7 @@ public class MainPreferenceFragment extends PreferenceFragment
 
     public void onResume() {
         super.onResume();
-        updateFromXML(getActivity());
+        updateFromXML();
     }
 
     private void updateViews() {
@@ -227,12 +225,7 @@ public class MainPreferenceFragment extends PreferenceFragment
         if (pref instanceof EditTextPreference) {
             pref.setSummary(((EditTextPreference) pref).getText());
         }
-        if (pref instanceof ColorPickerPreference) {
-            if (pref.getKey().contains("systemui_color")) {
-                Integer value = sharedPreferences.getInt(key, 0);
-                xw.WriteToXML(pref.getKey(), value);
-            }
-        }
+
     }
 
     @Override
@@ -247,17 +240,15 @@ public class MainPreferenceFragment extends PreferenceFragment
                 Logger.d("Digitalhigh: color data for " + colorname + " " + result);
                 Toast.makeText(getActivity(), "Color for " + colorname + " " + result + " has been saved.", Toast.LENGTH_SHORT).show();
                 xw.WriteToXML(colorname, result);
-                updateFromXML(getActivity());
+                updateFromXML();
             } else if (resultCode == COLOR_SELECTION_CANCELLED) {
                 Logger.d("Digitalhigh: color selection cancelled");
             }
         }
     }
 
-    public void updateFromXML(Context context) {
-        SharedPreferences sharedPref = context.getSharedPreferences("main", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        Logger.i("Digitalhigh: Starting Editor");
+    public void updateFromXML() {
+         Logger.i("Digitalhigh: Starting Editor");
 
         try {
             color1 = xw.readFromXML(0);
