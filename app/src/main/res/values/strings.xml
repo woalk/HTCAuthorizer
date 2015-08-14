@@ -27,7 +27,6 @@
     <string name="CP2">CP2</string>
     <string name="CP3">CP3</string>
     <string name="CP4">CP4</string>
-    <string name="CP5">CP5</string>
     <string name="pref_cat_general">General</string>
     <string name="pref_general_always_active_title">Show always active mods</string>
     <string name="pref_general_always_active_window">Always active mods</string>
@@ -54,7 +53,6 @@
     <string name="pref_debug_export_log_summary">Save the system logcat to storage to include it
         in a bug report. Requires root permission to read system-wide.</string>
     <string name="pref_debug_export_log_toast">Saved system log to file \'%s\'.</string>
-    <string name="pref_debug_export_log_error">Error while saving log!</string>
     <string name="pref_storage_ext_check_title">Enable external storage</string>
     <string name="pref_storage_ext_check_summary">Tell HTC apps that your device
         has an external storage.</string>
@@ -89,5 +87,7 @@
     <string name="pref_about_dev_summary">&#169; 2015 Woalk, DigitalHigh
         \nLicensed under GNU GPL v2.
         \nSee at github.com/woalk/HTCAuthorizer</string>
+    <string name="ImageViewDescriptor">You\'re invited to the pants party!</string>
+    <string name="Descriptor2">Welcome to thunderdome.</string>
 
 </resources>
