@@ -1,28 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
     android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeight"
-    android:paddingEnd="?android:attr/scrollbarSize">
+    android:paddingEnd="?android:attr/scrollbarSize"
+    tools:ignore="RtlSymmetry">
 
     <ImageView
         android:id="@+android:id/icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:contentDescription="@string/Descriptor2" />
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="6.0dip"
         android:layout_marginEnd="6.0dip"
         android:layout_marginStart="15.0dip"
         android:layout_marginTop="6.0dip"
         android:layout_weight="1.0"
-        android:paddingRight="10dip">
-        >
+        android:paddingRight="10dip"
+        tools:ignore="RtlSymmetry">
+
 
         <TextView
             android:id="@+android:id/title"
@@ -57,7 +61,8 @@
         <ImageView
             android:id="@+id/button"
             android:layout_width="40dp"
-            android:layout_height="40dp" />
+            android:layout_height="40dp"
+            android:contentDescription="@string/ImageViewDescriptor" />
 
     </LinearLayout>
 
