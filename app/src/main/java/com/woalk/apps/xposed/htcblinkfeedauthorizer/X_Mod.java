@@ -2,20 +2,24 @@ package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.FeatureInfo;
 import android.content.res.Resources;
+import android.content.res.XModuleResources;
 import android.content.res.XResources;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.Preference;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,6 +32,7 @@ import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
+import de.robv.android.xposed.callbacks.XC_LayoutInflated;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 /**
@@ -127,6 +132,7 @@ public class X_Mod
             ".widget.ChartNetworkSeriesView";
     public static final String CLASS_PACKAGEMANAGER = "android.app.ApplicationPackageManager";
     public static final String PKG_HTC_FEATURE = "com.htc.software";
+    private static String MODULE_PATH = null;
     public static final String[] HTC_FEATURES = new String[]{
             PKG_HTC_FEATURE + ".HTC",
             PKG_HTC_FEATURE + ".Sense7.0",
@@ -499,6 +505,8 @@ public class X_Mod
             } catch (Throwable e) {
                 Logger.w("Twitter hooks could not be loaded.", e);
             }
+
+
 
         } else if (lpparam.packageName.equals(PKG_HTC_CAMERA)) {
 
@@ -890,11 +898,11 @@ public class X_Mod
     }
 
     @Override
-    public void handleInitPackageResources(XC_InitPackageResources.InitPackageResourcesParam
+    public void handleInitPackageResources(final XC_InitPackageResources.InitPackageResourcesParam
                                                    resparam) throws Throwable {
-        int color1 = mSettings.getCachedPref_systemui_color1();
-        int color2 = mSettings.getCachedPref_systemui_color2();
-        int color3 = mSettings.getCachedPref_systemui_color3();
+        final int color1 = mSettings.getCachedPref_systemui_color1();
+        final int color2 = mSettings.getCachedPref_systemui_color2();
+        final int color3 = mSettings.getCachedPref_systemui_color3();
         int color4 = mSettings.getCachedPref_systemui_color4();
 
         if (mSettings.getCachedPref_use_themes()) {
@@ -905,6 +913,10 @@ public class X_Mod
 
                 resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_primary_color",
                         color1);
+                resparam.res.setReplacement(PKG_SYSTEMUI, "color", "screen_pinning_request_bg",
+                        color3);
+                resparam.res.setReplacement(PKG_SYSTEMUI, "color", "keyguard_avatar_frame_pressed_color",
+                        color3);
                 resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_secondary_color",
                         color2);
                 resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_accent_color",
@@ -947,11 +959,25 @@ public class X_Mod
                         color1);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "dialer_theme_color_dark",
                         color2);
+                resparam.res.setReplacement(PKG_DIALER2, "color", "setting_primary_color",
+                        color1);
+                resparam.res.setReplacement(PKG_DIALER2, "color", "setting_secondary_color",
+                        color2);
+                resparam.res.setReplacement(PKG_DIALER2, "color", "button_selected_color",
+                        color2);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "dialtacts_theme_color",
+                        color1);
+                resparam.res.setReplacement(PKG_DIALER2, "color", "glowpad_call_widget_normal_tint",
+                        color1);
+                resparam.res.setReplacement(PKG_DIALER2, "color", "incall_background_color",
+                        color1);
+                resparam.res.setReplacement(PKG_DIALER2, "color", "actionbar_background_color",
                         color1);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "actionbar_background_color_dark",
                         color2);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "call_log_voicemail_highlight_color",
+                        color4);
+                resparam.res.setReplacement(PKG_DIALER2, "color", "contact_list_name_text_color",
                         color4);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "call_log_extras_text_color",
                         color1);
@@ -959,24 +985,71 @@ public class X_Mod
                         color4);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "item_selected",
                         color1);
+                resparam.res.hookLayout(PKG_DIALER2, "layout", "dialtacts_activity", new XC_LayoutInflated() {
+                    @Override
+                    public void handleLayoutInflated(LayoutInflatedParam liparam) throws Throwable {
+
+                        FrameLayout fab = (FrameLayout) liparam.view.findViewById(
+                                liparam.res.getIdentifier("floating_action_button_container", "id", PKG_DIALER2));
+                        ShapeDrawable sd = new ShapeDrawable(new OvalShape());
+                        sd.setIntrinsicHeight(10);
+                        sd.setIntrinsicWidth(10);
+                        sd.getPaint().setColor(color1);
+                        fab.setBackground(sd);
+
+                    }
+
+                });
+                resparam.res.hookLayout(PKG_DIALER2, "layout", "dialpad_fragment", new XC_LayoutInflated() {
+                    @Override
+                    public void handleLayoutInflated(LayoutInflatedParam liparam) throws Throwable {
+
+                        FrameLayout fab = (FrameLayout) liparam.view.findViewById(
+                                liparam.res.getIdentifier("dialpad_floating_action_button_container", "id", PKG_DIALER2));
+                        ShapeDrawable sd = new ShapeDrawable(new OvalShape());
+                        sd.setIntrinsicHeight(10);
+                        sd.setIntrinsicWidth(10);
+                        sd.getPaint().setColor(color2);
+                        fab.setBackground(sd);
+
+                    }
+
+                });
+
 
                 Logger.v("Replaced Theme resources for Dialer app.");
             } else if (resparam.packageName.equals(PKG_GOOGLECONTACTS)) {
                 Logger.v("Replacing Theme resources for Contacts app.");
+                XModuleResources modRes = XModuleResources.createInstance(MODULE_PATH, resparam.res);
+
+                resparam.res.setReplacement(PKG_CONTACTS, "color", "floating_action_button_icon_color",
+                        color2);
                 resparam.res.setReplacement(PKG_CONTACTS, "color", "dialer_theme_color",
-                        color1);
+                        color2);
                 resparam.res.setReplacement(PKG_CONTACTS, "color", "wallet_holo_blue_light",
-                        color1);
+                        color2);
                 resparam.res.setReplacement(PKG_CONTACTS, "color", "dialer_theme_color_dark",
-                        color2);
-                resparam.res.setReplacement(PKG_CONTACTS, "color", "primary_color",
                         color1);
-                resparam.res.setReplacement(PKG_CONTACTS, "color", "primary_color_dark",
+                resparam.res.setReplacement(PKG_CONTACTS, "color", "primary_color",
                         color2);
+                resparam.res.setReplacement(PKG_CONTACTS, "color", "primary_color_dark",
+                        color1);
                 resparam.res.setReplacement(PKG_CONTACTS, "color", "action_bar_background",
+                        color2);
+                resparam.res.setReplacement(PKG_CONTACTS, "color", "actionbar_background_color",
+                        color2);
+                resparam.res.setReplacement(PKG_CONTACTS, "color", "actionbar_background_color_dark",
                         color1);
                 resparam.res.setReplacement(PKG_CONTACTS, "color", "dialtacts_theme_color",
-                        color2);
+                        color1);
+
+                resparam.res.hookLayout(PKG_CONTACTS, "layout", "floating_action_button", new XC_LayoutInflated() {
+                    @Override
+                    public void handleLayoutInflated(LayoutInflatedParam liparam) throws Throwable {
+                        ImageButton fab = (ImageButton) liparam.view.findViewById(liparam.res.getIdentifier("floating_action_button", "id", PKG_CONTACTS));
+                        fab.getBackground().setColorFilter(color1, PorterDuff.Mode.SRC_IN);
+                    }
+                });
 
                 Logger.v("Replaced Theme resources for Contacts app.");
 
@@ -1041,6 +1114,7 @@ public class X_Mod
 
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable {
+        MODULE_PATH = startupParam.modulePath;
         if (mSettings.getCachedPref_use_themes()) {
             replaceSystemWideThemes();
         } else {
@@ -1078,18 +1152,26 @@ public class X_Mod
 
         XResources.setSystemWideReplacement("android", "color", "material_blue_grey_900",
                 color1);
+        XResources.setSystemWideReplacement("android", "color", "user_icon_1",
+                color1);
+        XResources.setSystemWideReplacement("android", "color", "highlighted_text_material_dark",
+                color2);
+        XResources.setSystemWideReplacement("android", "color", "highlighted_text_material_light",
+                color1);
         XResources.setSystemWideReplacement("android", "color", "primary_material_dark",
                 color2);
-//        XResources.setSystemWideReplacement("android", "color", "primary_material_light",
-//                Common.enlightColor(mSettings.getPrimaryColor(), 2.25f));
+        XResources.setSystemWideReplacement("android", "color", "primary_material_light",
+                color1);
         XResources.setSystemWideReplacement("android", "color", "material_blue_grey_950",
+                color2);
+        XResources.setSystemWideReplacement("android", "color", "material_blue_grey_800",
                 color1);
         XResources.setSystemWideReplacement("android", "color", "primary_dark_material_dark",
                 color2);
-//        XResources.setSystemWideReplacement("android", "color", "primary_dark_material_light",
-//                Common.enlightColor(mSettings.getPrimaryColor(), 1.65f));
-        XResources.setSystemWideReplacement("android", "color", "material_deep_teal_500",
+       XResources.setSystemWideReplacement("android", "color", "material_deep_teal_500",
                 color2);
+        XResources.setSystemWideReplacement("android", "color", "material_deep_teal_200",
+                color3);
         XResources.setSystemWideReplacement("android", "color", "accent_material_dark",
                 color4);
         XResources.setSystemWideReplacement("android", "color", "accent_material_light",
