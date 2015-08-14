@@ -647,7 +647,7 @@ public class X_Mod
                             Drawable d = (Drawable) param.args[0];
                             BitmapDrawable b = new BitmapDrawable(((Preference) param.thisObject)
                                     .getContext().getResources(), Common.drawableToBitmap(d));
-                            b.setTint(color3);
+                            b.setColorFilter(color3, PorterDuff.Mode.SRC_IN);
                             param.args[0] = b;
                         }
                     });
