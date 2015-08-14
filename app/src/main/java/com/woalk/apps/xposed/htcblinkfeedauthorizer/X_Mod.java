@@ -644,11 +644,15 @@ public class X_Mod
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             Logger.logHook(param);
-                            Drawable d = (Drawable) param.args[0];
-                            BitmapDrawable b = new BitmapDrawable(((Preference) param.thisObject)
-                                    .getContext().getResources(), Common.drawableToBitmap(d));
-                            b.setColorFilter(color3, PorterDuff.Mode.SRC_IN);
-                            param.args[0] = b;
+                            try {
+                                Drawable d = (Drawable) param.args[0];
+                                BitmapDrawable b = new BitmapDrawable(((Preference) param.thisObject)
+                                        .getContext().getResources(), Common.drawableToBitmap(d));
+                                b.setColorFilter(color3, PorterDuff.Mode.SRC_IN);
+                                param.args[0] = b;
+                            } catch (NullPointerException e) {
+                                Logger.e("X_Mod - error hooking icons" + e);
+                            }
                         }
                     });
 
