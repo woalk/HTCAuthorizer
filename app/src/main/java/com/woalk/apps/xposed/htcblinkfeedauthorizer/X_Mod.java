@@ -646,10 +646,8 @@ public class X_Mod
                             Logger.logHook(param);
                             try {
                                 Drawable d = (Drawable) param.args[0];
-                                BitmapDrawable b = new BitmapDrawable(((Preference) param.thisObject)
-                                        .getContext().getResources(), Common.drawableToBitmap(d));
-                                b.setColorFilter(color3, PorterDuff.Mode.SRC_IN);
-                                param.args[0] = b;
+                                d.setColorFilter(color3, PorterDuff.Mode.MULTIPLY);
+                                param.args[0] = d;
                             } catch (NullPointerException e) {
                                 Logger.e("X_Mod - error hooking icons" + e);
                             }
@@ -680,10 +678,8 @@ public class X_Mod
                             ImageView iV = Common.findFirstImageView(v);
                             if (iV == null) return;
                             Drawable d = iV.getDrawable();
-                            BitmapDrawable b = new BitmapDrawable(iV.getContext().getResources(),
-                                    Common.drawableToBitmap(d));
-                            b.setTint(color3);
-                            iV.setImageDrawable(b);
+                            d.setColorFilter(color3, PorterDuff.Mode.MULTIPLY);
+                            iV.setImageDrawable(d);
                             Logger.logHookAfter(param);
                         }
                     });
@@ -694,6 +690,21 @@ public class X_Mod
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             param.args[1] = mSettings.getCachedPref_systemui_color1();
                             param.args[2] = mSettings.getCachedPref_systemui_color2();
+                            Logger.logHookAfter(param);
+                        }
+                    });
+
+            XposedHelpers.findAndHookMethod("com.android.settings.DreamSettings$DreamInfoAdapter",
+                    lpparam.classLoader, "createDreamInfoRow", ViewGroup.class,
+                    new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            ViewGroup v = (ViewGroup) param.getResult();
+                            ImageView iV = Common.findLastImageView(v);
+                            if (iV == null) return;
+                            Drawable d = iV.getDrawable();
+                            d.setColorFilter(color3, PorterDuff.Mode.MULTIPLY);
+                            iV.setImageDrawable(d);
                             Logger.logHookAfter(param);
                         }
                     });
@@ -945,6 +956,40 @@ public class X_Mod
                         color4);
                 resparam.res.setReplacement(PKG_SETTINGS, "color", "switch_accent_color",
                         color3);
+                resparam.res.hookLayout(PKG_SETTINGS, "layout", "preference_bluetooth", new XC_LayoutInflated() {
+                    @Override
+                    public void handleLayoutInflated(LayoutInflatedParam liparam) throws Throwable {
+
+                        ImageView settings = (ImageView) liparam.view.findViewById(
+                                liparam.res.getIdentifier("deviceDetails", "id", PKG_SETTINGS));
+                        settings.setColorFilter(color3, PorterDuff.Mode.MULTIPLY);
+
+                    }
+
+                });
+                resparam.res.hookLayout(PKG_SETTINGS, "layout", "preference_bluetooth_profile", new XC_LayoutInflated() {
+                    @Override
+                    public void handleLayoutInflated(LayoutInflatedParam liparam) throws Throwable {
+
+                        ImageView settings = (ImageView) liparam.view.findViewById(
+                                liparam.res.getIdentifier("profileExpand", "id", PKG_SETTINGS));
+                        settings.setColorFilter(color3, PorterDuff.Mode.MULTIPLY);
+
+                    }
+
+                });
+                resparam.res.hookLayout(PKG_SETTINGS, "layout", "wifi_display_preference", new XC_LayoutInflated() {
+                    @Override
+                    public void handleLayoutInflated(LayoutInflatedParam liparam) throws Throwable {
+
+                        ImageView settings = (ImageView) liparam.view.findViewById(
+                                liparam.res.getIdentifier("deviceDetails", "id", PKG_SETTINGS));
+                        settings.setColorFilter(color3, PorterDuff.Mode.MULTIPLY);
+
+                    }
+
+                });
+
 
                 Logger.v("Replaced Theme resources for Settings app.");
             } else if (resparam.packageName.equals(PKG_DIALER)) {
@@ -1094,17 +1139,6 @@ public class X_Mod
 
                 Logger.v("Replaced Theme resources for Contacts app.");
 
-            } else if (resparam.packageName.equals(SettingsHelper.PACKAGE_NAME)) {
-                Logger.v("Replacing Theme resources for module.");
-
-                resparam.res.setReplacement(SettingsHelper.PACKAGE_NAME, "color", "theme1",
-                        color1);
-                resparam.res.setReplacement(SettingsHelper.PACKAGE_NAME, "color", "theme2",
-                        color2);
-                resparam.res.setReplacement(SettingsHelper.PACKAGE_NAME, "color", "theme3",
-                        color3);
-
-                Logger.v("Replaced Theme resources for module.");
             } else if (resparam.packageName.equals(PKG_HTC_LAUNCHER)) {
                 Logger.v("Replacing string resource for Sense Home.");
 

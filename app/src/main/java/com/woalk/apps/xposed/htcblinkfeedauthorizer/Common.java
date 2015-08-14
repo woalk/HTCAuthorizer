@@ -75,6 +75,17 @@ public class Common {
         }
         return null;
     }
+    public static ImageView findLastImageView(ViewGroup container) {
+
+            View v = container.getChildAt(container.getChildCount());
+
+            if (v instanceof ImageView) {
+                return (ImageView) v;
+            } else {
+                return null;
+            }
+
+    }
 
     /**
      * Change light value of a color.
