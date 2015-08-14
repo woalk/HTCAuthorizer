@@ -32,10 +32,10 @@ public class MainPreferenceFragment extends PreferenceFragment
     static final int COLOR_SELECTION_CANCELLED = 2;  // The request code
     private ImageView iv1;
     private ImageView iv;
-    private CustomPreference picker1;
-    private CustomPreference picker2;
-    private CustomPreference picker3;
-    private CustomPreference picker4;
+    private XColorPickerPreference picker1;
+    private XColorPickerPreference picker2;
+    private XColorPickerPreference picker3;
+    private XColorPickerPreference picker4;
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -55,10 +55,10 @@ public class MainPreferenceFragment extends PreferenceFragment
                 .registerOnSharedPreferenceChangeListener(this);
 
         addPreferencesFromResource(R.xml.pref_general);
-        picker1 = (CustomPreference) findPreference(getString(R.string.CP1));
-        picker2 = (CustomPreference) findPreference(getString(R.string.CP2));
-        picker3 = (CustomPreference) findPreference(getString(R.string.CP3));
-        picker4 = (CustomPreference) findPreference(getString(R.string.CP4));
+        picker1 = (XColorPickerPreference) findPreference(getString(R.string.CP1));
+        picker2 = (XColorPickerPreference) findPreference(getString(R.string.CP2));
+        picker3 = (XColorPickerPreference) findPreference(getString(R.string.CP3));
+        picker4 = (XColorPickerPreference) findPreference(getString(R.string.CP4));
 
         Logger.d("MainPreferenceFragment: Oncreate: colors are " + color1 + ", " + color2 + ", " + color3 + ", and " + color4);
 
