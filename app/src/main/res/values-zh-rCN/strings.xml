@@ -1,0 +1,64 @@
+<resources>
+    <string name="app_name">"Sensify Xposed"</string>
+    <string name="app_description">"为感应用服务集成到AOSP等光盘。"</string>
+    <string name="title_activity_log">"日志"</string>
+
+    <string name="warn_no_hsp_title">"HTC安装服务包"</string>
+    <string name="warn_no_hsp_content">"您没有安装HTC的Service Pack。 
+\nMOST HTC应用程序需要HTC的Service Pack才能正常工作。 
+\n您想现在下载它？"</string>
+    <string name="warn_logs_title">"关于这些日志"</string>
+    <string name="warn_logs_content">"You can use this procedure to export logs is helpful, but not the most useful way to provide information on issues related to our developers. 
+\nAndroid not retain full logs, always just the last part. This is the environmental decision, because you can not always write the complete log storage, it destroys memory and battery life. 
+\nSO, if you want to publish this log to beware occurs immediately after the problem you face is saved. Perhaps the restart, wait a moment until your system is fully up and reproduce the problem, and then save the log. 
+\n If you want to help us the most, connect the device to a PC, restart your device, and start logcat to file. Google will help you in doing, if you do not know how to do."</string>
+
+    <!-- Preferences -->
+    <string name="pref_reboot_info">"目前，所有的设置除了那些明确声明，否则，需要重新启动应用。"</string>
+    <string name="pref_cat_general">"一般"</string>
+    <string name="pref_general_always_active_title">"显示始终处于激活状态的mods"</string>
+    <string name="pref_general_always_active_window">"始终有效MODS"</string>
+    <string name="pref_always_active_authorize_title">"HTC授权的应用程序"</string>
+    <string name="pref_always_active_authorize_summary">"移除下面HTC应用程序的“未授权设备”消息：
+\nHTC感主页，Facebook的为HTC Sense的，对于Google+的HTC Sense的，LinkedIn的HTC Sense的，Twitter的HTC Sense的，HTC的主题，宏达键盘。"</string>
+    <string name="pref_always_active_vending_title">"允许HTC应用程序下载"</string>
+    <string name="pref_always_active_vending_summary">"可以搜索和下载在谷歌应用程序HTC Play商店，删除安装页面上的“不兼容”的消息。"</string>
+    <string name="pref_cat_rotate">"回转"</string>
+    <string name="pref_rotate_force_rotate_title">"回转"</string>
+    <string name="pref_rotate_force_rotate_summary">"启用感首页发射旋转。"</string>
+    <string name="pref_rotate_kill_launcher_title">"重新启动家庭感"</string>
+    <string name="pref_rotate_kill_launcher_summary">"立即重新启动感主页更改应用于此设置。需要root权限。"</string>
+    <string name="pref_cat_storage">"存储选项"</string>
+    <string name="pref_cat_debug">"调试"</string>
+    <string name="pref_debug_show_log_title">"显示日志"</string>
+    <string name="pref_debug_show_log_summary">"显示Sensify的系统logcat的。需要root权限读取系统范围。"</string>
+    <string name="pref_debug_export_log_title">"保存系统日志"</string>
+    <string name="pref_debug_export_log_summary">"拯救系统的logcat存储将其包含在一个bug报告。需要root权限读取系统范围。"</string>
+    <string name="pref_debug_export_log_toast">"保存的系统日志文件' %s '。"</string>
+    <string name="pref_storage_ext_check_title">"启用外部存储"</string>
+    <string name="pref_storage_ext_check_summary">"告诉你的设备有外部存储HTC应用程序。"</string>
+    <string name="pref_storage_ext_path_title">"外部存储路径"</string>
+    <string name="pref_storage_usb_check_title">"启用USB存储"</string>
+    <string name="pref_storage_usb_check_summary">"告诉你的设备支持USB存储（USB-OTG）HTC应用程序。"</string>
+    <string name="pref_storage_usb_path_title">"USB存储路径"</string>
+    <string name="pref_cat_themes">"HTC主题"</string>
+    <string name="pref_themes_check_title">"对于使用应用程序的材料主题"</string>
+    <string name="pref_themes_check_summary">"没有特定的颜色材料的应用程序会根据当前的HTC主题进行着色。"</string>
+    <string name="pref_themes_systemui_color1_title">"原色"</string>
+    <string name="pref_themes_systemui_color1_summary">"颜色用于Android的通知面板接头。"</string>
+    <string name="pref_themes_systemui_color2_title">"间色"</string>
+    <string name="pref_themes_systemui_color2_summary">"颜色用于Android的快速设置。"</string>
+    <string name="pref_themes_systemui_color3_title">"强调色1"</string>
+    <string name="pref_themes_systemui_color3_summary">"颜色使用像按钮口音项目。"</string>
+    <string name="pref_themes_systemui_color4_title">"强调色2"</string>
+    <string name="pref_themes_systemui_color4_summary">"颜色用于像滑块背景项。"</string>
+    <string name="pref_themes_systemui_use_launcher_title">"主题SystemUI"</string>
+    <string name="pref_themes_systemui_use_launcher_summary">"使用主题颜色SystemUI。"</string>
+    <string name="pref_cat_about">"大约"</string>
+    <string name="pref_about_version_title">"版本"</string>
+    <string name="pref_about_dev_title">"作者"</string>
+    <string name="action_settings">"设置"</string>
+    <string name="ImageViewDescriptor">"我们邀请您的裤子派对！"</string>
+    <string name="Descriptor2">"欢迎thunderdome。"</string>
+
+</resources>
