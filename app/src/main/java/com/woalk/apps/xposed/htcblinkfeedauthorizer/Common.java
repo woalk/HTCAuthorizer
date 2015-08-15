@@ -104,6 +104,15 @@ public class Common {
         return Color.HSVToColor(hsv);
     }
 
+    public static int tintColor(int inParamSource, int inParamDest) {
+        float[] hsvi = new float[3];
+        float[] hsvo = new float[3];
+        Color.colorToHSV(inParamSource, hsvi);
+        Color.colorToHSV(inParamDest, hsvo);
+        hsvo[0] = hsvi[0];
+        return Color.HSVToColor(hsvo);
+    }
+
     /* Checks if external storage is available for read and write */
     public static boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
