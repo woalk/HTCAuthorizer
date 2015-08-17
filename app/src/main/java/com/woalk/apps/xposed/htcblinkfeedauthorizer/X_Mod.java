@@ -8,11 +8,13 @@ import android.content.pm.FeatureInfo;
 import android.content.res.Resources;
 import android.content.res.XModuleResources;
 import android.content.res.XResources;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.Preference;
@@ -52,6 +54,7 @@ public class X_Mod
     public static final String CLASS_BF_MIXINGTHEMECOLOR = "com.htc.themepicker.util" +
             ".MixingThemeColorUtil";
     public static final String CLASS_BF_THEME = "com.htc.themepicker.model.Theme";
+    public static final String CLASS_BF_THEMECROP = "com.htc.themepicker.thememaker.WallpaperImageHandler";
     public static final String STRING_REBOOT = "Theme Applied, please reboot.";
 
     public static final String PKG_HTC_CAMERA = "com.htc.camera";
@@ -260,6 +263,15 @@ public class X_Mod
                             Logger.logHookAfter(param);
                         }
                     });
+            XposedHelpers.findAndHookMethod(CLASS_BF_THEMECROP, lpparam.classLoader, "startCropForResult", Activity.class, Uri.class, Point.class, Point.class, boolean.class, new XC_MethodHook() {
+
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    Logger.d("X_Mod: Hooking theme crop activity.");
+                    param.args[4] = false;
+                    Logger.logHookAfter(param);
+                }
+            });
 
             // Theme permissions hook
             XposedHelpers.findAndHookMethod(CLASS_BF_MIXINGTHEMECOLOR, lpparam.classLoader,
