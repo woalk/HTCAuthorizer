@@ -141,25 +141,32 @@ public class Common {
 
     }
 
-    public void runAsRoot(String[] cmds) {
-        try {
-            Process p = Runtime.getRuntime().exec("su");
-            Logger.d("Common: runAsRoot recieved paramater " + cmds);
-            DataOutputStream os = new DataOutputStream(p.getOutputStream());
+    public void runAsRoot(final String[] cmds) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    Process p = Runtime.getRuntime().exec("su");
+                    Logger.d("Common: runAsRoot recieved paramater " + cmds);
+                    DataOutputStream os = new DataOutputStream(p.getOutputStream());
 
-            for (String tmpCmd : cmds) {
-                Logger.d("Common: runAsRoot executing command " + tmpCmd);
-                os.writeBytes(tmpCmd + "\n");
-                os.flush();
+                    for (String tmpCmd : cmds) {
+                        Logger.d("Common: runAsRoot executing command " + tmpCmd);
+                        os.writeBytes(tmpCmd + "\n");
+                        os.flush();
+                    }
+
+                    os.writeBytes("exit\n");
+                    os.flush();
+                    p.waitFor();
+                    p.destroy();
+                } catch (IOException | InterruptedException e) {
+                    Logger.e("Common: Error with SU - " + e);
+                }
+                return null;
             }
 
-            os.writeBytes("exit\n");
-            os.flush();
-            p.waitFor();
-            p.destroy();
-        } catch (IOException | InterruptedException e) {
-            Logger.e("Common: Error with SU - " + e);
-        }
+        }.execute();
     }
 
     public static boolean isInteger(String str) {
