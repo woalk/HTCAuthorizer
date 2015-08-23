@@ -11,28 +11,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 
 public class Common {
-    private Common() {
+    public Common() {
     }
 
     public static final String versionName = "2.0";
 
-    /**
-     * Convert a {@link Drawable} into an {@link Bitmap} object.
-     * <p>
-     * Draws the {@code Drawable} onto a RAM-only {@link Canvas} and grabs the resulting
-     * {@code Bitmap}.
-     * </p>
-     * <p>
-     * If the {@code Drawable} is a {@link BitmapDrawable}, no conversion is needed, and no
-     * conversion will be done.
-     * </p>
-     *
-     * @param drawable The {@link Drawable} to convert. Can be any drawable.
-     * @return A {@link Bitmap} representing the given {@code drawable}.
-     */
+
     public static Bitmap drawableToBitmap(Drawable drawable) {
         Bitmap bitmap;
 
@@ -75,15 +64,16 @@ public class Common {
         }
         return null;
     }
+
     public static ImageView findLastImageView(ViewGroup container) {
 
-            View v = container.getChildAt(container.getChildCount());
+        View v = container.getChildAt(container.getChildCount());
 
-            if (v instanceof ImageView) {
-                return (ImageView) v;
-            } else {
-                return null;
-            }
+        if (v instanceof ImageView) {
+            return (ImageView) v;
+        } else {
+            return null;
+        }
 
     }
 
@@ -134,6 +124,42 @@ public class Common {
                 return null;
             }
         }.execute();
+    }
+
+    public void copyPermFile() {
+        File file = new File(Environment.getExternalStorageDirectory().toString() + "/Sensify/com.htc.software.market.xml");
+        File sysfile = new File("/system/etc/permissions/com.htc.software.market.xml");
+        if (!sysfile.exists()) {
+            String[] cmd = {"mount -o remount,rw /system", "cp " + file + " " + sysfile, "mount -o remount,ro /system"};
+            Logger.d("Common: passing command to root - " + cmd);
+            runAsRoot(cmd);
+
+        } else {
+            Logger.d("Common: Sysfile exists.");
+        }
+
+
+    }
+
+    public void runAsRoot(String[] cmds) {
+        try {
+            Process p = Runtime.getRuntime().exec("su");
+            Logger.d("Common: runAsRoot recieved paramater " + cmds);
+            DataOutputStream os = new DataOutputStream(p.getOutputStream());
+
+            for (String tmpCmd : cmds) {
+                Logger.d("Common: runAsRoot executing command " + tmpCmd);
+                os.writeBytes(tmpCmd + "\n");
+                os.flush();
+            }
+
+            os.writeBytes("exit\n");
+            os.flush();
+            p.waitFor();
+            p.destroy();
+        } catch (IOException | InterruptedException e) {
+            Logger.e("Common: Error with SU - " + e);
+        }
     }
 
     public static boolean isInteger(String str) {

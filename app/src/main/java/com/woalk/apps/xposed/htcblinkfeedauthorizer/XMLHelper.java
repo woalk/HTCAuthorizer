@@ -38,6 +38,8 @@ public class XMLHelper {
     String path = "/Sensify";
     File directory = new File(Environment.getExternalStorageDirectory().toString() + path);
     File file = new File(directory + filename);
+    String permfilename = "/com.htc.software.market.xml";
+    File permfile = new File(directory + permfilename);
 
 
     public XMLHelper() {
@@ -48,7 +50,7 @@ public class XMLHelper {
 
     public void WriteToXML(String keyname, Integer theme1) {
         Logger.d(xhtag + "Trying to set " + keyname + " to " + theme1);
-           try {
+        try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
             Document doc = docBuilder.parse(file);
@@ -65,7 +67,7 @@ public class XMLHelper {
             StreamResult result = new StreamResult(file);
             DOMSource source = new DOMSource(doc);
             transformer.transform(source, result);
-               Logger.d("XMLHelper: Writing seems to have completed.");
+            Logger.d("XMLHelper: Writing seems to have completed.");
         } catch (IOException | ParserConfigurationException | SAXException | TransformerException e) {
             Logger.e("XMLHelper: Exception writing tag " + e);
         }
@@ -201,6 +203,57 @@ public class XMLHelper {
         }
         else {
             Logger.d(xhtag + "file " + file.getPath() + " already exists.");
+
+        }
+    }
+
+    public void createPermFile() {
+        if (!permfile.exists()) try {
+            Logger.d("Sensify: Creating permission file " + permfile.getPath());
+
+            FileOutputStream fileos = new FileOutputStream(permfile);
+            XmlSerializer xmlSerializer = Xml.newSerializer();
+            xmlSerializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
+            StringWriter writer = new StringWriter();
+            xmlSerializer.setOutput(writer);
+            xmlSerializer.startDocument("UTF-8", true);
+            xmlSerializer.startTag(null, "permissions");
+            xmlSerializer.startTag(null, "feature");
+            xmlSerializer.attribute("", "name", "com.htc.software.HTC");
+            xmlSerializer.endTag(null, "feature");
+            xmlSerializer.startTag(null, "feature");
+            xmlSerializer.attribute("", "name", "com.htc.software.Sense7.0");
+            xmlSerializer.endTag(null, "feature");
+            xmlSerializer.startTag(null, "feature");
+            xmlSerializer.attribute("", "name", "com.htc.software.M8WHL");
+            xmlSerializer.endTag(null, "feature");
+            xmlSerializer.startTag(null, "feature");
+            xmlSerializer.attribute("", "name", "com.htc.software.IHSense");
+            xmlSerializer.endTag(null, "feature");
+            xmlSerializer.startTag(null, "feature");
+            xmlSerializer.attribute("", "name", "com.htc.software.hdk");
+            xmlSerializer.endTag(null, "feature");
+            xmlSerializer.startTag(null, "feature");
+            xmlSerializer.attribute("", "name", "com.htc.software.hdk2");
+            xmlSerializer.endTag(null, "feature");
+            xmlSerializer.startTag(null, "feature");
+            xmlSerializer.attribute("", "name", "com.htc.software.hdk3");
+            xmlSerializer.endTag(null, "feature");
+            xmlSerializer.endTag(null, "permissions");
+            xmlSerializer.endDocument();
+            xmlSerializer.flush();
+            String dataWrite = writer.toString();
+            fileos.write(dataWrite.getBytes());
+            fileos.close();
+            Logger.d(xhtag + "Permission file Successfully created.");
+
+
+        } catch (IOException e) {
+            Logger.e(xhtag + "error " + e);
+
+        }
+        else {
+            Logger.d(xhtag + "permission file " + permfile.getPath() + " already exists.");
 
         }
     }

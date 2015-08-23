@@ -1,134 +1,128 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-                  xmlns:woalk="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <Preference
-        android:summary="@string/pref_reboot_info"
-        android:selectable="false"/>
+        android:selectable="false"
+        android:summary="@string/pref_reboot_info" />
 
-    <PreferenceCategory
-        android:title="@string/pref_cat_general">
+    <PreferenceCategory android:title="@string/pref_cat_general">
+        <Preference
+            android:key="create_perm"
+            android:summary="Creates permission file necessary for some devices to download HTC apps from store."
+            android:title="Create Permission File" />
         <Preference
             android:key="always_active"
-            android:title="@string/pref_general_always_active_title"/>
+            android:title="@string/pref_general_always_active_title" />
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="@string/pref_cat_debug">
+    <PreferenceCategory android:title="@string/pref_cat_debug">
         <Preference
             android:key="show_log"
-            android:title="@string/pref_debug_show_log_title"
-            android:summary="@string/pref_debug_show_log_summary"/>
+            android:summary="@string/pref_debug_show_log_summary"
+            android:title="@string/pref_debug_show_log_title" />
         <Preference
             android:key="export_log"
-            android:title="@string/pref_debug_export_log_title"
-            android:summary="@string/pref_debug_export_log_summary"/>
+            android:summary="@string/pref_debug_export_log_summary"
+            android:title="@string/pref_debug_export_log_title" />
         <Preference
-            android:key="log_loc"
             android:enabled="false"
-            android:summary=""/>
+            android:key="log_loc"
+            android:summary="" />
+
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="@string/pref_cat_rotate">
+    <PreferenceCategory android:title="@string/pref_cat_rotate">
         <SwitchPreference
             android:defaultValue="false"
             android:key="force_rotate"
             android:summary="@string/pref_rotate_force_rotate_summary"
-            android:title="@string/pref_rotate_force_rotate_title"/>
+            android:title="@string/pref_rotate_force_rotate_title" />
         <Preference
             android:key="kill_launcher"
-            android:title="@string/pref_rotate_kill_launcher_title"
-            android:summary="@string/pref_rotate_kill_launcher_summary"/>
+            android:summary="@string/pref_rotate_kill_launcher_summary"
+            android:title="@string/pref_rotate_kill_launcher_title" />
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="@string/pref_cat_storage">
+    <PreferenceCategory android:title="@string/pref_cat_storage">
         <SwitchPreference
             android:defaultValue="false"
             android:key="has_ext"
             android:summary="@string/pref_storage_ext_check_summary"
-            android:title="@string/pref_storage_ext_check_title"/>
+            android:title="@string/pref_storage_ext_check_title" />
         <EditTextPreference
             android:defaultValue="/storage/ext_sd"
             android:dependency="has_ext"
             android:inputType="textNoSuggestions"
             android:key="ext_dir"
             android:summary=""
-            android:title="@string/pref_storage_ext_path_title"/>
+            android:title="@string/pref_storage_ext_path_title" />
         <SwitchPreference
             android:defaultValue="false"
             android:key="has_usb"
             android:summary="@string/pref_storage_usb_check_summary"
-            android:title="@string/pref_storage_usb_check_title"/>
+            android:title="@string/pref_storage_usb_check_title" />
         <EditTextPreference
             android:defaultValue="/storage/usb"
             android:dependency="has_usb"
             android:inputType="textNoSuggestions"
             android:key="usb_dir"
             android:summary=""
-            android:title="@string/pref_storage_usb_path_title"/>
+            android:title="@string/pref_storage_usb_path_title" />
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="@string/pref_cat_themes">
+    <PreferenceCategory android:title="@string/pref_cat_themes">
         <SwitchPreference
+            android:defaultValue="false"
             android:key="use_themes"
-            android:title="@string/pref_themes_check_title"
             android:summary="@string/pref_themes_check_summary"
-            android:defaultValue="false"/>
+            android:title="@string/pref_themes_check_title" />
 
         <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
-            android:layout="@layout/custom_pref"
-            android:key="CP1"
             android:id="@+id/Picker1"
-            android:title="@string/pref_themes_systemui_color1_title"
             android:dependency="use_themes"
+            android:key="CP1"
+            android:layout="@layout/custom_pref"
             android:summary="@string/pref_themes_systemui_color1_summary"
-            />
+            android:title="@string/pref_themes_systemui_color1_title" />
         <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
-            android:layout="@layout/custom_pref"
-            android:key="CP2"
             android:id="@+id/Picker2"
-            android:title="@string/pref_themes_systemui_color2_title"
             android:dependency="use_themes"
+            android:key="CP2"
+            android:layout="@layout/custom_pref"
             android:summary="@string/pref_themes_systemui_color2_summary"
-            />
+            android:title="@string/pref_themes_systemui_color2_title" />
         <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
-            android:layout="@layout/custom_pref"
-            android:key="CP3"
             android:id="@+id/Picker3"
-            android:title="@string/pref_themes_systemui_color3_title"
             android:dependency="use_themes"
-            android:summary="@string/pref_themes_systemui_color3_summary"
-            />
-        <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
+            android:key="CP3"
             android:layout="@layout/custom_pref"
-            android:key="CP4"
+            android:summary="@string/pref_themes_systemui_color3_summary"
+            android:title="@string/pref_themes_systemui_color3_title" />
+        <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
             android:id="@+id/Picker4"
-            android:title="@string/pref_themes_systemui_color4_title"
             android:dependency="use_themes"
+            android:key="CP4"
+            android:layout="@layout/custom_pref"
             android:summary="@string/pref_themes_systemui_color4_summary"
-            />
+            android:title="@string/pref_themes_systemui_color4_title" />
 
         <CheckBoxPreference
-            android:key="systemui_use_launcher_theme"
-            android:title="@string/pref_themes_systemui_use_launcher_title"
-            android:summary="@string/pref_themes_systemui_use_launcher_summary"
+            android:defaultValue="true"
             android:dependency="use_themes"
-            android:defaultValue="true"/>
+            android:key="systemui_use_launcher_theme"
+            android:summary="@string/pref_themes_systemui_use_launcher_summary"
+            android:title="@string/pref_themes_systemui_use_launcher_title" />
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="@string/pref_cat_about">
+    <PreferenceCategory android:title="@string/pref_cat_about">
         <Preference
             android:key="version"
             android:selectable="false"
-            android:title="@string/pref_about_version_title"/>
+            android:title="@string/pref_about_version_title" />
         <Preference
             android:key="version"
             android:selectable="false"
             android:summary="@string/pref_about_dev_summary"
-            android:title="@string/pref_about_dev_title"/>
+            android:title="@string/pref_about_dev_title" />
     </PreferenceCategory>
 
 </PreferenceScreen>

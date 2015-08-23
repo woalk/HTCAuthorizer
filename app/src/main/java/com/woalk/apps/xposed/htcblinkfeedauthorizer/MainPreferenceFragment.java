@@ -11,7 +11,6 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.anjithsasindran.materialcolorpicker.ColorPickerActivity;
@@ -30,8 +29,6 @@ public class MainPreferenceFragment extends PreferenceFragment
     public Integer color4;
     static final int COLOR_SELECTION_COMPLETE = 1;  // The request code
     static final int COLOR_SELECTION_CANCELLED = 2;  // The request code
-    private ImageView iv1;
-    private ImageView iv;
     private XColorPickerPreference picker1;
     private XColorPickerPreference picker2;
     private XColorPickerPreference picker3;
@@ -59,6 +56,12 @@ public class MainPreferenceFragment extends PreferenceFragment
         picker2 = (XColorPickerPreference) findPreference(getString(R.string.CP2));
         picker3 = (XColorPickerPreference) findPreference(getString(R.string.CP3));
         picker4 = (XColorPickerPreference) findPreference(getString(R.string.CP4));
+        Preference permpref = findPreference("create_perm");
+        Preference activepref = findPreference("always_active");
+        Preference logpref = findPreference("show_log");
+        Preference killpref = findPreference("kill_launcher");
+        Preference exportpref = findPreference("export_log");
+
 
         Logger.d("MainPreferenceFragment: Oncreate: colors are " + color1 + ", " + color2 + ", " + color3 + ", and " + color4);
 
@@ -132,7 +135,18 @@ public class MainPreferenceFragment extends PreferenceFragment
                     }
                 });
 
-        findPreference("always_active").setOnPreferenceClickListener(
+        permpref.setOnPreferenceClickListener(
+                new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        xw.createPermFile();
+                        Common common;
+                        common = new Common();
+                        common.copyPermFile();
+                        return true;
+                    }
+                });
+        activepref.setOnPreferenceClickListener(
                 new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
@@ -143,7 +157,7 @@ public class MainPreferenceFragment extends PreferenceFragment
                     }
                 });
 
-        findPreference("show_log").setOnPreferenceClickListener(
+        logpref.setOnPreferenceClickListener(
                 new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
@@ -155,7 +169,7 @@ public class MainPreferenceFragment extends PreferenceFragment
 
         final Preference logLoc = findPreference("log_loc");
 
-        findPreference("export_log").setOnPreferenceClickListener(
+        exportpref.setOnPreferenceClickListener(
                 new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
@@ -183,7 +197,7 @@ public class MainPreferenceFragment extends PreferenceFragment
                     }
                 });
 
-        findPreference("kill_launcher").setOnPreferenceClickListener(
+        killpref.setOnPreferenceClickListener(
                 new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
@@ -250,7 +264,7 @@ public class MainPreferenceFragment extends PreferenceFragment
     public void updateFromXML(Context context) {
         SharedPreferences sharedPref = context.getSharedPreferences("main", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-         Logger.i("MainPreferenceFragment: Starting Editor");
+        Logger.i("MainPreferenceFragment: Starting Editor");
 
         try {
             color1 = xw.readFromXML(0);
@@ -266,7 +280,7 @@ public class MainPreferenceFragment extends PreferenceFragment
         editor.putInt("systemui_color2", color2);
         editor.putInt("systemui_color3", color3);
         editor.putInt("systemui_color4", color4);
-		updateViews();
+        updateViews();
         editor.apply();
     }
 
