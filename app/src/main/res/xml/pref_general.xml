@@ -1,17 +1,20 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <Preference
-        android:selectable="false"
-        android:summary="@string/pref_reboot_info" />
-
     <PreferenceCategory android:title="@string/pref_cat_general">
         <Preference
             android:key="create_perm"
-            android:summary="Creates permission file necessary for some devices to download HTC apps from store."
-            android:title="Create Permission File" />
+            android:summary="@string/pref_create_permfile_summary"
+            android:title="@string/pref_create_permfile_title" />
         <Preference
             android:key="always_active"
-            android:title="@string/pref_general_always_active_title" />
+            android:title="@string/pref_general_always_active_title"
+            android:summary="@string/pref_always_active_summary">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="com.woalk.apps.xposed.htcblinkfeedauthorizer"
+                android:targetClass="com.woalk.apps.xposed.htcblinkfeedauthorizer.AboutSensifyActivity" />
+        </Preference>
+        />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_cat_debug">
@@ -26,7 +29,9 @@
         <Preference
             android:enabled="false"
             android:key="log_loc"
-            android:summary="" />
+            android:summary=""
+            android:title="@string/pref_log_location" />
+            />
 
     </PreferenceCategory>
 

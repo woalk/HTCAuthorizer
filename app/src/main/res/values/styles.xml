@@ -16,6 +16,7 @@
         <item name="android:colorControlNormal">@android:color/white</item>
         <item name="android:background">?android:colorPrimary</item>
         <item name="android:homeAsUpIndicator">@drawable/icon_btn_previous_dark</item>
+
     </style>
 
     <style name="AppTheme.Toolbar.TextAppearanceTitle"
@@ -23,5 +24,6 @@
         <item name="android:fontFamily">sans-serif-condensed</item>
         <item name="android:background">@android:color/transparent</item>
     </style>
+
 
 </resources>

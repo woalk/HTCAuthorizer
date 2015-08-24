@@ -146,16 +146,7 @@ public class MainPreferenceFragment extends PreferenceFragment
                         return true;
                     }
                 });
-        activepref.setOnPreferenceClickListener(
-                new Preference.OnPreferenceClickListener() {
-                    @Override
-                    public boolean onPreferenceClick(Preference preference) {
-                        Intent intent = new Intent(getActivity(), MainActivity.class);
-                        intent.putExtra(EXTRA_SUBSCREEN_ID, SUBSCREEN_ID_ALWAYS_ACTIVE);
-                        startActivity(intent);
-                        return true;
-                    }
-                });
+
 
         logpref.setOnPreferenceClickListener(
                 new Preference.OnPreferenceClickListener() {
@@ -324,8 +315,7 @@ public class MainPreferenceFragment extends PreferenceFragment
     private void saveLog(Preference logLoc) {
         String file = Logger.saveLogcat(getActivity());
         logLoc.setEnabled(true);
-        logLoc.setSummary(String.format(
-                getString(R.string.pref_debug_export_log_toast), file));
+        logLoc.setSummary(String.format(file));
     }
 
 

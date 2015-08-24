@@ -60,5 +60,9 @@
     <string name="action_settings">"设置"</string>
     <string name="ImageViewDescriptor">"我们邀请您的裤子派对！"</string>
     <string name="Descriptor2">"欢迎thunderdome。"</string>
+    <string name="pref_log_location">Saved Log Location</string>
+    <string name="pref_always_active_summary">See what\'s going on under the hood.</string>
+    <string name="pref_create_permfile_summary">Creates permission file necessary for some devices to download HTC apps from store.</string>
+    <string name="pref_create_permfile_title">Create Permission File</string>
 
 </resources>

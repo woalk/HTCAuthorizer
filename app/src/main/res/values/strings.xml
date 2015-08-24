@@ -2,7 +2,7 @@
     <string name="app_name">Sensify Xposed</string>
     <string name="app_description">Integration for Sense apps into AOSP and other ROMs.</string>
     <string name="title_activity_log">Logs</string>
-
+    <string name="title_activity_alwaysactive" translatable="false">Always Active Mods</string>
     <string name="warn_no_hsp_title">Install HTC Service Pack</string>
     <string name="warn_no_hsp_content">You don\'t have HTC Service Pack installed.
         \nMost HTC apps need HTC Service Pack to work correctly.
@@ -52,7 +52,7 @@
     <string name="pref_debug_export_log_title">Save system log</string>
     <string name="pref_debug_export_log_summary">Save the system logcat to storage to include it
         in a bug report. Requires root permission to read system-wide.</string>
-    <string name="pref_debug_export_log_toast">Saved system log to file \'%s\'.</string>
+    <string name="pref_debug_export_log_toast">\'%s\'</string>
     <string name="pref_storage_ext_check_title">Enable external storage</string>
     <string name="pref_storage_ext_check_summary">Tell HTC apps that your device
         has an external storage.</string>
@@ -89,5 +89,9 @@
         \nSee at github.com/woalk/HTCAuthorizer</string>
     <string name="ImageViewDescriptor">You\'re invited to the pants party!</string>
     <string name="Descriptor2">Welcome to thunderdome.</string>
+    <string name="pref_log_location">Saved Log Location</string>
+    <string name="pref_always_active_summary">See what\'s going on under the hood.</string>
+    <string name="pref_create_permfile_summary">Creates permission file necessary for some devices to download HTC apps from store.</string>
+    <string name="pref_create_permfile_title">Create Permission File</string>
 
 </resources>

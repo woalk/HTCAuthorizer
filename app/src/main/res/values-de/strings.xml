@@ -64,5 +64,9 @@
     <string name="action_settings">"Einstellungen"</string>
     <string name="ImageViewDescriptor">"Sie sind an den Hosen-Party eingeladen!"</string>
     <string name="Descriptor2">"Willkommen in der Donnerkuppel."</string>
+    <string name="pref_log_location">Saved Log Location</string>
+    <string name="pref_always_active_summary">See what\'s going on under the hood.</string>
+    <string name="pref_create_permfile_summary">Creates permission file necessary for some devices to download HTC apps from store.</string>
+    <string name="pref_create_permfile_title">Create Permission File</string>
 
 </resources>
