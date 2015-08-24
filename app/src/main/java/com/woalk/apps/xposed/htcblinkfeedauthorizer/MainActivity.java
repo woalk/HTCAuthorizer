@@ -1,9 +1,9 @@
 package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,10 +11,10 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,7 +28,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
     private static final String PREF_FILE_MAINACTIVITY = "MainActivity_pref";
     private static final String PREF_SHOW_HSP_WARN = "warn_no_hsp";
     private static String TAG = MainActivity.class.getSimpleName();
@@ -37,22 +37,21 @@ public class MainActivity extends ActionBarActivity {
     RelativeLayout mDrawerPane;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
-
+    public boolean drawerState = false;
     ArrayList<NavItem> mNavItems = new ArrayList<NavItem>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_replaceable);
-
-        mNavItems.add(new NavItem("General", "General app settings", R.drawable.icon_btn_previous_dark));
-        mNavItems.add(new NavItem("Themes", "Theme related settings", R.drawable.icon_btn_previous_dark));
-        mNavItems.add(new NavItem("Sensify", "Sensify settings and logging", R.drawable.icon_btn_previous_dark));
+        mNavItems.add(new NavItem("General", "General app settings", R.drawable.ic_settings));
+        mNavItems.add(new NavItem("Themes", "Theme related settings", R.drawable.ic_style));
+        mNavItems.add(new NavItem("Sensify", "Sensify settings and logging", R.drawable.ic_info));
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-
-        // Populate the Navigtion Drawer with options
         mDrawerPane = (RelativeLayout) findViewById(R.id.drawerPane);
         mDrawerList = (ListView) findViewById(R.id.navList);
+
+
         DrawerListAdapter adapter = new DrawerListAdapter(this, mNavItems);
         mDrawerList.setAdapter(adapter);
 
@@ -63,21 +62,69 @@ public class MainActivity extends ActionBarActivity {
                 selectItemFromDrawer(position);
             }
         });
+
+        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+            ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
+                    this,
+                    mDrawerLayout,
+                    toolbar,
+                    R.string.navigation_drawer_open,
+                    R.string.navigation_drawer_close
+            )
+
+        {
+            public void onDrawerClosed(View view)
+            {
+                super.onDrawerClosed(view);
+                invalidateOptionsMenu();
+                drawerState = false;
+                syncState();
+            }
+
+            public void onDrawerOpened(View drawerView)
+            {
+                super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu();
+                drawerState = true;
+                syncState();
+            }
+        };
+        mDrawerLayout.setDrawerListener(actionBarDrawerToggle);
+
+        //Set the custom toolbar
+        if (toolbar != null){
+            setSupportActionBar(toolbar);
+        }
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        actionBarDrawerToggle.syncState();
+
         maybeShowNoHSPWarn();
         Fragment f = new MainPreferenceFragment();
         selectItemFromDrawer(0);
-//        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(mToolbar);
-//        DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-//        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(
-//                this,  mDrawerLayout, mToolbar,
-//                R.string.navigation_drawer_open, R.string.navigation_drawer_close
-//        );
-//        mDrawerLayout.setDrawerListener(mDrawerToggle);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setHomeButtonEnabled(true);
-//        mDrawerToggle.syncState();
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Logger.d("Mainactivity: Option ID is " + item.getItemId() + "and drawer state is " + drawerState);
+        // The action bar home/up action should open or close the drawer.
+        switch (item.getItemId()) {
+            case android.R.id.home:
+
+                if (!drawerState) {
+                    mDrawerLayout.openDrawer(GravityCompat.START);
+                } else {
+                    mDrawerLayout.closeDrawer(GravityCompat.START);
+                }
+
+                return true;
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 
     public void maybeShowNoHSPWarn() {
         final String PKG_HSP = "com.htc.sense.hsp";
@@ -122,17 +169,16 @@ public class MainActivity extends ActionBarActivity {
         Fragment fragment = new MainPreferenceFragment();
 
         FragmentManager fragmentManager = getFragmentManager();
-
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.setCustomAnimations(R.anim.enter, R.anim.exit);
         if (position == 0) {
-            getFragmentManager().beginTransaction().replace(android.R.id.widget_frame,
-                    new MainPreferenceFragment()).commit();
+            ft.replace(android.R.id.widget_frame, new MainPreferenceFragment());
         } else if (position == 1) {
-            getFragmentManager().beginTransaction().replace(android.R.id.widget_frame,
-                    new ThemeFragment()).commit();
+            ft.replace(android.R.id.widget_frame, new ThemeFragment());
         } else if (position == 2) {
-            getFragmentManager().beginTransaction().replace(android.R.id.widget_frame,
-                    new AboutSensifyFragment()).commit();
+            ft.replace(android.R.id.widget_frame, new AboutSensifyFragment());
         }
+        ft.commit();
 
         mDrawerList.setItemChecked(position, true);
 
@@ -140,17 +186,10 @@ public class MainActivity extends ActionBarActivity {
         setTitle(mNavItems.get(position).mTitle);
 
         // Close the drawer
-        mDrawerLayout.closeDrawer(mDrawerPane);
+        mDrawerLayout.closeDrawer(GravityCompat.START);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+
     class NavItem {
         String mTitle;
         String mSubtitle;

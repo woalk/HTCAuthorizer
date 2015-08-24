@@ -9,7 +9,7 @@
         android:id="@+id/icon"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:src="@drawable/icon_btn_previous_dark"
+        android:src="@drawable/icon_btn_previous"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginRight="20dp"
