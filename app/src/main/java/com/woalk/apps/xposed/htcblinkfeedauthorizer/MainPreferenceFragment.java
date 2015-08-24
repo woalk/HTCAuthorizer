@@ -114,7 +114,7 @@ public class MainPreferenceFragment extends PreferenceFragment
                     }
                 });
 
-        
+
 
         setAllPreferenceValuesToSummary(getPreferenceScreen());
     }
