@@ -22,17 +22,7 @@ public class MainPreferenceFragment extends PreferenceFragment
     public static final String EXTRA_SUBSCREEN_ID = "subscreen_id";
     public static final int SUBSCREEN_ID_ALWAYS_ACTIVE = 1;
     private static final String KEY_LOG_WARN_SHOWN = "log_warn";
-    private static final XMLHelper xw = new XMLHelper();
-    public Integer color1;
-    public Integer color2;
-    public Integer color3;
-    public Integer color4;
-    static final int COLOR_SELECTION_COMPLETE = 1;  // The request code
-    static final int COLOR_SELECTION_CANCELLED = 2;  // The request code
-    private XColorPickerPreference picker1;
-    private XColorPickerPreference picker2;
-    private XColorPickerPreference picker3;
-    private XColorPickerPreference picker4;
+    private XMLHelper xw = new XMLHelper();
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -52,88 +42,12 @@ public class MainPreferenceFragment extends PreferenceFragment
                 .registerOnSharedPreferenceChangeListener(this);
 
         addPreferencesFromResource(R.xml.pref_general);
-        picker1 = (XColorPickerPreference) findPreference(getString(R.string.CP1));
-        picker2 = (XColorPickerPreference) findPreference(getString(R.string.CP2));
-        picker3 = (XColorPickerPreference) findPreference(getString(R.string.CP3));
-        picker4 = (XColorPickerPreference) findPreference(getString(R.string.CP4));
         Preference permpref = findPreference("create_perm");
-        Preference activepref = findPreference("always_active");
         Preference logpref = findPreference("show_log");
         Preference killpref = findPreference("kill_launcher");
         Preference exportpref = findPreference("export_log");
 
 
-        Logger.d("MainPreferenceFragment: Oncreate: colors are " + color1 + ", " + color2 + ", " + color3 + ", and " + color4);
-
-
-        picker1.setOnPreferenceClickListener(
-                new Preference.OnPreferenceClickListener() {
-                    @Override
-                    public boolean onPreferenceClick(Preference preference) {
-                        Intent intent = new Intent(getActivity(), ColorPickerActivity.class);
-                        intent.putExtra("Prefname", "systemui_color1");
-                        try {
-                            intent.putExtra("Current", xw.readFromXML(0));
-                            Logger.d("MainPref: Passing sui1 color of " + xw.readFromXML(0));
-                            Logger.d("MainPref: Alt. value is color of " + color1);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        startActivityForResult(intent, COLOR_SELECTION_COMPLETE);
-                        return true;
-                    }
-                });
-        picker2.setOnPreferenceClickListener(
-                new Preference.OnPreferenceClickListener() {
-                    @Override
-                    public boolean onPreferenceClick(Preference preference) {
-                        Intent intent = new Intent(getActivity(), ColorPickerActivity.class);
-                        intent.putExtra("Prefname", "systemui_color2");
-                        try {
-                            intent.putExtra("Current", xw.readFromXML(1));
-                            Logger.d("MainPref: Passing sui2 color of " + xw.readFromXML(1));
-                            Logger.d("MainPref: Alt. value is color of " + color2);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        startActivityForResult(intent, COLOR_SELECTION_COMPLETE);
-                        return true;
-                    }
-                });
-        picker3.setOnPreferenceClickListener(
-                new Preference.OnPreferenceClickListener() {
-                    @Override
-                    public boolean onPreferenceClick(Preference preference) {
-                        Intent intent = new Intent(getActivity(), ColorPickerActivity.class);
-                        intent.putExtra("Prefname", "systemui_color3");
-                        try {
-                            intent.putExtra("Current", xw.readFromXML(2));
-                            Logger.d("MainPref: Passing sui3 color of " + xw.readFromXML(2));
-                            Logger.d("MainPref: Alt. value is color of " + color3);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        startActivityForResult(intent, COLOR_SELECTION_COMPLETE);
-                        return true;
-                    }
-                });
-        picker4.setOnPreferenceClickListener(
-                new Preference.OnPreferenceClickListener() {
-                    @Override
-                    public boolean onPreferenceClick(Preference preference) {
-                        Intent intent = new Intent(getActivity(), ColorPickerActivity.class);
-                        intent.putExtra("Prefname", "systemui_color4");
-                        try {
-                            intent.putExtra("Current", xw.readFromXML(3));
-                            Logger.d("MainPref: Passing sui4 color of " + xw.readFromXML(3));
-                            Logger.d("MainPref: Alt. value is color of " + color4);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        startActivityForResult(intent, COLOR_SELECTION_COMPLETE);
-                        return true;
-                    }
-                });
 
         permpref.setOnPreferenceClickListener(
                 new Preference.OnPreferenceClickListener() {
@@ -200,28 +114,12 @@ public class MainPreferenceFragment extends PreferenceFragment
                     }
                 });
 
-        try {
-            findPreference("version").setSummary(getActivity().getPackageManager()
-                    .getPackageInfo(getActivity().getPackageName(), 0).versionName);
-        } catch (PackageManager.NameNotFoundException e) {
-            findPreference("version").setSummary("ERROR");
-            e.printStackTrace();
-        }
+        
 
         setAllPreferenceValuesToSummary(getPreferenceScreen());
     }
 
-    public void onResume() {
-        super.onResume();
-        updateFromXML(getActivity());
-    }
 
-    private void updateViews() {
-        picker1.setMyColor(color1);
-        picker2.setMyColor(color2);
-        picker3.setMyColor(color3);
-        picker4.setMyColor(color4);
-    }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -233,47 +131,7 @@ public class MainPreferenceFragment extends PreferenceFragment
 
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Check which request we're responding to
-        Logger.d("MainPreferenceFragment: Result received");
-        if (requestCode == COLOR_SELECTION_COMPLETE) {
-            if (resultCode == COLOR_SELECTION_COMPLETE) {
-                Bundle res = data.getExtras();
-                String colorname = res.getString("Name");
-                Integer result = res.getInt("Color");
-                Logger.d("MainPreferenceFragment: color data for " + colorname + " " + result);
-                Toast.makeText(getActivity(), "Color for " + colorname + " " + result + " has been saved.", Toast.LENGTH_SHORT).show();
-                xw.WriteToXML(colorname, result);
-                updateFromXML(getActivity());
-            } else if (resultCode == COLOR_SELECTION_CANCELLED) {
-                Logger.d("MainPreferenceFragment: color selection cancelled");
-            }
-        }
-    }
 
-    public void updateFromXML(Context context) {
-        SharedPreferences sharedPref = context.getSharedPreferences("main", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        Logger.i("MainPreferenceFragment: Starting Editor");
-
-        try {
-            color1 = xw.readFromXML(0);
-            color2 = xw.readFromXML(1);
-            color3 = xw.readFromXML(2);
-            color4 = xw.readFromXML(3);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Logger.e("Error reading from file" + e);
-        }
-        Logger.i("MainPreferenceFragment: Colors set to " + color1 + " " + color2 + " " + color3 + " " + color4);
-        editor.putInt("systemui_color1", color1);
-        editor.putInt("systemui_color2", color2);
-        editor.putInt("systemui_color3", color3);
-        editor.putInt("systemui_color4", color4);
-        updateViews();
-        editor.apply();
-    }
 
     /**
      * Set a preference's summary text to the value it holds.

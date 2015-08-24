@@ -5,15 +5,7 @@
             android:key="create_perm"
             android:summary="@string/pref_create_permfile_summary"
             android:title="@string/pref_create_permfile_title" />
-        <Preference
-            android:key="always_active"
-            android:title="@string/pref_general_always_active_title"
-            android:summary="@string/pref_always_active_summary">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:targetPackage="com.woalk.apps.xposed.htcblinkfeedauthorizer"
-                android:targetClass="com.woalk.apps.xposed.htcblinkfeedauthorizer.AboutSensifyActivity" />
-        </Preference>
+
         />
     </PreferenceCategory>
 
@@ -74,60 +66,7 @@
             android:title="@string/pref_storage_usb_path_title" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/pref_cat_themes">
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="use_themes"
-            android:summary="@string/pref_themes_check_summary"
-            android:title="@string/pref_themes_check_title" />
 
-        <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
-            android:id="@+id/Picker1"
-            android:dependency="use_themes"
-            android:key="CP1"
-            android:layout="@layout/custom_pref"
-            android:summary="@string/pref_themes_systemui_color1_summary"
-            android:title="@string/pref_themes_systemui_color1_title" />
-        <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
-            android:id="@+id/Picker2"
-            android:dependency="use_themes"
-            android:key="CP2"
-            android:layout="@layout/custom_pref"
-            android:summary="@string/pref_themes_systemui_color2_summary"
-            android:title="@string/pref_themes_systemui_color2_title" />
-        <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
-            android:id="@+id/Picker3"
-            android:dependency="use_themes"
-            android:key="CP3"
-            android:layout="@layout/custom_pref"
-            android:summary="@string/pref_themes_systemui_color3_summary"
-            android:title="@string/pref_themes_systemui_color3_title" />
-        <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
-            android:id="@+id/Picker4"
-            android:dependency="use_themes"
-            android:key="CP4"
-            android:layout="@layout/custom_pref"
-            android:summary="@string/pref_themes_systemui_color4_summary"
-            android:title="@string/pref_themes_systemui_color4_title" />
 
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:dependency="use_themes"
-            android:key="systemui_use_launcher_theme"
-            android:summary="@string/pref_themes_systemui_use_launcher_summary"
-            android:title="@string/pref_themes_systemui_use_launcher_title" />
-    </PreferenceCategory>
-
-    <PreferenceCategory android:title="@string/pref_cat_about">
-        <Preference
-            android:key="version"
-            android:selectable="false"
-            android:title="@string/pref_about_version_title" />
-        <Preference
-            android:key="version"
-            android:selectable="false"
-            android:summary="@string/pref_about_dev_summary"
-            android:title="@string/pref_about_dev_title" />
-    </PreferenceCategory>
 
 </PreferenceScreen>

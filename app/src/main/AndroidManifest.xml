@@ -12,7 +12,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme2">
         <meta-data
             android:name="xposedmodule"
             android:value="true"/>
@@ -38,16 +38,6 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.woalk.apps.xposed.htcblinkfeedauthorizer.MainActivity"/>
-        </activity>
-        <activity
-            android:name=".AboutSensifyActivity"
-            android:label="@string/title_activity_alwaysactive"
-            android:parentActivityName=".MainActivity"
-            >
-
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".AboutSensifyActivity"/>
         </activity>
         <activity
             android:name="com.anjithsasindran.materialcolorpicker.ColorPickerActivity"
