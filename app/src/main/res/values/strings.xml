@@ -27,8 +27,8 @@
     <string name="CP2" translatable="false">CP2</string>
     <string name="CP3" translatable="false">CP3</string>
     <string name="CP4" translatable="false">CP4</string>
-    <string name="pref_cat_general">General</string>
-    <string name="pref_general_always_active_title">Show always active mods</string>
+    <string name="pref_cat_general">Global</string>
+    <string name="pref_general_always_active_title">Always active mods</string>
     <string name="pref_general_always_active_window">Always active mods</string>
     <string name="pref_always_active_authorize_title">Authorize HTC apps</string>
     <string name="pref_always_active_authorize_summary">Removes the \"Unauthorized device\"

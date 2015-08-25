@@ -10,6 +10,7 @@ import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -126,20 +127,24 @@ public class Common {
         }.execute();
     }
 
-    public void copyPermFile() {
+    public boolean copyPermFile() {
         File file = new File(Environment.getExternalStorageDirectory().toString() + "/Sensify/com.htc.software.market.xml");
         File sysfile = new File("/system/etc/permissions/com.htc.software.market.xml");
         if (!sysfile.exists()) {
             String[] cmd = {"mount -o remount,rw /system", "cp " + file + " " + sysfile, "mount -o remount,ro /system"};
             Logger.d("Common: passing command to root - " + cmd);
             runAsRoot(cmd);
+            return true;
 
         } else {
             Logger.d("Common: Sysfile exists.");
+            return false;
+
         }
 
 
     }
+
 
     public void runAsRoot(final String[] cmds) {
         new AsyncTask<Void, Void, Void>() {

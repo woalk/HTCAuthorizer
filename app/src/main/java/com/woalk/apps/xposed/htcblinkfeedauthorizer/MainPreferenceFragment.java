@@ -21,7 +21,6 @@ public class MainPreferenceFragment extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
     public static final String EXTRA_SUBSCREEN_ID = "subscreen_id";
     public static final int SUBSCREEN_ID_ALWAYS_ACTIVE = 1;
-    private static final String KEY_LOG_WARN_SHOWN = "log_warn";
     private XMLHelper xw = new XMLHelper();
 
 
@@ -43,9 +42,7 @@ public class MainPreferenceFragment extends PreferenceFragment
 
         addPreferencesFromResource(R.xml.pref_general);
         Preference permpref = findPreference("create_perm");
-        Preference logpref = findPreference("show_log");
         Preference killpref = findPreference("kill_launcher");
-        Preference exportpref = findPreference("export_log");
 
 
 
@@ -56,51 +53,16 @@ public class MainPreferenceFragment extends PreferenceFragment
                         xw.createPermFile();
                         Common common;
                         common = new Common();
-                        common.copyPermFile();
-                        return true;
-                    }
-                });
-
-
-        logpref.setOnPreferenceClickListener(
-                new Preference.OnPreferenceClickListener() {
-                    @Override
-                    public boolean onPreferenceClick(Preference preference) {
-                        Intent intent = new Intent(getActivity(), LogActivity.class);
-                        startActivity(intent);
-                        return true;
-                    }
-                });
-
-        final Preference logLoc = findPreference("log_loc");
-
-        exportpref.setOnPreferenceClickListener(
-                new Preference.OnPreferenceClickListener() {
-                    @Override
-                    public boolean onPreferenceClick(Preference preference) {
-                        if (getPreferenceManager().getSharedPreferences()
-                                .getBoolean(KEY_LOG_WARN_SHOWN, false)) {
-                            saveLog(logLoc);
-                            return true;
+                        if (!common.copyPermFile()) {
+                            Toast.makeText(getActivity(),"File already exists.",
+                                    Toast.LENGTH_SHORT).show();
                         }
-                        new AlertDialog.Builder(getActivity())
-                                .setTitle(R.string.warn_logs_title)
-                                .setMessage(R.string.warn_logs_content)
-                                .setPositiveButton(android.R.string.ok,
-                                        new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                getPreferenceManager().getSharedPreferences().edit()
-                                                        .putBoolean(KEY_LOG_WARN_SHOWN, true)
-                                                        .apply();
-                                                saveLog(logLoc);
-                                            }
-                                        })
-                                .create()
-                                .show();
+
                         return true;
                     }
                 });
+
+
 
         killpref.setOnPreferenceClickListener(
                 new Preference.OnPreferenceClickListener() {
@@ -170,11 +132,7 @@ public class MainPreferenceFragment extends PreferenceFragment
         }
     }
 
-    private void saveLog(Preference logLoc) {
-        String file = Logger.saveLogcat(getActivity());
-        logLoc.setEnabled(true);
-        logLoc.setSummary(String.format(file));
-    }
+
 
 
 }

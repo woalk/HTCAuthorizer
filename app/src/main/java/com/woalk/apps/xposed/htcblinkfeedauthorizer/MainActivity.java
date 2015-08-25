@@ -9,6 +9,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
@@ -26,6 +30,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -49,9 +54,9 @@ public class MainActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_replaceable);
-        mNavItems.add(new NavItem("General", "General app settings", R.drawable.ic_settings));
+        mNavItems.add(new NavItem("Main", "Primary Sensify settings", R.drawable.ic_settings));
         mNavItems.add(new NavItem("Themes", "Theme related settings", R.drawable.ic_style));
-        mNavItems.add(new NavItem("Sensify", "Sensify settings and logging", R.drawable.ic_info));
+        mNavItems.add(new NavItem("About", "Always-on features, app logs, module info.", R.drawable.ic_info));
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         mDrawerPane = (RelativeLayout) findViewById(R.id.drawerPane);
         mDrawerList = (ListView) findViewById(R.id.navList);
@@ -220,7 +225,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
+    public void myToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
 
 
     class NavItem {

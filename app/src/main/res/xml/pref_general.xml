@@ -9,23 +9,6 @@
         />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/pref_cat_debug">
-        <Preference
-            android:key="show_log"
-            android:summary="@string/pref_debug_show_log_summary"
-            android:title="@string/pref_debug_show_log_title" />
-        <Preference
-            android:key="export_log"
-            android:summary="@string/pref_debug_export_log_summary"
-            android:title="@string/pref_debug_export_log_title" />
-        <Preference
-            android:enabled="false"
-            android:key="log_loc"
-            android:summary=""
-            android:title="@string/pref_log_location" />
-            />
-
-    </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_cat_rotate">
         <SwitchPreference
