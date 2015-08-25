@@ -7,21 +7,24 @@
     android:layout_height="wrap_content"
     android:elevation="4dp"
     android:theme="@style/MyActionBar">
-    <TextSwitcher
-        android:id="@+id/text_switcher"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
         <TextView
+            android:id="@+id/tv1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
             style="@style/AppTheme.Toolbar.TextAppearanceTitle"
 
             />
         <TextView
+            android:id="@+id/tv2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
             style="@style/AppTheme.Toolbar.TextAppearanceTitle"
 
             />
-    </TextSwitcher>
+    </RelativeLayout>
 </android.support.v7.widget.Toolbar>

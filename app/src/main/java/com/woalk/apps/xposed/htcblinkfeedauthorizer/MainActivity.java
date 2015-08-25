@@ -1,5 +1,8 @@
 package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -18,6 +21,9 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.ScaleAnimation;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -34,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String PREF_SHOW_HSP_WARN = "warn_no_hsp";
     private static String TAG = MainActivity.class.getSimpleName();
     public TextSwitcher textSwitcher;
+    public TextView tv1;
+    public TextView tv2;
     public XMLHelper xh;
     ListView mDrawerList;
     RelativeLayout mDrawerPane;
@@ -41,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
     private int curPos = 0;
     private DrawerLayout mDrawerLayout;
     private int mAccentColor;
+    private float mPosTv1;
+    private float mPosTv2;
+    private ValueAnimator anim;
 
     public MainActivity() {
     }
@@ -57,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         mDrawerList = (ListView) findViewById(R.id.navList);
         DrawerListAdapter adapter = new DrawerListAdapter(this, mNavItems);
         mDrawerList.setAdapter(adapter);
+
         xh = new XMLHelper();
         try {
             mAccentColor = xh.readFromXML(2);
@@ -64,7 +76,14 @@ public class MainActivity extends AppCompatActivity {
             Logger.e(TAG + " Error reading xml");
         }
 
-        textSwitcher = (TextSwitcher) findViewById(R.id.text_switcher);
+        // Set up initial settings for title view(s)
+        tv1 = (TextView) findViewById(R.id.tv1);
+        tv2 = (TextView) findViewById(R.id.tv2);
+        tv1.setText("Sensify Xposed");
+        tv1.setAlpha(0);
+        tv2.setText(mNavItems.get(curPos).mTitle);
+        tv1.setPivotX(0);
+        tv2.setPivotX(0);
 
 
         // Drawer Item click listeners
@@ -101,17 +120,22 @@ public class MainActivity extends AppCompatActivity {
 
             public void onDrawerStateChanged(int newState) {
                 if (newState == DrawerLayout.STATE_DRAGGING && !mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-                    textSwitcher.setInAnimation(getApplicationContext(), R.anim.textinopen);
-                    textSwitcher.setOutAnimation(getApplicationContext(), R.anim.textoutopen);
-                    textSwitcher.setText("Sensify Xposed");
+
 
 
                 } else if (newState == DrawerLayout.STATE_DRAGGING && mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-                    textSwitcher.setInAnimation(getApplicationContext(), R.anim.textinclose);
-                    textSwitcher.setOutAnimation(getApplicationContext(), R.anim.textoutclose);
-                    textSwitcher.setText(mNavItems.get(curPos).mTitle);
+
+
                 }
             }
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                animateMenuItems(slideOffset);
+            }
+
+
+
+
         };
         mDrawerLayout.setDrawerListener(actionBarDrawerToggle);
 
@@ -127,6 +151,34 @@ public class MainActivity extends AppCompatActivity {
         selectItemFromDrawer(0);
     }
 
+
+    private void animateMenuItems(float slideOffset) {
+
+        ObjectAnimator tv1X = ObjectAnimator.ofFloat(tv1, "scaleX", mPosTv1, slideOffset);
+        ObjectAnimator tv1alpha = ObjectAnimator.ofFloat(tv1, "alpha", mPosTv1, slideOffset);
+        AnimatorSet tv1set = new AnimatorSet();
+        tv1set.play(tv1X).with(tv1alpha);
+        tv1set.setDuration(450);
+
+        float invertPos = (float) (1f - (slideOffset));
+        ObjectAnimator tv2X = ObjectAnimator.ofFloat(tv2, "scaleX", mPosTv2, invertPos);
+        ObjectAnimator tv2alpha = ObjectAnimator.ofFloat(tv2, "alpha", mPosTv2, invertPos);
+        AnimatorSet tv2set = new AnimatorSet();
+        tv2set.play(tv2X).with(tv2alpha);
+        tv2set.setDuration(450);
+        tv1set.start();
+        tv2set.start();
+
+        mPosTv1 = slideOffset;
+        mPosTv2 = invertPos;
+
+
+    }
+
+
+
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Logger.d("Mainactivity: Option ID is " + item.getItemId() + "and drawer state is " + mDrawerLayout.isDrawerOpen(GravityCompat.START));
@@ -136,16 +188,11 @@ public class MainActivity extends AppCompatActivity {
 
                 if (!mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                     mDrawerLayout.openDrawer(GravityCompat.START);
-                    textSwitcher.setInAnimation(getApplicationContext(), R.anim.textinopen);
-                    textSwitcher.setOutAnimation(getApplicationContext(), R.anim.textoutopen);
 
-                    textSwitcher.setText("Sensify Xposed");
 
                 } else {
                     mDrawerLayout.closeDrawer(GravityCompat.START);
-                    textSwitcher.setInAnimation(getApplicationContext(), R.anim.textinclose);
-                    textSwitcher.setOutAnimation(getApplicationContext(), R.anim.textoutclose);
-                    textSwitcher.setText(mNavItems.get(curPos).mTitle);
+
                 }
 
                 return true;
@@ -214,9 +261,7 @@ public class MainActivity extends AppCompatActivity {
         // Close the drawer
         mDrawerLayout.closeDrawer(GravityCompat.START);
         ft.commit();
-        textSwitcher.setText(mNavItems.get(position).mTitle);
-        textSwitcher.setInAnimation(getApplicationContext(), R.anim.textinclose);
-        textSwitcher.setOutAnimation(getApplicationContext(), R.anim.textoutopen);
+
 
     }
 
