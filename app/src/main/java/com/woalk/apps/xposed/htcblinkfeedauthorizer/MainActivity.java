@@ -3,6 +3,7 @@ package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -21,9 +22,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.ScaleAnimation;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -39,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String PREF_FILE_MAINACTIVITY = "MainActivity_pref";
     private static final String PREF_SHOW_HSP_WARN = "warn_no_hsp";
     private static String TAG = MainActivity.class.getSimpleName();
-    public TextSwitcher textSwitcher;
     public TextView tv1;
     public TextView tv2;
     public XMLHelper xh;
@@ -51,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
     private int mAccentColor;
     private float mPosTv1;
     private float mPosTv2;
-    private ValueAnimator anim;
 
     public MainActivity() {
     }
@@ -118,22 +114,11 @@ public class MainActivity extends AppCompatActivity {
                 syncState();
             }
 
-            public void onDrawerStateChanged(int newState) {
-                if (newState == DrawerLayout.STATE_DRAGGING && !mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
 
-
-
-                } else if (newState == DrawerLayout.STATE_DRAGGING && mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-
-
-                }
-            }
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
                 animateMenuItems(slideOffset);
             }
-
-
 
 
         };
@@ -160,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
         tv1set.play(tv1X).with(tv1alpha);
         tv1set.setDuration(450);
 
-        float invertPos = (float) (1f - (slideOffset));
+        float invertPos = 1f - (slideOffset);
         ObjectAnimator tv2X = ObjectAnimator.ofFloat(tv2, "scaleX", mPosTv2, invertPos);
         ObjectAnimator tv2alpha = ObjectAnimator.ofFloat(tv2, "alpha", mPosTv2, invertPos);
         AnimatorSet tv2set = new AnimatorSet();
@@ -174,9 +159,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
-
-
 
 
     @Override
@@ -253,18 +235,14 @@ public class MainActivity extends AppCompatActivity {
             ft.replace(android.R.id.widget_frame, new AboutSensifyFragment());
         }
 
-
         mDrawerList.setItemChecked(position, true);
-
         setTitle("");
-
-        // Close the drawer
         mDrawerLayout.closeDrawer(GravityCompat.START);
+        tv2.setText(mNavItems.get(curPos).mTitle);
         ft.commit();
 
 
     }
-
 
     class NavItem {
         String mTitle;
@@ -303,6 +281,7 @@ public class MainActivity extends AppCompatActivity {
             return 0;
         }
 
+        @SuppressLint("InflateParams")
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View view;
