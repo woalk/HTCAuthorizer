@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -47,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean drawerState = false;
     ArrayList<NavItem> mNavItems = new ArrayList<NavItem>();
     public TextSwitcher textSwitcher;
+    private XMLHelper xh;
+    private int mAccentColor;
     public MainActivity() {
     }
 
@@ -62,6 +66,12 @@ public class MainActivity extends AppCompatActivity {
         mDrawerList = (ListView) findViewById(R.id.navList);
         DrawerListAdapter adapter = new DrawerListAdapter(this, mNavItems);
         mDrawerList.setAdapter(adapter);
+        xh = new XMLHelper();
+        try {
+            mAccentColor = xh.readFromXML(2);
+        } catch (IOException e) {
+            Logger.e("Main: Error reading xml");
+        }
 
         textSwitcher = (TextSwitcher) findViewById(R.id.text_switcher);
 
@@ -285,6 +295,9 @@ public class MainActivity extends AppCompatActivity {
             titleView.setText(mNavItems.get(position).mTitle);
             subtitleView.setText(mNavItems.get(position).mSubtitle);
             iconView.setImageResource(mNavItems.get(position).mIcon);
+            titleView.setTextColor(mAccentColor);
+            subtitleView.setTextColor(mAccentColor);
+            iconView.setColorFilter(mAccentColor, PorterDuff.Mode.MULTIPLY);
 
             return view;
         }
