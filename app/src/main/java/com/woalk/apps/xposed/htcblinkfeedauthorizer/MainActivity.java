@@ -24,6 +24,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextSwitcher;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -32,13 +33,17 @@ public class MainActivity extends AppCompatActivity {
     private static final String PREF_FILE_MAINACTIVITY = "MainActivity_pref";
     private static final String PREF_SHOW_HSP_WARN = "warn_no_hsp";
     private static String TAG = MainActivity.class.getSimpleName();
-
+    private int curPos = 0;
+    private CharSequence mTitle;
     ListView mDrawerList;
     RelativeLayout mDrawerPane;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     public boolean drawerState = false;
     ArrayList<NavItem> mNavItems = new ArrayList<NavItem>();
+    public TextSwitcher textSwitcher;
+    public MainActivity() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,49 +55,64 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         mDrawerPane = (RelativeLayout) findViewById(R.id.drawerPane);
         mDrawerList = (ListView) findViewById(R.id.navList);
-
-
         DrawerListAdapter adapter = new DrawerListAdapter(this, mNavItems);
         mDrawerList.setAdapter(adapter);
+
+        textSwitcher = (TextSwitcher) findViewById(R.id.text_switcher);
+
+
+
 
         // Drawer Item click listeners
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selectItemFromDrawer(position);
+                curPos = position;
             }
         });
 
-        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
-            ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
-                    this,
-                    mDrawerLayout,
-                    toolbar,
-                    R.string.navigation_drawer_open,
-                    R.string.navigation_drawer_close
-            )
+        final android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
+                this,
+                mDrawerLayout,
+                toolbar,
+                R.string.drawer_open,
+                R.string.drawer_close
+        )
 
         {
-            public void onDrawerClosed(View view)
-            {
+            public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
                 invalidateOptionsMenu();
-                drawerState = false;
                 syncState();
             }
 
-            public void onDrawerOpened(View drawerView)
-            {
+            public void onDrawerOpened(View drawerView) {
+
                 super.onDrawerOpened(drawerView);
                 invalidateOptionsMenu();
-                drawerState = true;
                 syncState();
+            }
+
+            public void onDrawerStateChanged(int newState) {
+                if( newState == DrawerLayout.STATE_DRAGGING && !mDrawerLayout.isDrawerOpen(GravityCompat.START )) {
+                    textSwitcher.setInAnimation(getApplicationContext(), R.anim.textinopen);
+                    textSwitcher.setOutAnimation(getApplicationContext(), R.anim.textoutopen);
+                    textSwitcher.setText("Sensify Xposed");
+
+
+                } else if (newState == DrawerLayout.STATE_DRAGGING && mDrawerLayout.isDrawerOpen(GravityCompat.START )) {
+                    textSwitcher.setInAnimation(getApplicationContext(), R.anim.textinclose);
+                    textSwitcher.setOutAnimation(getApplicationContext(), R.anim.textoutclose);
+                    textSwitcher.setText(mNavItems.get(curPos).mTitle);
+                }
             }
         };
         mDrawerLayout.setDrawerListener(actionBarDrawerToggle);
 
         //Set the custom toolbar
-        if (toolbar != null){
+        if (toolbar != null) {
             setSupportActionBar(toolbar);
         }
 
@@ -107,15 +127,23 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Logger.d("Mainactivity: Option ID is " + item.getItemId() + "and drawer state is " + drawerState);
+        Logger.d("Mainactivity: Option ID is " + item.getItemId() + "and drawer state is " + mDrawerLayout.isDrawerOpen(GravityCompat.START));
         // The action bar home/up action should open or close the drawer.
         switch (item.getItemId()) {
             case android.R.id.home:
 
-                if (!drawerState) {
+                if (!mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                     mDrawerLayout.openDrawer(GravityCompat.START);
+                    textSwitcher.setInAnimation(getApplicationContext(), R.anim.textinopen);
+                    textSwitcher.setOutAnimation(getApplicationContext(), R.anim.textoutopen);
+
+                    textSwitcher.setText("Sensify Xposed");
+
                 } else {
                     mDrawerLayout.closeDrawer(GravityCompat.START);
+                    textSwitcher.setInAnimation(getApplicationContext(), R.anim.textinclose);
+                    textSwitcher.setOutAnimation(getApplicationContext(), R.anim.textoutclose);
+                    textSwitcher.setText(mNavItems.get(curPos).mTitle);
                 }
 
                 return true;
@@ -167,7 +195,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void selectItemFromDrawer(int position) {
         Fragment fragment = new MainPreferenceFragment();
-
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.setCustomAnimations(R.anim.enter, R.anim.exit);
@@ -178,16 +205,22 @@ public class MainActivity extends AppCompatActivity {
         } else if (position == 2) {
             ft.replace(android.R.id.widget_frame, new AboutSensifyFragment());
         }
-        ft.commit();
+
 
         mDrawerList.setItemChecked(position, true);
 
-
-        setTitle(mNavItems.get(position).mTitle);
+        setTitle("");
 
         // Close the drawer
         mDrawerLayout.closeDrawer(GravityCompat.START);
+        ft.commit();
+        textSwitcher.setText(mNavItems.get(position).mTitle);
+        textSwitcher.setInAnimation(getApplicationContext(), R.anim.textinclose);
+        textSwitcher.setOutAnimation(getApplicationContext(), R.anim.textoutopen);
+
     }
+
+
 
 
     class NavItem {
@@ -201,6 +234,7 @@ public class MainActivity extends AppCompatActivity {
             mIcon = icon;
         }
     }
+
     class DrawerListAdapter extends BaseAdapter {
 
         Context mContext;
@@ -233,8 +267,7 @@ public class MainActivity extends AppCompatActivity {
             if (convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.drawer_item, null);
-            }
-            else {
+            } else {
                 view = convertView;
             }
 
@@ -242,8 +275,8 @@ public class MainActivity extends AppCompatActivity {
             TextView subtitleView = (TextView) view.findViewById(R.id.subTitle);
             ImageView iconView = (ImageView) view.findViewById(R.id.icon);
 
-            titleView.setText( mNavItems.get(position).mTitle );
-            subtitleView.setText( mNavItems.get(position).mSubtitle );
+            titleView.setText(mNavItems.get(position).mTitle);
+            subtitleView.setText(mNavItems.get(position).mSubtitle);
             iconView.setImageResource(mNavItems.get(position).mIcon);
 
             return view;
