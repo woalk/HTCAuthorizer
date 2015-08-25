@@ -65,6 +65,6 @@ public class AboutSensifyFragment extends PreferenceFragment {
     private void saveLog(Preference logLoc) {
         String file = Logger.saveLogcat(getActivity());
         logLoc.setEnabled(true);
-        logLoc.setSummary(String.format(file));
+        logLoc.setSummary(file);
     }
 }
