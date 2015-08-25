@@ -1,19 +1,12 @@
 package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-
-
 
 
 public class LogActivity extends AppCompatActivity {
@@ -27,10 +20,9 @@ public class LogActivity extends AppCompatActivity {
         android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
 
 
-            setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 
 
         ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(

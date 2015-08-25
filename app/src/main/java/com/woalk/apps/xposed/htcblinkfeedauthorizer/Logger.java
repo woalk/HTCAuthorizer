@@ -2,13 +2,10 @@ package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Environment;
-import android.text.Html;
 import android.util.Log;
 import android.webkit.WebView;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
@@ -25,12 +22,11 @@ import de.robv.android.xposed.XC_MethodHook;
  */
 @SuppressWarnings({"PointlessBooleanExpression", "ConstantConditions"})
 public class Logger {
-    private Logger() {
-    }
-
     public static final String LOG_TAG = "Sensify";
     public static final boolean DO_LOG = true;
     public static final boolean EXCLUDE_ERRORS = true;
+    private Logger() {
+    }
 
     public static void v(String msg, Object... args) {
         if (!DO_LOG) return;
@@ -106,7 +102,7 @@ public class Logger {
         sb.append("{");
         for (Object o : array) {
             sb.append(o)
-                .append(",");
+                    .append(",");
         }
         sb.append("}");
         return sb.toString();
@@ -123,7 +119,7 @@ public class Logger {
             @Override
             protected String doInBackground(Void... params) {
                 try {
-                    Process process = Runtime.getRuntime().exec(new String[]{"su",  "-c",
+                    Process process = Runtime.getRuntime().exec(new String[]{"su", "-c",
                             "logcat -d -s Sensify:*"});
                     BufferedReader bufferedReader = new BufferedReader(
                             new InputStreamReader(process.getInputStream()));

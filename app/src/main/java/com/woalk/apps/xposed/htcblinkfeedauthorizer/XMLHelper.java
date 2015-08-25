@@ -31,9 +31,10 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 public class XMLHelper {
-    public Integer default1 = -31321439;
     public static final String basekey = "systemui_color";
     public static final String xhtag = "XMLHelper: ";
+    final ArrayList<Integer> Theme = new ArrayList<>();
+    public Integer default1 = -31321439;
     String filename = "/themeColors.xml";
     String path = "/Sensify";
     File directory = new File(Environment.getExternalStorageDirectory().toString() + path);
@@ -41,12 +42,19 @@ public class XMLHelper {
     String permfilename = "/com.htc.software.market.xml";
     File permfile = new File(directory + permfilename);
 
-
     public XMLHelper() {
         checkXMLExists();
     }
 
-    final ArrayList<Integer> Theme = new ArrayList<>();
+    public static int mixThemeColor(Integer p, Integer s, Float f) {
+        if (p.intValue() == s.intValue()) {
+            Logger.i(xhtag + "Theme color not unique, mixing.");
+            return Common.enlightColor(p, f);
+        } else {
+            Logger.i(xhtag + "Theme color is unique, returning.");
+            return s;
+        }
+    }
 
     public void WriteToXML(String keyname, Integer theme1) {
         Logger.d(xhtag + "Trying to set " + keyname + " to " + theme1);
@@ -166,7 +174,6 @@ public class XMLHelper {
         return null;
     }
 
-
     public void checkXMLExists() {
         if (!file.exists()) try {
             Logger.d("Sensify: Creating file " + file.getPath());
@@ -255,16 +262,6 @@ public class XMLHelper {
         else {
             Logger.d(xhtag + "permission file " + permfile.getPath() + " already exists.");
 
-        }
-    }
-
-    public static int mixThemeColor(Integer p, Integer s, Float f) {
-        if (p.intValue() == s.intValue()) {
-            Logger.i(xhtag + "Theme color not unique, mixing.");
-            return Common.enlightColor(p, f);
-        } else {
-            Logger.i(xhtag + "Theme color is unique, returning.");
-            return s;
         }
     }
 }

@@ -1,19 +1,13 @@
 package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.LightingColorFilter;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
@@ -31,7 +25,6 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,17 +33,15 @@ public class MainActivity extends AppCompatActivity {
     private static final String PREF_FILE_MAINACTIVITY = "MainActivity_pref";
     private static final String PREF_SHOW_HSP_WARN = "warn_no_hsp";
     private static String TAG = MainActivity.class.getSimpleName();
-    private int curPos = 0;
-    private CharSequence mTitle;
+    public TextSwitcher textSwitcher;
+    public XMLHelper xh;
     ListView mDrawerList;
     RelativeLayout mDrawerPane;
-    private ActionBarDrawerToggle mDrawerToggle;
+    ArrayList<NavItem> mNavItems = new ArrayList<>();
+    private int curPos = 0;
     private DrawerLayout mDrawerLayout;
-    public boolean drawerState = false;
-    ArrayList<NavItem> mNavItems = new ArrayList<NavItem>();
-    public TextSwitcher textSwitcher;
-    private XMLHelper xh;
     private int mAccentColor;
+
     public MainActivity() {
     }
 
@@ -70,12 +61,10 @@ public class MainActivity extends AppCompatActivity {
         try {
             mAccentColor = xh.readFromXML(2);
         } catch (IOException e) {
-            Logger.e("Main: Error reading xml");
+            Logger.e(TAG + " Error reading xml");
         }
 
         textSwitcher = (TextSwitcher) findViewById(R.id.text_switcher);
-
-
 
 
         // Drawer Item click listeners
@@ -111,13 +100,13 @@ public class MainActivity extends AppCompatActivity {
             }
 
             public void onDrawerStateChanged(int newState) {
-                if( newState == DrawerLayout.STATE_DRAGGING && !mDrawerLayout.isDrawerOpen(GravityCompat.START )) {
+                if (newState == DrawerLayout.STATE_DRAGGING && !mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                     textSwitcher.setInAnimation(getApplicationContext(), R.anim.textinopen);
                     textSwitcher.setOutAnimation(getApplicationContext(), R.anim.textoutopen);
                     textSwitcher.setText("Sensify Xposed");
 
 
-                } else if (newState == DrawerLayout.STATE_DRAGGING && mDrawerLayout.isDrawerOpen(GravityCompat.START )) {
+                } else if (newState == DrawerLayout.STATE_DRAGGING && mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                     textSwitcher.setInAnimation(getApplicationContext(), R.anim.textinclose);
                     textSwitcher.setOutAnimation(getApplicationContext(), R.anim.textoutclose);
                     textSwitcher.setText(mNavItems.get(curPos).mTitle);
@@ -129,14 +118,12 @@ public class MainActivity extends AppCompatActivity {
         //Set the custom toolbar
         if (toolbar != null) {
             setSupportActionBar(toolbar);
+            //noinspection ConstantConditions
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         actionBarDrawerToggle.syncState();
-
         maybeShowNoHSPWarn();
-        Fragment f = new MainPreferenceFragment();
         selectItemFromDrawer(0);
     }
 
@@ -209,8 +196,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void selectItemFromDrawer(int position) {
-        Fragment fragment = new MainPreferenceFragment();
-        FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.setCustomAnimations(R.anim.enter, R.anim.exit);
         if (position == 0) {
@@ -233,10 +218,6 @@ public class MainActivity extends AppCompatActivity {
         textSwitcher.setInAnimation(getApplicationContext(), R.anim.textinclose);
         textSwitcher.setOutAnimation(getApplicationContext(), R.anim.textoutopen);
 
-    }
-
-    public void myToast(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
 

@@ -135,7 +135,6 @@ public class X_Mod
             ".widget.ChartNetworkSeriesView";
     public static final String CLASS_PACKAGEMANAGER = "android.app.ApplicationPackageManager";
     public static final String PKG_HTC_FEATURE = "com.htc.software";
-    private static String MODULE_PATH = null;
     public static final String[] HTC_FEATURES = new String[]{
             PKG_HTC_FEATURE + ".HTC",
             PKG_HTC_FEATURE + ".Sense7.0",
@@ -146,6 +145,7 @@ public class X_Mod
             PKG_HTC_FEATURE + ".hdk2",
             PKG_HTC_FEATURE + ".hdk3"
     };
+    private static String MODULE_PATH = null;
     private final SettingsHelper mSettings;
     public XMLHelper xh;
 
@@ -307,7 +307,6 @@ public class X_Mod
                                     }
                                 }
                             }
-
 
 
                         }
@@ -517,7 +516,6 @@ public class X_Mod
             } catch (Throwable e) {
                 Logger.w("Twitter hooks could not be loaded.", e);
             }
-
 
 
         } else if (lpparam.packageName.equals(PKG_HTC_CAMERA)) {
@@ -1218,7 +1216,7 @@ public class X_Mod
                 color1);
         XResources.setSystemWideReplacement("android", "color", "primary_dark_material_dark",
                 color2);
-       XResources.setSystemWideReplacement("android", "color", "material_deep_teal_500",
+        XResources.setSystemWideReplacement("android", "color", "material_deep_teal_500",
                 color2);
         XResources.setSystemWideReplacement("android", "color", "material_deep_teal_200",
                 color3);

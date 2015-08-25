@@ -17,17 +17,18 @@ import java.io.IOException;
  */
 public class ThemeFragment extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
+    static final int COLOR_SELECTION_COMPLETE = 1;  // The request code
+    static final int COLOR_SELECTION_CANCELLED = 2;  // The request code
     private static final XMLHelper xw = new XMLHelper();
     public Integer color1;
     public Integer color2;
     public Integer color3;
     public Integer color4;
-    static final int COLOR_SELECTION_COMPLETE = 1;  // The request code
-    static final int COLOR_SELECTION_CANCELLED = 2;  // The request code
     private XColorPickerPreference picker1;
     private XColorPickerPreference picker2;
     private XColorPickerPreference picker3;
     private XColorPickerPreference picker4;
+
     @Override
 
     public void onCreate(Bundle savedInstanceState) {
@@ -166,6 +167,7 @@ public class ThemeFragment extends PreferenceFragment
         updateViews();
         editor.apply();
     }
+
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
