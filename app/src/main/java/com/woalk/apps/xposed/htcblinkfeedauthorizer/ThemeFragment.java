@@ -8,7 +8,6 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.widget.Toast;
 
-import com.anjithsasindran.materialcolorpicker.ColorPickerActivity;
 
 import java.io.IOException;
 
@@ -47,16 +46,7 @@ public class ThemeFragment extends PreferenceFragment
                 new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
-                        Intent intent = new Intent(getActivity(), ColorPickerActivity.class);
-                        intent.putExtra("Prefname", "systemui_color1");
-                        try {
-                            intent.putExtra("Current", xw.readFromXML(0));
-                            Logger.d("MainPref: Passing sui1 color of " + xw.readFromXML(0));
-                            Logger.d("MainPref: Alt. value is color of " + color1);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        startActivityForResult(intent, COLOR_SELECTION_COMPLETE);
+
                         return true;
                     }
                 });
@@ -64,16 +54,7 @@ public class ThemeFragment extends PreferenceFragment
                 new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
-                        Intent intent = new Intent(getActivity(), ColorPickerActivity.class);
-                        intent.putExtra("Prefname", "systemui_color2");
-                        try {
-                            intent.putExtra("Current", xw.readFromXML(1));
-                            Logger.d("MainPref: Passing sui2 color of " + xw.readFromXML(1));
-                            Logger.d("MainPref: Alt. value is color of " + color2);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        startActivityForResult(intent, COLOR_SELECTION_COMPLETE);
+
                         return true;
                     }
                 });
@@ -81,16 +62,7 @@ public class ThemeFragment extends PreferenceFragment
                 new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
-                        Intent intent = new Intent(getActivity(), ColorPickerActivity.class);
-                        intent.putExtra("Prefname", "systemui_color3");
-                        try {
-                            intent.putExtra("Current", xw.readFromXML(2));
-                            Logger.d("MainPref: Passing sui3 color of " + xw.readFromXML(2));
-                            Logger.d("MainPref: Alt. value is color of " + color3);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        startActivityForResult(intent, COLOR_SELECTION_COMPLETE);
+
                         return true;
                     }
                 });
@@ -98,16 +70,7 @@ public class ThemeFragment extends PreferenceFragment
                 new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
-                        Intent intent = new Intent(getActivity(), ColorPickerActivity.class);
-                        intent.putExtra("Prefname", "systemui_color4");
-                        try {
-                            intent.putExtra("Current", xw.readFromXML(3));
-                            Logger.d("MainPref: Passing sui4 color of " + xw.readFromXML(3));
-                            Logger.d("MainPref: Alt. value is color of " + color4);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        startActivityForResult(intent, COLOR_SELECTION_COMPLETE);
+
                         return true;
                     }
                 });

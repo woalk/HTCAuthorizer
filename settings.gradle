@@ -1,2 +1,1 @@
-include ':app', ':material-color-picker'
-project(':material-color-picker').projectDir = new File('lib/material-color-picker/app')
+include ':app'

@@ -43,7 +43,24 @@
         <item name="android:background">@android:color/transparent</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
+    <style name="CardTheme" parent="Theme.AppCompat.Light.NoActionBar">
 
+        <!-- No ActionBar & Window Title -->
+        <item name="android:windowActionBar">false</item>
+
+        <item name="android:windowNoTitle">true</item>
+
+        <item name="android:colorPrimary">@*android:color/material_blue_grey_900</item>
+        <item name="android:colorPrimaryDark">@*android:color/material_blue_grey_950</item>
+        <item name="android:colorAccent">@*android:color/material_deep_teal_500</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
+
+    </style>
+
+    <style name="WindowAnimationTransition">
+        <item name="android:windowEnterAnimation">@anim/slideup</item>
+        <item name="android:windowExitAnimation">@anim/slidedown</item>
+    </style>
 
 
 
