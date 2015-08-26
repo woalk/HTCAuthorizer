@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
@@ -7,30 +8,36 @@
     android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:paddingEnd="?android:attr/scrollbarSize"
-    tools:ignore="RtlSymmetry">
+    android:animateLayoutChanges="true"
+    tools:ignore="RtlSymmetry"
+    android:clickable="false">
 
     <ImageView
         android:id="@+android:id/icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:contentDescription="@string/Descriptor2" />
+        android:contentDescription="@string/Descriptor2"
+        />
 
     <RelativeLayout
-        android:layout_width="0dp"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="6.0dip"
         android:layout_marginEnd="6.0dip"
         android:layout_marginStart="15.0dip"
         android:layout_marginTop="6.0dip"
         android:layout_weight="1.0"
+        android:animateLayoutChanges="true"
+        android:id="@+id/container"
         android:paddingRight="10dip"
-        tools:ignore="RtlSymmetry">
+        tools:ignore="RtlSymmetry"
+        android:clickable="true">
 
 
         <TextView
             android:id="@+android:id/title"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:ellipsize="marquee"
             android:fadingEdge="horizontal"
@@ -39,21 +46,27 @@
 
         <TextView
             android:id="@android:id/summary"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignStart="@android:id/title"
             android:layout_below="@android:id/title"
             android:maxLines="4"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="?android:attr/textColorSecondary" />
-
-
+        <include
+            android:id="@+id/pickerframe"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@android:id/summary"
+            android:layout_below="@android:id/summary"
+            layout="@layout/layout_color_picker"
+            />
     </RelativeLayout>
-
     <LinearLayout
         android:id="@+id/widget_frame"
+        android:animateLayoutChanges="true"
         android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="vertical"
         android:padding="2dip">
@@ -62,12 +75,10 @@
             android:id="@+id/button"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:animateLayoutChanges="true"
             android:contentDescription="@string/ImageViewDescriptor" />
 
     </LinearLayout>
-
-    <!-- Preference should place its actual preference widget here. -->
-
 
 </LinearLayout>
 

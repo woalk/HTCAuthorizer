@@ -8,7 +8,6 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.widget.Toast;
 
-
 import java.io.IOException;
 
 /**
@@ -39,14 +38,14 @@ public class ThemeFragment extends PreferenceFragment
         picker2 = (XColorPickerPreference) findPreference(getString(R.string.CP2));
         picker3 = (XColorPickerPreference) findPreference(getString(R.string.CP3));
         picker4 = (XColorPickerPreference) findPreference(getString(R.string.CP4));
-        Logger.d("MainPreferenceFragment: Oncreate: colors are " + color1 + ", " + color2 + ", " + color3 + ", and " + color4);
+        Logger.d("ThemeFragment: Oncreate: colors are " + color1 + ", " + color2 + ", " + color3 + ", and " + color4);
 
 
         picker1.setOnPreferenceClickListener(
                 new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
-
+                        picker1.toggle_contents();
                         return true;
                     }
                 });
@@ -54,7 +53,7 @@ public class ThemeFragment extends PreferenceFragment
                 new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
-
+                        picker2.toggle_contents();
                         return true;
                     }
                 });
@@ -62,7 +61,7 @@ public class ThemeFragment extends PreferenceFragment
                 new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
-
+                        picker3.toggle_contents();
                         return true;
                     }
                 });
@@ -70,7 +69,7 @@ public class ThemeFragment extends PreferenceFragment
                 new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
-
+                        picker4.toggle_contents();
                         return true;
                     }
                 });
@@ -84,9 +83,13 @@ public class ThemeFragment extends PreferenceFragment
 
     private void updateViews() {
         picker1.setMyColor(color1);
+        picker1.setMyName("systemui_color1");
         picker2.setMyColor(color2);
+        picker2.setMyName("systemui_color2");
         picker3.setMyColor(color3);
+        picker3.setMyName("systemui_color3");
         picker4.setMyColor(color4);
+        picker4.setMyName("systemui_color4");
     }
 
     @Override
@@ -109,7 +112,7 @@ public class ThemeFragment extends PreferenceFragment
     }
 
     public void updateFromXML(Context context) {
-        SharedPreferences sharedPref = context.getSharedPreferences("main", Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = context.getSharedPreferences("com.woalk.apps.xposed.htcblinkfeedauthorizer_preferences", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         Logger.i("MainPreferenceFragment: Starting Editor");
 

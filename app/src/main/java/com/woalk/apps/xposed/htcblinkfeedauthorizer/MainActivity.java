@@ -11,9 +11,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -29,9 +32,9 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
-
 import java.io.IOException;
 import java.util.ArrayList;
+
 
 public class MainActivity extends AppCompatActivity {
     private static final String PREF_FILE_MAINACTIVITY = "MainActivity_pref";
@@ -39,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private static String TAG = MainActivity.class.getSimpleName();
     public TextView tv1;
     public TextView tv2;
+    private int maincolor;
     public XMLHelper xh;
     ListView mDrawerList;
     RelativeLayout mDrawerPane;
@@ -82,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
         tv2.setPivotX(0);
 
 
+
         // Drawer Item click listeners
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -92,6 +97,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
         final android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+        try {
+            maincolor = xh.readFromXML(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        toolbar.setBackgroundColor(maincolor);
+        tv1.setBackgroundColor(Color.TRANSPARENT);
+        tv2.setBackgroundColor(Color.TRANSPARENT);
+
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
                 this,
                 mDrawerLayout,
@@ -99,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 R.string.drawer_open,
                 R.string.drawer_close
         )
+
 
         {
             public void onDrawerClosed(View view) {
@@ -133,30 +148,34 @@ public class MainActivity extends AppCompatActivity {
 
         actionBarDrawerToggle.syncState();
         maybeShowNoHSPWarn();
-        selectItemFromDrawer(0);
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.setCustomAnimations(R.anim.enter, R.anim.exit);
+        ft.add(android.R.id.widget_frame, new MainPreferenceFragment());
+        ft.commit();
+
+    }
+
+
+
+    public void onResume(Bundle SavedInstanceState) {
+        selectItemFromDrawer(curPos);
+
     }
 
 
     private void animateMenuItems(float slideOffset) {
 
-        ObjectAnimator tv1X = ObjectAnimator.ofFloat(tv1, "scaleX", mPosTv1, slideOffset);
-        ObjectAnimator tv1alpha = ObjectAnimator.ofFloat(tv1, "alpha", mPosTv1, slideOffset);
-        AnimatorSet tv1set = new AnimatorSet();
-        tv1set.play(tv1X).with(tv1alpha);
-        tv1set.setDuration(450);
-
         float invertPos = 1f - (slideOffset);
-        ObjectAnimator tv2X = ObjectAnimator.ofFloat(tv2, "scaleX", mPosTv2, invertPos);
-        ObjectAnimator tv2alpha = ObjectAnimator.ofFloat(tv2, "alpha", mPosTv2, invertPos);
-        AnimatorSet tv2set = new AnimatorSet();
-        tv2set.play(tv2X).with(tv2alpha);
-        tv2set.setDuration(450);
-        tv1set.start();
-        tv2set.start();
-
         mPosTv1 = slideOffset;
         mPosTv2 = invertPos;
-
+        ObjectAnimator tv1X = ObjectAnimator.ofFloat(tv1, "scaleX", mPosTv1, slideOffset);
+        ObjectAnimator tv1alpha = ObjectAnimator.ofFloat(tv1, "alpha", mPosTv1, slideOffset);
+        ObjectAnimator tv2X = ObjectAnimator.ofFloat(tv2, "scaleX", mPosTv2, invertPos);
+        ObjectAnimator tv2alpha = ObjectAnimator.ofFloat(tv2, "alpha", mPosTv2, invertPos);
+        AnimatorSet tvset = new AnimatorSet();
+        tvset.setDuration(450);
+        tvset.play(tv1X).with(tv1alpha).with(tv2X).with(tv2alpha);
+        tvset.start();
 
     }
 
@@ -224,22 +243,29 @@ public class MainActivity extends AppCompatActivity {
                 .create().show();
     }
 
-    private void selectItemFromDrawer(int position) {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.setCustomAnimations(R.anim.enter, R.anim.exit);
-        if (position == 0) {
-            ft.replace(android.R.id.widget_frame, new MainPreferenceFragment());
-        } else if (position == 1) {
-            ft.replace(android.R.id.widget_frame, new ThemeFragment());
-        } else if (position == 2) {
-            ft.replace(android.R.id.widget_frame, new AboutSensifyFragment());
-        }
+    private void selectItemFromDrawer(final int position) {
 
+        mDrawerLayout.closeDrawer(GravityCompat.START);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.setCustomAnimations(R.anim.enter, R.anim.exit);
+                if (position == 0) {
+                    ft.replace(android.R.id.widget_frame, new MainPreferenceFragment());
+                } else if (position == 1) {
+                    ft.replace(android.R.id.widget_frame, new ThemeFragment());
+                } else if (position == 2) {
+                    ft.replace(android.R.id.widget_frame, new AboutSensifyFragment());
+                }
+                ft.commit();
+            }
+        }, 100);
         mDrawerList.setItemChecked(position, true);
         setTitle("");
-        mDrawerLayout.closeDrawer(GravityCompat.START);
-        tv2.setText(mNavItems.get(curPos).mTitle);
-        ft.commit();
+        tv2.setText(mNavItems.get(position).mTitle);
+
+
 
 
     }
