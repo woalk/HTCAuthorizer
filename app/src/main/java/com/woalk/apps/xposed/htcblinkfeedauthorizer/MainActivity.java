@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_replaceable);
         mNavItems.add(new NavItem("Main", "Primary Sensify settings", R.drawable.ic_settings));
@@ -102,9 +102,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        toolbar.setBackgroundColor(maincolor);
-        tv1.setBackgroundColor(Color.TRANSPARENT);
-        tv2.setBackgroundColor(Color.TRANSPARENT);
+            toolbar.setBackgroundColor(maincolor);
 
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
                 this,
@@ -137,22 +135,17 @@ public class MainActivity extends AppCompatActivity {
 
 
         };
-        mDrawerLayout.setDrawerListener(actionBarDrawerToggle);
-
-        //Set the custom toolbar
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
-            //noinspection ConstantConditions
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-
-        actionBarDrawerToggle.syncState();
+            mDrawerLayout.setDrawerListener(actionBarDrawerToggle);
+            actionBarDrawerToggle.syncState();
         maybeShowNoHSPWarn();
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.setCustomAnimations(R.anim.enter, R.anim.exit);
-        ft.add(android.R.id.widget_frame, new MainPreferenceFragment());
-        ft.commit();
-
+        if (savedInstanceState == null){
+            fragmentSelect(curPos);
+            if (toolbar != null) {
+                setSupportActionBar(toolbar);
+                //noinspection ConstantConditions
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            }
+        }
     }
 
 
@@ -234,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 SharedPreferences.Editor edit =
-                                        getSharedPreferences(PREF_FILE_MAINACTIVITY,
+                                        getSharedPreferences("main",
                                                 Context.MODE_PRIVATE).edit();
                                 edit.putBoolean(PREF_SHOW_HSP_WARN, false);
                                 edit.apply();
@@ -244,30 +237,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void selectItemFromDrawer(final int position) {
-
-        mDrawerLayout.closeDrawer(GravityCompat.START);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.setCustomAnimations(R.anim.enter, R.anim.exit);
-                if (position == 0) {
-                    ft.replace(android.R.id.widget_frame, new MainPreferenceFragment());
-                } else if (position == 1) {
-                    ft.replace(android.R.id.widget_frame, new ThemeFragment());
-                } else if (position == 2) {
-                    ft.replace(android.R.id.widget_frame, new AboutSensifyFragment());
-                }
-                ft.commit();
+                fragmentSelect(position);
+
             }
-        }, 100);
+        }, 200);
+        mDrawerLayout.closeDrawer(GravityCompat.START);
         mDrawerList.setItemChecked(position, true);
-        setTitle("");
         tv2.setText(mNavItems.get(position).mTitle);
 
 
+    }
 
-
+    private void fragmentSelect (int position) {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.setCustomAnimations(R.anim.enter, R.anim.exit);
+        if (position == 0) {
+            ft.replace(android.R.id.widget_frame, new MainPreferenceFragment());
+        } else if (position == 1) {
+            ft.replace(android.R.id.widget_frame, new ThemeFragment());
+        } else if (position == 2) {
+            ft.replace(android.R.id.widget_frame, new AboutSensifyFragment());
+        }
+        ft.commit();
     }
 
     class NavItem {

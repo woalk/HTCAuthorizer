@@ -3,13 +3,18 @@ package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+
+import java.io.File;
 
 public class AboutSensifyFragment extends PreferenceFragment {
 
     private static final String KEY_LOG_WARN_SHOWN = "log_warn";
+    private String file;
 
 
     @Override
@@ -20,6 +25,7 @@ public class AboutSensifyFragment extends PreferenceFragment {
         addPreferencesFromResource(R.xml.pref_always_active);
         Preference logpref = findPreference("show_log");
         Preference exportpref = findPreference("export_log");
+        final Preference logloc = findPreference("log_loc");
         logpref.setOnPreferenceClickListener(
                 new Preference.OnPreferenceClickListener() {
                     @Override
@@ -31,7 +37,21 @@ public class AboutSensifyFragment extends PreferenceFragment {
                 });
 
         final Preference logLoc = findPreference("log_loc");
+        logloc.setOnPreferenceClickListener(
+                new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preferences) {
 
+                        File sd = Environment.getExternalStorageDirectory();
+                        Logger.d("AboutFragment: path " + Uri.fromFile(new File(file)));
+                        Intent email = new Intent(Intent.ACTION_SEND);
+                        email.setType("text/plain");
+                        Intent intent = email.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(file)));
+                        startActivity(Intent.createChooser(email, "Email: Text File"));
+                        return true;
+                    }
+                }
+        );
         exportpref.setOnPreferenceClickListener(
                 new Preference.OnPreferenceClickListener() {
                     @Override
@@ -63,7 +83,7 @@ public class AboutSensifyFragment extends PreferenceFragment {
     }
 
     private void saveLog(Preference logLoc) {
-        String file = Logger.saveLogcat(getActivity());
+        file = Logger.saveLogcat(getActivity());
         logLoc.setEnabled(true);
         logLoc.setSummary(file);
     }

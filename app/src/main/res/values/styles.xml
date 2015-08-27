@@ -28,13 +28,12 @@
 
     </style>
     <style name="MyActionBar" parent="@style/Theme.AppCompat">
-        <item name="android:background"  tools:ignore="NewApi">@*android:color/material_blue_grey_900</item>
-        <item name="background">@*android:color/material_blue_grey_900</item>
         <item name="titleTextStyle">@style/myTheme.ActionBar.Text</item>
     </style>
 
     <style name="myTheme.ActionBar.Text" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@android:color/transparent</item>
     </style>
 
     <style name="AppTheme.Toolbar.TextAppearanceTitle"

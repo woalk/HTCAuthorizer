@@ -6,7 +6,7 @@ import de.robv.android.xposed.XSharedPreferences;
 
 public class SettingsHelper {
     protected static final String PACKAGE_NAME = "com.woalk.apps.xposed.htcblinkfeedauthorizer";
-    protected static final String PREFERENCE_FILE = "main";
+    protected static final String PREFERENCE_FILE = "com.woalk.apps.xposed.htcblinkfeedauthorizer_preferences";
     protected static final String PREFERENCE_THEME = "sensify_theme";
 
     private final XSharedPreferences mPref;

@@ -7,23 +7,31 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.TextView;
+
+import java.io.IOException;
 
 
 public class LogActivity extends AppCompatActivity {
-
-
+private TextView tv1;
+private XMLHelper xh;
+    private int maincolor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_replaceable);
-        setTitle("Logging");
-        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
-
-
+        xh = new XMLHelper();
+        final android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+        try {
+            maincolor = xh.readFromXML(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        toolbar.setBackgroundColor(maincolor);
+        tv1 = (TextView) findViewById(R.id.tv1);
+        tv1.setText("Logging");
         setSupportActionBar(toolbar);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 
         ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
                 R.layout.activity_log, (ViewGroup) findViewById(android.R.id.widget_frame), true);
