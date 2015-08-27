@@ -2,12 +2,15 @@ package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.util.Log;
 import android.webkit.WebView;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
@@ -165,9 +168,11 @@ public class Logger {
     }
 
     public static String saveLogcat(final Context context) {
+        String path = "/Sensify";
+        File directory = new File(Environment.getExternalStorageDirectory().toString() + path);
         String date = new SimpleDateFormat("yyyy-MM-dd-hh-mm", Locale.getDefault())
                 .format(Calendar.getInstance().getTime());
-        final File file = new File(context.getExternalFilesDir(null), "logcat-" + date + ".txt");
+        final File file = new File(directory, "logcat-" + date + ".txt");
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
