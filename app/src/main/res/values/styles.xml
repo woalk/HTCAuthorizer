@@ -60,7 +60,9 @@
         <item name="android:windowEnterAnimation">@anim/slideup</item>
         <item name="android:windowExitAnimation">@anim/slidedown</item>
     </style>
-
+    <style name="MediumFont">
+        <item name="android:fontFamily">@string/font_fontFamily_medium</item>
+    </style>
 
 
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">

@@ -42,17 +42,19 @@
 
     </RelativeLayout>
     <RelativeLayout
-        android:layout_width="280dp"
+        android:layout_width="235dp"
         android:layout_height="match_parent"
         android:id="@+id/drawerPane"
         android:layout_gravity="start"
         android:layout_below="@+id/toolbar">
         <ListView
             android:id="@+id/navList"
-            android:layout_width="280dp"
+            android:layout_width="235dp"
             android:layout_height="match_parent"
             android:choiceMode="singleChoice"
             android:background="@color/white"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="0dp"
             android:layout_alignParentEnd="true" />
 
     </RelativeLayout>

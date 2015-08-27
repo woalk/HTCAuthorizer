@@ -9,6 +9,7 @@ import android.preference.PreferenceFragment;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Created by Ben on 8/23/2015.
@@ -17,11 +18,9 @@ public class ThemeFragment extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
     static final int COLOR_SELECTION_COMPLETE = 1;  // The request code
     static final int COLOR_SELECTION_CANCELLED = 2;  // The request code
-    private static final XMLHelper xw = new XMLHelper();
-    public Integer color1;
-    public Integer color2;
-    public Integer color3;
-    public Integer color4;
+    public XMLHelper xh;
+    ArrayList<Integer> mColors = new ArrayList<>();
+    private int color1, color2, color3, color4;
     private XColorPickerPreference picker1;
     private XColorPickerPreference picker2;
     private XColorPickerPreference picker3;
@@ -33,6 +32,7 @@ public class ThemeFragment extends PreferenceFragment
         super.onCreate(savedInstanceState);
 
         // Load the preferences from an XML resource
+        xh = new XMLHelper();
         addPreferencesFromResource(R.xml.pref_themes);
         picker1 = (XColorPickerPreference) findPreference(getString(R.string.CP1));
         picker2 = (XColorPickerPreference) findPreference(getString(R.string.CP2));
@@ -103,7 +103,7 @@ public class ThemeFragment extends PreferenceFragment
                 Integer result = res.getInt("Color");
                 Logger.d("MainPreferenceFragment: color data for " + colorname + " " + result);
                 Toast.makeText(getActivity(), "Color for " + colorname + " " + result + " has been saved.", Toast.LENGTH_SHORT).show();
-                xw.WriteToXML(colorname, result);
+                xh.WriteToXML(colorname, result);
                 updateFromXML(getActivity());
             } else if (resultCode == COLOR_SELECTION_CANCELLED) {
                 Logger.d("MainPreferenceFragment: color selection cancelled");
@@ -115,16 +115,11 @@ public class ThemeFragment extends PreferenceFragment
         SharedPreferences sharedPref = context.getSharedPreferences("com.woalk.apps.xposed.htcblinkfeedauthorizer_preferences",Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         Logger.i("MainPreferenceFragment: Starting Editor");
-
-        try {
-            color1 = xw.readFromXML(0);
-            color2 = xw.readFromXML(1);
-            color3 = xw.readFromXML(2);
-            color4 = xw.readFromXML(3);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Logger.e("Error reading from file" + e);
-        }
+        mColors = xh.readAllColors();
+        color1 = mColors.get(0);
+        color2 = mColors.get(1);
+        color3 = mColors.get(2);
+        color4 = mColors.get(3);
         Logger.i("MainPreferenceFragment: Colors set to " + color1 + " " + color2 + " " + color3 + " " + color4);
         editor.putInt("systemui_color1", color1);
         editor.putInt("systemui_color2", color2);

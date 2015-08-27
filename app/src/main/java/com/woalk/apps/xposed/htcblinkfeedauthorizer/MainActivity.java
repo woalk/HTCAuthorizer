@@ -2,25 +2,23 @@ package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,28 +28,30 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextSwitcher;
 import android.widget.TextView;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
-    private static final String PREF_FILE_MAINACTIVITY = "MainActivity_pref";
     private static final String PREF_SHOW_HSP_WARN = "warn_no_hsp";
     private static String TAG = MainActivity.class.getSimpleName();
     public TextView tv1;
     public TextView tv2;
-    private int maincolor;
-    public XMLHelper xh;
     ListView mDrawerList;
     RelativeLayout mDrawerPane;
     ArrayList<NavItem> mNavItems = new ArrayList<>();
+    public XMLHelper xh;
+    ArrayList<Integer> mColors = new ArrayList<>();
+    private int mMainColor;
+    private int mSecondaryColor;
+    private int mAccentColor;
     private int curPos = 0;
     private DrawerLayout mDrawerLayout;
-    private int mAccentColor;
     private float mPosTv1;
     private float mPosTv2;
+    private FragmentTransaction ft;
 
     public MainActivity() {
     }
@@ -60,23 +60,26 @@ public class MainActivity extends AppCompatActivity {
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_replaceable);
-        mNavItems.add(new NavItem("Main", "Primary Sensify settings", R.drawable.ic_settings));
-        mNavItems.add(new NavItem("Themes", "Theme related settings", R.drawable.ic_style));
-        mNavItems.add(new NavItem("About", "Always-on features, app logs, module info.", R.drawable.ic_info));
+
+        //Add drawer items
+        mNavItems.add(new NavItem("Main", R.drawable.ic_settings));
+        mNavItems.add(new NavItem("Themes", R.drawable.ic_style));
+        mNavItems.add(new NavItem("Reboot", R.drawable.ic_replay_white_24dp));
+        mNavItems.add(new NavItem("About", R.drawable.ic_info));
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         mDrawerPane = (RelativeLayout) findViewById(R.id.drawerPane);
         mDrawerList = (ListView) findViewById(R.id.navList);
         DrawerListAdapter adapter = new DrawerListAdapter(this, mNavItems);
         mDrawerList.setAdapter(adapter);
 
+        //Get colors
         xh = new XMLHelper();
-        try {
-            mAccentColor = xh.readFromXML(2);
-        } catch (IOException e) {
-            Logger.e(TAG + " Error reading xml");
-        }
+        mColors = xh.readAllColors();
+        mMainColor = mColors.get(0);
+        mSecondaryColor = mColors.get(1);
+        mAccentColor = mColors.get(2);
 
-        // Set up initial settings for title view(s)
+        // Set up initial settings for title view(s) and bar
         tv1 = (TextView) findViewById(R.id.tv1);
         tv2 = (TextView) findViewById(R.id.tv2);
         tv1.setText("Sensify Xposed");
@@ -84,25 +87,19 @@ public class MainActivity extends AppCompatActivity {
         tv2.setText(mNavItems.get(curPos).mTitle);
         tv1.setPivotX(0);
         tv2.setPivotX(0);
-
-
+        final android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+        toolbar.setBackgroundColor(mMainColor);
 
         // Drawer Item click listeners
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selectItemFromDrawer(position);
-                curPos = position;
+
+
+
             }
         });
-
-        final android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
-        try {
-            maincolor = xh.readFromXML(0);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-            toolbar.setBackgroundColor(maincolor);
 
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
                 this,
@@ -113,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
         )
 
 
-        {
+       {
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
                 invalidateOptionsMenu();
@@ -135,10 +132,13 @@ public class MainActivity extends AppCompatActivity {
 
 
         };
-            mDrawerLayout.setDrawerListener(actionBarDrawerToggle);
-            actionBarDrawerToggle.syncState();
+
+        mDrawerLayout.setDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+        //Detect missing framework, warn if it's not there.
         maybeShowNoHSPWarn();
-        if (savedInstanceState == null){
+        //Set default fragment if initializing from first time.
+        if (savedInstanceState == null) {
             fragmentSelect(curPos);
             if (toolbar != null) {
                 setSupportActionBar(toolbar);
@@ -148,30 +148,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
+    //Set fragment on resume
     public void onResume(Bundle SavedInstanceState) {
         selectItemFromDrawer(curPos);
 
     }
-
-
-    private void animateMenuItems(float slideOffset) {
-
-        float invertPos = 1f - (slideOffset);
-        mPosTv1 = slideOffset;
-        mPosTv2 = invertPos;
-        ObjectAnimator tv1X = ObjectAnimator.ofFloat(tv1, "scaleX", mPosTv1, slideOffset);
-        ObjectAnimator tv1alpha = ObjectAnimator.ofFloat(tv1, "alpha", mPosTv1, slideOffset);
-        ObjectAnimator tv2X = ObjectAnimator.ofFloat(tv2, "scaleX", mPosTv2, invertPos);
-        ObjectAnimator tv2alpha = ObjectAnimator.ofFloat(tv2, "alpha", mPosTv2, invertPos);
-        AnimatorSet tvset = new AnimatorSet();
-        tvset.setDuration(450);
-        tvset.play(tv1X).with(tv1alpha).with(tv2X).with(tv2alpha);
-        tvset.start();
-
-    }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -196,7 +177,24 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //Custom animation for title text
+    private void animateMenuItems(float slideOffset) {
 
+        float invertPos = 1f - (slideOffset);
+        mPosTv1 = slideOffset;
+        mPosTv2 = invertPos;
+        ObjectAnimator tv1X = ObjectAnimator.ofFloat(tv1, "scaleX", mPosTv1, slideOffset);
+        ObjectAnimator tv1alpha = ObjectAnimator.ofFloat(tv1, "alpha", mPosTv1, slideOffset);
+        ObjectAnimator tv2X = ObjectAnimator.ofFloat(tv2, "scaleX", mPosTv2, invertPos);
+        ObjectAnimator tv2alpha = ObjectAnimator.ofFloat(tv2, "alpha", mPosTv2, invertPos);
+        AnimatorSet tvset = new AnimatorSet();
+        tvset.setDuration(450);
+        tvset.play(tv1X).with(tv1alpha).with(tv2X).with(tv2alpha);
+        tvset.start();
+
+    }
+
+    //Warning for missing HTC Service pack
     public void maybeShowNoHSPWarn() {
         final String PKG_HSP = "com.htc.sense.hsp";
         try {
@@ -236,45 +234,97 @@ public class MainActivity extends AppCompatActivity {
                 .create().show();
     }
 
+    //Drawer selection logic
     private void selectItemFromDrawer(final int position) {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                fragmentSelect(position);
-
-            }
-        }, 200);
-        mDrawerLayout.closeDrawer(GravityCompat.START);
-        mDrawerList.setItemChecked(position, true);
-        tv2.setText(mNavItems.get(position).mTitle);
-
-
+        if (position == 2) showRebootDialog();
+        else {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+            mDrawerList.setItemChecked(position, true);
+            tv2.setText(mNavItems.get(position).mTitle);
+            curPos = position;
+            mDrawerLayout.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    fragmentSelect(position);
+                }
+            }, 100);
+        }
     }
 
-    private void fragmentSelect (int position) {
+    //Self explanatory
+    private void showRebootDialog() {
+        TextView title = new TextView(this);
+        title.setText("Would you like to reboot?");
+        title.setPadding(10, 10, 10, 10);
+        title.setGravity(Gravity.CENTER);
+        // title.setTextColor(getResources().getColor(R.color.greenBG));
+        title.setTextSize(18);
+
+        TextView msg = new TextView(this);
+        msg.setText("Select an option below.");
+        msg.setPadding(10, 10, 10, 10);
+        msg.setGravity(Gravity.CENTER);
+        msg.setTextSize(15);
+        AlertDialog builder = new AlertDialog.Builder(this).create();
+        builder.setCustomTitle(title);
+        builder.setView(msg);
+        builder.setButton(Dialog.BUTTON_POSITIVE, "Full reboot", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                try {
+                    Process proc = Runtime.getRuntime()
+                            .exec(new String[]{"su", "-c", "reboot now"});
+                    proc.waitFor();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
+        builder.setButton(AlertDialog.BUTTON_NEUTRAL, "Hot reboot", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                try {
+                    Process proc = Runtime.getRuntime()
+
+                            .exec(new String[]{"su", "-c", "setprop ctl.restart zygote"});
+                    proc.waitFor();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
+        builder.setIcon(R.drawable.ic_replay_black_24dp);
+        builder.show();
+    }
+
+    //Fragment selector
+    private void fragmentSelect(int position) {
+
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.setCustomAnimations(R.anim.enter, R.anim.exit);
         if (position == 0) {
             ft.replace(android.R.id.widget_frame, new MainPreferenceFragment());
         } else if (position == 1) {
             ft.replace(android.R.id.widget_frame, new ThemeFragment());
-        } else if (position == 2) {
+        } else if (position == 3) {
             ft.replace(android.R.id.widget_frame, new AboutSensifyFragment());
         }
         ft.commit();
     }
 
+    //Custom class for our nav items
     class NavItem {
         String mTitle;
-        String mSubtitle;
+
         int mIcon;
 
-        public NavItem(String title, String subtitle, int icon) {
+        public NavItem(String title, int icon) {
             mTitle = title;
-            mSubtitle = subtitle;
+
             mIcon = icon;
         }
     }
+
 
     class DrawerListAdapter extends BaseAdapter {
 
@@ -314,16 +364,11 @@ public class MainActivity extends AppCompatActivity {
             }
 
             TextView titleView = (TextView) view.findViewById(R.id.title);
-            TextView subtitleView = (TextView) view.findViewById(R.id.subTitle);
             ImageView iconView = (ImageView) view.findViewById(R.id.icon);
-
             titleView.setText(mNavItems.get(position).mTitle);
-            subtitleView.setText(mNavItems.get(position).mSubtitle);
             iconView.setImageResource(mNavItems.get(position).mIcon);
             titleView.setTextColor(mAccentColor);
-            subtitleView.setTextColor(mAccentColor);
             iconView.setColorFilter(mAccentColor, PorterDuff.Mode.MULTIPLY);
-
             return view;
         }
     }

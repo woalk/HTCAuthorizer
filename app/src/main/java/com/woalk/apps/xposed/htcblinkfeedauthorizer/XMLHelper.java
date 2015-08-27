@@ -264,4 +264,83 @@ public class XMLHelper {
 
         }
     }
+
+    public ArrayList<Integer> readAllColors() {
+        XmlPullParserFactory factory = null;
+        try {
+            factory = XmlPullParserFactory.newInstance();
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+            Logger.e(xhtag + "XPPException " + e);
+        }
+        assert factory != null;
+        factory.setNamespaceAware(true);
+        XmlPullParser xpp = null;
+        try {
+            xpp = factory.newPullParser();
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+            Logger.e(xhtag + "XPPException " + e);
+        }
+
+        try {
+            // create an input stream to be read by the stream reader.
+            FileInputStream fis = null;
+            try {
+                fis = new FileInputStream(file);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                Logger.e(xhtag + "FilenotFound " + e);
+            }
+
+            // set the input for the parser using an InputStreamReader
+            assert xpp != null;
+            assert fis != null;
+            xpp.setInput(new InputStreamReader(fis));
+
+            int eventType = xpp.getEventType();
+            String currentTag = null;
+            Integer color = null;
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                if (eventType == XmlPullParser.START_TAG) {
+                    currentTag = xpp.getName();
+
+                } else if (eventType == XmlPullParser.TEXT) {
+                    if (currentTag != null) {
+                        if (currentTag.contains("systemui_color")) {
+                            if (Common.isInteger(xpp.getText())) {
+                                color = Integer.valueOf(xpp.getText());
+                                Logger.i(xhtag + "Found color " + currentTag + color);
+                            }
+                        }
+                    }
+                } else if (eventType == XmlPullParser.END_TAG) {
+                    if (xpp.getName().contains("1")) {
+                        Theme.add(0, color);
+                    }
+                    if (xpp.getName().contains("2")) {
+                        Theme.add(1, color);
+                    }
+                    if (xpp.getName().contains("3")) {
+                        Theme.add(2, color);
+                    }
+                    if (xpp.getName().contains("4")) {
+                        Theme.add(3, color);
+                    }
+                }
+                try {
+                    eventType = xpp.next();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        return Theme;
+
+        } catch (XmlPullParserException e) {
+            Logger.e(xhtag + "Error" + e);
+        }
+
+        Logger.e(xhtag + "Error, returning null.");
+        return null;
+    }
 }
