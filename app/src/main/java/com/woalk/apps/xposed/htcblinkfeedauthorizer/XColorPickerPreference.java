@@ -26,7 +26,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 public class XColorPickerPreference extends Preference implements SeekBar.OnSeekBarChangeListener, View.OnClickListener {
-    private int myTheme;
+    private int myTheme, mButtonLeft, mButtonTop;
     private ImageView myView;
     private LinearLayout myFrame, widgetFrame;
     private LayoutParams lParamsShow;
@@ -65,16 +65,18 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
         super.onBindView(rootView);
         container = (RelativeLayout) rootView.findViewById(R.id.container);
         myView = (ImageView) rootView.findViewById(R.id.button);
+        mButtonTop = myView.getTop();
+        mButtonLeft = myView.getLeft();
         myFrame = (LinearLayout) rootView.findViewById(R.id.pickerframe);
         myFrame.setLayoutTransition(new LayoutTransition());
         mOutAnim = (Animation) AnimationUtils.loadAnimation(getContext(), R.anim.slideup);
         mInAnim = (Animation) AnimationUtils.loadAnimation(getContext(), R.anim.slidedown);
         myFrame.setAnimation(mOutAnim);
         myFrame.setAnimation(mInAnim);
-        left = ObjectAnimator.ofFloat(myView, "x", 760, 400);
-        right = ObjectAnimator.ofFloat(myView, "x", 400, 760);
-        down = ObjectAnimator.ofFloat(myView, "y", 0, 750);
-        up = ObjectAnimator.ofFloat(myView, "y", 750, 0);
+        left = ObjectAnimator.ofFloat(myView, "x", mButtonLeft , 400);
+        right = ObjectAnimator.ofFloat(myView, "x", 400, mButtonLeft);
+        down = ObjectAnimator.ofFloat(myView, "y", mButtonTop, 750);
+        up = ObjectAnimator.ofFloat(myView, "y", 750, mButtonTop);
         xh = new XMLHelper();
         myFrame.setVisibility(View.GONE);
         red = Color.red(myTheme);
