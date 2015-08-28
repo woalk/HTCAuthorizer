@@ -49,9 +49,9 @@
     <string name="pref_debug_show_log_title">Show log</string>
     <string name="pref_debug_show_log_summary">Show the system logcat of Sensify. Requires
         root permission to read system-wide.</string>
-    <string name="pref_debug_export_log_title">Save system log</string>
-    <string name="pref_debug_export_log_summary">Save the system logcat to storage to include it
-        in a bug report. Requires root permission to read system-wide.</string>
+    <string name="pref_debug_export_log_title">Save and send log</string>
+    <string name="pref_debug_export_log_summary">Save the system logcat and send it. \n
+        Requires root permissions.</string>
     <string name="pref_debug_export_log_toast">\'%s\'</string>
     <string name="pref_storage_ext_check_title">Enable external storage</string>
     <string name="pref_storage_ext_check_summary">Tell HTC apps that your device

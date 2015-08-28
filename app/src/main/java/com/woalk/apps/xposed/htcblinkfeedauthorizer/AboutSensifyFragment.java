@@ -24,7 +24,6 @@ public class AboutSensifyFragment extends PreferenceFragment {
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.pref_always_active);
         Preference logpref = findPreference("show_log");
-        Preference exportpref = findPreference("export_log");
         final Preference logloc = findPreference("log_loc");
         logpref.setOnPreferenceClickListener(
                 new Preference.OnPreferenceClickListener() {
@@ -41,7 +40,7 @@ public class AboutSensifyFragment extends PreferenceFragment {
                 new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preferences) {
-
+                        saveLog(logLoc);
                         File sd = Environment.getExternalStorageDirectory();
                         Logger.d("AboutFragment: path " + Uri.fromFile(new File(file)));
                         Intent email = new Intent(Intent.ACTION_SEND);
@@ -52,39 +51,13 @@ public class AboutSensifyFragment extends PreferenceFragment {
                     }
                 }
         );
-        exportpref.setOnPreferenceClickListener(
-                new Preference.OnPreferenceClickListener() {
-                    @Override
-                    public boolean onPreferenceClick(Preference preference) {
-                        if (getPreferenceManager().getSharedPreferences()
-                                .getBoolean(KEY_LOG_WARN_SHOWN, false)) {
-                            saveLog(logLoc);
-                            return true;
-                        }
-                        new AlertDialog.Builder(getActivity())
-                                .setTitle(R.string.warn_logs_title)
-                                .setMessage(R.string.warn_logs_content)
-                                .setPositiveButton(android.R.string.ok,
-                                        new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                getPreferenceManager().getSharedPreferences().edit()
-                                                        .putBoolean(KEY_LOG_WARN_SHOWN, true)
-                                                        .apply();
-                                                saveLog(logLoc);
-                                            }
-                                        })
-                                .create()
-                                .show();
-                        return true;
-                    }
-                });
+
 
     }
 
     private void saveLog(Preference logLoc) {
         file = Logger.saveLogcat(getActivity());
         logLoc.setEnabled(true);
-        logLoc.setSummary(file);
+        logLoc.setSummary("Log file saved to" + file);
     }
 }
