@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_replaceable);
 
-        //Add drawer items
+        //Add drawerdown items
         mNavItems.add(new NavItem("Main", R.drawable.ic_settings));
         mNavItems.add(new NavItem("Themes", R.drawable.ic_style));
         mNavItems.add(new NavItem("Reboot", R.drawable.ic_replay_white_24dp));
@@ -156,8 +156,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Logger.d("Mainactivity: Option ID is " + item.getItemId() + "and drawer state is " + mDrawerLayout.isDrawerOpen(GravityCompat.START));
-        // The action bar home/up action should open or close the drawer.
+        Logger.d("Mainactivity: Option ID is " + item.getItemId() + "and drawerdown state is " + mDrawerLayout.isDrawerOpen(GravityCompat.START));
+        // The action bar home/up action should open or close the drawerdown.
         switch (item.getItemId()) {
             case android.R.id.home:
 

@@ -7,8 +7,8 @@
     android:background="?android:attr/selectableItemBackground"
     android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeight"
-    android:paddingEnd="?android:attr/scrollbarSize"
     tools:ignore="RtlSymmetry"
+
     android:clickable="false">
 
     <ImageView
@@ -30,6 +30,7 @@
         android:id="@+id/container"
         android:paddingRight="10dip"
         tools:ignore="RtlSymmetry"
+
         android:clickable="true">
 
 
@@ -50,7 +51,8 @@
             android:layout_below="@android:id/title"
             android:maxLines="4"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="?android:attr/textColorSecondary" />
+            android:textColor="?android:attr/textColorSecondary"
+            android:paddingEnd="60dip" />
         <include
             android:id="@+id/pickerframe"
             android:layout_width="fill_parent"

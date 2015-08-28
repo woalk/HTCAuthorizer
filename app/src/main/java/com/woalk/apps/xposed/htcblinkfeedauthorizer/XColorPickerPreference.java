@@ -3,6 +3,7 @@ package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 import android.animation.AnimatorSet;
 import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -13,11 +14,12 @@ import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.Display;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
+import android.view.animation.Transformation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -25,8 +27,12 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import java.lang.reflect.Method;
+
 public class XColorPickerPreference extends Preference implements SeekBar.OnSeekBarChangeListener, View.OnClickListener {
-    private int myTheme, mButtonLeft, mButtonTop;
+    private int myTheme, mScreenWidth, mContainerHeight;
+    private float buttonX, buttonY;
+
     private ImageView myView;
     private LinearLayout myFrame, widgetFrame;
     private LayoutParams lParamsShow;
@@ -39,10 +45,11 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
     private ObjectAnimator left, up, right, down;
     private AnimatorSet mButtonSet;
     public SeekBar hueSeekBar, satSeekBar, valueSeekBar;
-    public TextView hueToolTip, satToolTip, valueToolTip;
+    public TextView hueToolTip, satToolTip, valueToolTip, mTitle, mSummary;
     Window window;
     Display display;
     public int red, green, blue, hue, sat, value, seekBarLeft;
+    public static int  SPEED_ANIMATION_TRANSITION = 500;
     public float[] hsv = new float[3];
     public Rect thumbRect;
     public String dave;
@@ -63,21 +70,23 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
     @Override
     public void onBindView(View rootView) {
         super.onBindView(rootView);
+
         container = (RelativeLayout) rootView.findViewById(R.id.container);
         myView = (ImageView) rootView.findViewById(R.id.button);
-        mButtonTop = myView.getTop();
-        mButtonLeft = myView.getLeft();
         myFrame = (LinearLayout) rootView.findViewById(R.id.pickerframe);
         myFrame.setLayoutTransition(new LayoutTransition());
         mOutAnim = (Animation) AnimationUtils.loadAnimation(getContext(), R.anim.slideup);
         mInAnim = (Animation) AnimationUtils.loadAnimation(getContext(), R.anim.slidedown);
         myFrame.setAnimation(mOutAnim);
         myFrame.setAnimation(mInAnim);
-        left = ObjectAnimator.ofFloat(myView, "x", mButtonLeft , 400);
-        right = ObjectAnimator.ofFloat(myView, "x", 400, mButtonLeft);
-        down = ObjectAnimator.ofFloat(myView, "y", mButtonTop, 750);
-        up = ObjectAnimator.ofFloat(myView, "y", 750, mButtonTop);
+        buttonX = myFrame.getX();
+        mScreenWidth = ((getContext().getResources().getDisplayMetrics().widthPixels/2) - 100);
+        Logger.d(TAG + "SW is " + mScreenWidth);
+        mContainerHeight = container.getMeasuredHeight();
+        buttonY = myFrame.getY();
+
         xh = new XMLHelper();
+        measureElements();
         myFrame.setVisibility(View.GONE);
         red = Color.red(myTheme);
         green = Color.green(myTheme);
@@ -133,33 +142,94 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
 
         if( myFrame.isShown() )
         {
+            ValueAnimator anim = ValueAnimator.ofInt(mContainerHeight, mContainerHeight - 900);
+            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    int val = (Integer) valueAnimator.getAnimatedValue();
+                    ViewGroup.LayoutParams layoutParams = container.getLayoutParams();
+                    layoutParams.height = val;
+                    container.setLayoutParams(layoutParams);
+                }
+            });
+            anim.setDuration(SPEED_ANIMATION_TRANSITION);
           AnimatorSet mButtonSet1 = new AnimatorSet();
-            mButtonSet1.setDuration(500);
+            measureElements();
+            mButtonSet1.setDuration(SPEED_ANIMATION_TRANSITION);
             mButtonSet1.setInterpolator(new AccelerateDecelerateInterpolator());
 
             mButtonSet1.play(up).with(right);
             mButtonSet1.start();
-            myFrame.setVisibility(View.GONE);
-        }
-        else if ( !myFrame.isShown() )
-        {
+            Animation animation2 = AnimationUtils.loadAnimation(getContext(), R.anim.drawerup);
+            animation2.setDuration(SPEED_ANIMATION_TRANSITION);
+
+
+            animation2.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    myFrame.setVisibility(LinearLayout.GONE);
+                }
+            });
+            anim.start();
+            myFrame.startAnimation(animation2);
+
+
+        } else if (!myFrame.isShown()) {
+            ValueAnimator anim = ValueAnimator.ofInt(mContainerHeight, mContainerHeight + 900);
+            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    int val = (Integer) valueAnimator.getAnimatedValue();
+                    ViewGroup.LayoutParams layoutParams = container.getLayoutParams();
+                    layoutParams.height = val;
+                    container.setLayoutParams(layoutParams);
+                }
+            });
+            anim.setDuration(SPEED_ANIMATION_TRANSITION);
+
 
             myFrame.setVisibility(LinearLayout.VISIBLE);
+            measureElements();
             AnimatorSet mButtonSet2 = new AnimatorSet();
-            mButtonSet2.setDuration(500);
+            mButtonSet2.setDuration(SPEED_ANIMATION_TRANSITION);
             mButtonSet2.setInterpolator(new AccelerateDecelerateInterpolator());
 
-            Animation animation2   =    AnimationUtils.loadAnimation(getContext(), R.anim.drawer);
-            animation2.setDuration(500);
+            Animation animation2   =    AnimationUtils.loadAnimation(getContext(), R.anim.drawerdown);
+            animation2.setDuration(SPEED_ANIMATION_TRANSITION);
             myFrame.setAnimation(animation2);
             myFrame.animate();
             mButtonSet2.play(down).with(left);
             animation2.start();
+            anim.start();
             mButtonSet2.start();
+
 
         }
 
     }
+
+    public void measureElements () {
+        int[] mButtonCoord = new int[2];
+        int[] mFrameCoord = new int[2];
+        myView.getLocationInWindow(mButtonCoord);
+        myFrame.getLocationInWindow(mFrameCoord);
+        Logger.d(TAG + "Coords are " + mScreenWidth + " " + mFrameCoord[1] + " " + mButtonCoord[0] + " " + mButtonCoord[1]);
+        right = ObjectAnimator.ofFloat(myView, "translationX", -(mScreenWidth) , buttonX);
+        left = ObjectAnimator.ofFloat(myView, "translationX", buttonX, -(mScreenWidth));
+        down = ObjectAnimator.ofFloat(myView, "translationY", buttonY, mFrameCoord[1]);
+        up = ObjectAnimator.ofFloat(myView, "translationY", mFrameCoord[1], buttonY);
+
+    }
+
+
 
     public void setMyColor(int themecolor) {
         myTheme = themecolor;
