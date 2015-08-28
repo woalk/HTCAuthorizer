@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
@@ -8,7 +8,6 @@
     android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:paddingEnd="?android:attr/scrollbarSize"
-    android:animateLayoutChanges="true"
     tools:ignore="RtlSymmetry"
     android:clickable="false">
 
@@ -28,7 +27,6 @@
         android:layout_marginStart="15.0dip"
         android:layout_marginTop="6.0dip"
         android:layout_weight="1.0"
-        android:animateLayoutChanges="true"
         android:id="@+id/container"
         android:paddingRight="10dip"
         tools:ignore="RtlSymmetry"
@@ -61,25 +59,16 @@
             android:layout_below="@android:id/summary"
             layout="@layout/layout_color_picker"
             />
-    </RelativeLayout>
-    <LinearLayout
-        android:id="@+id/widget_frame"
-        android:animateLayoutChanges="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="vertical"
-        android:padding="2dip">
-
         <ImageView
             android:id="@+id/button"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:animateLayoutChanges="true"
-            android:contentDescription="@string/ImageViewDescriptor" />
+            android:contentDescription="@string/ImageViewDescriptor"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
-</LinearLayout>
+</RelativeLayout>
 
 

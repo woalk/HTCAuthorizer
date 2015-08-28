@@ -1,6 +1,8 @@
 package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
+import android.animation.AnimatorSet;
 import android.animation.LayoutTransition;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -12,6 +14,7 @@ import android.util.AttributeSet;
 import android.view.Display;
 import android.view.View;
 import android.view.Window;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -33,6 +36,8 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
     public static final String TAG = "XColorpickerPreference: ";
     private XMLHelper xh;
     public RelativeLayout container;
+    private ObjectAnimator left, up, right, down;
+    private AnimatorSet mButtonSet;
     public SeekBar hueSeekBar, satSeekBar, valueSeekBar;
     public TextView hueToolTip, satToolTip, valueToolTip;
     Window window;
@@ -61,12 +66,15 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
         container = (RelativeLayout) rootView.findViewById(R.id.container);
         myView = (ImageView) rootView.findViewById(R.id.button);
         myFrame = (LinearLayout) rootView.findViewById(R.id.pickerframe);
-        widgetFrame = (LinearLayout) rootView.findViewById(R.id.widget_frame);
         myFrame.setLayoutTransition(new LayoutTransition());
         mOutAnim = (Animation) AnimationUtils.loadAnimation(getContext(), R.anim.slideup);
         mInAnim = (Animation) AnimationUtils.loadAnimation(getContext(), R.anim.slidedown);
         myFrame.setAnimation(mOutAnim);
         myFrame.setAnimation(mInAnim);
+        left = ObjectAnimator.ofFloat(myView, "x", 760, 400);
+        right = ObjectAnimator.ofFloat(myView, "x", 400, 760);
+        down = ObjectAnimator.ofFloat(myView, "y", 0, 750);
+        up = ObjectAnimator.ofFloat(myView, "y", 750, 0);
         xh = new XMLHelper();
         myFrame.setVisibility(View.GONE);
         red = Color.red(myTheme);
@@ -119,9 +127,36 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
     }
 
     public void toggle_contents() {
-            myFrame.setVisibility(myFrame.isShown()
-                    ? View.GONE
-                    : View.VISIBLE);
+
+
+        if( myFrame.isShown() )
+        {
+          AnimatorSet mButtonSet1 = new AnimatorSet();
+            mButtonSet1.setDuration(500);
+            mButtonSet1.setInterpolator(new AccelerateDecelerateInterpolator());
+
+            mButtonSet1.play(up).with(right);
+            mButtonSet1.start();
+            myFrame.setVisibility(View.GONE);
+        }
+        else if ( !myFrame.isShown() )
+        {
+
+            myFrame.setVisibility(LinearLayout.VISIBLE);
+            AnimatorSet mButtonSet2 = new AnimatorSet();
+            mButtonSet2.setDuration(500);
+            mButtonSet2.setInterpolator(new AccelerateDecelerateInterpolator());
+
+            Animation animation2   =    AnimationUtils.loadAnimation(getContext(), R.anim.drawer);
+            animation2.setDuration(500);
+            myFrame.setAnimation(animation2);
+            myFrame.animate();
+            mButtonSet2.play(down).with(left);
+            animation2.start();
+            mButtonSet2.start();
+
+        }
+
     }
 
     public void setMyColor(int themecolor) {
