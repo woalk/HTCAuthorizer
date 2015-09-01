@@ -28,7 +28,7 @@
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/icon"
         android:layout_toEndOf="@+id/icon"
-        android:fontFamily="@string/font_fontFamily_medium" />
+        android:fontFamily="sans-serif-medium" />
 
 
 
