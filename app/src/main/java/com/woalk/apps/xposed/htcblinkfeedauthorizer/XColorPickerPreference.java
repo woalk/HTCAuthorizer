@@ -1,58 +1,45 @@
 package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
 import android.animation.AnimatorSet;
-import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.preference.Preference;
 import android.util.AttributeSet;
-import android.view.Display;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.Transformation;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.RelativeLayout.LayoutParams;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import java.lang.reflect.Method;
-
 public class XColorPickerPreference extends Preference implements SeekBar.OnSeekBarChangeListener, View.OnClickListener {
-    private int myTheme, mScreenWidth, mContainerHeight;
-    private float buttonX, buttonY;
-
-    private ImageView myView;
-    private LinearLayout myFrame, widgetFrame;
-    private LayoutParams lParamsShow;
-    private LayoutParams lParamsHide;
-    private String colorname;
-    private Animation mOutAnim, mInAnim;
     public static final String TAG = "XColorpickerPreference: ";
-    private XMLHelper xh;
+    public static int SPEED_ANIMATION_TRANSITION = 500;
     public RelativeLayout container;
-    private ObjectAnimator left, up, right, down;
-    private AnimatorSet mButtonSet;
+    public com.woalk.apps.xposed.htcblinkfeedauthorizer.AnimatingRelativeLayout pickerFrame;
     public SeekBar hueSeekBar, satSeekBar, valueSeekBar;
-    public TextView hueToolTip, satToolTip, valueToolTip, mTitle, mSummary;
-    Window window;
-    Display display;
-    public int red, green, blue, hue, sat, value, seekBarLeft;
-    public static int  SPEED_ANIMATION_TRANSITION = 500;
+    public TextView hueToolTip, satToolTip, valueToolTip;
+    public int red, green, blue, hue, sat, value, purehue, mPickerBottom;
     public float[] hsv = new float[3];
-    public Rect thumbRect;
-    public String dave;
+    public float[] hsvsat = new float[3];
+    public float[] hsvvalue = new float[3];
+    public Rect hueRect, satRect, valueRect;
+    private int myTheme, mScreenWidth;
+    private float buttonX, buttonY;
+    private ImageView pickerButton;
+    private String colorname;
+    private AnimatorSet mButtonHideSet, mButtonShowSet;
+    private XMLHelper xh;
+    private ObjectAnimator left, up, right, down;
+    private ColorMatrix matrixHue, matrixSat;
 
     public XColorPickerPreference(Context context) {
         super(context);
@@ -71,37 +58,60 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
     public void onBindView(View rootView) {
         super.onBindView(rootView);
 
+        //grab screen elements
         container = (RelativeLayout) rootView.findViewById(R.id.container);
-        myView = (ImageView) rootView.findViewById(R.id.button);
-        myFrame = (LinearLayout) rootView.findViewById(R.id.pickerframe);
-        myFrame.setLayoutTransition(new LayoutTransition());
-        mOutAnim = (Animation) AnimationUtils.loadAnimation(getContext(), R.anim.slideup);
-        mInAnim = (Animation) AnimationUtils.loadAnimation(getContext(), R.anim.slidedown);
-        myFrame.setAnimation(mOutAnim);
-        myFrame.setAnimation(mInAnim);
-        buttonX = myFrame.getX();
-        mScreenWidth = ((getContext().getResources().getDisplayMetrics().widthPixels/2) - 100);
-        Logger.d(TAG + "SW is " + mScreenWidth);
-        mContainerHeight = container.getMeasuredHeight();
-        buttonY = myFrame.getY();
+        pickerButton = (ImageView) rootView.findViewById(R.id.button);
+        pickerFrame = (com.woalk.apps.xposed.htcblinkfeedauthorizer.AnimatingRelativeLayout) rootView.findViewById(R.id.pickerframe);
+
+        // read positions of button, container height, screen width
+        buttonX = pickerButton.getX();
+        buttonY = pickerButton.getY();
+        mPickerBottom = pickerButton.getBottom();
+        mScreenWidth = ((getContext().getResources().getDisplayMetrics().widthPixels / 2) - 110);
+
+        //set up animations
+        right = ObjectAnimator.ofFloat(pickerButton, "translationX", buttonX);
+        left = ObjectAnimator.ofFloat(pickerButton, "translationX", -(mScreenWidth));
+        down = ObjectAnimator.ofFloat(pickerButton, "translationY", 350);
+        up = ObjectAnimator.ofFloat(pickerButton, "translationY", buttonY);
+
+        mButtonHideSet = new AnimatorSet();
+        mButtonShowSet = new AnimatorSet();
+        mButtonHideSet.setDuration(SPEED_ANIMATION_TRANSITION);
+        mButtonShowSet.setDuration(SPEED_ANIMATION_TRANSITION);
+        mButtonHideSet.setInterpolator(new AccelerateDecelerateInterpolator());
+        mButtonShowSet.setInterpolator(new AccelerateDecelerateInterpolator());
+        mButtonShowSet.play(down).with(left);
+        mButtonHideSet.play(up).with(right);
+        matrixHue = new ColorMatrix();
+        matrixSat = new ColorMatrix();
 
         xh = new XMLHelper();
-        measureElements();
-        myFrame.setVisibility(View.GONE);
         red = Color.red(myTheme);
         green = Color.green(myTheme);
         blue = Color.blue(myTheme);
+
+        hsv[0] = hue;
+        hsv[1] = sat;
+        hsv[2] = value;
+        matrixHue.setSaturation(hsv[1]);
+
+
         Color.RGBToHSV(red, green, blue, hsv);
         hue = Math.round(hsv[0]);
         sat = Math.round(hsv[1] * 100);
         value = Math.round(hsv[2] * 100);
-        Logger.d(TAG, "HSV As integers " + hue + " " + sat + " " + value);
-        Logger.d(TAG + "Rootiview is "+ rootView);
+        hsvsat[0] = hsv[0];
+        hsvsat[1] = 0.75f;
+        hsvsat[2] = hsv[2];
+        hsvvalue[0] = hsv[0];
+        hsvvalue[1] = hsv[1];
+        hsvvalue[2] = 0.75f;
+        Logger.d(TAG + " HSV As integers " + hue + " " + sat + " " + value);
+        Logger.d(TAG + "Rootiview is " + rootView);
         hueSeekBar = (SeekBar) rootView.findViewById(R.id.hueSeekBar);
         satSeekBar = (SeekBar) rootView.findViewById(R.id.satSeekBar);
         valueSeekBar = (SeekBar) rootView.findViewById(R.id.valueSeekBar);
-
-        seekBarLeft = hueSeekBar.getPaddingLeft();
 
         hueToolTip = (TextView) rootView.findViewById(R.id.hueToolTip);
         satToolTip = (TextView) rootView.findViewById(R.id.satToolTip);
@@ -110,15 +120,16 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
         hueSeekBar.setOnSeekBarChangeListener(this);
         satSeekBar.setOnSeekBarChangeListener(this);
         valueSeekBar.setOnSeekBarChangeListener(this);
-        myView.setOnClickListener(this);
+        pickerButton.setOnClickListener(this);
 
         hueSeekBar.setProgress(hue);
         satSeekBar.setProgress(sat);
         valueSeekBar.setProgress(value);
+        pickerFrame.hide(true);
 
         //setup initial values
 
-        Logger.d (TAG + "Colorname is " + colorname + " and " + myTheme);
+        Logger.d(TAG + "Colorname is " + colorname + " and " + myTheme);
         setMyColor(myTheme);
         setMyName(colorname);
         container.setOnClickListener(this);
@@ -126,138 +137,46 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
 
     }
 
-    public void updateBars() {
-        valueSeekBar.getProgressDrawable().setColorFilter(Color.HSVToColor(hsv), PorterDuff.Mode.MULTIPLY);
-        valueSeekBar.getThumb().setColorFilter(Color.HSVToColor(hsv), PorterDuff.Mode.SRC_IN);
-        valueToolTip.setTextColor(Color.HSVToColor(hsv));
-        satSeekBar.getProgressDrawable().setColorFilter(Color.HSVToColor(hsv), PorterDuff.Mode.MULTIPLY);
-        satSeekBar.getThumb().setColorFilter(Color.HSVToColor(hsv), PorterDuff.Mode.SRC_IN);
-        satToolTip.setTextColor(Color.HSVToColor(hsv));
+    public void updateSliders() {
+        //recalculate individual values
+        hue = Math.round(hsv[0]);
+        sat = Math.round(hsv[1] * 100);
+        value = Math.round(hsv[2] * 100);
+        hsvvalue[0] = hsv[0];
+        hsvvalue[1] = hsv[1];
+        hsvsat[0] = hsv[0];
+        hsvsat[2] = hsv[2];
+        matrixHue.setSaturation(hsv[1]);
+
+        matrixSat.set(new float[]{1, 0, 0, 0, value,
+                0, 1, 0, 0, value,
+                0, 0, 1, 0, value,
+                0, 0, 0, 1, 0});
+        ColorMatrix colorFilterMatrix = new ColorMatrix();
+        colorFilterMatrix.postConcat(matrixHue);
+        colorFilterMatrix.postConcat(matrixSat);
+        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(colorFilterMatrix);
+
+        hueSeekBar.getProgressDrawable().setColorFilter(filter);
+        satSeekBar.getProgressDrawable().setColorFilter(Color.HSVToColor(hsvsat), PorterDuff.Mode.MULTIPLY);
+        valueSeekBar.getProgressDrawable().setColorFilter(Color.HSVToColor(hsvvalue), PorterDuff.Mode.MULTIPLY);
+
         hueSeekBar.getThumb().setColorFilter(Color.HSVToColor(hsv), PorterDuff.Mode.SRC_IN);
+        satSeekBar.getThumb().setColorFilter(Color.HSVToColor(hsv), PorterDuff.Mode.SRC_IN);
+        valueSeekBar.getThumb().setColorFilter(Color.HSVToColor(hsv), PorterDuff.Mode.SRC_IN);
+
         hueToolTip.setTextColor(Color.HSVToColor(hsv));
-    }
+        satToolTip.setTextColor(Color.HSVToColor(hsv));
+        valueToolTip.setTextColor(Color.HSVToColor(hsv));
 
-    public void toggle_contents() {
+        hueRect = hueSeekBar.getThumb().getBounds();
+        satRect = satSeekBar.getThumb().getBounds();
+        valueRect = valueSeekBar.getThumb().getBounds();
+        Logger.d(TAG + "Bounds are" + valueRect);
+        hueToolTip.setX(16 + hueRect.left);
+        satToolTip.setX(16 + satRect.left);
+        valueToolTip.setX(16 + valueRect.left);
 
-
-        if( myFrame.isShown() )
-        {
-            ValueAnimator anim = ValueAnimator.ofInt(mContainerHeight, mContainerHeight - 900);
-            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    int val = (Integer) valueAnimator.getAnimatedValue();
-                    ViewGroup.LayoutParams layoutParams = container.getLayoutParams();
-                    layoutParams.height = val;
-                    container.setLayoutParams(layoutParams);
-                }
-            });
-            anim.setDuration(SPEED_ANIMATION_TRANSITION);
-          AnimatorSet mButtonSet1 = new AnimatorSet();
-            measureElements();
-            mButtonSet1.setDuration(SPEED_ANIMATION_TRANSITION);
-            mButtonSet1.setInterpolator(new AccelerateDecelerateInterpolator());
-
-            mButtonSet1.play(up).with(right);
-            mButtonSet1.start();
-            Animation animation2 = AnimationUtils.loadAnimation(getContext(), R.anim.drawerup);
-            animation2.setDuration(SPEED_ANIMATION_TRANSITION);
-
-
-            animation2.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    myFrame.setVisibility(LinearLayout.GONE);
-                }
-            });
-            anim.start();
-            myFrame.startAnimation(animation2);
-
-
-        } else if (!myFrame.isShown()) {
-            ValueAnimator anim = ValueAnimator.ofInt(mContainerHeight, mContainerHeight + 900);
-            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    int val = (Integer) valueAnimator.getAnimatedValue();
-                    ViewGroup.LayoutParams layoutParams = container.getLayoutParams();
-                    layoutParams.height = val;
-                    container.setLayoutParams(layoutParams);
-                }
-            });
-            anim.setDuration(SPEED_ANIMATION_TRANSITION);
-
-
-            myFrame.setVisibility(LinearLayout.VISIBLE);
-            measureElements();
-            AnimatorSet mButtonSet2 = new AnimatorSet();
-            mButtonSet2.setDuration(SPEED_ANIMATION_TRANSITION);
-            mButtonSet2.setInterpolator(new AccelerateDecelerateInterpolator());
-
-            Animation animation2   =    AnimationUtils.loadAnimation(getContext(), R.anim.drawerdown);
-            animation2.setDuration(SPEED_ANIMATION_TRANSITION);
-            myFrame.setAnimation(animation2);
-            myFrame.animate();
-            mButtonSet2.play(down).with(left);
-            animation2.start();
-            anim.start();
-            mButtonSet2.start();
-
-
-        }
-
-    }
-
-    public void measureElements () {
-        int[] mButtonCoord = new int[2];
-        int[] mFrameCoord = new int[2];
-        myView.getLocationInWindow(mButtonCoord);
-        myFrame.getLocationInWindow(mFrameCoord);
-        Logger.d(TAG + "Coords are " + mScreenWidth + " " + mFrameCoord[1] + " " + mButtonCoord[0] + " " + mButtonCoord[1]);
-        right = ObjectAnimator.ofFloat(myView, "translationX", -(mScreenWidth) , buttonX);
-        left = ObjectAnimator.ofFloat(myView, "translationX", buttonX, -(mScreenWidth));
-        down = ObjectAnimator.ofFloat(myView, "translationY", buttonY, mFrameCoord[1]);
-        up = ObjectAnimator.ofFloat(myView, "translationY", mFrameCoord[1], buttonY);
-
-    }
-
-
-
-    public void setMyColor(int themecolor) {
-        myTheme = themecolor;
-
-        if (myView != null) {
-            ShapeDrawable sd = new ShapeDrawable(new OvalShape());
-            sd.setIntrinsicHeight(10);
-            sd.setIntrinsicWidth(10);
-            sd.getPaint().setColor(myTheme);
-
-            //window.setStatusBarColor(myTheme);
-
-            myView.setBackground(sd);
-        }
-    }
-
-    public void setMyName(String name) {
-        colorname = name;
-    }
-
-    public void onWindowFocusChanged(boolean hasFocus) {
-        setToolTips();
-    }
-
-    public void setToolTips() {
-        thumbRect = hueSeekBar.getThumb().getBounds();
-
-        hueToolTip.setX(seekBarLeft + thumbRect.left);
         if (hue < 10)
             hueToolTip.setText("  " + hue);
         else if (hue < 100)
@@ -265,9 +184,6 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
         else
             hueToolTip.setText(hue + "");
 
-        thumbRect = satSeekBar.getThumb().getBounds();
-
-        satToolTip.setX(seekBarLeft + thumbRect.left);
         if (sat < 10)
             satToolTip.setText("  " + sat);
         else if (sat < 100)
@@ -275,9 +191,7 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
         else
             satToolTip.setText(sat + "");
 
-        thumbRect = valueSeekBar.getThumb().getBounds();
 
-        valueToolTip.setX(seekBarLeft + thumbRect.left);
         if (value < 10)
             valueToolTip.setText("  " + value);
         else if (value < 100)
@@ -285,6 +199,56 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
         else
             valueToolTip.setText(value + "");
     }
+
+    public void toggle_contents() {
+
+
+        if (pickerFrame.isShown()) {
+
+            mButtonHideSet.start();
+            pickerFrame.hide(true);
+
+
+        } else if (!pickerFrame.isShown()) {
+
+            pickerFrame.show(true);
+            pickerFrame.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    updateSliders();
+                }
+            }, 100);
+
+
+            mButtonShowSet.start();
+
+        }
+
+    }
+
+    //setter for Picker button color
+    public void setMyColor(int themecolor) {
+        myTheme = themecolor;
+
+        if (pickerButton != null) {
+            ShapeDrawable sd = new ShapeDrawable(new OvalShape());
+            sd.setIntrinsicHeight(10);
+            sd.setIntrinsicWidth(10);
+            sd.getPaint().setColor(myTheme);
+
+            pickerButton.setBackground(sd);
+        }
+    }
+
+
+    public void setMyName(String name) {
+        colorname = name;
+    }
+
+    public void onWindowFocusChanged(boolean hasFocus) {
+
+    }
+
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -306,9 +270,8 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
 
         }
         Logger.d(TAG, "HSV Components are " + hsv[0] + " " + hsv[1] + " " + hsv[2]);
-        setToolTips();
         setMyColor(Color.HSVToColor(hsv));
-        updateBars();
+        updateSliders();
 
     }
 
@@ -337,13 +300,13 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
 
     @Override
     public void onClick(View v) {
-        if (v == myView) {
+        if (v == pickerButton) {
             Logger.d(TAG + "Click detected, outputting color of " + hsv);
             saveMyColor(colorname, Color.HSVToColor(hsv));
             toggle_contents();
         } else if (v == container) {
 
-                toggle_contents();
+            toggle_contents();
 
 
         }

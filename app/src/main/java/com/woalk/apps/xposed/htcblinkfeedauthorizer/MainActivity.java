@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,13 +31,13 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
     private static final String PREF_SHOW_HSP_WARN = "warn_no_hsp";
     private static String TAG = MainActivity.class.getSimpleName();
+    private String curTitle;
     public TextView tv1;
     public TextView tv2;
     ListView mDrawerList;
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_replaceable);
+        setContentView(R.layout.activity_main);
 
         //Add drawerdown items
         mNavItems.add(new NavItem("Main", R.drawable.ic_settings));
@@ -84,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         tv2 = (TextView) findViewById(R.id.tv2);
         tv1.setText("Sensify Xposed");
         tv1.setAlpha(0);
-        tv2.setText(mNavItems.get(curPos).mTitle);
+        tv2.setText(curTitle);
         tv1.setPivotX(0);
         tv2.setPivotX(0);
         final android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
@@ -95,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selectItemFromDrawer(position);
+
 
 
 
@@ -154,6 +156,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        tv2.setText(curTitle);
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Logger.d("Mainactivity: Option ID is " + item.getItemId() + "and drawerdown state is " + mDrawerLayout.isDrawerOpen(GravityCompat.START));
@@ -240,7 +247,6 @@ public class MainActivity extends AppCompatActivity {
         else {
             mDrawerLayout.closeDrawer(GravityCompat.START);
             mDrawerList.setItemChecked(position, true);
-            tv2.setText(mNavItems.get(position).mTitle);
             curPos = position;
             mDrawerLayout.postDelayed(new Runnable() {
                 @Override
@@ -309,6 +315,8 @@ public class MainActivity extends AppCompatActivity {
         } else if (position == 3) {
             ft.replace(android.R.id.widget_frame, new AboutSensifyFragment());
         }
+        curTitle = mNavItems.get(curPos).mTitle;
+        tv2.setText(curTitle);
         ft.commit();
     }
 
