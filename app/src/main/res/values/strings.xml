@@ -2,34 +2,20 @@
     <string name="app_name">Sensify Xposed</string>
     <string name="app_description">Integration for Sense apps into AOSP and other ROMs.</string>
     <string name="title_activity_log">Logs</string>
-    <string name="title_activity_alwaysactive" translatable="false">Always Active Mods</string>
     <string name="warn_no_hsp_title">Install HTC Service Pack</string>
     <string name="warn_no_hsp_content">You don\'t have HTC Service Pack installed.
         \nMost HTC apps need HTC Service Pack to work correctly.
         \nDo you want to download it now?</string>
-    <string name="warn_logs_title">About these logs</string>
-    <string name="warn_logs_content">The logs you can export with this app are helpful, but
-        not the most helpful way to give information about problems to us developers.
-        \nAndroid does not keep the full log, always just the last parts. This is a
-        decision for environment, because you cannot always write the full log to storage,
-        it destroys flash storage and battery life.
-        \nSo, if you want to post this log, beware to save it as immediately as possible
-        after the problem you face occurred. Maybe reboot, wait a bit until your system is
-        fully up, reproduce the problem and then save the log.
-        \nIf you want to help us the most, attach your device to a PC, reboot your device,
-        and start Logcat into a file. Google will help you doing that if you don\'t know how.
-    </string>
+
 
     <!-- Preferences -->
-    <string name="pref_reboot_info">Currently, all settings, except those explicitly declared
-        otherwise, need a reboot to apply.</string>
+
     <string name="ColorPicker1" translatable="false">ColorPicker1</string>
     <string name="ColorPicker2" translatable="false">ColorPicker2</string>
     <string name="ColorPicker3" translatable="false">ColorPicker3</string>
     <string name="ColorPicker4" translatable="false">ColorPicker4</string>
     <string name="pref_cat_general">Global</string>
     <string name="pref_general_always_active_title">Always active mods</string>
-    <string name="pref_general_always_active_window">Always active mods</string>
     <string name="pref_always_active_authorize_title">Authorize HTC apps</string>
     <string name="pref_always_active_authorize_summary">Removes the \"Unauthorized device\"
         message from the following HTC apps:
