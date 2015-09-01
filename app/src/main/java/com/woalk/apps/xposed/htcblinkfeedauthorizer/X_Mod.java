@@ -32,6 +32,7 @@ import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LayoutInflated;
@@ -80,6 +81,7 @@ public class X_Mod
     public static final String PKG_HTC_INSTAGRAM = "com.htc.sense.socialnetwork.instagram";
     public static final String PKG_HTC_INSTAGRAM_COMM = PKG_HTC_INSTAGRAM + ".common";
     public static final String PKG_HTC_LIB2 = "com.htc.lib2";
+    public static final String CLASS_HTC_BBA = "com.htc.b.b.a";
 
     public static final String PKG_HTC_LINKEDIN = "com.htc.sense.linkedin";
     public static final String PKG_HTC_LINKEDIN_COMM = PKG_HTC_LINKEDIN + ".common";
@@ -106,6 +108,7 @@ public class X_Mod
     public static final String CLASS_INSTAGRAM_ACTIVITY = PKG_HTC_INSTAGRAM_COMM +
             ".InstagramActivity";
     public static final String CLASS_INSTAGRAM_LIB2_A = PKG_HTC_LIB2 + ".a";
+    public static final String CLASS_INSTAGRAM_DBA = "com.htc.sphere.d.b.a";
 
     public static final String PKG_VENDING = "com.android.vending";
     public static final String PKG_FINSKY = "com.google.android.finsky";
@@ -416,6 +419,16 @@ public class X_Mod
                             }
                         });
 
+
+                XposedHelpers.findAndHookMethod(CLASS_INSTAGRAM_DBA, lpparam.classLoader, "a",
+                        new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
+                                param.setResult(true);
+                            }
+                        });
+
                 XposedHelpers.findAndHookMethod(CLASS_INSTAGRAM_LIB2_A, lpparam.classLoader, "b",
                         new XC_MethodHook() {
                             @Override
@@ -425,6 +438,18 @@ public class X_Mod
                                 Logger.logHookAfter(param);
                             }
                         });
+
+                XposedHelpers.findAndHookMethod(CLASS_HTC_BBA, lpparam.classLoader, "a",
+                        new XC_MethodReplacement() {
+                            @Override
+                            protected Object replaceHookedMethod(MethodHookParam param)
+                                    throws Throwable {
+                                return null;
+                            }
+                        });
+
+
+
 
                 XposedHelpers.findAndHookMethod(CLASS_INSTAGRAM_ACTIVITY, lpparam.classLoader, "d",
                         new XC_MethodHook() {
