@@ -10,29 +10,29 @@
     <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
         android:id="@+id/Picker1"
         android:dependency="use_themes"
-        android:key="CP1"
-        android:layout="@layout/colorpicker_pref"
+        android:key="ColorPicker1"
+        android:layout="@layout/pref_colorpicker"
         android:summary="@string/pref_themes_systemui_color1_summary"
         android:title="@string/pref_themes_systemui_color1_title" />
     <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
         android:id="@+id/Picker2"
         android:dependency="use_themes"
-        android:key="CP2"
-        android:layout="@layout/colorpicker_pref"
+        android:key="ColorPicker2"
+        android:layout="@layout/pref_colorpicker"
         android:summary="@string/pref_themes_systemui_color2_summary"
         android:title="@string/pref_themes_systemui_color2_title" />
     <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
         android:id="@+id/Picker3"
         android:dependency="use_themes"
-        android:key="CP3"
-        android:layout="@layout/colorpicker_pref"
+        android:key="ColorPicker3"
+        android:layout="@layout/pref_colorpicker"
         android:summary="@string/pref_themes_systemui_color3_summary"
         android:title="@string/pref_themes_systemui_color3_title" />
     <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
         android:id="@+id/Picker4"
         android:dependency="use_themes"
-        android:key="CP4"
-        android:layout="@layout/colorpicker_pref"
+        android:key="ColorPicker4"
+        android:layout="@layout/pref_colorpicker"
         android:summary="@string/pref_themes_systemui_color4_summary"
         android:title="@string/pref_themes_systemui_color4_title" />
 

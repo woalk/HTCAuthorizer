@@ -8,7 +8,6 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -34,10 +33,10 @@ public class ThemeFragment extends PreferenceFragment
         // Load the preferences from an XML resource
         xh = new XMLHelper();
         addPreferencesFromResource(R.xml.pref_themes);
-        picker1 = (XColorPickerPreference) findPreference(getString(R.string.CP1));
-        picker2 = (XColorPickerPreference) findPreference(getString(R.string.CP2));
-        picker3 = (XColorPickerPreference) findPreference(getString(R.string.CP3));
-        picker4 = (XColorPickerPreference) findPreference(getString(R.string.CP4));
+        picker1 = (XColorPickerPreference) findPreference(getString(R.string.ColorPicker1));
+        picker2 = (XColorPickerPreference) findPreference(getString(R.string.ColorPicker2));
+        picker3 = (XColorPickerPreference) findPreference(getString(R.string.ColorPicker3));
+        picker4 = (XColorPickerPreference) findPreference(getString(R.string.ColorPicker4));
         Logger.d("ThemeFragment: Oncreate: colors are " + color1 + ", " + color2 + ", " + color3 + ", and " + color4);
 
 

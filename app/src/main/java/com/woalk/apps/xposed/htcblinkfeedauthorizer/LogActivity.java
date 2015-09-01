@@ -19,7 +19,7 @@ private XMLHelper xh;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_replaceable);
+        setContentView(R.layout.activity_main);
         xh = new XMLHelper();
         final android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
         try {

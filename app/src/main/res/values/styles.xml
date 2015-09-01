@@ -61,7 +61,7 @@
         <item name="android:windowExitAnimation">@anim/slidedown</item>
     </style>
     <style name="MediumFont">
-        <item name="android:fontFamily">@string/font_fontFamily_medium</item>
+        <item name="android:fontFamily">sans-serif</item>
     </style>
 
 

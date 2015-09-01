@@ -2,11 +2,7 @@
 <resources>
 
     <color name="white">#ffffff</color>
-    <color name="red">#f44336</color>
-    <color name="green">#4caf50</color>
-    <color name="blue">#2196f3</color>
     <color name="grey">#b3b3b3</color>
     <color name="lightgrey">#d9d9d9</color>
-
 
 </resources>

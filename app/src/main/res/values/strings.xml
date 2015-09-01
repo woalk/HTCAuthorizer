@@ -23,10 +23,10 @@
     <!-- Preferences -->
     <string name="pref_reboot_info">Currently, all settings, except those explicitly declared
         otherwise, need a reboot to apply.</string>
-    <string name="CP1" translatable="false">CP1</string>
-    <string name="CP2" translatable="false">CP2</string>
-    <string name="CP3" translatable="false">CP3</string>
-    <string name="CP4" translatable="false">CP4</string>
+    <string name="ColorPicker1" translatable="false">ColorPicker1</string>
+    <string name="ColorPicker2" translatable="false">ColorPicker2</string>
+    <string name="ColorPicker3" translatable="false">ColorPicker3</string>
+    <string name="ColorPicker4" translatable="false">ColorPicker4</string>
     <string name="pref_cat_general">Global</string>
     <string name="pref_general_always_active_title">Always active mods</string>
     <string name="pref_general_always_active_window">Always active mods</string>
