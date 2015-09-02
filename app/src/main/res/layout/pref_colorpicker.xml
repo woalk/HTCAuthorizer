@@ -53,16 +53,16 @@
             android:textColor="?android:attr/textColorSecondary"
             android:paddingEnd="60dip" />
 
-        <com.woalk.apps.xposed.htcblinkfeedauthorizer.AnimatingRelativeLayout
+        <RelativeLayout
             android:id="@+id/pickerframe"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignStart="@android:id/summary"
             android:layout_below="@android:id/summary"
             android:animateLayoutChanges="true"
-
             android:paddingBottom="80dip"
-            >
+
+            android:layout_marginBottom="-250dp">
 
             <TextView
                 android:layout_width="fill_parent"
@@ -126,7 +126,7 @@
 
 
 
-        </com.woalk.apps.xposed.htcblinkfeedauthorizer.AnimatingRelativeLayout>
+        </RelativeLayout>
         <ImageButton
             android:id="@+id/button"
             android:layout_width="40dp"

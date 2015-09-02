@@ -19,13 +19,13 @@ def getVersionName = { ->
 }
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 22
     buildToolsVersion "22.0.1"
 
     defaultConfig {
         applicationId "com.woalk.apps.xposed.htcblinkfeedauthorizer"
         minSdkVersion 21
-        targetSdkVersion 23
+        targetSdkVersion 22
         versionCode 4
         versionName getVersionName()
     }
@@ -40,6 +40,6 @@ android {
 dependencies {
 
     provided fileTree(dir: 'libs', include: ['*.jar'])
-  	compile 'com.android.support:appcompat-v7:23.0.0'
+  	compile 'com.android.support:appcompat-v7:22.1.0'
 
 }

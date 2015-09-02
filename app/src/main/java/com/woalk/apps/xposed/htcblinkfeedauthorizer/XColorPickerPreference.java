@@ -14,6 +14,9 @@ import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -22,9 +25,9 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 public class XColorPickerPreference extends Preference implements SeekBar.OnSeekBarChangeListener, View.OnClickListener {
-    public static int SPEED_ANIMATION_TRANSITION = 500;
+    public static int SPEED_ANIMATION_TRANSITION = 400;
     public RelativeLayout container;
-    public com.woalk.apps.xposed.htcblinkfeedauthorizer.AnimatingRelativeLayout pickerFrame;
+    public RelativeLayout pickerFrame;
     public SeekBar hueSeekBar, satSeekBar, valueSeekBar;
     public TextView hueToolTip, satToolTip, valueToolTip;
     public int hue, sat, value, red, green, blue, original;
@@ -37,6 +40,7 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
     private ImageButton pickerButton;
     private String colorname;
     private AnimatorSet mButtonHideSet = new AnimatorSet(), mButtonShowSet = new AnimatorSet();
+    private AlphaAnimation mPickerPanelShow, mPickerPanelHide;
     private XMLHelper xh;
     private ColorMatrix matrixValue, matrixSat;
 
@@ -62,13 +66,13 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
         //grab screen elements
         container = (RelativeLayout) rootView.findViewById(R.id.container);
         pickerButton = (ImageButton) rootView.findViewById(R.id.button);
-        pickerFrame = (com.woalk.apps.xposed.htcblinkfeedauthorizer.AnimatingRelativeLayout) rootView.findViewById(R.id.pickerframe);
+        pickerFrame = (RelativeLayout) rootView.findViewById(R.id.pickerframe);
 
         // read positions of button, container height, screen width
         float buttonX = pickerButton.getX();
         float buttonY = pickerButton.getY();
         mPickerBottom = pickerButton.getBottom();
-        int mScreenWidth = ((getContext().getResources().getDisplayMetrics().widthPixels / 2) - 110);
+        int mScreenWidth = ((getContext().getResources().getDisplayMetrics().widthPixels / 2) - 120);
 
         //set up animations
         ObjectAnimator right = ObjectAnimator.ofFloat(pickerButton, "translationX", buttonX);
@@ -77,12 +81,21 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
         ObjectAnimator up = ObjectAnimator.ofFloat(pickerButton, "translationY", buttonY);
 
         //build sets of animations for button
-        mButtonHideSet.setDuration(SPEED_ANIMATION_TRANSITION);
-        mButtonShowSet.setDuration(SPEED_ANIMATION_TRANSITION);
+        mButtonHideSet.setDuration(SPEED_ANIMATION_TRANSITION + 350);
+        mButtonShowSet.setDuration(SPEED_ANIMATION_TRANSITION + 350);
         mButtonHideSet.setInterpolator(new AccelerateDecelerateInterpolator());
         mButtonShowSet.setInterpolator(new AccelerateDecelerateInterpolator());
         mButtonShowSet.play(down).with(left);
         mButtonHideSet.play(up).with(right);
+
+        mPickerPanelShow = new AlphaAnimation(0.0f, 1.0f);
+        mPickerPanelShow.setDuration(SPEED_ANIMATION_TRANSITION);
+        mPickerPanelShow.setFillAfter(true);
+
+        mPickerPanelHide = new AlphaAnimation(1.0f, 0.0f);
+        mPickerPanelHide.setDuration(SPEED_ANIMATION_TRANSITION);
+        mPickerPanelHide.setFillAfter(true);
+
         matrixValue = new ColorMatrix();
         matrixSat = new ColorMatrix();
 
@@ -117,7 +130,7 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
         satSeekBar.setProgress(sat);
         valueSeekBar.setProgress(value);
 
-        pickerFrame.hide(true);
+        pickerFrame.setVisibility(View.GONE);
 
         setMyColor(myTheme);
         original = myTheme;
@@ -127,10 +140,14 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
     }
 
     public void updateSliders() {
+        pickerFrame.requestLayout();
         //recalculate individual values
         hue = Math.round(hsv[0]);
         sat = Math.round(hsv[1] * 100);
         value = Math.round(hsv[2] * 100);
+        hueSeekBar.setProgress(hue);
+        satSeekBar.setProgress(sat);
+        valueSeekBar.setProgress(value);
 
         //set up arrays for coloring hue and sat bars
         hsvvalue[0] = hsv[0];
@@ -216,12 +233,17 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
             pickerButton.setImageResource(0);
             setMyColor(original);
             hsv=intToHSV(original);
-            pickerFrame.hide(true);
+            ExpandAnimation expandAni = new ExpandAnimation(pickerFrame, SPEED_ANIMATION_TRANSITION);
+            Animation startanim = AnimationUtils.loadAnimation(this.getContext(),R.anim.drawerup);
+
+            pickerFrame.startAnimation(expandAni);
 
         } else if (!pickerFrame.isShown()) {
 
-            pickerFrame.show(true);
+            ExpandAnimation expandAni = new ExpandAnimation(pickerFrame, SPEED_ANIMATION_TRANSITION);
+            Animation endanim = AnimationUtils.loadAnimation(this.getContext(),R.anim.drawerdown);
 
+            pickerFrame.startAnimation(expandAni);
             //run in a postdelayed gives it time to update
             pickerFrame.postDelayed(new Runnable() {
                 @Override
@@ -230,7 +252,7 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
                     pickerButton.setImageResource(R.drawable.ic_add_white_24dp);
 
                 }
-            }, 100);
+            }, 300);
 
             mButtonShowSet.start();
 
