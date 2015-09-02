@@ -7,39 +7,38 @@ import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.PorterDuff;
-import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.Window;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 public class XColorPickerPreference extends Preference implements SeekBar.OnSeekBarChangeListener, View.OnClickListener {
-    public static final String TAG = "XColorpickerPreference: ";
     public static int SPEED_ANIMATION_TRANSITION = 500;
     public RelativeLayout container;
     public com.woalk.apps.xposed.htcblinkfeedauthorizer.AnimatingRelativeLayout pickerFrame;
     public SeekBar hueSeekBar, satSeekBar, valueSeekBar;
     public TextView hueToolTip, satToolTip, valueToolTip;
-    public int red, green, blue, hue, sat, value, purehue, mPickerBottom;
+    public int hue, sat, value, red, green, blue, original;
+    public int mPickerBottom;
     public float[] hsv = new float[3];
+    public float[] hsv_orig = new float[3];
     public float[] hsvsat = new float[3];
     public float[] hsvvalue = new float[3];
-    public Rect hueRect, satRect, valueRect;
-    private int myTheme, mScreenWidth;
-    private float buttonX, buttonY;
-    private ImageView pickerButton;
+    private int myTheme;
+    private ImageButton pickerButton;
     private String colorname;
-    private AnimatorSet mButtonHideSet, mButtonShowSet;
+    private AnimatorSet mButtonHideSet = new AnimatorSet(), mButtonShowSet = new AnimatorSet();
     private XMLHelper xh;
-    private ObjectAnimator left, up, right, down;
-    private ColorMatrix matrixHue, matrixSat;
+    private ColorMatrix matrixValue, matrixSat;
 
     public XColorPickerPreference(Context context) {
         super(context);
@@ -58,57 +57,48 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
     public void onBindView(View rootView) {
         super.onBindView(rootView);
 
+        xh = new XMLHelper();
+
         //grab screen elements
         container = (RelativeLayout) rootView.findViewById(R.id.container);
-        pickerButton = (ImageView) rootView.findViewById(R.id.button);
+        pickerButton = (ImageButton) rootView.findViewById(R.id.button);
         pickerFrame = (com.woalk.apps.xposed.htcblinkfeedauthorizer.AnimatingRelativeLayout) rootView.findViewById(R.id.pickerframe);
 
         // read positions of button, container height, screen width
-        buttonX = pickerButton.getX();
-        buttonY = pickerButton.getY();
+        float buttonX = pickerButton.getX();
+        float buttonY = pickerButton.getY();
         mPickerBottom = pickerButton.getBottom();
-        mScreenWidth = ((getContext().getResources().getDisplayMetrics().widthPixels / 2) - 110);
+        int mScreenWidth = ((getContext().getResources().getDisplayMetrics().widthPixels / 2) - 110);
 
         //set up animations
-        right = ObjectAnimator.ofFloat(pickerButton, "translationX", buttonX);
-        left = ObjectAnimator.ofFloat(pickerButton, "translationX", -(mScreenWidth));
-        down = ObjectAnimator.ofFloat(pickerButton, "translationY", 350);
-        up = ObjectAnimator.ofFloat(pickerButton, "translationY", buttonY);
+        ObjectAnimator right = ObjectAnimator.ofFloat(pickerButton, "translationX", buttonX);
+        ObjectAnimator left = ObjectAnimator.ofFloat(pickerButton, "translationX", -(mScreenWidth));
+        ObjectAnimator down = ObjectAnimator.ofFloat(pickerButton, "translationY", 350);
+        ObjectAnimator up = ObjectAnimator.ofFloat(pickerButton, "translationY", buttonY);
 
-        mButtonHideSet = new AnimatorSet();
-        mButtonShowSet = new AnimatorSet();
+        //build sets of animations for button
         mButtonHideSet.setDuration(SPEED_ANIMATION_TRANSITION);
         mButtonShowSet.setDuration(SPEED_ANIMATION_TRANSITION);
         mButtonHideSet.setInterpolator(new AccelerateDecelerateInterpolator());
         mButtonShowSet.setInterpolator(new AccelerateDecelerateInterpolator());
         mButtonShowSet.play(down).with(left);
         mButtonHideSet.play(up).with(right);
-        matrixHue = new ColorMatrix();
+        matrixValue = new ColorMatrix();
         matrixSat = new ColorMatrix();
 
-        xh = new XMLHelper();
-        red = Color.red(myTheme);
-        green = Color.green(myTheme);
-        blue = Color.blue(myTheme);
-
-        hsv[0] = hue;
-        hsv[1] = sat;
-        hsv[2] = value;
-        matrixHue.setSaturation(hsv[1]);
-
-
-        Color.RGBToHSV(red, green, blue, hsv);
+        hsv = intToHSV(myTheme);
         hue = Math.round(hsv[0]);
         sat = Math.round(hsv[1] * 100);
         value = Math.round(hsv[2] * 100);
+
         hsvsat[0] = hsv[0];
-        hsvsat[1] = 0.75f;
+        hsvsat[1] = 0.8f;
         hsvsat[2] = hsv[2];
+
         hsvvalue[0] = hsv[0];
         hsvvalue[1] = hsv[1];
-        hsvvalue[2] = 0.75f;
-        Logger.d(TAG + " HSV As integers " + hue + " " + sat + " " + value);
-        Logger.d(TAG + "Rootiview is " + rootView);
+        hsvvalue[2] = 0.8f;
+
         hueSeekBar = (SeekBar) rootView.findViewById(R.id.hueSeekBar);
         satSeekBar = (SeekBar) rootView.findViewById(R.id.satSeekBar);
         valueSeekBar = (SeekBar) rootView.findViewById(R.id.valueSeekBar);
@@ -121,19 +111,18 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
         satSeekBar.setOnSeekBarChangeListener(this);
         valueSeekBar.setOnSeekBarChangeListener(this);
         pickerButton.setOnClickListener(this);
+        container.setOnClickListener(this);
 
         hueSeekBar.setProgress(hue);
         satSeekBar.setProgress(sat);
         valueSeekBar.setProgress(value);
+
         pickerFrame.hide(true);
 
-        //setup initial values
-
-        Logger.d(TAG + "Colorname is " + colorname + " and " + myTheme);
         setMyColor(myTheme);
-        setMyName(colorname);
-        container.setOnClickListener(this);
+        original = myTheme;
 
+        setMyName(colorname);
 
     }
 
@@ -142,41 +131,38 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
         hue = Math.round(hsv[0]);
         sat = Math.round(hsv[1] * 100);
         value = Math.round(hsv[2] * 100);
+
+        //set up arrays for coloring hue and sat bars
         hsvvalue[0] = hsv[0];
         hsvvalue[1] = hsv[1];
         hsvsat[0] = hsv[0];
         hsvsat[2] = hsv[2];
-        matrixHue.setSaturation(hsv[1]);
 
-        matrixSat.set(new float[]{1, 0, 0, 0, value,
-                0, 1, 0, 0, value,
-                0, 0, 1, 0, value,
-                0, 0, 0, 1, 0});
-        ColorMatrix colorFilterMatrix = new ColorMatrix();
-        colorFilterMatrix.postConcat(matrixHue);
-        colorFilterMatrix.postConcat(matrixSat);
-        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(colorFilterMatrix);
+        //convert values into filters
+        matrixSat.setSaturation(hsv[1]);
+        ColorMatrix matrixSatValue = new ColorMatrix();
+        matrixSatValue.setConcat(setContrast(hsv[2]), matrixSat);
+        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrixSatValue);
 
+        //set filters on each seek bar
         hueSeekBar.getProgressDrawable().setColorFilter(filter);
         satSeekBar.getProgressDrawable().setColorFilter(Color.HSVToColor(hsvsat), PorterDuff.Mode.MULTIPLY);
         valueSeekBar.getProgressDrawable().setColorFilter(Color.HSVToColor(hsvvalue), PorterDuff.Mode.MULTIPLY);
 
+        //color thumb and tooltip text
         hueSeekBar.getThumb().setColorFilter(Color.HSVToColor(hsv), PorterDuff.Mode.SRC_IN);
         satSeekBar.getThumb().setColorFilter(Color.HSVToColor(hsv), PorterDuff.Mode.SRC_IN);
         valueSeekBar.getThumb().setColorFilter(Color.HSVToColor(hsv), PorterDuff.Mode.SRC_IN);
-
         hueToolTip.setTextColor(Color.HSVToColor(hsv));
         satToolTip.setTextColor(Color.HSVToColor(hsv));
         valueToolTip.setTextColor(Color.HSVToColor(hsv));
 
-        hueRect = hueSeekBar.getThumb().getBounds();
-        satRect = satSeekBar.getThumb().getBounds();
-        valueRect = valueSeekBar.getThumb().getBounds();
-        Logger.d(TAG + "Bounds are" + valueRect);
-        hueToolTip.setX(16 + hueRect.left);
-        satToolTip.setX(16 + satRect.left);
-        valueToolTip.setX(16 + valueRect.left);
+        //center tooltips over thumb
+        hueToolTip.setX(hueSeekBar.getThumb().getBounds().left);
+        satToolTip.setX(satSeekBar.getThumb().getBounds().left);
+        valueToolTip.setX(valueSeekBar.getThumb().getBounds().left);
 
+        //set text to current value
         if (hue < 10)
             hueToolTip.setText("  " + hue);
         else if (hue < 100)
@@ -200,25 +186,51 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
             valueToolTip.setText(value + "");
     }
 
-    public void toggle_contents() {
+    public float[] intToHSV(int inColor) {
+        red = Color.red(myTheme);
+        green = Color.green(myTheme);
+        blue = Color.blue(myTheme);
+        float hsv[] = new float[3];
 
+        Color.RGBToHSV(red, green, blue, hsv);
+        return hsv;
+    }
+
+    ColorMatrix setContrast(float contrast) {
+        float scale = contrast + 1.f;
+        float translate = (-.5f * scale + .5f) * 255.f;
+        float[] array = new float[] {
+                scale, 0, 0, 0, translate,
+                0, scale, 0, 0, translate,
+                0, 0, scale, 0, translate,
+                0, 0, 0, 1, 0};
+        ColorMatrix matrix = new ColorMatrix(array);
+        return matrix;
+    }
+
+    public void toggle_contents() {
 
         if (pickerFrame.isShown()) {
 
             mButtonHideSet.start();
+            pickerButton.setImageResource(0);
+            setMyColor(original);
+            hsv=intToHSV(original);
             pickerFrame.hide(true);
-
 
         } else if (!pickerFrame.isShown()) {
 
             pickerFrame.show(true);
+
+            //run in a postdelayed gives it time to update
             pickerFrame.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     updateSliders();
+                    pickerButton.setImageResource(R.drawable.ic_add_white_24dp);
+
                 }
             }, 100);
-
 
             mButtonShowSet.start();
 
@@ -237,6 +249,8 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
             sd.getPaint().setColor(myTheme);
 
             pickerButton.setBackground(sd);
+
+
         }
     }
 
@@ -244,11 +258,6 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
     public void setMyName(String name) {
         colorname = name;
     }
-
-    public void onWindowFocusChanged(boolean hasFocus) {
-
-    }
-
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -269,23 +278,10 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
             hsv[2] = (float) value / 100;
 
         }
-        Logger.d(TAG, "HSV Components are " + hsv[0] + " " + hsv[1] + " " + hsv[2]);
+
         setMyColor(Color.HSVToColor(hsv));
         updateSliders();
 
-    }
-
-
-    public int getIntFromColor(int Red, int Green, int Blue) {
-        Red = (Red << 16) & 0x00FF0000; //Shift red 16-bits and mask out other stuff
-        Green = (Green << 8) & 0x0000FF00; //Shift Green 8-bits and mask out other stuff
-        Blue = Blue & 0x000000FF; //Mask out anything not blue.
-
-        return 0xFF000000 | Red | Green | Blue; //0xFF000000 for 100% Alpha. Bitwise OR everything together.
-    }
-
-    public void saveMyColor(String colorname, int myTheme) {
-        xh.WriteToXML(colorname, myTheme);
     }
 
     @Override
@@ -298,17 +294,23 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
 
     }
 
+
+    public void saveMyColor(String colorname, int myTheme) {
+
+        xh.WriteToXML(colorname, myTheme);
+
+
+    }
+
     @Override
     public void onClick(View v) {
         if (v == pickerButton) {
-            Logger.d(TAG + "Click detected, outputting color of " + hsv);
             saveMyColor(colorname, Color.HSVToColor(hsv));
+            original = Color.HSVToColor(hsv);
             toggle_contents();
         } else if (v == container) {
 
             toggle_contents();
-
-
         }
     }
 }

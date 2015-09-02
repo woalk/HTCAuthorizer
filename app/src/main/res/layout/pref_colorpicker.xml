@@ -129,7 +129,7 @@
 
 
         </com.woalk.apps.xposed.htcblinkfeedauthorizer.AnimatingRelativeLayout>
-        <ImageView
+        <ImageButton
             android:id="@+id/button"
             android:layout_width="40dp"
             android:layout_height="40dp"
