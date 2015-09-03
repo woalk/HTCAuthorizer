@@ -17,6 +17,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -100,10 +101,6 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
         matrixSat = new ColorMatrix();
 
         hsv = intToHSV(myTheme);
-        hue = Math.round(hsv[0]);
-        sat = Math.round(hsv[1] * 100);
-        value = Math.round(hsv[2] * 100);
-
         hsvsat[0] = hsv[0];
         hsvsat[1] = 0.8f;
         hsvsat[2] = hsv[2];
@@ -115,6 +112,8 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
         hueSeekBar = (SeekBar) rootView.findViewById(R.id.hueSeekBar);
         satSeekBar = (SeekBar) rootView.findViewById(R.id.satSeekBar);
         valueSeekBar = (SeekBar) rootView.findViewById(R.id.valueSeekBar);
+
+        setSeekbarPositions(hsv);
 
         hueToolTip = (TextView) rootView.findViewById(R.id.hueToolTip);
         satToolTip = (TextView) rootView.findViewById(R.id.satToolTip);
@@ -145,9 +144,6 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
         hue = Math.round(hsv[0]);
         sat = Math.round(hsv[1] * 100);
         value = Math.round(hsv[2] * 100);
-        hueSeekBar.setProgress(hue);
-        satSeekBar.setProgress(sat);
-        valueSeekBar.setProgress(value);
 
         //set up arrays for coloring hue and sat bars
         hsvvalue[0] = hsv[0];
@@ -229,14 +225,14 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
 
         if (pickerFrame.isShown()) {
 
-            mButtonHideSet.start();
             pickerButton.setImageResource(0);
+            mButtonHideSet.start();
             setMyColor(original);
             hsv=intToHSV(original);
             ExpandAnimation expandAni = new ExpandAnimation(pickerFrame, SPEED_ANIMATION_TRANSITION);
             Animation startanim = AnimationUtils.loadAnimation(this.getContext(),R.anim.drawerup);
-
             pickerFrame.startAnimation(expandAni);
+            setSeekbarPositions(intToHSV(original));
 
         } else if (!pickerFrame.isShown()) {
 
@@ -252,7 +248,7 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
                     pickerButton.setImageResource(R.drawable.ic_add_white_24dp);
 
                 }
-            }, 300);
+            }, 100);
 
             mButtonShowSet.start();
 
@@ -306,6 +302,28 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
 
     }
 
+    public void setSeekbarPositions(float hsv[]) {
+        hue = Math.round(hsv[0]);
+        sat = Math.round(hsv[1] * 100);
+        value = Math.round(hsv[2] * 100);
+        ObjectAnimator animationHue = ObjectAnimator.ofInt(hueSeekBar, "progress", hue);
+        ObjectAnimator animationSat = ObjectAnimator.ofInt(satSeekBar, "progress", sat);
+        ObjectAnimator animationValue = ObjectAnimator.ofInt(valueSeekBar, "progress", value);
+        animationHue.setDuration(SPEED_ANIMATION_TRANSITION + 100);
+        animationSat.setDuration(SPEED_ANIMATION_TRANSITION + 100);
+        animationValue.setDuration(SPEED_ANIMATION_TRANSITION + 100);
+
+        animationHue.setInterpolator(new DecelerateInterpolator());
+        animationValue.setInterpolator(new DecelerateInterpolator());
+        animationSat.setInterpolator(new DecelerateInterpolator());
+        animationHue.start();
+        animationSat.start();
+        animationValue.start();
+        hueSeekBar.setProgress(hue);
+        satSeekBar.setProgress(sat);
+        valueSeekBar.setProgress(value);
+
+    }
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
 
