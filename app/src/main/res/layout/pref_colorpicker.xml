@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
@@ -72,16 +72,17 @@
                 android:textSize="18sp"
                 android:singleLine="true" />
 
-            <SeekBar
+            <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/hueSeekBar"
                 android:layout_below="@id/hueToolTip"
                 android:max="360"
-                android:maxHeight="3dip"
+                android:maxHeight="5dip"
                 android:minHeight="3dip"
-                android:thumb="@drawable/slider_thumb_drawable"
-                android:progressDrawable="@drawable/gradient_hue"/>
+                app:dsb_trackHeight="10"
+                app:dsb_max="360"
+                app:dsb_progressDrawable="@drawable/gradient_hue"/>
 
             <TextView
                 android:layout_width="fill_parent"

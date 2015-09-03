@@ -25,11 +25,14 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
+
 public class XColorPickerPreference extends Preference implements SeekBar.OnSeekBarChangeListener, View.OnClickListener {
     public static int SPEED_ANIMATION_TRANSITION = 400;
     public RelativeLayout container;
     public RelativeLayout pickerFrame;
-    public SeekBar hueSeekBar, satSeekBar, valueSeekBar;
+    public org.adw.library.widgets.discreteseekbar.DiscreteSeekBar hueSeekBar;
+    public SeekBar satSeekBar, valueSeekBar;
     public TextView hueToolTip, satToolTip, valueToolTip;
     public int hue, sat, value, red, green, blue, original;
     public int mPickerBottom;
@@ -109,17 +112,44 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
         hsvvalue[1] = hsv[1];
         hsvvalue[2] = 0.8f;
 
-        hueSeekBar = (SeekBar) rootView.findViewById(R.id.hueSeekBar);
+        hueSeekBar = (org.adw.library.widgets.discreteseekbar.DiscreteSeekBar) rootView.findViewById(R.id.hueSeekBar);
         satSeekBar = (SeekBar) rootView.findViewById(R.id.satSeekBar);
         valueSeekBar = (SeekBar) rootView.findViewById(R.id.valueSeekBar);
 
         setSeekbarPositions(hsv);
 
-        hueToolTip = (TextView) rootView.findViewById(R.id.hueToolTip);
+        //hueToolTip = (TextView) rootView.findViewById(R.id.hueToolTip);
         satToolTip = (TextView) rootView.findViewById(R.id.satToolTip);
         valueToolTip = (TextView) rootView.findViewById(R.id.valueToolTip);
 
-        hueSeekBar.setOnSeekBarChangeListener(this);
+        hueSeekBar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
+            @Override
+            public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
+                hue = value;
+                hsv[0] = (float) hue;
+                setMyColor(Color.HSVToColor(hsv));
+                Logger.d("XCPP: Update called");
+
+                hueSeekBar.setIndicatorColor(Color.HSVToColor(hsv));
+                updateSliders();
+            }
+
+            @Override
+            public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
+                hue = hueSeekBar.getProgress();
+                hsv[0] = (float) hue;
+                Logger.d("XCPP: Update called");
+                hueSeekBar.setIndicatorColor(Color.HSVToColor(hsv));
+                setMyColor(Color.HSVToColor(hsv));
+                updateSliders();
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
+
+            }
+        });
         satSeekBar.setOnSeekBarChangeListener(this);
         valueSeekBar.setOnSeekBarChangeListener(this);
         pickerButton.setOnClickListener(this);
@@ -158,30 +188,33 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
         ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrixSatValue);
 
         //set filters on each seek bar
-        hueSeekBar.getProgressDrawable().setColorFilter(filter);
+        hueSeekBar.getTrackDrawable().setColorFilter(filter);
         satSeekBar.getProgressDrawable().setColorFilter(Color.HSVToColor(hsvsat), PorterDuff.Mode.MULTIPLY);
         valueSeekBar.getProgressDrawable().setColorFilter(Color.HSVToColor(hsvvalue), PorterDuff.Mode.MULTIPLY);
 
         //color thumb and tooltip text
-        hueSeekBar.getThumb().setColorFilter(Color.HSVToColor(hsv), PorterDuff.Mode.SRC_IN);
+        hueSeekBar.setThumbColor(Color.HSVToColor(hsv));
+        hueSeekBar.setRippleColor(Color.HSVToColor(hsv));
+
+
+        //hueSeekBar.setScrubberColor(Color.HSVToColor(hsv));
         satSeekBar.getThumb().setColorFilter(Color.HSVToColor(hsv), PorterDuff.Mode.SRC_IN);
         valueSeekBar.getThumb().setColorFilter(Color.HSVToColor(hsv), PorterDuff.Mode.SRC_IN);
-        hueToolTip.setTextColor(Color.HSVToColor(hsv));
         satToolTip.setTextColor(Color.HSVToColor(hsv));
         valueToolTip.setTextColor(Color.HSVToColor(hsv));
 
         //center tooltips over thumb
-        hueToolTip.setX(hueSeekBar.getThumb().getBounds().left);
+        //hueToolTip.setX(hueSeekBar.getThumb().getBounds().left);
         satToolTip.setX(satSeekBar.getThumb().getBounds().left);
         valueToolTip.setX(valueSeekBar.getThumb().getBounds().left);
 
         //set text to current value
-        if (hue < 10)
-            hueToolTip.setText("  " + hue);
-        else if (hue < 100)
-            hueToolTip.setText(" " + hue);
-        else
-            hueToolTip.setText(hue + "");
+//        if (hue < 10)
+//            hueToolTip.setText("  " + hue);
+//        else if (hue < 100)
+//            hueToolTip.setText(" " + hue);
+//        else
+//            hueToolTip.setText(hue + "");
 
         if (sat < 10)
             satToolTip.setText("  " + sat);
@@ -270,6 +303,7 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
 
 
         }
+
     }
 
 
@@ -280,12 +314,8 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
-        if (seekBar.getId() == R.id.hueSeekBar) {
 
-            hue = progress;
-            hsv[0] = (float) hue;
-
-        } else if (seekBar.getId() == R.id.satSeekBar) {
+        if (seekBar.getId() == R.id.satSeekBar) {
 
             sat = progress;
             hsv[1] = (float) sat / 100;
@@ -306,17 +336,17 @@ public class XColorPickerPreference extends Preference implements SeekBar.OnSeek
         hue = Math.round(hsv[0]);
         sat = Math.round(hsv[1] * 100);
         value = Math.round(hsv[2] * 100);
-        ObjectAnimator animationHue = ObjectAnimator.ofInt(hueSeekBar, "progress", hue);
+        //ObjectAnimator animationHue = ObjectAnimator.ofInt(hueSeekBar, "progress", hue);
         ObjectAnimator animationSat = ObjectAnimator.ofInt(satSeekBar, "progress", sat);
         ObjectAnimator animationValue = ObjectAnimator.ofInt(valueSeekBar, "progress", value);
-        animationHue.setDuration(SPEED_ANIMATION_TRANSITION + 100);
+        //animationHue.setDuration(SPEED_ANIMATION_TRANSITION + 100);
         animationSat.setDuration(SPEED_ANIMATION_TRANSITION + 100);
         animationValue.setDuration(SPEED_ANIMATION_TRANSITION + 100);
 
-        animationHue.setInterpolator(new DecelerateInterpolator());
+        //animationHue.setInterpolator(new DecelerateInterpolator());
         animationValue.setInterpolator(new DecelerateInterpolator());
         animationSat.setInterpolator(new DecelerateInterpolator());
-        animationHue.start();
+        //animationHue.start();
         animationSat.start();
         animationValue.start();
         hueSeekBar.setProgress(hue);
