@@ -101,10 +101,8 @@ public class MarkerDrawable extends StateDrawable implements Animatable {
     public void setColors(int startColor, int endColor) {
         mStartColor = startColor;
         mEndColor = endColor;
-        
-
-
     }
+
     @Override
     void doDraw(Canvas canvas, Paint paint) {
         if (!mPath.isEmpty()) {
@@ -117,7 +115,6 @@ public class MarkerDrawable extends StateDrawable implements Animatable {
 
                 }
             canvas.drawPath(mPath, paint);
-
         }
     }
 

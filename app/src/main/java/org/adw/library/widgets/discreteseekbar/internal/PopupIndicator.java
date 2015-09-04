@@ -89,9 +89,7 @@ public class PopupIndicator {
     }
 
     public void setValue(CharSequence value) {
-
         mPopupView.mMarker.setValue(value);
-
     }
 
     public org.adw.library.widgets.discreteseekbar.internal.drawable.MarkerDrawable getMarkerDrawable() {
@@ -131,10 +129,10 @@ public class PopupIndicator {
     public void setColors(int startColor) {
         mPopupView.setColors(startColor);
     }
-	
 	public void setColors(int startColor, int endColor) {
         mPopupView.setColors(startColor, endColor);
     }
+
     /**
      * This will start the closing animation of the Marker and call onClosingComplete when finished
      */
@@ -274,7 +272,6 @@ public class PopupIndicator {
             mMarker.setColors(startColor);
             mColor = startColor;
         }
-		
 		public void setColors(int startColor, int endColor) {
             mMarker.setColors(startColor, endColor);
         }

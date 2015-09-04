@@ -80,18 +80,21 @@
         <item name="color">@android:color/white</item>
     </style>
 
-    <color name="dsb_progress_color">@android:color/transparent</color>
-    <color name="dsb_track_color">@android:color/transparent</color>
+    <color name="dsb_progress_color">#ff009688</color>
+    <color name="dsb_track_color">#ff939393</color>
     <color name="dsb_disabled_color">#66939393</color>
     <color name="dsb_ripple_color_pressed">#77939393</color>
     <color name="dsb_ripple_color_focused">#99999999</color>
+    <color name="dsb_thumb_color_pressed">#77939393</color>
+    <color name="dsb_thumb_color_focused">#99999999</color>
 
     <style name="Widget.DiscreteSeekBar" parent="android:Widget">
         <item name="dsb_indicatorTextAppearance">@style/Widget.DiscreteIndicatorTextAppearance</item>
-        <item name="dsb_progressColor">@android:color/transparent</item>
-        <item name="dsb_trackColor">@android:color/transparent</item>
+        <item name="dsb_progressColor">@color/dsb_progress_color_list</item>
+        <item name="dsb_trackColor">@color/dsb_track_color_list</item>
         <item name="dsb_rippleColor">@color/dsb_ripple_color_list</item>
         <item name="dsb_indicatorColor">@color/dsb_progress_color</item>
+        <item name="dsb_thumbColor">@color/dsb_thumb_color_list</item>
         <item name="dsb_thumbSize">20dip</item>
         <item name="dsb_indicatorElevation">4dp</item>
         <item name="dsb_mirrorForRtl">true</item>
