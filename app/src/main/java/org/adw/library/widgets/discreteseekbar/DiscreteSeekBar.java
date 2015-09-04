@@ -39,7 +39,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewParent;
 
-import com.woalk.apps.xposed.htcblinkfeedauthorizer.Logger;
 import com.woalk.apps.xposed.htcblinkfeedauthorizer.R;
 
 import org.adw.library.widgets.discreteseekbar.internal.PopupIndicator;
@@ -195,12 +194,10 @@ public class DiscreteSeekBar extends View {
             thumbSize = (int) (density * ThumbDrawable.DEFAULT_SIZE_DP);
 
         } else {
-            Logger.d("DSB: thumbsize found " + mThumbSize);
             thumbSize = (int) (density * mThumbSize);
         }
         int touchBounds = (int) (density * 32);
         mAddedTouchBounds = (touchBounds - thumbSize) / 2;
-
         //Extra pixels for a touch area of 48dp
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.DiscreteSeekBar,
@@ -272,9 +269,12 @@ public class DiscreteSeekBar extends View {
         } else {
             mRipple.setCallback(this);
         }
+
+
         TrackRectDrawable shapeDrawable = new TrackRectDrawable(trackColor);
         mTrack = shapeDrawable;
         mTrack.setCallback(this);
+
         shapeDrawable = new TrackRectDrawable(progressColor);
         mScrubber = shapeDrawable;
         mScrubber.setCallback(this);
@@ -413,10 +413,6 @@ public class DiscreteSeekBar extends View {
 
     }
 
-    public void clearThumbState() {
-        setPressed(false);
-
-    }
 
     /**
      * Sets the current progress for this DiscreteSeekBar
@@ -505,7 +501,6 @@ public class DiscreteSeekBar extends View {
      */
 
     public void setIndicatorColor(int indicatorColor) {
-        Logger.d("DiscreteSeekBar: setIndicatorColor called w. value of " + indicatorColor + "for ");
         mIndicator.setColors(indicatorColor);
     }
 
@@ -571,6 +566,7 @@ public class DiscreteSeekBar extends View {
     public void setIndicatorPopupEnabled(boolean enabled) {
         this.mIndicatorPopupEnabled = enabled;
     }
+
 
     private void notifyProgress(int value, boolean fromUser) {
         if (mPublicChangeListener != null) {
@@ -731,6 +727,7 @@ public class DiscreteSeekBar extends View {
         mScrubber.setState(state);
         mRipple.setState(state);
     }
+
 
 
 

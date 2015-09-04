@@ -30,6 +30,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
+import com.woalk.apps.xposed.htcblinkfeedauthorizer.Logger;
+
 import org.adw.library.widgets.discreteseekbar.internal.compat.SeekBarCompat;
 import org.adw.library.widgets.discreteseekbar.internal.drawable.MarkerDrawable;
 
@@ -46,7 +48,7 @@ import org.adw.library.widgets.discreteseekbar.internal.drawable.MarkerDrawable;
  * @see #dismissComplete()
  * @see org.adw.library.widgets.discreteseekbar.internal.PopupIndicator.Floater
  */
-public class PopupIndicator {
+public class PopupIndicator implements View.OnAttachStateChangeListener {
 
     private final WindowManager mWindowManager;
     private boolean mShowing;
@@ -100,14 +102,19 @@ public class PopupIndicator {
         return mShowing;
     }
 
-    public void showIndicator(View parent, Rect touchBounds) {
+
+    public void showIndicator(final View parent, final Rect touchBounds) {
         if (isShowing()) {
+            Logger.d("PopupIndicator thinks it's showing");
             mPopupView.mMarker.animateOpen();
             return;
+        } else {
+            Logger.d("PopupIndicator thinks it's not showing.  View is " + parent);
         }
-
+        parent.addOnAttachStateChangeListener(this);
         IBinder windowToken = parent.getWindowToken();
         if (windowToken != null) {
+            Logger.d("PopupIndicator: WindowToken is not null");
             WindowManager.LayoutParams p = createPopupLayout(windowToken);
 
             p.gravity = Gravity.TOP | GravityCompat.START;
@@ -117,6 +124,7 @@ public class PopupIndicator {
             translateViewIntoPosition(touchBounds.centerX());
             invokePopup(p);
         }
+        Logger.d("PopupIndicator: WindowToken is null");
     }
 
     public void move(int x) {
@@ -138,6 +146,7 @@ public class PopupIndicator {
      */
     public void dismiss() {
         mPopupView.mMarker.animateClose();
+        Logger.d("PopupIndicator: Dismiss called");
     }
 
     /**
@@ -149,6 +158,7 @@ public class PopupIndicator {
             mShowing = false;
             try {
                 mWindowManager.removeViewImmediate(mPopupView);
+                Logger.d("PopupIndicator: Force Dismissing called");
             } finally {
             }
         }
@@ -170,6 +180,7 @@ public class PopupIndicator {
     }
 
     private void invokePopup(WindowManager.LayoutParams p) {
+        Logger.d("PopupIndicator: Invoked");
         mWindowManager.addView(mPopupView, p);
         mPopupView.mMarker.animateOpen();
     }
@@ -208,6 +219,16 @@ public class PopupIndicator {
         curFlags |= WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
         curFlags |= WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
         return curFlags;
+    }
+
+    @Override
+    public void onViewAttachedToWindow(View v) {
+        Logger.d("Popupindicator: View attached " + v);
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(View v) {
+
     }
 
     /**
@@ -257,6 +278,8 @@ public class PopupIndicator {
         public void onClosingComplete() {
             if (mListener != null) {
                 mListener.onClosingComplete();
+                Logger.d("PopupIndicator: OnClosingComplete called");
+
             }
             dismissComplete();
         }
@@ -265,6 +288,7 @@ public class PopupIndicator {
         public void onOpeningComplete() {
             if (mListener != null) {
                 mListener.onOpeningComplete();
+                Logger.d("PopupIndicator: OnOpeningComplete called");
             }
         }
 

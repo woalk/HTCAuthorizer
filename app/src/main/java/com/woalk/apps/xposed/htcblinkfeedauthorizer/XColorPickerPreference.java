@@ -1,7 +1,9 @@
 package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
+import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
@@ -12,18 +14,22 @@ import android.graphics.drawable.shapes.OvalShape;
 import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.Transformation;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
-public class XColorPickerPreference extends Preference implements View.OnClickListener, DiscreteSeekBar.onSeekBarChangeListener {
+public class XColorPickerPreference extends Preference implements View.OnClickListener, DiscreteSeekBar.onSeekBarChangeListener, View.OnAttachStateChangeListener {
     public static int SPEED_ANIMATION_TRANSITION = 400;
     public RelativeLayout container;
     public RelativeLayout pickerFrame;
@@ -41,6 +47,7 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
     private AnimatorSet mButtonHideSet = new AnimatorSet(), mButtonShowSet = new AnimatorSet();
     private AlphaAnimation mPickerPanelShow, mPickerPanelHide;
     private XMLHelper xh;
+    private boolean isAnimating, isPickerFrameShowing;
     private ColorMatrix matrixValue, matrixSat;
 
     public XColorPickerPreference(Context context) {
@@ -66,6 +73,8 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
         container = (RelativeLayout) rootView.findViewById(R.id.container);
         pickerButton = (ImageButton) rootView.findViewById(R.id.button);
         pickerFrame = (RelativeLayout) rootView.findViewById(R.id.pickerframe);
+        pickerFrame.addOnAttachStateChangeListener(this);
+        isPickerFrameShowing = false;
 
         // read positions of button, container height, screen width
         float buttonX = pickerButton.getX();
@@ -80,32 +89,32 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
         ObjectAnimator up = ObjectAnimator.ofFloat(pickerButton, "translationY", buttonY);
 
         //build sets of animations for button
-        mButtonHideSet.setDuration(SPEED_ANIMATION_TRANSITION + 350);
-        mButtonShowSet.setDuration(SPEED_ANIMATION_TRANSITION + 350);
+        mButtonHideSet.setDuration(SPEED_ANIMATION_TRANSITION);
+        mButtonShowSet.setDuration(SPEED_ANIMATION_TRANSITION);
         mButtonHideSet.setInterpolator(new AccelerateDecelerateInterpolator());
         mButtonShowSet.setInterpolator(new AccelerateDecelerateInterpolator());
         mButtonShowSet.play(down).with(left);
         mButtonHideSet.play(up).with(right);
 
-//        mPickerPanelShow = new AlphaAnimation(0.0f, 1.0f);
-//        mPickerPanelShow.setDuration(SPEED_ANIMATION_TRANSITION);
-//        mPickerPanelShow.setFillAfter(true);
-//
-//        mPickerPanelHide = new AlphaAnimation(1.0f, 0.0f);
-//        mPickerPanelHide.setDuration(SPEED_ANIMATION_TRANSITION);
-//        mPickerPanelHide.setFillAfter(true);
+        mPickerPanelShow = new AlphaAnimation(0.0f, 1.0f);
+        mPickerPanelShow.setDuration(SPEED_ANIMATION_TRANSITION);
+        mPickerPanelShow.setFillAfter(true);
 
-//        matrixValue = new ColorMatrix();
-//        matrixSat = new ColorMatrix();
+        mPickerPanelHide = new AlphaAnimation(1.0f, 0.0f);
+        mPickerPanelHide.setDuration(SPEED_ANIMATION_TRANSITION);
+        mPickerPanelHide.setFillAfter(true);
+
+        matrixValue = new ColorMatrix();
+        matrixSat = new ColorMatrix();
 
         hsv = intToHSV(myTheme);
-//        hsvsat[0] = hsv[0];
-//        hsvsat[1] = 0.8f;
-//        hsvsat[2] = hsv[2];
-//
-//        hsvvalue[0] = hsv[0];
-//        hsvvalue[1] = hsv[1];
-//        hsvvalue[2] = 0.8f;
+        hsvsat[0] = hsv[0];
+        hsvsat[1] = 0.8f;
+        hsvsat[2] = hsv[2];
+
+        hsvvalue[0] = hsv[0];
+        hsvvalue[1] = hsv[1];
+        hsvvalue[2] = 0.8f;
 
         hueSeekBar = (org.adw.library.widgets.discreteseekbar.DiscreteSeekBar) rootView.findViewById(R.id.hueSeekBar);
         satSeekBar = (org.adw.library.widgets.discreteseekbar.DiscreteSeekBar) rootView.findViewById(R.id.satSeekBar);
@@ -122,7 +131,7 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
         container.setOnClickListener(this);
 
 
-        pickerFrame.setVisibility(View.GONE);
+
 
         setMyColor(myTheme);
         original = myTheme;
@@ -132,7 +141,7 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
     }
 
     public void updateSliders() {
-        pickerFrame.requestLayout();
+
         //recalculate individual values
         hue = Math.round(hsv[0]);
         sat = Math.round(hsv[1] * 100);
@@ -174,42 +183,20 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
 
     public void toggle_contents() {
 
-        if (pickerFrame.isShown()) {
+        if (isPickerFrameShowing) {
 
             pickerButton.setImageResource(0);
             mButtonHideSet.start();
             setMyColor(original);
             hsv=intToHSV(original);
-            ExpandAnimation expandAni = new ExpandAnimation(pickerFrame, SPEED_ANIMATION_TRANSITION);
-            Animation startanim = AnimationUtils.loadAnimation(this.getContext(),R.anim.drawerup);
-            pickerFrame.startAnimation(expandAni);
-            pickerFrame.postDelayed(new Runnable() {
-                @Override
-                public void run() {
+            hidePickerFrame();
 
-                    setSeekbarPositions(intToHSV(original));
+        } else if (!isPickerFrameShowing) {
 
-                }
-            }, 100);
-
-
-        } else if (!pickerFrame.isShown()) {
-
-            ExpandAnimation expandAni = new ExpandAnimation(pickerFrame, SPEED_ANIMATION_TRANSITION);
-            Animation endanim = AnimationUtils.loadAnimation(this.getContext(),R.anim.drawerdown);
-
-            pickerFrame.startAnimation(expandAni);
             //run in a postdelayed gives it time to update
-            pickerFrame.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    hueSeekBar.clearThumbState();
-                    pickerButton.setImageResource(R.drawable.ic_add_white_24dp);
-
-
-                }
-            }, 100);
-
+            showPickerFrame();
+            setSeekbarPositions(intToHSV(original));
+            pickerButton.setImageResource(R.drawable.ic_add_white_24dp);
             mButtonShowSet.start();
 
         }
@@ -247,7 +234,6 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
         animationHue.setDuration(SPEED_ANIMATION_TRANSITION + 100);
         animationSat.setDuration(SPEED_ANIMATION_TRANSITION + 100);
         animationValue.setDuration(SPEED_ANIMATION_TRANSITION + 100);
-
         animationHue.setInterpolator(new DecelerateInterpolator());
         animationValue.setInterpolator(new DecelerateInterpolator());
         animationSat.setInterpolator(new DecelerateInterpolator());
@@ -257,13 +243,88 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
         hueSeekBar.setProgress(hue);
         satSeekBar.setProgress(sat);
         valueSeekBar.setProgress(value);
+    }
+
+    public void showPickerFrame() {
+
+        final RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) pickerFrame.getLayoutParams();
+        ValueAnimator showAnimator = ValueAnimator.ofInt(params.bottomMargin, 0);
+        showAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                params.bottomMargin = (Integer) valueAnimator.getAnimatedValue();
+                pickerFrame.requestLayout();
+            }
+
+        });
+        showAnimator.setDuration(SPEED_ANIMATION_TRANSITION);
+        showAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                isAnimating = true;
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                isAnimating = false;
+                isPickerFrameShowing = true;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        showAnimator.start();
+
 
     }
 
+    public void hidePickerFrame() {
+
+        final RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) pickerFrame.getLayoutParams();
+        ValueAnimator hideAnimator = ValueAnimator.ofInt(params.bottomMargin, -700);
+        hideAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                params.bottomMargin = (Integer) valueAnimator.getAnimatedValue();
+                pickerFrame.requestLayout();
+            }
+        });
+        hideAnimator.setDuration(SPEED_ANIMATION_TRANSITION);
+        hideAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                isAnimating = true;
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                isAnimating = false;
+                isPickerFrameShowing = false;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        hideAnimator.start();
+        isPickerFrameShowing = false;
+    }
+
     public void saveMyColor(String colorname, int myTheme) {
-
         xh.WriteToXML(colorname, myTheme);
-
     }
 
     @Override
@@ -313,5 +374,17 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
     @Override
     public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
 
+    }
+
+    @Override
+    public void onViewAttachedToWindow(View v) {
+        Logger.d("XCPP: view attached - " + v);
+        pickerFrame.requestLayout();
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(View v) {
+        Logger.d("XCPP: view detached - " + v);
+        pickerFrame.invalidate();
     }
 }

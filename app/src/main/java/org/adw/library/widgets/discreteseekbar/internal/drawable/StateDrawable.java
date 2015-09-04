@@ -86,6 +86,10 @@ public abstract class StateDrawable extends Drawable {
         mCurrentColor = tintStateList.getDefaultColor();
     }
 
+    public void setColor(int color) {
+        mCurrentColor = color;
+    }
+
     /**
      * Subclasses should implement this method to do the actual drawing
      *

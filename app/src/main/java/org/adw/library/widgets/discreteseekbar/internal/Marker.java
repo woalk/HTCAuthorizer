@@ -180,10 +180,7 @@ public class Marker extends ViewGroup implements MarkerDrawable.MarkerAnimationL
     }
 
     public void setValue(CharSequence value) {
-
         mNumber.setText(value);
-
-
     }
     public org.adw.library.widgets.discreteseekbar.internal.drawable.MarkerDrawable getDrawable() {
         return mMarkerDrawable;
@@ -224,6 +221,10 @@ public class Marker extends ViewGroup implements MarkerDrawable.MarkerAnimationL
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mMarkerDrawable.stop();
+    }
+
+    public void clearState() {
+        mMarkerDrawable.invalidateSelf();
     }
 
     public void setColors(int startColor) {

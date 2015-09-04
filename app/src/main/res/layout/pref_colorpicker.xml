@@ -61,8 +61,8 @@
             android:layout_below="@android:id/summary"
             android:animateLayoutChanges="true"
             android:paddingBottom="80dip"
-
-            android:layout_marginBottom="-250dp">
+            android:layout_marginBottom="-250dip"
+            >
 
             <TextView
                 android:layout_width="fill_parent"
