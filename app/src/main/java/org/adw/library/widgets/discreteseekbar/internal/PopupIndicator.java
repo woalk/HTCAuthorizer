@@ -19,7 +19,6 @@ package org.adw.library.widgets.discreteseekbar.internal;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
-import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.os.IBinder;
 import android.support.v4.view.GravityCompat;
@@ -132,7 +131,10 @@ public class PopupIndicator {
     public void setColors(int startColor) {
         mPopupView.setColors(startColor);
     }
-
+	
+	public void setColors(int startColor, int endColor) {
+        mPopupView.setColors(startColor, endColor);
+    }
     /**
      * This will start the closing animation of the Marker and call onClosingComplete when finished
      */
@@ -271,6 +273,10 @@ public class PopupIndicator {
         public void setColors(int startColor) {
             mMarker.setColors(startColor);
             mColor = startColor;
+        }
+		
+		public void setColors(int startColor, int endColor) {
+            mMarker.setColors(startColor, endColor);
         }
     }
 

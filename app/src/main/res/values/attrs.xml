@@ -28,6 +28,7 @@
         <attr name="dsb_allowTrackClickToDrag" format="boolean"/>
         <attr name="dsb_progressColor" format="color|reference"/>
         <attr name="dsb_thumbColor" format="color|reference"/>
+        <attr name="dsb_thumbSize" format="integer|dimension"/>
         <attr name="dsb_trackColor" format="color|reference"/>
         <attr name="dsb_trackHeight" format="integer|dimension"/>
         <attr name="dsb_progressDrawable" format="integer"/>

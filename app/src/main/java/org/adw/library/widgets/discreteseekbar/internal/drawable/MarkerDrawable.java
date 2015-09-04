@@ -22,7 +22,6 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Animatable;
@@ -30,8 +29,6 @@ import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
-
-import com.woalk.apps.xposed.htcblinkfeedauthorizer.Logger;
 
 /**
  * Implementation of {@link StateDrawable} to draw a morphing marker symbol.
@@ -56,8 +53,6 @@ public class MarkerDrawable extends StateDrawable implements Animatable {
     private boolean mReverse = false;
     private boolean mRunning = false;
     private int mDuration = ANIMATION_DURATION;
-    private Canvas thisCanvas;
-    private Paint thisPaint;
     //size of the actual thumb drawable to use as circle state size
     private float mClosedStateSize;
     //value to store que current scale when starting an animation and interpolate from it
@@ -78,7 +73,8 @@ public class MarkerDrawable extends StateDrawable implements Animatable {
         super(tintList);
         mInterpolator = new AccelerateDecelerateInterpolator();
         mClosedStateSize = closedSize;
-
+        mStartColor = tintList.getColorForState(new int[]{android.R.attr.state_enabled, android.R.attr.state_pressed}, tintList.getDefaultColor());
+        mEndColor = tintList.getDefaultColor();
 
     }
 
@@ -87,29 +83,41 @@ public class MarkerDrawable extends StateDrawable implements Animatable {
     }
 
     /**
-     * The two colors that will be used for the seek thumb.
-     *
+     * Pass a single color when setting manually so it can be
+     * animated or set via the value of itself.
      * @param startColor Color used for the seek thumb
-
      */
     public void setColors(int startColor) {
-        Logger.d("Markerdrawable: Color here is " + startColor);
         mStartColor = startColor;
-
-        this.setColorFilter(mStartColor, PorterDuff.Mode.MULTIPLY);
+		mEndColor = 0;
         invalidateSelf();
+    }
+/**
+     * The two colors that will be used for the seek thumb.
+     * This method is used internally by the app.
+     * @param startColor Color used for the seek thumb
+     * @param endColor   Color used for popup indicator
+     */
+    public void setColors(int startColor, int endColor) {
+        mStartColor = startColor;
+        mEndColor = endColor;
+        
 
 
     }
-
     @Override
     void doDraw(Canvas canvas, Paint paint) {
         if (!mPath.isEmpty()) {
             paint.setStyle(Paint.Style.FILL);
-            paint.setColor(mStartColor);
+            if (mEndColor == 0) {
+                paint.setColor(mStartColor);
+            } else {
+                int color = blendColors(mStartColor, mEndColor, mCurrentScale);
+                paint.setColor(color);
+
+                }
             canvas.drawPath(mPath, paint);
-            thisCanvas = canvas;
-            thisPaint = paint;
+
         }
     }
 
@@ -148,7 +156,6 @@ public class MarkerDrawable extends StateDrawable implements Animatable {
         float hDiff = (bounds.bottom - currentSize - mExternalOffset) * inverseScale;
         matrix.postTranslate(0, hDiff);
         path.transform(matrix);
-        this.setColorFilter(mStartColor, PorterDuff.Mode.MULTIPLY);
     }
 
     private void updateAnimation(float factor) {
@@ -157,7 +164,6 @@ public class MarkerDrawable extends StateDrawable implements Animatable {
         mCurrentScale = initial + (destination - initial) * factor;
         computePath(getBounds());
         invalidateSelf();
-
     }
 
     public void animateToPressed() {
@@ -170,7 +176,6 @@ public class MarkerDrawable extends StateDrawable implements Animatable {
             mDuration = (int) (ANIMATION_DURATION * durationFactor);
             mStartTime = SystemClock.uptimeMillis();
             scheduleSelf(mUpdater, mStartTime + FRAME_DURATION);
-
         } else {
             notifyFinishedToListener();
         }
@@ -186,7 +191,6 @@ public class MarkerDrawable extends StateDrawable implements Animatable {
             mDuration = ANIMATION_DURATION - (int) (ANIMATION_DURATION * durationFactor);
             mStartTime = SystemClock.uptimeMillis();
             scheduleSelf(mUpdater, mStartTime + FRAME_DURATION);
-
         } else {
             notifyFinishedToListener();
         }
@@ -208,7 +212,6 @@ public class MarkerDrawable extends StateDrawable implements Animatable {
                 mRunning = false;
                 updateAnimation(1f);
                 notifyFinishedToListener();
-
             }
         }
     };
@@ -242,7 +245,14 @@ public class MarkerDrawable extends StateDrawable implements Animatable {
         return mRunning;
     }
 
-
+    private static int blendColors(int color1, int color2, float factor) {
+        final float inverseFactor = 1f - factor;
+        float a = (Color.alpha(color1) * factor) + (Color.alpha(color2) * inverseFactor);
+        float r = (Color.red(color1) * factor) + (Color.red(color2) * inverseFactor);
+        float g = (Color.green(color1) * factor) + (Color.green(color2) * inverseFactor);
+        float b = (Color.blue(color1) * factor) + (Color.blue(color2) * inverseFactor);
+        return Color.argb((int) a, (int) r, (int) g, (int) b);
+    }
 
 
     /**

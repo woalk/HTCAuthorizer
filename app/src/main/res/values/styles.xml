@@ -92,6 +92,7 @@
         <item name="dsb_trackColor">@android:color/transparent</item>
         <item name="dsb_rippleColor">@color/dsb_ripple_color_list</item>
         <item name="dsb_indicatorColor">@color/dsb_progress_color</item>
+        <item name="dsb_thumbSize">20dip</item>
         <item name="dsb_indicatorElevation">4dp</item>
         <item name="dsb_mirrorForRtl">true</item>
     </style>

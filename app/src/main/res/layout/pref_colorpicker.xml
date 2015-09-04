@@ -77,7 +77,6 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/hueSeekBar"
                 android:layout_below="@id/hueToolTip"
-                android:max="360"
                 android:maxHeight="5dip"
                 android:minHeight="3dip"
                 app:dsb_trackHeight="10"
@@ -93,16 +92,15 @@
                 android:layout_below="@id/hueSeekBar"
                 android:singleLine="true" />
 
-            <SeekBar
+            <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/satSeekBar"
                 android:layout_below="@id/satToolTip"
-                android:max="100"
                 android:maxHeight="3dip"
                 android:minHeight="3dip"
-                android:thumb="@drawable/slider_thumb_drawable"
-                android:progressDrawable="@drawable/gradient_saturation" />
+                app:dsb_max="100"
+                app:dsb_progressDrawable="@drawable/gradient_saturation" />
 
             <TextView
                 android:layout_width="fill_parent"
@@ -113,7 +111,7 @@
                 android:layout_below="@id/satSeekBar"
                 android:singleLine="true" />
 
-            <SeekBar
+            <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/valueSeekBar"
@@ -121,8 +119,8 @@
                 android:max="100"
                 android:maxHeight="3dip"
                 android:minHeight="3dip"
-                android:thumb="@drawable/slider_thumb_drawable"
-                android:progressDrawable="@drawable/gradient_value" />
+                app:dsb_max="100"
+                app:dsb_progressDrawable="@drawable/gradient_value" />
 
 
 

@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.view.ViewCompat;
@@ -31,14 +30,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-
-
-import com.woalk.apps.xposed.htcblinkfeedauthorizer.Logger;
+//change these back before importing
 import com.woalk.apps.xposed.htcblinkfeedauthorizer.R;
 
 import org.adw.library.widgets.discreteseekbar.internal.compat.SeekBarCompat;
 import org.adw.library.widgets.discreteseekbar.internal.drawable.MarkerDrawable;
 import org.adw.library.widgets.discreteseekbar.internal.drawable.ThumbDrawable;
+
+
 
 /**
  * {@link android.view.ViewGroup} to be used as the real indicator.
@@ -231,5 +230,9 @@ public class Marker extends ViewGroup implements MarkerDrawable.MarkerAnimationL
         mMarkerDrawable.setColors(startColor);
         mColor = startColor;
 
+    }
+	
+	public void setColors(int startColor, int endColor) {
+        mMarkerDrawable.setColors(startColor, endColor);
     }
 }
