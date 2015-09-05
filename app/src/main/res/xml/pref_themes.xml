@@ -5,7 +5,7 @@
         android:defaultValue="false"
         android:key="use_themes"
         android:summary="@string/pref_themes_check_summary"
-        android:title="@string/pref_themes_check_title" />
+        android:title="@string/pref_themes_check_title"/>
 
     <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
         android:id="@+id/Picker1"
@@ -13,33 +13,33 @@
         android:key="ColorPicker1"
         android:layout="@layout/pref_colorpicker"
         android:summary="@string/pref_themes_systemui_color1_summary"
-        android:title="@string/pref_themes_systemui_color1_title" />
+        android:title="@string/pref_themes_systemui_color1_title"/>
     <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
         android:id="@+id/Picker2"
         android:dependency="use_themes"
         android:key="ColorPicker2"
         android:layout="@layout/pref_colorpicker"
         android:summary="@string/pref_themes_systemui_color2_summary"
-        android:title="@string/pref_themes_systemui_color2_title" />
+        android:title="@string/pref_themes_systemui_color2_title"/>
     <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
         android:id="@+id/Picker3"
         android:dependency="use_themes"
         android:key="ColorPicker3"
         android:layout="@layout/pref_colorpicker"
         android:summary="@string/pref_themes_systemui_color3_summary"
-        android:title="@string/pref_themes_systemui_color3_title" />
+        android:title="@string/pref_themes_systemui_color3_title"/>
     <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
         android:id="@+id/Picker4"
         android:dependency="use_themes"
         android:key="ColorPicker4"
         android:layout="@layout/pref_colorpicker"
         android:summary="@string/pref_themes_systemui_color4_summary"
-        android:title="@string/pref_themes_systemui_color4_title" />
+        android:title="@string/pref_themes_systemui_color4_title"/>
 
     <CheckBoxPreference
         android:defaultValue="true"
         android:dependency="use_themes"
         android:key="systemui_use_launcher_theme"
         android:summary="@string/pref_themes_systemui_use_launcher_summary"
-        android:title="@string/pref_themes_systemui_use_launcher_title" />
+        android:title="@string/pref_themes_systemui_use_launcher_title"/>
 </PreferenceScreen>

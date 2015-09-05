@@ -449,8 +449,6 @@ public class X_Mod
                         });
 
 
-
-
                 XposedHelpers.findAndHookMethod(CLASS_INSTAGRAM_ACTIVITY, lpparam.classLoader, "d",
                         new XC_MethodHook() {
                             @Override

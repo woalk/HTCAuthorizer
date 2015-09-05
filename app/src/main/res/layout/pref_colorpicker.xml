@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center_vertical"
-    android:minHeight="?android:attr/listPreferredItemHeight"
-    tools:ignore="RtlSymmetry"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:minHeight="?android:attr/listPreferredItemHeight"
+                tools:ignore="RtlSymmetry"
 
     >
 
@@ -19,18 +19,18 @@
         />
 
     <RelativeLayout
+        android:id="@+id/container"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="6.0dip"
         android:layout_marginEnd="6.0dip"
         android:layout_marginStart="15.0dip"
         android:layout_marginTop="6.0dip"
-        android:id="@+id/container"
-        android:paddingRight="10dip"
         android:animateLayoutChanges="true"
-        tools:ignore="RtlSymmetry"
+        android:clickable="true"
+        android:paddingRight="10dip"
 
-        android:clickable="true">
+        tools:ignore="RtlSymmetry">
 
 
         <TextView
@@ -40,7 +40,7 @@
             android:ellipsize="marquee"
             android:fadingEdge="horizontal"
             android:singleLine="true"
-            android:textAppearance="@android:style/TextAppearance" />
+            android:textAppearance="@android:style/TextAppearance"/>
 
         <TextView
             android:id="@android:id/summary"
@@ -49,9 +49,9 @@
             android:layout_alignStart="@android:id/title"
             android:layout_below="@android:id/title"
             android:maxLines="4"
+            android:paddingEnd="60dip"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="?android:attr/textColorSecondary"
-            android:paddingEnd="60dip" />
+            android:textColor="?android:attr/textColorSecondary"/>
 
         <RelativeLayout
             android:id="@+id/pickerframe"
@@ -59,81 +59,78 @@
             android:layout_height="wrap_content"
             android:layout_alignStart="@android:id/summary"
             android:layout_below="@android:id/summary"
+            android:layout_marginBottom="-250dip"
             android:animateLayoutChanges="true"
             android:paddingBottom="80dip"
-            android:layout_marginBottom="-250dip"
             >
 
             <TextView
+                android:id="@+id/hueToolTip"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/hueToolTip"
                 android:fontFamily="sans-serif-medium"
-                android:textSize="18sp"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textSize="18sp"/>
 
             <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+                android:id="@+id/hueSeekBar"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/hueSeekBar"
                 android:layout_below="@id/hueToolTip"
                 android:maxHeight="5dip"
                 android:minHeight="3dip"
-                app:dsb_trackHeight="10"
                 app:dsb_max="360"
-                app:dsb_progressDrawable="@drawable/gradient_hue"/>
+                app:dsb_trackDrawable="@drawable/gradient_hue"/>
 
             <TextView
+                android:id="@+id/satToolTip"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/satToolTip"
-                android:fontFamily="sans-serif-medium"
-                android:textSize="18sp"
                 android:layout_below="@id/hueSeekBar"
-                android:singleLine="true" />
+                android:fontFamily="sans-serif-medium"
+                android:singleLine="true"
+                android:textSize="18sp"/>
 
             <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+                android:id="@+id/satSeekBar"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/satSeekBar"
                 android:layout_below="@id/satToolTip"
                 android:maxHeight="3dip"
                 android:minHeight="3dip"
                 app:dsb_max="100"
-                app:dsb_progressDrawable="@drawable/gradient_saturation" />
+                app:dsb_trackDrawable="@drawable/gradient_saturation"/>
 
             <TextView
+                android:id="@+id/valueToolTip"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/valueToolTip"
-                android:fontFamily="sans-serif-medium"
-                android:textSize="18sp"
                 android:layout_below="@id/satSeekBar"
-                android:singleLine="true" />
+                android:fontFamily="sans-serif-medium"
+                android:singleLine="true"
+                android:textSize="18sp"/>
 
             <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+                android:id="@+id/valueSeekBar"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/valueSeekBar"
                 android:layout_below="@id/valueToolTip"
-                android:max="100"
                 android:maxHeight="3dip"
                 android:minHeight="3dip"
                 app:dsb_max="100"
-                app:dsb_progressDrawable="@drawable/gradient_value" />
-
-
+                app:dsb_trackDrawable="@drawable/gradient_value"/>
 
 
         </RelativeLayout>
+
         <ImageButton
             android:id="@+id/button"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:contentDescription="@string/ImageViewDescriptor"
-            android:layout_alignParentTop="false"
             android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"/>
+            android:layout_alignParentTop="false"
+            android:layout_centerVertical="true"
+            android:contentDescription="@string/ImageViewDescriptor"/>
 
     </RelativeLayout>
 

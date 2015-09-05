@@ -334,7 +334,7 @@ public class XMLHelper {
                     e.printStackTrace();
                 }
             }
-        return Theme;
+            return Theme;
 
         } catch (XmlPullParserException e) {
             Logger.e(xhtag + "Error" + e);

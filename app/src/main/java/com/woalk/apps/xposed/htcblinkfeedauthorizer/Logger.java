@@ -26,6 +26,7 @@ public class Logger {
     public static final String LOG_TAG = "Sensify";
     public static final boolean DO_LOG = true;
     public static final boolean EXCLUDE_ERRORS = true;
+
     private Logger() {
     }
 

@@ -7,23 +7,26 @@
     android:layout_height="wrap_content"
     android:elevation="4dp"
     android:theme="@style/MyActionBar">
+
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
+
         <TextView
             android:id="@+id/tv1"
+            style="@style/AppTheme.Toolbar.TextAppearanceTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#00cccccc"
-            style="@style/AppTheme.Toolbar.TextAppearanceTitle"
 
             />
+
         <TextView
             android:id="@+id/tv2"
+            style="@style/AppTheme.Toolbar.TextAppearanceTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#00cccccc"
-            style="@style/AppTheme.Toolbar.TextAppearanceTitle"
 
             />
     </RelativeLayout>

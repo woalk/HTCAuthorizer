@@ -37,14 +37,14 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     private static final String PREF_SHOW_HSP_WARN = "warn_no_hsp";
     private static String TAG = MainActivity.class.getSimpleName();
-    private String curTitle;
     public TextView tv1;
     public TextView tv2;
+    public XMLHelper xh;
     ListView mDrawerList;
     RelativeLayout mDrawerPane;
     ArrayList<NavItem> mNavItems = new ArrayList<>();
-    public XMLHelper xh;
     ArrayList<Integer> mColors = new ArrayList<>();
+    private String curTitle;
     private int mMainColor;
     private int mSecondaryColor;
     private int mAccentColor;
@@ -98,8 +98,6 @@ public class MainActivity extends AppCompatActivity {
                 selectItemFromDrawer(position);
 
 
-
-
             }
         });
 
@@ -112,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
         )
 
 
-       {
+        {
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
                 invalidateOptionsMenu();
@@ -161,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
         super.onConfigurationChanged(newConfig);
         tv2.setText(curTitle);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Logger.d("Mainactivity: Option ID is " + item.getItemId() + "and drawerdown state is " + mDrawerLayout.isDrawerOpen(GravityCompat.START));

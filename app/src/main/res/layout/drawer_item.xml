@@ -2,34 +2,33 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingTop="14dp"
-                android:paddingBottom="14dp">
+                android:paddingBottom="14dp"
+                android:paddingTop="14dp">
 
     <ImageView
         android:id="@+id/icon"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:src="@drawable/icon_btn_previous"
-        android:layout_marginTop="0dip"
-        android:layout_marginRight="17dp"
-        android:layout_marginLeft="16dp"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="17dp"
+        android:layout_marginTop="0dip"
+        android:src="@drawable/icon_btn_previous"/>
 
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:gravity="center_vertical"
-        android:textColor="#000"
-        android:text="Line 1"
-        android:layout_marginTop="0dip"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/icon"
+        android:layout_marginTop="0dip"
         android:layout_toEndOf="@+id/icon"
-        android:fontFamily="sans-serif-medium" />
-
+        android:layout_toRightOf="@+id/icon"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center_vertical"
+        android:text="Line 1"
+        android:textColor="#000"
+        android:textSize="16sp"/>
 
 
 </RelativeLayout>

@@ -46,7 +46,9 @@ import android.view.animation.Interpolator;
 public class MarkerDrawable extends StateDrawable implements Animatable {
     private static final long FRAME_DURATION = 1000 / 60;
     private static final int ANIMATION_DURATION = 250;
-
+    Path mPath = new Path();
+    RectF mRect = new RectF();
+    Matrix mMatrix = new Matrix();
     private float mCurrentScale = 0f;
     private Interpolator mInterpolator;
     private long mStartTime;
@@ -63,11 +65,26 @@ public class MarkerDrawable extends StateDrawable implements Animatable {
     //colors for interpolation
     private int mStartColor;//Color when the Marker is OPEN
     private int mEndColor;//Color when the arker is CLOSED
-
-    Path mPath = new Path();
-    RectF mRect = new RectF();
-    Matrix mMatrix = new Matrix();
     private MarkerAnimationListener mMarkerListener;
+    private final Runnable mUpdater = new Runnable() {
+
+        @Override
+        public void run() {
+
+            long currentTime = SystemClock.uptimeMillis();
+            long diff = currentTime - mStartTime;
+            if (diff < mDuration) {
+                float interpolation = mInterpolator.getInterpolation((float) diff / (float) mDuration);
+                scheduleSelf(mUpdater, currentTime + FRAME_DURATION);
+                updateAnimation(interpolation);
+            } else {
+                unscheduleSelf(mUpdater);
+                mRunning = false;
+                updateAnimation(1f);
+                notifyFinishedToListener();
+            }
+        }
+    };
 
     public MarkerDrawable(@NonNull ColorStateList tintList, int closedSize) {
         super(tintList);
@@ -78,6 +95,15 @@ public class MarkerDrawable extends StateDrawable implements Animatable {
 
     }
 
+    private static int blendColors(int color1, int color2, float factor) {
+        final float inverseFactor = 1f - factor;
+        float a = (Color.alpha(color1) * factor) + (Color.alpha(color2) * inverseFactor);
+        float r = (Color.red(color1) * factor) + (Color.red(color2) * inverseFactor);
+        float g = (Color.green(color1) * factor) + (Color.green(color2) * inverseFactor);
+        float b = (Color.blue(color1) * factor) + (Color.blue(color2) * inverseFactor);
+        return Color.argb((int) a, (int) r, (int) g, (int) b);
+    }
+
     public void setExternalOffset(int offset) {
         mExternalOffset = offset;
     }
@@ -85,16 +111,19 @@ public class MarkerDrawable extends StateDrawable implements Animatable {
     /**
      * Pass a single color when setting manually so it can be
      * animated or set via the value of itself.
+     *
      * @param startColor Color used for the seek thumb
      */
     public void setColors(int startColor) {
         mStartColor = startColor;
-		mEndColor = 0;
+        mEndColor = 0;
         invalidateSelf();
     }
-/**
+
+    /**
      * The two colors that will be used for the seek thumb.
      * This method is used internally by the app.
+     *
      * @param startColor Color used for the seek thumb
      * @param endColor   Color used for popup indicator
      */
@@ -113,7 +142,7 @@ public class MarkerDrawable extends StateDrawable implements Animatable {
                 int color = blendColors(mStartColor, mEndColor, mCurrentScale);
                 paint.setColor(color);
 
-                }
+            }
             canvas.drawPath(mPath, paint);
         }
     }
@@ -193,26 +222,6 @@ public class MarkerDrawable extends StateDrawable implements Animatable {
         }
     }
 
-    private final Runnable mUpdater = new Runnable() {
-
-        @Override
-        public void run() {
-
-            long currentTime = SystemClock.uptimeMillis();
-            long diff = currentTime - mStartTime;
-            if (diff < mDuration) {
-                float interpolation = mInterpolator.getInterpolation((float) diff / (float) mDuration);
-                scheduleSelf(mUpdater, currentTime + FRAME_DURATION);
-                updateAnimation(interpolation);
-            } else {
-                unscheduleSelf(mUpdater);
-                mRunning = false;
-                updateAnimation(1f);
-                notifyFinishedToListener();
-            }
-        }
-    };
-
     public void setMarkerListener(MarkerAnimationListener listener) {
         mMarkerListener = listener;
     }
@@ -240,15 +249,6 @@ public class MarkerDrawable extends StateDrawable implements Animatable {
     @Override
     public boolean isRunning() {
         return mRunning;
-    }
-
-    private static int blendColors(int color1, int color2, float factor) {
-        final float inverseFactor = 1f - factor;
-        float a = (Color.alpha(color1) * factor) + (Color.alpha(color2) * inverseFactor);
-        float r = (Color.red(color1) * factor) + (Color.red(color2) * inverseFactor);
-        float g = (Color.green(color1) * factor) + (Color.green(color2) * inverseFactor);
-        float b = (Color.blue(color1) * factor) + (Color.blue(color2) * inverseFactor);
-        return Color.argb((int) a, (int) r, (int) g, (int) b);
     }
 
 

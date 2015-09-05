@@ -111,7 +111,7 @@ public class ThemeFragment extends PreferenceFragment
     }
 
     public void updateFromXML(Context context) {
-        SharedPreferences sharedPref = context.getSharedPreferences("com.woalk.apps.xposed.htcblinkfeedauthorizer_preferences",Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = context.getSharedPreferences("com.woalk.apps.xposed.htcblinkfeedauthorizer_preferences", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         Logger.i("MainPreferenceFragment: Starting Editor");
         mColors = xh.readAllColors();

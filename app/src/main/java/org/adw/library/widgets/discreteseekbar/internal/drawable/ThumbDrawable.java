@@ -41,10 +41,17 @@ import android.support.annotation.NonNull;
  */
 public class ThumbDrawable extends StateDrawable implements Animatable {
     //The current size for this drawable. Must be converted to real DPs
-    public static final int DEFAULT_SIZE_DP = 12;
     private final int mSize;
     private boolean mOpen;
     private boolean mRunning;
+    private Runnable opener = new Runnable() {
+        @Override
+        public void run() {
+            mOpen = true;
+            invalidateSelf();
+            mRunning = false;
+        }
+    };
 
     public ThumbDrawable(@NonNull ColorStateList tintStateList, int size) {
         super(tintStateList);
@@ -81,15 +88,6 @@ public class ThumbDrawable extends StateDrawable implements Animatable {
         unscheduleSelf(opener);
         invalidateSelf();
     }
-
-    private Runnable opener = new Runnable() {
-        @Override
-        public void run() {
-            mOpen = true;
-            invalidateSelf();
-            mRunning = false;
-        }
-    };
 
     @Override
     public void start() {

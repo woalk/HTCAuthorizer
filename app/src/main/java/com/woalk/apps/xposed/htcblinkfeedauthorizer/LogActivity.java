@@ -13,9 +13,10 @@ import java.io.IOException;
 
 
 public class LogActivity extends AppCompatActivity {
-private TextView tv1;
-private XMLHelper xh;
+    private TextView tv1;
+    private XMLHelper xh;
     private int maincolor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

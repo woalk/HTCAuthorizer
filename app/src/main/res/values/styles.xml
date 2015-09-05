@@ -1,5 +1,5 @@
 <!--suppress AndroidDomInspection -->
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="android:Theme.Material.Light.NoActionBar">
@@ -18,6 +18,7 @@
         <item name="android:homeAsUpIndicator">@drawable/icon_btn_previous</item>
 
     </style>
+
     <style name="AppTheme2" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@*android:color/material_blue_grey_900</item>
         <item name="colorPrimaryDark">@*android:color/material_blue_grey_950</item>
@@ -28,6 +29,7 @@
         <item name="actionBarStyle">@style/MyActionBar</item>
 
     </style>
+
     <style name="MyActionBar" parent="@style/Theme.AppCompat">
         <item name="titleTextStyle">@style/myTheme.ActionBar.Text</item>
     </style>
@@ -38,11 +40,12 @@
     </style>
 
     <style name="AppTheme.Toolbar.TextAppearanceTitle"
-        parent="android:TextAppearance.Material.Widget.Toolbar.Title">
+           parent="android:TextAppearance.Material.Widget.Toolbar.Title">
         <item name="android:fontFamily">sans-serif-condensed</item>
         <item name="android:background">@android:color/transparent</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
+
     <style name="CardTheme" parent="Theme.AppCompat.Light.NoActionBar">
 
         <!-- No ActionBar & Window Title -->
@@ -61,6 +64,7 @@
         <item name="android:windowEnterAnimation">@anim/slideup</item>
         <item name="android:windowExitAnimation">@anim/slidedown</item>
     </style>
+
     <style name="MediumFont">
         <item name="android:fontFamily">sans-serif</item>
     </style>
@@ -76,16 +80,17 @@
     <color name="dsb_disabled_color">#66939393</color>
     <color name="dsb_ripple_color_pressed">#77939393</color>
     <color name="dsb_ripple_color_focused">#99999999</color>
-    <color name="dsb_thumb_color_pressed">#77939393</color>
-    <color name="dsb_thumb_color_focused">#99999999</color>
-
+    <color name="dsb_thumb_color">#ff009688</color>
 
     <style name="Widget.DiscreteSeekBar" parent="android:Widget">
-        <item name="dsb_indicatorTextAppearance">@style/Widget.DiscreteIndicatorTextAppearance</item>
+        <item name="dsb_indicatorTextAppearance">@style/Widget.DiscreteIndicatorTextAppearance
+        </item>
         <item name="dsb_progressColor">@android:color/transparent</item>
         <item name="dsb_trackColor">@color/dsb_track_color_list</item>
         <item name="dsb_rippleColor">@color/dsb_ripple_color_list</item>
-        <item name="dsb_thumbColor">@color/dsb_thumb_color_list</item>
+        <item name="dsb_thumbColor">@color/dsb_thumb_color</item>
+        <item name="dsb_thumbSize">3dp</item>
+        <item name="dsb_trackHeight">3dp</item>
         <item name="dsb_indicatorColor">@color/dsb_progress_color</item>
         <item name="dsb_indicatorElevation">4dp</item>
         <item name="dsb_mirrorForRtl">true</item>
