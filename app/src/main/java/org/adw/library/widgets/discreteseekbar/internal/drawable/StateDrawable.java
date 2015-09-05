@@ -34,8 +34,8 @@ import android.support.annotation.NonNull;
  * @hide
  */
 public abstract class StateDrawable extends Drawable {
-    private ColorStateList mTintStateList;
     private final Paint mPaint;
+    private ColorStateList mTintStateList;
     private int mCurrentColor;
     private int mAlpha = 255;
 
@@ -86,9 +86,6 @@ public abstract class StateDrawable extends Drawable {
         mCurrentColor = tintStateList.getDefaultColor();
     }
 
-    public void setColor(int color) {
-        mCurrentColor = color;
-    }
 
     /**
      * Subclasses should implement this method to do the actual drawing
@@ -99,12 +96,6 @@ public abstract class StateDrawable extends Drawable {
      */
     abstract void doDraw(Canvas canvas, Paint paint);
 
-    @Override
-    public void setAlpha(int alpha) {
-        mAlpha = alpha;
-        invalidateSelf();
-    }
-
     int modulateAlpha(int alpha) {
         int scale = mAlpha + (mAlpha >> 7);
         return alpha * scale >> 8;
@@ -113,6 +104,16 @@ public abstract class StateDrawable extends Drawable {
     @Override
     public int getAlpha() {
         return mAlpha;
+    }
+
+    @Override
+    public void setAlpha(int alpha) {
+        mAlpha = alpha;
+        invalidateSelf();
+    }
+
+    public int getColor() {
+        return mCurrentColor;
     }
 
     @Override

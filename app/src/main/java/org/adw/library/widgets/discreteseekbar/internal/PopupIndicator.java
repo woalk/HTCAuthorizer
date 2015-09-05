@@ -30,8 +30,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
-import com.woalk.apps.xposed.htcblinkfeedauthorizer.Logger;
-
 import org.adw.library.widgets.discreteseekbar.internal.compat.SeekBarCompat;
 import org.adw.library.widgets.discreteseekbar.internal.drawable.MarkerDrawable;
 
@@ -48,9 +46,10 @@ import org.adw.library.widgets.discreteseekbar.internal.drawable.MarkerDrawable;
  * @see #dismissComplete()
  * @see org.adw.library.widgets.discreteseekbar.internal.PopupIndicator.Floater
  */
-public class PopupIndicator implements View.OnAttachStateChangeListener {
+public class PopupIndicator {
 
     private final WindowManager mWindowManager;
+    Point screenSize = new Point();
     private boolean mShowing;
     private Floater mPopupView;
     //Outside listener for the DiscreteSeekBar to get MarkerDrawable animation events.
@@ -60,7 +59,6 @@ public class PopupIndicator implements View.OnAttachStateChangeListener {
     private MarkerDrawable.MarkerAnimationListener mListener;
     private int[] mDrawingLocation = new int[2];
     private int mColor;
-    Point screenSize = new Point();
 
     public PopupIndicator(Context context, AttributeSet attrs, int defStyleAttr, String maxValue) {
         mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -102,19 +100,14 @@ public class PopupIndicator implements View.OnAttachStateChangeListener {
         return mShowing;
     }
 
-
-    public void showIndicator(final View parent, final Rect touchBounds) {
+    public void showIndicator(View parent, Rect touchBounds) {
         if (isShowing()) {
-            Logger.d("PopupIndicator thinks it's showing");
             mPopupView.mMarker.animateOpen();
             return;
-        } else {
-            Logger.d("PopupIndicator thinks it's not showing.  View is " + parent);
         }
-        parent.addOnAttachStateChangeListener(this);
+
         IBinder windowToken = parent.getWindowToken();
         if (windowToken != null) {
-            Logger.d("PopupIndicator: WindowToken is not null");
             WindowManager.LayoutParams p = createPopupLayout(windowToken);
 
             p.gravity = Gravity.TOP | GravityCompat.START;
@@ -124,7 +117,6 @@ public class PopupIndicator implements View.OnAttachStateChangeListener {
             translateViewIntoPosition(touchBounds.centerX());
             invokePopup(p);
         }
-        Logger.d("PopupIndicator: WindowToken is null");
     }
 
     public void move(int x) {
@@ -137,7 +129,8 @@ public class PopupIndicator implements View.OnAttachStateChangeListener {
     public void setColors(int startColor) {
         mPopupView.setColors(startColor);
     }
-	public void setColors(int startColor, int endColor) {
+
+    public void setColors(int startColor, int endColor) {
         mPopupView.setColors(startColor, endColor);
     }
 
@@ -146,7 +139,6 @@ public class PopupIndicator implements View.OnAttachStateChangeListener {
      */
     public void dismiss() {
         mPopupView.mMarker.animateClose();
-        Logger.d("PopupIndicator: Dismiss called");
     }
 
     /**
@@ -158,7 +150,6 @@ public class PopupIndicator implements View.OnAttachStateChangeListener {
             mShowing = false;
             try {
                 mWindowManager.removeViewImmediate(mPopupView);
-                Logger.d("PopupIndicator: Force Dismissing called");
             } finally {
             }
         }
@@ -180,7 +171,6 @@ public class PopupIndicator implements View.OnAttachStateChangeListener {
     }
 
     private void invokePopup(WindowManager.LayoutParams p) {
-        Logger.d("PopupIndicator: Invoked");
         mWindowManager.addView(mPopupView, p);
         mPopupView.mMarker.animateOpen();
     }
@@ -219,16 +209,6 @@ public class PopupIndicator implements View.OnAttachStateChangeListener {
         curFlags |= WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
         curFlags |= WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
         return curFlags;
-    }
-
-    @Override
-    public void onViewAttachedToWindow(View v) {
-        Logger.d("Popupindicator: View attached " + v);
-    }
-
-    @Override
-    public void onViewDetachedFromWindow(View v) {
-
     }
 
     /**
@@ -278,8 +258,6 @@ public class PopupIndicator implements View.OnAttachStateChangeListener {
         public void onClosingComplete() {
             if (mListener != null) {
                 mListener.onClosingComplete();
-                Logger.d("PopupIndicator: OnClosingComplete called");
-
             }
             dismissComplete();
         }
@@ -288,15 +266,14 @@ public class PopupIndicator implements View.OnAttachStateChangeListener {
         public void onOpeningComplete() {
             if (mListener != null) {
                 mListener.onOpeningComplete();
-                Logger.d("PopupIndicator: OnOpeningComplete called");
             }
         }
 
         public void setColors(int startColor) {
             mMarker.setColors(startColor);
-            mColor = startColor;
         }
-		public void setColors(int startColor, int endColor) {
+
+        public void setColors(int startColor, int endColor) {
             mMarker.setColors(startColor, endColor);
         }
     }
