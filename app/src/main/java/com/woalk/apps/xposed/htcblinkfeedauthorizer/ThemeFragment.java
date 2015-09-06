@@ -3,18 +3,12 @@ package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.preference.PreferenceFragment;
 
 import java.util.ArrayList;
 
-/**
- * Created by Ben on 8/23/2015.
- */
 public class ThemeFragment extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
-    static final int COLOR_SELECTION_COMPLETE = 1;  // The request code
-    static final int COLOR_SELECTION_CANCELLED = 2;  // The request code
     public XMLHelper xh;
     ArrayList<Integer> mColors = new ArrayList<>();
     private int color1, color2, color3, color4;
@@ -38,38 +32,6 @@ public class ThemeFragment extends PreferenceFragment
         Logger.d("ThemeFragment: Oncreate: colors are " + color1 + ", " + color2 + ", " + color3 + ", and " + color4);
 
 
-        picker1.setOnPreferenceClickListener(
-                new Preference.OnPreferenceClickListener() {
-                    @Override
-                    public boolean onPreferenceClick(Preference preference) {
-                        picker1.toggle_contents();
-                        return true;
-                    }
-                });
-        picker2.setOnPreferenceClickListener(
-                new Preference.OnPreferenceClickListener() {
-                    @Override
-                    public boolean onPreferenceClick(Preference preference) {
-                        picker2.toggle_contents();
-                        return true;
-                    }
-                });
-        picker3.setOnPreferenceClickListener(
-                new Preference.OnPreferenceClickListener() {
-                    @Override
-                    public boolean onPreferenceClick(Preference preference) {
-                        picker3.toggle_contents();
-                        return true;
-                    }
-                });
-        picker4.setOnPreferenceClickListener(
-                new Preference.OnPreferenceClickListener() {
-                    @Override
-                    public boolean onPreferenceClick(Preference preference) {
-                        picker4.toggle_contents();
-                        return true;
-                    }
-                });
 
     }
 
