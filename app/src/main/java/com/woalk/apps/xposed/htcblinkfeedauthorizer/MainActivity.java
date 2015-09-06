@@ -15,6 +15,7 @@ import android.content.res.Configuration;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -61,6 +62,9 @@ public class MainActivity extends AppCompatActivity {
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        PreferenceManager.setDefaultValues(this, R.xml.pref_themes, false);
+        PreferenceManager.setDefaultValues(this, R.xml.pref_always_active, false);
+        PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
 
         //Add drawerdown items
         mNavItems.add(new NavItem("Main", R.drawable.ic_settings));

@@ -6,6 +6,8 @@ import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
@@ -13,6 +15,8 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.View;
@@ -44,29 +48,67 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
     private AnimatorSet mButtonHideSet = new AnimatorSet(), mButtonShowSet = new AnimatorSet();
     private AlphaAnimation mPickerPanelShow, mPickerPanelHide;
     private ObjectAnimator down, left, alphaIn, alphaOut, raise, lower;
-    private XMLHelper xh;
+
     private boolean isAnimating, isPickerFrameShowing;
     private ColorMatrix matrixValue, matrixSat;
     private android.support.v7.widget.Toolbar toolbar;
+    private SharedPreferences.Editor editor;
+    private SharedPreferences sharedPreferences;
+    private static int DEFAULT_VALUE = 2533018;
 
     public XColorPickerPreference(Context context) {
         super(context);
+        init(context, null);
     }
 
     public XColorPickerPreference(Context context, AttributeSet attrs) {
+
         super(context, attrs);
+        init(context, attrs);
     }
 
     public XColorPickerPreference(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        init(context, attrs);
     }
 
+    @Override
+    protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
+        if (restorePersistedValue) {
+            // Restore existing state
+            myTheme = this.getPersistedInt(DEFAULT_VALUE);
+            Logger.d("XCPP: mytheme set initial is " + myTheme);
+        } else {
+            // Set default state from the XML attribute
+            Integer mCurrentValue = (Integer) defaultValue;
+            persistInt(mCurrentValue);
+        }
+    }
+
+    @Override
+    protected Object onGetDefaultValue(TypedArray a, int index) {
+        int valueInt;
+        String mHexDefaultValue = a.getString(index);
+        if (mHexDefaultValue != null) {
+            valueInt = Integer.parseInt(mHexDefaultValue);
+            Logger.d("XCPP: default value is " + valueInt);
+            return valueInt;
+        }
+         return 2533018;
+    }
+
+
+    private void init(Context context, AttributeSet attrs) {
+
+        if (attrs != null) {
+            colorname = attrs.getAttributeValue("http://schemas.android.com/apk/res/android", "key");
+            Logger.d("XCPP: colorname is " + colorname);
+        }
+    }
 
     @Override
     public void onBindView(View rootView) {
         super.onBindView(rootView);
-
-        xh = new XMLHelper();
 
         //grab screen elements
         container = (RelativeLayout) rootView.findViewById(R.id.container);
@@ -138,7 +180,7 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
         setMyColor(myTheme);
         original = myTheme;
 
-        setMyName(colorname);
+//        setMyName(colorname);
 
     }
 
@@ -243,9 +285,7 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
         colorAnimation.start();
     }
 
-    public void setMyName(String name) {
-        colorname = name;
-    }
+
 
     public void setSeekbarPositions(float hsv[]) {
         hue = Math.round(hsv[0]);
@@ -347,7 +387,9 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
     }
 
     public void saveMyColor(String colorname, int myTheme) {
-        xh.WriteToXML(colorname, myTheme);
+
+        persistInt(myTheme);
+
     }
 
     @Override
@@ -410,4 +452,39 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
 //        Logger.d("XCPP: view detached - " + v);
 //        pickerFrame.invalidate();
 //    }
+private static class SavedState extends BaseSavedState {
+    // Member that holds the setting's value
+    // Change this data type to match the type saved by your Preference
+    int value;
+
+    public SavedState(Parcelable superState) {
+        super(superState);
+    }
+
+    public SavedState(Parcel source) {
+        super(source);
+        // Get the current preference's value
+        value = source.readInt();  // Change this to read the appropriate data type
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        // Write the preference's value
+        dest.writeInt(value);  // Change this to write the appropriate data type
+    }
+
+    // Standard creator object using an instance of this class
+    public static final Parcelable.Creator<SavedState> CREATOR =
+            new Parcelable.Creator<SavedState>() {
+
+                public SavedState createFromParcel(Parcel in) {
+                    return new SavedState(in);
+                }
+
+                public SavedState[] newArray(int size) {
+                    return new SavedState[size];
+                }
+            };
+}
 }

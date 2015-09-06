@@ -1,6 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
                   android:title="@string/pref_cat_themes">
+<PreferenceCategory
+    android:title="Themes">
+
     <SwitchPreference
         android:defaultValue="false"
         android:key="use_themes"
@@ -10,28 +12,33 @@
     <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
         android:id="@+id/Picker1"
         android:dependency="use_themes"
-        android:key="ColorPicker1"
+        android:key="systemui_color1"
         android:layout="@layout/pref_colorpicker"
+        android:persistent="true"
+        android:defaultValue="2533018"
         android:summary="@string/pref_themes_systemui_color1_summary"
         android:title="@string/pref_themes_systemui_color1_title"/>
     <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
         android:id="@+id/Picker2"
         android:dependency="use_themes"
-        android:key="ColorPicker2"
+        android:key="systemui_color2"
+        android:defaultValue="2533018"
         android:layout="@layout/pref_colorpicker"
         android:summary="@string/pref_themes_systemui_color2_summary"
         android:title="@string/pref_themes_systemui_color2_title"/>
     <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
         android:id="@+id/Picker3"
         android:dependency="use_themes"
-        android:key="ColorPicker3"
+        android:defaultValue="2533018"
+        android:key="systemui_color3"
         android:layout="@layout/pref_colorpicker"
         android:summary="@string/pref_themes_systemui_color3_summary"
         android:title="@string/pref_themes_systemui_color3_title"/>
     <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
         android:id="@+id/Picker4"
         android:dependency="use_themes"
-        android:key="ColorPicker4"
+        android:defaultValue="2533018"
+        android:key="systemui_color4"
         android:layout="@layout/pref_colorpicker"
         android:summary="@string/pref_themes_systemui_color4_summary"
         android:title="@string/pref_themes_systemui_color4_title"/>
@@ -42,4 +49,6 @@
         android:key="systemui_use_launcher_theme"
         android:summary="@string/pref_themes_systemui_use_launcher_summary"
         android:title="@string/pref_themes_systemui_use_launcher_title"/>
+</PreferenceCategory>
+
 </PreferenceScreen>

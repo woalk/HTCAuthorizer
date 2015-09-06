@@ -1,12 +1,10 @@
 package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -33,10 +31,10 @@ public class ThemeFragment extends PreferenceFragment
         // Load the preferences from an XML resource
         xh = new XMLHelper();
         addPreferencesFromResource(R.xml.pref_themes);
-        picker1 = (XColorPickerPreference) findPreference(getString(R.string.ColorPicker1));
-        picker2 = (XColorPickerPreference) findPreference(getString(R.string.ColorPicker2));
-        picker3 = (XColorPickerPreference) findPreference(getString(R.string.ColorPicker3));
-        picker4 = (XColorPickerPreference) findPreference(getString(R.string.ColorPicker4));
+        picker1 = (XColorPickerPreference) findPreference("systemui_color1");
+        picker2 = (XColorPickerPreference) findPreference("systemui_color2");
+        picker3 = (XColorPickerPreference) findPreference("systemui_color3");
+        picker4 = (XColorPickerPreference) findPreference("systemui_color4");
         Logger.d("ThemeFragment: Oncreate: colors are " + color1 + ", " + color2 + ", " + color3 + ", and " + color4);
 
 
@@ -80,35 +78,6 @@ public class ThemeFragment extends PreferenceFragment
         updateFromXML(getActivity());
     }
 
-    private void updateViews() {
-        picker1.setMyColor(color1);
-        picker1.setMyName("systemui_color1");
-        picker2.setMyColor(color2);
-        picker2.setMyName("systemui_color2");
-        picker3.setMyColor(color3);
-        picker3.setMyName("systemui_color3");
-        picker4.setMyColor(color4);
-        picker4.setMyName("systemui_color4");
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Check which request we're responding to
-        Logger.d("MainPreferenceFragment: Result received");
-        if (requestCode == COLOR_SELECTION_COMPLETE) {
-            if (resultCode == COLOR_SELECTION_COMPLETE) {
-                Bundle res = data.getExtras();
-                String colorname = res.getString("Name");
-                Integer result = res.getInt("Color");
-                Logger.d("MainPreferenceFragment: color data for " + colorname + " " + result);
-                Toast.makeText(getActivity(), "Color for " + colorname + " " + result + " has been saved.", Toast.LENGTH_SHORT).show();
-                xh.WriteToXML(colorname, result);
-                updateFromXML(getActivity());
-            } else if (resultCode == COLOR_SELECTION_CANCELLED) {
-                Logger.d("MainPreferenceFragment: color selection cancelled");
-            }
-        }
-    }
 
     public void updateFromXML(Context context) {
         SharedPreferences sharedPref = context.getSharedPreferences("com.woalk.apps.xposed.htcblinkfeedauthorizer_preferences", Context.MODE_PRIVATE);
@@ -124,12 +93,15 @@ public class ThemeFragment extends PreferenceFragment
         editor.putInt("systemui_color2", color2);
         editor.putInt("systemui_color3", color3);
         editor.putInt("systemui_color4", color4);
-        updateViews();
+//        updateViews();
         editor.apply();
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.contains("systemui_color")) {
+            xh.WriteToXML(key, sharedPreferences.getInt(key,2533018));
 
+        }
     }
 }
