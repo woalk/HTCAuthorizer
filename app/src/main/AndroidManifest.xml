@@ -33,6 +33,11 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <receiver android:name=".ThemeUpdateReceiver" >
+            <intent-filter>
+                <action android:name="com.woalk.HTCAuthorizer.UPDATE_XML" />
+            </intent-filter>
+        </receiver>
         <activity
             android:name=".LogActivity"
             android:label="@string/title_activity_log"

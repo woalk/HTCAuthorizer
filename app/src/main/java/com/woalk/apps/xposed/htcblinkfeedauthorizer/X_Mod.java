@@ -2,7 +2,9 @@ package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
 
 import android.app.Activity;
+import android.app.AndroidAppHelper;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.FeatureInfo;
 import android.content.res.Resources;
@@ -292,24 +294,31 @@ public class X_Mod
 
 
                             for (Map.Entry<String, ?> x : theme_in.getAll().entrySet()) {
-                                Logger.v("X_Mod: Reading HTC Theme " + x.getKey() + " " + x.getValue());
+                                Logger.v("X_Mod: X_Mod: Reading HTC Theme " + x.getKey() + " " + x.getValue());
                                 if (x.getValue() instanceof Integer) {
-                                    Logger.v("X_Mod: Trying to pass HTC theme to writer " + x.getKey() + " " + x.getValue());
+                                    Intent intent = new Intent();
+                                    intent.setAction("com.woalk.HTCAuthorizer.UPDATE_XML");
+
+                                    Logger.v("X_Mod: X_Mod: Trying to pass HTC theme to writer " + x.getKey() + " " + x.getValue());
                                     if (x.getKey().contains("1")) {
-                                        Logger.v("X_Mod: Found key containing 1");
-                                        xh.WriteToXML("systemui_color1", (Integer) x.getValue());
+                                        Logger.v("X_Mod: X_Mod: Found key containing 1");
+                                        intent.putExtra("systemui_color1", (Integer) x.getValue());
                                     } else if (x.getKey().contains("2")) {
-                                        Logger.v("X_Mod: Found key containing 2");
-                                        xh.WriteToXML("systemui_color2", (Integer) x.getValue());
+                                        Logger.v("X_Mod: X_Mod: Found key containing 2");
+                                        intent.putExtra("systemui_color2", (Integer) x.getValue());
                                     } else if (x.getKey().contains("3")) {
-                                        Logger.v("X_Mod: Found key containing 3");
-                                        xh.WriteToXML("systemui_color3", (Integer) x.getValue());
+                                        Logger.v("X_Mod: X_Mod: Found key containing 3");
+                                        intent.putExtra("systemui_color3", (Integer) x.getValue());
                                     } else if (x.getKey().contains("4")) {
-                                        Logger.v("X_Mod: Found key containing 4");
-                                        xh.WriteToXML("systemui_color4", (Integer) x.getValue());
+                                        Logger.v("X_Mod: X_Mod: Found key containing 4");
+                                        intent.putExtra("systemui_color4", (Integer) x.getValue());
                                     }
+                                    Context context = (Context) AndroidAppHelper.currentApplication();
+                                    Logger.d("X_MOD: Sending intent");
+                                    context.sendBroadcast(intent);
                                 }
                             }
+
 
 
                         }
@@ -670,7 +679,7 @@ public class X_Mod
                 && mSettings.getCachedPref_use_themes()) {
 
             Logger.v("Load hooks to tint Settings app's icons with the Theme loaded at boot...");
-            Logger.logTheme(mSettings);
+            //Logger.logTheme(mSettings);
             final int color3 = mSettings.getCachedPref_systemui_color3();
             XposedHelpers.findAndHookMethod(Preference.class, "setIcon", Drawable.class,
                     new XC_MethodHook() {
@@ -957,7 +966,7 @@ public class X_Mod
 
             if (resparam.packageName.equals(PKG_SYSTEMUI) && mSettings.getPref_systemui_use_launcher_theme()) {
                 Logger.v("Replacing Theme resources for SystemUI.");
-                Logger.logTheme(mSettings);
+                //Logger.logTheme(mSettings);
 
                 resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_primary_color",
                         color1);
@@ -977,7 +986,7 @@ public class X_Mod
                 Logger.v("Replaced Theme resources for SystemUI.");
             } else if (resparam.packageName.equals(PKG_SETTINGS)) {
                 Logger.v("Replacing Theme resources for Settings app.");
-                Logger.logTheme(mSettings);
+                //Logger.logTheme(mSettings);
 
                 resparam.res.setReplacement(PKG_SETTINGS, "color", "theme_primary",
                         color1);
@@ -1027,7 +1036,7 @@ public class X_Mod
                 Logger.v("Replaced Theme resources for Settings app.");
             } else if (resparam.packageName.equals(PKG_DIALER)) {
                 Logger.v("Replacing Theme resources for Dialer app.");
-                Logger.logTheme(mSettings);
+                //Logger.logTheme(mSettings);
 
                 resparam.res.setReplacement(PKG_DIALER2, "color", "wallet_highlighted_text_holo_light",
                         color1);
@@ -1206,7 +1215,7 @@ public class X_Mod
                             fs[i].name = HTC_FEATURES[i - sys.length];
                         }
                         param.setResult(fs);
-                        Logger.logHookAfter(param);
+                        //Logger.logHookAfter(param);
                     }
                 });
 
@@ -1219,7 +1228,7 @@ public class X_Mod
         int color3 = mSettings.getCachedPref_systemui_color3();
         int color4 = mSettings.getCachedPref_systemui_color4();
         Logger.v("Replacing system-wide Theme resources.");
-        Logger.logTheme(mSettings);
+        //Logger.logTheme(mSettings);
 
         XResources.setSystemWideReplacement("android", "color", "material_blue_grey_900",
                 color1);
