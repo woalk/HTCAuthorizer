@@ -89,7 +89,7 @@ public class Common {
     public static int enlightColor(int color, float multiplier) {
         float[] hsv = new float[3];
         Color.RGBToHSV(Color.red(color), Color.green(color), Color.blue(color), hsv);
-        hsv[2] = hsv[2] * multiplier;
+        hsv[2] = multiplier;
         return Color.HSVToColor(hsv);
     }
 

@@ -2,7 +2,10 @@ package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
 
 import android.app.Activity;
+import android.app.AndroidAppHelper;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.FeatureInfo;
 import android.content.res.Resources;
@@ -294,20 +297,35 @@ public class X_Mod
                             for (Map.Entry<String, ?> x : theme_in.getAll().entrySet()) {
                                 Logger.v("X_Mod: Reading HTC Theme " + x.getKey() + " " + x.getValue());
                                 if (x.getValue() instanceof Integer) {
+                                    Intent intent = new Intent();
+                                    intent.setAction("com.woalk.HTCAuthorizer.UPDATE_XML");
                                     Logger.v("X_Mod: Trying to pass HTC theme to writer " + x.getKey() + " " + x.getValue());
                                     if (x.getKey().contains("1")) {
                                         Logger.v("X_Mod: Found key containing 1");
-                                        xh.WriteToXML("systemui_color1", (Integer) x.getValue());
+                                        //xh.WriteToXML("theme_PrimaryColor", (Integer) x.getValue());
+										intent.putExtra("theme_PrimaryColor", (Integer) x.getValue());
                                     } else if (x.getKey().contains("2")) {
                                         Logger.v("X_Mod: Found key containing 2");
-                                        xh.WriteToXML("systemui_color2", (Integer) x.getValue());
+                                        //xh.WriteToXML("theme_PrimaryDarkColor", (Integer) x.getValue());
+										intent.putExtra("theme_PrimaryDarkColor", (Integer) x.getValue());
                                     } else if (x.getKey().contains("3")) {
                                         Logger.v("X_Mod: Found key containing 3");
-                                        xh.WriteToXML("systemui_color3", (Integer) x.getValue());
+                                        //xh.WriteToXML("theme_AccentColor", (Integer) x.getValue());
+										intent.putExtra("theme_AccentColor", (Integer) x.getValue());
                                     } else if (x.getKey().contains("4")) {
                                         Logger.v("X_Mod: Found key containing 4");
-                                        xh.WriteToXML("systemui_color4", (Integer) x.getValue());
+                                        //xh.WriteToXML("theme_AccentColor", (Integer) x.getValue());
+										intent.putExtra("theme_AccentColor", (Integer) x.getValue());
                                     }
+                                    Context context = (Context) AndroidAppHelper.currentApplication();
+                                    Logger.d("X_MOD: Sending intent");
+                                    context.sendBroadcast(intent);
+                                    intent = new Intent(context, com.woalk.apps.xposed.htcblinkfeedauthorizer.MainActivity.class);
+                                    intent.setComponent(new ComponentName("com.woalk.apps.xposed.htcblinkfeedauthorizer", "com.woalk.apps.xposed.htcblinkfeedauthorizer.MainActivity"));
+                                    intent.putExtra("toOpen", "themeFragment");
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    context.startActivity(intent);
+                                    Logger.d("X_MOD: Sending second intent");
                                 }
                             }
 
@@ -671,7 +689,7 @@ public class X_Mod
 
             Logger.v("Load hooks to tint Settings app's icons with the Theme loaded at boot...");
             Logger.logTheme(mSettings);
-            final int color3 = mSettings.getCachedPref_systemui_color3();
+            final int color3 = mSettings.getCachedPref_theme_AccentColor();
             XposedHelpers.findAndHookMethod(Preference.class, "setIcon", Drawable.class,
                     new XC_MethodHook() {
                         @Override
@@ -721,8 +739,8 @@ public class X_Mod
                     "setChartColor", int.class, int.class, int.class, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.args[1] = mSettings.getCachedPref_systemui_color1();
-                            param.args[2] = mSettings.getCachedPref_systemui_color2();
+                            param.args[1] = mSettings.getCachedPref_theme_PrimaryColor();
+                            param.args[2] = mSettings.getCachedPref_theme_PrimaryDarkColor();
                             Logger.logHookAfter(param);
                         }
                     });
@@ -948,10 +966,10 @@ public class X_Mod
     @Override
     public void handleInitPackageResources(final XC_InitPackageResources.InitPackageResourcesParam
                                                    resparam) throws Throwable {
-        final int color1 = mSettings.getCachedPref_systemui_color1();
-        final int color2 = mSettings.getCachedPref_systemui_color2();
-        final int color3 = mSettings.getCachedPref_systemui_color3();
-        int color4 = mSettings.getCachedPref_systemui_color4();
+        final int color1 = mSettings.getCachedPref_theme_PrimaryColor();
+        final int color2 = mSettings.getCachedPref_theme_PrimaryDarkColor();
+        final int color3 = mSettings.getCachedPref_theme_AccentColor();
+        int color4 = mSettings.getCachedPref_theme_AccentColor();
 
         if (mSettings.getCachedPref_use_themes()) {
 
@@ -1206,7 +1224,7 @@ public class X_Mod
                             fs[i].name = HTC_FEATURES[i - sys.length];
                         }
                         param.setResult(fs);
-                        Logger.logHookAfter(param);
+//                        Logger.logHookAfter(param);
                     }
                 });
 
@@ -1214,10 +1232,10 @@ public class X_Mod
     }
 
     private void replaceSystemWideThemes() {
-        int color1 = mSettings.getCachedPref_systemui_color1();
-        int color2 = mSettings.getCachedPref_systemui_color2();
-        int color3 = mSettings.getCachedPref_systemui_color3();
-        int color4 = mSettings.getCachedPref_systemui_color4();
+        int color1 = mSettings.getCachedPref_theme_PrimaryColor();
+        int color2 = mSettings.getCachedPref_theme_PrimaryDarkColor();
+        int color3 = mSettings.getCachedPref_theme_AccentColor();
+        int color4 = mSettings.getCachedPref_theme_AccentColor();
         Logger.v("Replacing system-wide Theme resources.");
         Logger.logTheme(mSettings);
 

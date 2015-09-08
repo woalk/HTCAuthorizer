@@ -51,17 +51,14 @@
     <string name="pref_themes_check_title">Use Themes for Material apps</string>
     <string name="pref_themes_check_summary">Material apps without specific colors will be
         tinted according to current HTC Theme.</string>
-    <string name="pref_themes_systemui_color1_title">Primary color</string>
-    <string name="pref_themes_systemui_color1_summary">Color to use for Android\'s notification
+    <string name="pref_themes_theme_PrimaryColor_title">Primary color</string>
+    <string name="pref_themes_theme_PrimaryColor_summary">Color to use for Android\'s notification
         panel header.</string>
-    <string name="pref_themes_systemui_color2_title">Secondary color</string>
-    <string name="pref_themes_systemui_color2_summary">Color to use for Android\'s quick settings.
+    <string name="pref_themes_theme_PrimaryDarkColor_title">Secondary color</string>
+    <string name="pref_themes_theme_PrimaryDarkColor_summary">Color to use for Android\'s quick settings.
         </string>
-    <string name="pref_themes_systemui_color3_title">Accent Color 1</string>
-    <string name="pref_themes_systemui_color3_summary">Color to use for accent items like buttons.
-        </string>
-    <string name="pref_themes_systemui_color4_title">Accent Color 2</string>
-    <string name="pref_themes_systemui_color4_summary">Color to use for items like slider backgrounds.
+    <string name="pref_themes_theme_AccentColor_title">Accent Color 1</string>
+    <string name="pref_themes_theme_AccentColor_summary">Color to use for accent items like buttons.
         </string>
     <string name="pref_themes_systemui_use_launcher_title">Theme SystemUI</string>
     <string name="pref_themes_systemui_use_launcher_summary">Use Theme colors
@@ -79,7 +76,9 @@
     <string name="pref_always_active_summary">See what\'s going on under the hood.</string>
     <string name="pref_create_permfile_summary">Creates permission file necessary for some devices to download HTC apps from store.</string>
     <string name="pref_create_permfile_title">Create Permission File</string>
-    <string name="drawer_open" translatable="false">Open</string>
-    <string name="drawer_close" translatable="false">Close</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+    <string name="pref_themes_automix_themes_summary">Auto Mix theme colors where HTC theme contains all the same color.</string>
+    <string name="pref_themes_automix_themes_title">Auto-mix theme colors</string>
 
 </resources>

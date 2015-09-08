@@ -32,27 +32,29 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.negusoft.greenmatter.MatPalette;
+import com.negusoft.greenmatter.activity.MatActivity;
+
 import java.util.ArrayList;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends MatActivity {
     private static final String PREF_SHOW_HSP_WARN = "warn_no_hsp";
     private static String TAG = MainActivity.class.getSimpleName();
     public TextView tv1;
     public TextView tv2;
-    public XMLHelper xh;
+    private android.support.v7.widget.Toolbar toolbar;
     ListView mDrawerList;
     RelativeLayout mDrawerPane;
     ArrayList<NavItem> mNavItems = new ArrayList<>();
     ArrayList<Integer> mColors = new ArrayList<>();
     private String curTitle;
-    private int mMainColor;
-    private int mSecondaryColor;
-    private int mAccentColor;
+    public int mMainColor, mSecondaryColor, mAccentColor;
     private int curPos = 0;
     private DrawerLayout mDrawerLayout;
     private float mPosTv1;
     private float mPosTv2;
+    public boolean mUseThemes;
     private FragmentTransaction ft;
 
     public MainActivity() {
@@ -60,11 +62,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         PreferenceManager.setDefaultValues(this, R.xml.pref_themes, false);
         PreferenceManager.setDefaultValues(this, R.xml.pref_always_active, false);
         PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
+        SharedPreferences sharedPref = this.getSharedPreferences("com.woalk.apps.xposed.htcblinkfeedauthorizer_preferences", Context.MODE_PRIVATE);
 
         //Add drawerdown items
         mNavItems.add(new NavItem("Main", R.drawable.ic_settings));
@@ -78,11 +82,10 @@ public class MainActivity extends AppCompatActivity {
         mDrawerList.setAdapter(adapter);
 
         //Get colors
-        xh = new XMLHelper();
-        mColors = xh.readAllColors();
-        mMainColor = mColors.get(0);
-        mSecondaryColor = mColors.get(1);
-        mAccentColor = mColors.get(2);
+        mUseThemes = sharedPref.getBoolean("use_themes", false);
+        mMainColor = sharedPref.getInt("theme_PrimaryColor",0);
+        mSecondaryColor = sharedPref.getInt("theme_PrimaryDarkColor", 0);
+        mAccentColor = sharedPref.getInt("theme_AccentColor",0);
 
         // Set up initial settings for title view(s) and bar
         tv1 = (TextView) findViewById(R.id.tv1);
@@ -92,8 +95,8 @@ public class MainActivity extends AppCompatActivity {
         tv2.setText(curTitle);
         tv1.setPivotX(0);
         tv2.setPivotX(0);
-        final android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
-        toolbar.setBackgroundColor(mMainColor);
+        toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+
 
         // Drawer Item click listeners
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -142,19 +145,83 @@ public class MainActivity extends AppCompatActivity {
         //Detect missing framework, warn if it's not there.
         maybeShowNoHSPWarn();
         //Set default fragment if initializing from first time.
-        if (savedInstanceState == null) {
-            fragmentSelect(curPos);
-            if (toolbar != null) {
-                setSupportActionBar(toolbar);
-                //noinspection ConstantConditions
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(getIntent().hasExtra("toOpen")) {
+            Bundle extras = getIntent().getExtras();
+            String toOpen = extras.getString("toOpen");
+            Logger.d("MainActivity: Launching fragment from intent");
+            if (toOpen.equals("themeFragment")) {
+                curPos = 1;
+
             }
+            } else {
+                Logger.d("MainActivity: No extras detected");
+            }
+                if (savedInstanceState == null) {
+                    selectItemFromDrawer(curPos);
+                    if (toolbar != null) {
+                        setSupportActionBar(toolbar);
+                        //noinspection ConstantConditions
+                        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                        if (mUseThemes) {
+                            toolbar.setBackgroundColor(mMainColor);
+                        } else {
+                            toolbar.setBackgroundColor(16728577);
+                        }
+
+                    }
+                }
+
+
+
+
+    }
+
+    @Override
+    public MatPalette overridePalette(MatPalette palette) {
+        //Get colors
+        SharedPreferences sharedPref = this.getSharedPreferences("com.woalk.apps.xposed.htcblinkfeedauthorizer_preferences", Context.MODE_PRIVATE);
+        mUseThemes = sharedPref.getBoolean("use_themes", false);
+        mMainColor = sharedPref.getInt("theme_PrimaryColor", 0);
+        mSecondaryColor = sharedPref.getInt("theme_PrimaryDarkColor", 0);
+        mAccentColor = sharedPref.getInt("theme_AccentColor",0);
+        if (mUseThemes) {
+            palette.setColorPrimary(mMainColor);
+            palette.setColorPrimaryDark(mSecondaryColor);
+            palette.setColorAccent(mAccentColor);
+            palette.setColorControlNormal(mMainColor);
+            palette.setColorSwitchThumbNormal(mMainColor);
+            palette.setColorButtonNormal(mMainColor);
+            palette.setColorControlActivated(mMainColor);
+            palette.setColorControlHighlight(mMainColor);
+            palette.setColorEdgeEffect(mAccentColor);
+
+        } else {
+            palette.setColorPrimary(-16728577);
+            palette.setColorPrimaryDark(-16763828);
+            palette.setColorAccent(-16728577);
+            palette.setColorControlNormal(-16728577);
+            palette.setColorSwitchThumbNormal(-16728577);
+            palette.setColorButtonNormal(-16728577);
+            palette.setColorControlActivated(-16728577);
+            palette.setColorControlHighlight(-16728577);
+            palette.setColorEdgeEffect(-16728577);
         }
+        return palette;
     }
 
     //Set fragment on resume
+
     public void onResume(Bundle SavedInstanceState) {
+
         selectItemFromDrawer(curPos);
+        if (mUseThemes) {
+            toolbar.setBackgroundColor(mMainColor);
+        } else {
+            toolbar.setBackgroundColor(16728577);
+        }
+
+
+
 
     }
 

@@ -142,9 +142,7 @@ public class XMLHelper {
                     if (xpp.getName().contains("3")) {
                         Theme.add(2, color);
                     }
-                    if (xpp.getName().contains("4")) {
-                        Theme.add(3, color);
-                    }
+
                 }
                 eventType = xpp.next();
             }
@@ -159,9 +157,6 @@ public class XMLHelper {
                 case 2:
                     Logger.i(xhtag + "trying to return for int 3, color " + Theme.get(2));
                     return Theme.get(2);
-                case 3:
-                    Logger.i(xhtag + "trying to return for int 4, color " + Theme.get(3));
-                    return Theme.get(3);
                 default:
                     Logger.i(xhtag + "trying to return for default, color " + Theme.get(1));
                     return Theme.get(0);
@@ -324,9 +319,7 @@ public class XMLHelper {
                     if (xpp.getName().contains("3")) {
                         Theme.add(2, color);
                     }
-                    if (xpp.getName().contains("4")) {
-                        Theme.add(3, color);
-                    }
+
                 }
                 try {
                     eventType = xpp.next();

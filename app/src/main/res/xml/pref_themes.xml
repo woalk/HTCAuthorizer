@@ -8,40 +8,38 @@
         android:key="use_themes"
         android:summary="@string/pref_themes_check_summary"
         android:title="@string/pref_themes_check_title"/>
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:dependency="use_themes"
+        android:key="systemui_automix_theme"
+        android:summary="@string/pref_themes_automix_themes_summary"
+        android:title="@string/pref_themes_automix_themes_title"/>
 
     <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
         android:id="@+id/Picker1"
         android:dependency="use_themes"
-        android:key="systemui_color1"
+        android:key="theme_PrimaryColor"
         android:layout="@layout/pref_colorpicker"
         android:persistent="true"
         android:defaultValue="2533018"
-        android:summary="@string/pref_themes_systemui_color1_summary"
-        android:title="@string/pref_themes_systemui_color1_title"/>
+        android:summary="@string/pref_themes_theme_PrimaryColor_summary"
+        android:title="@string/pref_themes_theme_PrimaryColor_title"/>
     <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
         android:id="@+id/Picker2"
         android:dependency="use_themes"
-        android:key="systemui_color2"
+        android:key="theme_PrimaryDarkColor"
         android:defaultValue="2533018"
         android:layout="@layout/pref_colorpicker"
-        android:summary="@string/pref_themes_systemui_color2_summary"
-        android:title="@string/pref_themes_systemui_color2_title"/>
+        android:summary="@string/pref_themes_theme_PrimaryDarkColor_summary"
+        android:title="@string/pref_themes_theme_PrimaryDarkColor_title"/>
     <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
         android:id="@+id/Picker3"
         android:dependency="use_themes"
         android:defaultValue="2533018"
-        android:key="systemui_color3"
+        android:key="theme_AccentColor"
         android:layout="@layout/pref_colorpicker"
-        android:summary="@string/pref_themes_systemui_color3_summary"
-        android:title="@string/pref_themes_systemui_color3_title"/>
-    <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
-        android:id="@+id/Picker4"
-        android:dependency="use_themes"
-        android:defaultValue="2533018"
-        android:key="systemui_color4"
-        android:layout="@layout/pref_colorpicker"
-        android:summary="@string/pref_themes_systemui_color4_summary"
-        android:title="@string/pref_themes_systemui_color4_title"/>
+        android:summary="@string/pref_themes_theme_AccentColor_summary"
+        android:title="@string/pref_themes_theme_AccentColor_title"/>
 
     <CheckBoxPreference
         android:defaultValue="true"

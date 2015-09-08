@@ -38,8 +38,12 @@ android {
 }
 
 dependencies {
+    repositories {
+        jcenter()
+    }
 
     provided fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.1.0'
+    compile 'com.negusoft.greenmatter:GreenMatter:0.7-alpha'
 
 }

@@ -9,10 +9,12 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.TextView;
 
+import com.negusoft.greenmatter.activity.MatActivity;
+
 import java.io.IOException;
 
 
-public class LogActivity extends AppCompatActivity {
+public class LogActivity extends MatActivity {
     private TextView tv1;
     private XMLHelper xh;
     private int maincolor;

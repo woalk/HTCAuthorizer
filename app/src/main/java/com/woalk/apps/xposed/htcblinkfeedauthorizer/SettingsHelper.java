@@ -11,7 +11,7 @@ public class SettingsHelper {
 
     private final XSharedPreferences mPref;
 
-    private boolean cachedPref_use_themes;
+    private boolean cachedPref_use_themes, cachedPref_mix_themes;
 
     public SettingsHelper() {
         mPref = new XSharedPreferences(PACKAGE_NAME, PREFERENCE_FILE);
@@ -20,11 +20,10 @@ public class SettingsHelper {
 
     }
 
-
     public void loadCachePrefs() {
         cachedPref_use_themes = getPref_use_themes();
+        cachedPref_mix_themes = getPref_mix_themes();
     }
-
 
     public boolean getPref_has_ext() {
         return mPref.getBoolean("has_ext", false);
@@ -46,7 +45,12 @@ public class SettingsHelper {
         return cachedPref_use_themes;
     }
 
+
     protected boolean getPref_use_themes() {
+        return mPref.getBoolean("use_themes", false);
+    }
+
+    protected boolean getPref_mix_themes() {
         return mPref.getBoolean("use_themes", false);
     }
 
@@ -64,45 +68,38 @@ public class SettingsHelper {
     }
 
 
-    protected int getPref_systemui_color1() {
-        int color = mPref.getInt("systemui_color1", 0);
+    protected int getPref_theme_PrimaryColor() {
+        int color = mPref.getInt("theme_PrimaryColor", 0);
         return Color.rgb(Color.red(color), Color.green(color),
                 Color.blue(color));
     }
 
-    protected int getPref_systemui_color2() {
-        int color = mPref.getInt("systemui_color2", 0);
+    protected int getPref_theme_PrimaryDarkColor() {
+        int color = mPref.getInt("theme_PrimaryDarkColor", 0);
         return Color.rgb(Color.red(color), Color.green(color),
                 Color.blue(color));
     }
 
-    protected int getPref_systemui_color3() {
-        int color = mPref.getInt("systemui_color3", 0);
+    protected int getPref_theme_AccentColor() {
+        int color = mPref.getInt("theme_AccentColor", 0);
         return Color.rgb(Color.red(color), Color.green(color),
                 Color.blue(color));
     }
 
-    protected int getPref_systemui_color4() {
-        int color = mPref.getInt("systemui_color4", 0);
-        return Color.rgb(Color.red(color), Color.green(color),
-                Color.blue(color));
+
+    public int getCachedPref_theme_PrimaryColor() {
+        return getPref_theme_PrimaryColor();
     }
 
-    public int getCachedPref_systemui_color1() {
-        return getPref_systemui_color1();
+    public int getCachedPref_theme_PrimaryDarkColor() {
+        return getPref_theme_PrimaryDarkColor();
     }
 
-    public int getCachedPref_systemui_color2() {
-        return getPref_systemui_color2();
+    public int getCachedPref_theme_AccentColor() {
+        return getPref_theme_AccentColor();
     }
 
-    public int getCachedPref_systemui_color3() {
-        return getPref_systemui_color3();
-    }
 
-    public int getCachedPref_systemui_color4() {
-        return getPref_systemui_color4();
-    }
 
     @Override
     public String toString() {
@@ -117,8 +114,8 @@ public class SettingsHelper {
         return "use=true;"
 
                 + "useL=" + getCachedPref_systemui_use_launcher_theme() + ";"
-                + "systemUI1=" + Logger.getLogColorString(getCachedPref_systemui_color1()) + ";"
-                + "systemUI2=" + Logger.getLogColorString(getCachedPref_systemui_color2());
+                + "systemUI1=" + Logger.getLogColorString(getCachedPref_theme_PrimaryColor()) + ";"
+                + "systemUI2=" + Logger.getLogColorString(getCachedPref_theme_PrimaryDarkColor());
     }
 
 
