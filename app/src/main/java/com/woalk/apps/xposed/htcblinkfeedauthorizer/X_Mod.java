@@ -312,10 +312,6 @@ public class X_Mod
                                         Logger.v("X_Mod: Found key containing 3");
                                         //xh.WriteToXML("theme_AccentColor", (Integer) x.getValue());
 										intent.putExtra("theme_AccentColor", (Integer) x.getValue());
-                                    } else if (x.getKey().contains("4")) {
-                                        Logger.v("X_Mod: Found key containing 4");
-                                        //xh.WriteToXML("theme_AccentColor", (Integer) x.getValue());
-										intent.putExtra("theme_AccentColor", (Integer) x.getValue());
                                     }
                                     Context context = (Context) AndroidAppHelper.currentApplication();
                                     Logger.d("X_MOD: Sending intent");

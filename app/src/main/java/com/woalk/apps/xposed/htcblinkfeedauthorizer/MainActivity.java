@@ -152,12 +152,14 @@ public class MainActivity extends MatActivity {
             if (toOpen.equals("themeFragment")) {
                 curPos = 1;
 
+
             }
             } else {
                 Logger.d("MainActivity: No extras detected");
             }
                 if (savedInstanceState == null) {
                     selectItemFromDrawer(curPos);
+                    mDrawerLayout.requestLayout();
                     if (toolbar != null) {
                         setSupportActionBar(toolbar);
                         //noinspection ConstantConditions

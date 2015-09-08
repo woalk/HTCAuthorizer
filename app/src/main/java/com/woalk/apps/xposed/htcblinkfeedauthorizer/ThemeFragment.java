@@ -106,7 +106,7 @@ public class ThemeFragment extends PreferenceFragment
                         Logger.d("ThemeFragment: Mixing Colors.  Inputs are " + color1 + " " + color2  + " " + color3);
                         color2 = Common.enlightColor(mixcolor,.4f);
                         color3 = Common.enlightColor(mixcolor,1.0f);
-                        color1 = Common.enlightColor(mixcolor,.8f);
+                        color1 = Common.enlightColor(mixcolor,.6f);
                         Logger.d("ThemeFragment: Mixing Colors.  Outputs are " + color1 + " " + color2  + " " + color3);
                     }
 
