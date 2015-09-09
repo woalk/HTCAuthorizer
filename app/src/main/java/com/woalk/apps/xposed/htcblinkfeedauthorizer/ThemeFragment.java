@@ -6,12 +6,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 
 import java.util.ArrayList;
 
 public class ThemeFragment extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
-    public XMLHelper xh;
     ArrayList<Integer> mColors = new ArrayList<>();
     private int color1, color2, color3, color4;
     private XColorPickerPreference picker1;
@@ -25,15 +25,12 @@ public class ThemeFragment extends PreferenceFragment
         super.onCreate(savedInstanceState);
 
         // Load the preferences from an XML resource
-        xh = new XMLHelper();
         addPreferencesFromResource(R.xml.pref_themes);
         picker1 = (XColorPickerPreference) findPreference("theme_PrimaryColor");
         picker2 = (XColorPickerPreference) findPreference("theme_PrimaryDarkColor");
         picker3 = (XColorPickerPreference) findPreference("theme_AccentColor");
         picker4 = (XColorPickerPreference) findPreference("theme_AccentColor");
         Logger.d("ThemeFragment: Oncreate: colors are " + color1 + ", " + color2 + ", " + color3 + ", and " + color4);
-
-
 
     }
 
@@ -44,26 +41,11 @@ public class ThemeFragment extends PreferenceFragment
     }
 
 
-    public void updateFromXML(Context context) {
-        SharedPreferences sharedPref = context.getSharedPreferences("com.woalk.apps.xposed.htcblinkfeedauthorizer_preferences", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        Logger.i("MainPreferenceFragment: Starting Editor");
-        mColors = xh.readAllColors();
-        color1 = mColors.get(0);
-        color2 = mColors.get(1);
-        color3 = mColors.get(2);
-        Logger.i("MainPreferenceFragment: Colors set to " + color1 + " " + color2 + " " + color3);
-        editor.putInt("theme_PrimaryColor", color1);
-        editor.putInt("theme_PrimaryDarkColor", color2);
-        editor.putInt("theme_AccentColor", color3);
 
-        editor.apply();
-    }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.contains("systemui_color")) {
-            //xh.WriteToXML(key, sharedPreferences.getInt(key,2533018));
 
         }
     }
@@ -80,13 +62,9 @@ public class ThemeFragment extends PreferenceFragment
             // This method is called when this BroadcastReceiver receives an Intent broadcast.
             Bundle extras = intent.getExtras();
             if (intent.getAction().equals("com.woalk.HTCAuthorizer.UPDATE_XML")) {
-                for (String key : extras.keySet()) {
-                    Object value = extras.get(key);
-                    Logger.d("ThemeFragment: extras are " + String.format("%s %s (%s)", key,
-                            value.toString(), value.getClass().getName()));
-                }
+
                 if (extras != null) {
-                    SharedPreferences sharedPref = context.getSharedPreferences("com.woalk.apps.xposed.htcblinkfeedauthorizer_preferences", Context.MODE_PRIVATE);
+                    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
                     SharedPreferences.Editor editor = sharedPref.edit();
                     if (extras.containsKey("theme_PrimaryColor")) {
                         color1 = extras.getInt("theme_PrimaryColor");

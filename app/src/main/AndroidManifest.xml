@@ -46,7 +46,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.woalk.apps.xposed.htcblinkfeedauthorizer.MainActivity"/>
         </activity>
-
+	<provider
+            android:name=".SettingsProvider"
+            android:authorities="com.woalk.HTCAuthorizer.settings"
+            android:enabled="true"
+            android:exported="true" >
+        </provider>
     </application>
 
 </manifest>

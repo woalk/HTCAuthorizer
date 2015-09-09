@@ -7,16 +7,26 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.util.Xml;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import org.xmlpull.v1.XmlSerializer;
+
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 
 public class Common {
     public static final String versionName = "2.0";
+    public static final String xhtag = "Common: ";
+    static String path = "/Sensify";
+    static File directory = new File(Environment.getExternalStorageDirectory().toString() + path);
+    static String permfilename = "/com.htc.software.market.xml";
+    static File permfile = new File(directory + permfilename);
 
     public Common() {
     }
@@ -166,6 +176,58 @@ public class Common {
 
 
     }
+
+    public static void createPermFile() {
+        if (!permfile.exists()) try {
+            Logger.d("Sensify: Creating permission file " + permfile.getPath());
+
+            FileOutputStream fileos = new FileOutputStream(permfile);
+            XmlSerializer xmlSerializer = Xml.newSerializer();
+            xmlSerializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
+            StringWriter writer = new StringWriter();
+            xmlSerializer.setOutput(writer);
+            xmlSerializer.startDocument("UTF-8", true);
+            xmlSerializer.startTag(null, "permissions");
+            xmlSerializer.startTag(null, "feature");
+            xmlSerializer.attribute("", "name", "com.htc.software.HTC");
+            xmlSerializer.endTag(null, "feature");
+            xmlSerializer.startTag(null, "feature");
+            xmlSerializer.attribute("", "name", "com.htc.software.Sense7.0");
+            xmlSerializer.endTag(null, "feature");
+            xmlSerializer.startTag(null, "feature");
+            xmlSerializer.attribute("", "name", "com.htc.software.M8WHL");
+            xmlSerializer.endTag(null, "feature");
+            xmlSerializer.startTag(null, "feature");
+            xmlSerializer.attribute("", "name", "com.htc.software.IHSense");
+            xmlSerializer.endTag(null, "feature");
+            xmlSerializer.startTag(null, "feature");
+            xmlSerializer.attribute("", "name", "com.htc.software.hdk");
+            xmlSerializer.endTag(null, "feature");
+            xmlSerializer.startTag(null, "feature");
+            xmlSerializer.attribute("", "name", "com.htc.software.hdk2");
+            xmlSerializer.endTag(null, "feature");
+            xmlSerializer.startTag(null, "feature");
+            xmlSerializer.attribute("", "name", "com.htc.software.hdk3");
+            xmlSerializer.endTag(null, "feature");
+            xmlSerializer.endTag(null, "permissions");
+            xmlSerializer.endDocument();
+            xmlSerializer.flush();
+            String dataWrite = writer.toString();
+            fileos.write(dataWrite.getBytes());
+            fileos.close();
+            Logger.d(xhtag + "Permission file Successfully created.");
+
+
+        } catch (IOException e) {
+            Logger.e(xhtag + "error " + e);
+
+        }
+        else {
+            Logger.d(xhtag + "permission file " + permfile.getPath() + " already exists.");
+
+        }
+    }
+
 
     public void runAsRoot(final String[] cmds) {
         new AsyncTask<Void, Void, Void>() {

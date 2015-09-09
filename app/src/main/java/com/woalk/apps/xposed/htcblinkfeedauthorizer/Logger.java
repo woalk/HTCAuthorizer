@@ -83,9 +83,6 @@ public class Logger {
         v("------------------------------");
     }
 
-    public static void logTheme(SettingsHelper settings) {
-        v("Theme is: %s", settings.theme_toString());
-    }
 
     public static void logHook(XC_MethodHook.MethodHookParam param) {
         v("Method hook %s/.%s executed, pre-result=%s;args=%s",

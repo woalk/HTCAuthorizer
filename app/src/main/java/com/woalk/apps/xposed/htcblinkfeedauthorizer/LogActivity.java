@@ -1,8 +1,9 @@
 package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
@@ -11,25 +12,19 @@ import android.widget.TextView;
 
 import com.negusoft.greenmatter.activity.MatActivity;
 
-import java.io.IOException;
-
 
 public class LogActivity extends MatActivity {
     private TextView tv1;
-    private XMLHelper xh;
     private int maincolor;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        xh = new XMLHelper();
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         final android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
-        try {
-            maincolor = xh.readFromXML(0);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        maincolor = sharedPreferences.getInt("theme_PrimaryColor",0);;
         toolbar.setBackgroundColor(maincolor);
         tv1 = (TextView) findViewById(R.id.tv1);
         tv1.setText("Logging");

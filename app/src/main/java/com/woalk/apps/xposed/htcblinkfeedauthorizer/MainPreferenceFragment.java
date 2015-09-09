@@ -1,6 +1,5 @@
 package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,7 +13,6 @@ public class MainPreferenceFragment extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
     public static final String EXTRA_SUBSCREEN_ID = "subscreen_id";
     public static final int SUBSCREEN_ID_ALWAYS_ACTIVE = 1;
-    private XMLHelper xw = new XMLHelper();
 
     /**
      * Set a preference's summary text to the value it holds.
@@ -62,10 +60,6 @@ public class MainPreferenceFragment extends PreferenceFragment
             return;
         }
 
-        getPreferenceManager().setSharedPreferencesName(SettingsHelper.PREFERENCE_FILE);
-        //noinspection deprecation
-        getPreferenceManager().setSharedPreferencesMode(Context.MODE_WORLD_READABLE);
-
         getPreferenceManager().getSharedPreferences()
                 .registerOnSharedPreferenceChangeListener(this);
 
@@ -78,7 +72,7 @@ public class MainPreferenceFragment extends PreferenceFragment
                 new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
-                        xw.createPermFile();
+                        Common.createPermFile();
                         Common common;
                         common = new Common();
                         if (!common.copyPermFile()) {

@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,7 +20,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -55,7 +56,9 @@ public class MainActivity extends MatActivity {
     private float mPosTv1;
     private float mPosTv2;
     public boolean mUseThemes;
+    private SharedPreferences sharedPreferences;
     private FragmentTransaction ft;
+
 
     public MainActivity() {
     }
@@ -65,10 +68,11 @@ public class MainActivity extends MatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         PreferenceManager.setDefaultValues(this, R.xml.pref_themes, false);
         PreferenceManager.setDefaultValues(this, R.xml.pref_always_active, false);
         PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
-        SharedPreferences sharedPref = this.getSharedPreferences("com.woalk.apps.xposed.htcblinkfeedauthorizer_preferences", Context.MODE_PRIVATE);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication());
 
         //Add drawerdown items
         mNavItems.add(new NavItem("Main", R.drawable.ic_settings));
@@ -80,12 +84,11 @@ public class MainActivity extends MatActivity {
         mDrawerList = (ListView) findViewById(R.id.navList);
         DrawerListAdapter adapter = new DrawerListAdapter(this, mNavItems);
         mDrawerList.setAdapter(adapter);
-
         //Get colors
-        mUseThemes = sharedPref.getBoolean("use_themes", false);
-        mMainColor = sharedPref.getInt("theme_PrimaryColor",0);
-        mSecondaryColor = sharedPref.getInt("theme_PrimaryDarkColor", 0);
-        mAccentColor = sharedPref.getInt("theme_AccentColor",0);
+        mUseThemes = sharedPreferences.getBoolean("use_themes", false);
+        mMainColor = sharedPreferences.getInt("theme_PrimaryColor", -16728577);
+        mSecondaryColor = sharedPreferences.getInt("theme_PrimaryDarkColor", -16763828);
+        mAccentColor = sharedPreferences.getInt("theme_AccentColor", -16728577);
 
         // Set up initial settings for title view(s) and bar
         tv1 = (TextView) findViewById(R.id.tv1);
@@ -95,7 +98,7 @@ public class MainActivity extends MatActivity {
         tv2.setText(curTitle);
         tv1.setPivotX(0);
         tv2.setPivotX(0);
-        toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
 
 
         // Drawer Item click listeners
@@ -178,14 +181,20 @@ public class MainActivity extends MatActivity {
 
     }
 
+
     @Override
     public MatPalette overridePalette(MatPalette palette) {
         //Get colors
-        SharedPreferences sharedPref = this.getSharedPreferences("com.woalk.apps.xposed.htcblinkfeedauthorizer_preferences", Context.MODE_PRIVATE);
-        mUseThemes = sharedPref.getBoolean("use_themes", false);
-        mMainColor = sharedPref.getInt("theme_PrimaryColor", 0);
-        mSecondaryColor = sharedPref.getInt("theme_PrimaryDarkColor", 0);
-        mAccentColor = sharedPref.getInt("theme_AccentColor",0);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication());
+        mUseThemes = sharedPreferences.getBoolean("use_themes", false);
+        int mTempColor = sharedPreferences.getInt("theme_PrimaryColor", 0);
+        mMainColor = Color.rgb(Color.red(mTempColor), Color.green(mTempColor),
+        Color.blue(mTempColor));
+        mTempColor = sharedPreferences.getInt("theme_PrimaryDarkColor", 0);
+        mSecondaryColor= Color.rgb(Color.red(mTempColor), Color.green(mTempColor),
+        Color.blue(mTempColor));
+        mTempColor = sharedPreferences.getInt("theme_AccentColor", 0);
+        mAccentColor = Color.rgb(Color.red(mTempColor), Color.green(mTempColor), Color.blue(mTempColor));
         if (mUseThemes) {
             palette.setColorPrimary(mMainColor);
             palette.setColorPrimaryDark(mSecondaryColor);
