@@ -50,7 +50,6 @@ public class AboutSensifyFragment extends PreferenceFragment {
                 }
         );
 
-
     }
 
     private void saveLog(Preference logLoc) {

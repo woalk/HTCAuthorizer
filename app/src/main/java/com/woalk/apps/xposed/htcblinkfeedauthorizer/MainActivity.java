@@ -6,6 +6,8 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,6 +18,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -39,7 +42,7 @@ import com.negusoft.greenmatter.activity.MatActivity;
 import java.util.ArrayList;
 
 
-public class MainActivity extends MatActivity {
+public class MainActivity extends MatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String PREF_SHOW_HSP_WARN = "warn_no_hsp";
     private static String TAG = MainActivity.class.getSimpleName();
     public TextView tv1;
@@ -51,6 +54,9 @@ public class MainActivity extends MatActivity {
     ArrayList<Integer> mColors = new ArrayList<>();
     private String curTitle;
     public int mMainColor, mSecondaryColor, mAccentColor;
+    public static int mDefaultMainColor;
+    public static int mDefaultSecondaryColor;
+    public static int mDefaultAccentColor;
     private int curPos = 0;
     private DrawerLayout mDrawerLayout;
     private float mPosTv1;
@@ -68,11 +74,11 @@ public class MainActivity extends MatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         PreferenceManager.setDefaultValues(this, R.xml.pref_themes, false);
         PreferenceManager.setDefaultValues(this, R.xml.pref_always_active, false);
         PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication());
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
         //Add drawerdown items
         mNavItems.add(new NavItem("Main", R.drawable.ic_settings));
@@ -89,6 +95,9 @@ public class MainActivity extends MatActivity {
         mMainColor = sharedPreferences.getInt("theme_PrimaryColor", -16728577);
         mSecondaryColor = sharedPreferences.getInt("theme_PrimaryDarkColor", -16763828);
         mAccentColor = sharedPreferences.getInt("theme_AccentColor", -16728577);
+        mDefaultMainColor = -16728577;
+        mDefaultSecondaryColor = -16763828;
+        mDefaultAccentColor = -16728577;
 
         // Set up initial settings for title view(s) and bar
         tv1 = (TextView) findViewById(R.id.tv1);
@@ -100,13 +109,11 @@ public class MainActivity extends MatActivity {
         tv2.setPivotX(0);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-
         // Drawer Item click listeners
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selectItemFromDrawer(position);
-
 
             }
         });
@@ -118,7 +125,6 @@ public class MainActivity extends MatActivity {
                 R.string.drawer_open,
                 R.string.drawer_close
         )
-
 
         {
             public void onDrawerClosed(View view) {
@@ -134,12 +140,10 @@ public class MainActivity extends MatActivity {
                 syncState();
             }
 
-
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
                 animateMenuItems(slideOffset);
             }
-
 
         };
 
@@ -148,39 +152,36 @@ public class MainActivity extends MatActivity {
         //Detect missing framework, warn if it's not there.
         maybeShowNoHSPWarn();
         //Set default fragment if initializing from first time.
-        if(getIntent().hasExtra("toOpen")) {
+        if (getIntent().hasExtra("toOpen")) {
             Bundle extras = getIntent().getExtras();
             String toOpen = extras.getString("toOpen");
-            Logger.d("MainActivity: Launching fragment from intent");
             if (toOpen.equals("themeFragment")) {
                 curPos = 1;
-
+                overridePalette(generateDefaultPalette());
 
             }
-            } else {
-                Logger.d("MainActivity: No extras detected");
-            }
-                if (savedInstanceState == null) {
-                    selectItemFromDrawer(curPos);
-                    mDrawerLayout.requestLayout();
-                    if (toolbar != null) {
-                        setSupportActionBar(toolbar);
-                        //noinspection ConstantConditions
-                        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                        if (mUseThemes) {
-                            toolbar.setBackgroundColor(mMainColor);
-                        } else {
-                            toolbar.setBackgroundColor(16728577);
-                        }
+        }
 
-                    }
+            selectItemFromDrawer(curPos);
+            mDrawerLayout.requestLayout();
+            if (toolbar != null) {
+                setSupportActionBar(toolbar);
+                //noinspection ConstantConditions
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                if (mUseThemes) {
+                    toolbar.setBackgroundColor(mMainColor);
+                    //overridePalette(generateDefaultPalette());
+                } else {
+
+
+                    toolbar.setBackgroundColor(Color.rgb(Color.red(-16728577), Color.green(-16728577),
+                            Color.blue(-16728577)));
+                    //overridePalette(generateCustomPalette());
                 }
 
-
-
+            }
 
     }
-
 
     @Override
     public MatPalette overridePalette(MatPalette palette) {
@@ -189,10 +190,10 @@ public class MainActivity extends MatActivity {
         mUseThemes = sharedPreferences.getBoolean("use_themes", false);
         int mTempColor = sharedPreferences.getInt("theme_PrimaryColor", 0);
         mMainColor = Color.rgb(Color.red(mTempColor), Color.green(mTempColor),
-        Color.blue(mTempColor));
+                Color.blue(mTempColor));
         mTempColor = sharedPreferences.getInt("theme_PrimaryDarkColor", 0);
-        mSecondaryColor= Color.rgb(Color.red(mTempColor), Color.green(mTempColor),
-        Color.blue(mTempColor));
+        mSecondaryColor = Color.rgb(Color.red(mTempColor), Color.green(mTempColor),
+                Color.blue(mTempColor));
         mTempColor = sharedPreferences.getInt("theme_AccentColor", 0);
         mAccentColor = Color.rgb(Color.red(mTempColor), Color.green(mTempColor), Color.blue(mTempColor));
         if (mUseThemes) {
@@ -205,6 +206,7 @@ public class MainActivity extends MatActivity {
             palette.setColorControlActivated(mMainColor);
             palette.setColorControlHighlight(mMainColor);
             palette.setColorEdgeEffect(mAccentColor);
+            // Load the preferences from an XML resource
 
         } else {
             palette.setColorPrimary(-16728577);
@@ -220,6 +222,40 @@ public class MainActivity extends MatActivity {
         return palette;
     }
 
+
+
+        public static class ThemeFragment extends PreferenceFragment {
+
+
+        @Override
+
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+            // Load the preferences from an XML resource
+            addPreferencesFromResource(R.xml.pref_themes);
+
+        }
+
+        public void onResume() {
+            super.onResume();
+
+        }
+
+
+
+        }
+
+    public MatPalette generateCustomPalette() {
+
+        return new MatPalette(mMainColor, mSecondaryColor, mAccentColor, mMainColor, mMainColor, mMainColor, mMainColor, mMainColor, mMainColor, 1.0f);
+    }
+
+    public static MatPalette generateDefaultPalette() {
+
+        return new MatPalette(mDefaultMainColor, mDefaultSecondaryColor, mDefaultAccentColor, mDefaultMainColor, mDefaultMainColor, mDefaultMainColor, mDefaultMainColor, mDefaultMainColor, mDefaultMainColor, 1.0f);
+    }
+
     //Set fragment on resume
 
     public void onResume(Bundle SavedInstanceState) {
@@ -227,11 +263,12 @@ public class MainActivity extends MatActivity {
         selectItemFromDrawer(curPos);
         if (mUseThemes) {
             toolbar.setBackgroundColor(mMainColor);
+
+
         } else {
             toolbar.setBackgroundColor(16728577);
+            overridePalette(generateCustomPalette());
         }
-
-
 
 
     }
@@ -244,18 +281,13 @@ public class MainActivity extends MatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Logger.d("Mainactivity: Option ID is " + item.getItemId() + "and drawerdown state is " + mDrawerLayout.isDrawerOpen(GravityCompat.START));
-        // The action bar home/up action should open or close the drawerdown.
         switch (item.getItemId()) {
             case android.R.id.home:
 
                 if (!mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                     mDrawerLayout.openDrawer(GravityCompat.START);
-
-
                 } else {
                     mDrawerLayout.closeDrawer(GravityCompat.START);
-
                 }
 
                 return true;
@@ -323,7 +355,7 @@ public class MainActivity extends MatActivity {
     }
 
     //Drawer selection logic
-    private void selectItemFromDrawer(final int position) {
+    public void selectItemFromDrawer(final int position) {
         if (position == 2) showRebootDialog();
         else {
             mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -459,6 +491,72 @@ public class MainActivity extends MatActivity {
             titleView.setTextColor(mAccentColor);
             iconView.setColorFilter(mAccentColor, PorterDuff.Mode.MULTIPLY);
             return view;
+        }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Logger.d("MainActivity: Listener triggered");
+        if (key.contains("use_themes")) {
+            if (!sharedPreferences.getBoolean(key,false)) {
+                Logger.d("MainActivity: Trying to reset palette");
+                this.recreate();
+            } else {
+                Logger.d("MainActivity: Not trying to reset palette");
+                this.recreate();
+            }
+        }
+    }
+
+    public static class ThemeUpdateReceiver extends BroadcastReceiver {
+        private int color1, color2, color3, mixcolor;
+
+        public ThemeUpdateReceiver() {
+
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            // This method is called when this BroadcastReceiver receives an Intent broadcast.
+            Bundle extras = intent.getExtras();
+            if (intent.getAction().equals("com.woalk.HTCAuthorizer.UPDATE_XML")) {
+
+                if (extras != null) {
+                    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    if (extras.containsKey("theme_PrimaryColor")) {
+                        color1 = extras.getInt("theme_PrimaryColor");
+                    }
+
+                    if (extras.containsKey("theme_PrimaryDarkColor")) {
+                        color2 = extras.getInt("theme_PrimaryDarkColor");
+                    }
+
+                    if (extras.containsKey("theme_AccentColor")) {
+                        color3 = extras.getInt("theme_AccentColor");
+
+                    }
+
+                    if (sharedPref.getBoolean("systemui_automix_theme", true) && (color1 == color2)) {
+                        if (color1 == 0) mixcolor = color3;
+
+                        color2 = Common.enlightColor(mixcolor, .4f);
+                        color3 = Common.enlightColor(mixcolor, 1.0f);
+                        color1 = Common.enlightColor(mixcolor, .6f);
+                    }
+
+                    editor.putInt("theme_PrimaryColor", color1);
+                    editor.putInt("theme_PrimaryDarkColor", color2);
+                    editor.putInt("theme_AccentColor", color3);
+                    editor.apply();
+                     intent = new Intent(context, com.woalk.apps.xposed.htcblinkfeedauthorizer.MainActivity.class);
+                    intent.setComponent(new ComponentName("com.woalk.apps.xposed.htcblinkfeedauthorizer", "com.woalk.apps.xposed.htcblinkfeedauthorizer.MainActivity"));
+                    intent.putExtra("toOpen", "themeFragment");
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                }
+            }
         }
     }
 }

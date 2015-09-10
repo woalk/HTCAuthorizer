@@ -3,6 +3,7 @@ package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
 import android.app.Activity;
 import android.app.AndroidAppHelper;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -23,6 +24,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -386,14 +388,10 @@ public class X_Mod
                                         intent.putExtra("theme_AccentColor", (Integer) x.getValue());
                                     }
                                     Context context = (Context) AndroidAppHelper.currentApplication();
+                                    int PICK_CONTACT_REQUEST = 1;
                                     Logger.d("X_MOD: Sending intent");
                                     context.sendBroadcast(intent);
-                                    intent = new Intent(context, com.woalk.apps.xposed.htcblinkfeedauthorizer.MainActivity.class);
-                                    intent.setComponent(new ComponentName("com.woalk.apps.xposed.htcblinkfeedauthorizer", "com.woalk.apps.xposed.htcblinkfeedauthorizer.MainActivity"));
-                                    intent.putExtra("toOpen", "themeFragment");
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    context.startActivity(intent);
-                                    Logger.d("X_MOD: Sending second intent");
+
                                 }
                             }
 
@@ -1032,10 +1030,7 @@ public class X_Mod
     @Override
     public void handleInitPackageResources(final XC_InitPackageResources.InitPackageResourcesParam
                                                    resparam) throws Throwable {
-//        final int color1 = colorPrimary;
-//        final int color2 = colorPrimaryDark;
-//        final int color3 = colorAccent;
-//
+
         if (themesEnabled) {
 
             if (resparam.packageName.equals(PKG_SYSTEMUI) && themeSystemUI) {
@@ -1296,7 +1291,7 @@ public class X_Mod
         Logger.v("System feature list hook loaded.");
     }
 
-    private void replaceSystemWideThemes() {
+    public static void replaceSystemWideThemes() {
         Logger.v("Replacing system-wide Theme resources.");
 
         XResources.setSystemWideReplacement("android", "color", "material_blue_grey_900",
@@ -1330,4 +1325,5 @@ public class X_Mod
 
         Logger.v("Theme resources replaced.");
     }
+
 }
