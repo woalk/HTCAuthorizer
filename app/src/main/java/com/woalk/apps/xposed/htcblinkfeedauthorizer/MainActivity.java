@@ -2,7 +2,6 @@ package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.FragmentTransaction;
@@ -15,7 +14,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
@@ -44,35 +42,42 @@ import java.util.ArrayList;
 
 public class MainActivity extends MatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String PREF_SHOW_HSP_WARN = "warn_no_hsp";
-    private static String TAG = MainActivity.class.getSimpleName();
-    public TextView tv1;
-    public TextView tv2;
-    private android.support.v7.widget.Toolbar toolbar;
-    ListView mDrawerList;
-    RelativeLayout mDrawerPane;
-    ArrayList<NavItem> mNavItems = new ArrayList<>();
-    ArrayList<Integer> mColors = new ArrayList<>();
-    private String curTitle;
-    public int mMainColor, mSecondaryColor, mAccentColor;
     public static int mDefaultMainColor;
     public static int mDefaultSecondaryColor;
     public static int mDefaultAccentColor;
+    public TextView tv1;
+    public TextView tv2;
+    public int mMainColor, mSecondaryColor, mAccentColor;
+    public boolean mUseThemes;
+    ListView mDrawerList;
+    RelativeLayout mDrawerPane;
+    ArrayList<NavItem> mNavItems = new ArrayList<>();
+    private android.support.v7.widget.Toolbar toolbar;
+    private String curTitle;
     private int curPos = 0;
     private DrawerLayout mDrawerLayout;
-    private float mPosTv1;
-    private float mPosTv2;
-    public boolean mUseThemes;
     private SharedPreferences sharedPreferences;
-    private FragmentTransaction ft;
 
 
     public MainActivity() {
+    }
+
+    public static MatPalette generateDefaultPalette() {
+
+        return new MatPalette(mDefaultMainColor, mDefaultSecondaryColor, mDefaultAccentColor, mDefaultMainColor, mDefaultMainColor, mDefaultMainColor, mDefaultMainColor, mDefaultMainColor, mDefaultMainColor, 1.0f);
     }
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        mUseThemes = sharedPreferences.getBoolean("use_themes", false);
+        mMainColor = sharedPreferences.getInt("theme_PrimaryColor", -16728577);
+        mSecondaryColor = sharedPreferences.getInt("theme_PrimaryDarkColor", -16763828);
+        mAccentColor = sharedPreferences.getInt("theme_AccentColor", -16728577);
+        mDefaultMainColor = -16728577;
+        mDefaultSecondaryColor = -16763828;
+        mDefaultAccentColor = -16728577;
         setContentView(R.layout.activity_main);
         PreferenceManager.setDefaultValues(this, R.xml.pref_themes, false);
         PreferenceManager.setDefaultValues(this, R.xml.pref_always_active, false);
@@ -91,13 +96,6 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
         DrawerListAdapter adapter = new DrawerListAdapter(this, mNavItems);
         mDrawerList.setAdapter(adapter);
         //Get colors
-        mUseThemes = sharedPreferences.getBoolean("use_themes", false);
-        mMainColor = sharedPreferences.getInt("theme_PrimaryColor", -16728577);
-        mSecondaryColor = sharedPreferences.getInt("theme_PrimaryDarkColor", -16763828);
-        mAccentColor = sharedPreferences.getInt("theme_AccentColor", -16728577);
-        mDefaultMainColor = -16728577;
-        mDefaultSecondaryColor = -16763828;
-        mDefaultAccentColor = -16728577;
 
         // Set up initial settings for title view(s) and bar
         tv1 = (TextView) findViewById(R.id.tv1);
@@ -142,7 +140,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
 
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
-                animateMenuItems(slideOffset);
+                animateMenuText(slideOffset);
             }
 
         };
@@ -155,31 +153,29 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
         if (getIntent().hasExtra("toOpen")) {
             Bundle extras = getIntent().getExtras();
             String toOpen = extras.getString("toOpen");
-            if (toOpen.equals("themeFragment")) {
+            if (toOpen != null && toOpen.equals("themeFragment")) {
                 curPos = 1;
                 overridePalette(generateDefaultPalette());
 
             }
         }
 
-            selectItemFromDrawer(curPos);
-            mDrawerLayout.requestLayout();
-            if (toolbar != null) {
-                setSupportActionBar(toolbar);
-                //noinspection ConstantConditions
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                if (mUseThemes) {
-                    toolbar.setBackgroundColor(mMainColor);
-                    //overridePalette(generateDefaultPalette());
-                } else {
-
-
-                    toolbar.setBackgroundColor(Color.rgb(Color.red(-16728577), Color.green(-16728577),
-                            Color.blue(-16728577)));
-                    //overridePalette(generateCustomPalette());
-                }
-
+        selectItemFromDrawer(curPos);
+        mDrawerLayout.requestLayout();
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            //noinspection ConstantConditions
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            if (mUseThemes) {
+                toolbar.setBackgroundColor(mMainColor);
+                //overridePalette(generateDefaultPalette());
+            } else {
+                toolbar.setBackgroundColor(Color.rgb(Color.red(-16728577), Color.green(-16728577),
+                        Color.blue(-16728577)));
+                //overridePalette(generateCustomPalette());
             }
+
+        }
 
     }
 
@@ -222,56 +218,28 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
         return palette;
     }
 
-
-
-        public static class ThemeFragment extends PreferenceFragment {
-
-
-        @Override
-
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-
-            // Load the preferences from an XML resource
-            addPreferencesFromResource(R.xml.pref_themes);
-
-        }
-
-        public void onResume() {
-            super.onResume();
-
-        }
-
-
-
-        }
-
     public MatPalette generateCustomPalette() {
 
         return new MatPalette(mMainColor, mSecondaryColor, mAccentColor, mMainColor, mMainColor, mMainColor, mMainColor, mMainColor, mMainColor, 1.0f);
     }
 
-    public static MatPalette generateDefaultPalette() {
-
-        return new MatPalette(mDefaultMainColor, mDefaultSecondaryColor, mDefaultAccentColor, mDefaultMainColor, mDefaultMainColor, mDefaultMainColor, mDefaultMainColor, mDefaultMainColor, mDefaultMainColor, 1.0f);
-    }
-
-    //Set fragment on resume
-
-    public void onResume(Bundle SavedInstanceState) {
-
+    @Override
+    protected void onResume() {
+        super.onResume();
         selectItemFromDrawer(curPos);
         if (mUseThemes) {
             toolbar.setBackgroundColor(mMainColor);
 
 
         } else {
-            toolbar.setBackgroundColor(16728577);
+            toolbar.setBackgroundColor(Color.rgb(Color.red(-16728577), Color.green(-16728577),
+                    Color.blue(-16728577)));
             overridePalette(generateCustomPalette());
         }
 
-
     }
+
+    //Set fragment on resume
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -298,15 +266,13 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     }
 
     //Custom animation for title text
-    private void animateMenuItems(float slideOffset) {
+    private void animateMenuText(float slideOffset) {
 
         float invertPos = 1f - (slideOffset);
-        mPosTv1 = slideOffset;
-        mPosTv2 = invertPos;
-        ObjectAnimator tv1X = ObjectAnimator.ofFloat(tv1, "scaleX", mPosTv1, slideOffset);
-        ObjectAnimator tv1alpha = ObjectAnimator.ofFloat(tv1, "alpha", mPosTv1, slideOffset);
-        ObjectAnimator tv2X = ObjectAnimator.ofFloat(tv2, "scaleX", mPosTv2, invertPos);
-        ObjectAnimator tv2alpha = ObjectAnimator.ofFloat(tv2, "alpha", mPosTv2, invertPos);
+        ObjectAnimator tv1X = ObjectAnimator.ofFloat(tv1, "scaleX", slideOffset, slideOffset);
+        ObjectAnimator tv1alpha = ObjectAnimator.ofFloat(tv1, "alpha", slideOffset, slideOffset);
+        ObjectAnimator tv2X = ObjectAnimator.ofFloat(tv2, "scaleX", invertPos, invertPos);
+        ObjectAnimator tv2alpha = ObjectAnimator.ofFloat(tv2, "alpha", invertPos, invertPos);
         AnimatorSet tvset = new AnimatorSet();
         tvset.setDuration(450);
         tvset.play(tv1X).with(tv1alpha).with(tv2X).with(tv2alpha);
@@ -315,7 +281,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     }
 
     //Warning for missing HTC Service pack
-    public void maybeShowNoHSPWarn() {
+    private void maybeShowNoHSPWarn() {
         final String PKG_HSP = "com.htc.sense.hsp";
         try {
             getPackageManager().getApplicationInfo(PKG_HSP, 0);
@@ -355,7 +321,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     }
 
     //Drawer selection logic
-    public void selectItemFromDrawer(final int position) {
+    private void selectItemFromDrawer(final int position) {
         if (position == 2) showRebootDialog();
         else {
             mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -433,79 +399,40 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
         ft.commit();
     }
 
-    //Custom class for our nav items
-    class NavItem {
-        String mTitle;
-
-        int mIcon;
-
-        public NavItem(String title, int icon) {
-            mTitle = title;
-
-            mIcon = icon;
-        }
-    }
-
-
-    class DrawerListAdapter extends BaseAdapter {
-
-        Context mContext;
-        ArrayList<NavItem> mNavItems;
-
-        public DrawerListAdapter(Context context, ArrayList<NavItem> navItems) {
-            mContext = context;
-            mNavItems = navItems;
-        }
-
-        @Override
-        public int getCount() {
-            return mNavItems.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return mNavItems.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @SuppressLint("InflateParams")
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View view;
-
-            if (convertView == null) {
-                LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.drawer_item, null);
-            } else {
-                view = convertView;
-            }
-
-            TextView titleView = (TextView) view.findViewById(R.id.title);
-            ImageView iconView = (ImageView) view.findViewById(R.id.icon);
-            titleView.setText(mNavItems.get(position).mTitle);
-            iconView.setImageResource(mNavItems.get(position).mIcon);
-            titleView.setTextColor(mAccentColor);
-            iconView.setColorFilter(mAccentColor, PorterDuff.Mode.MULTIPLY);
-            return view;
-        }
-    }
-
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        Logger.d("MainActivity: Listener triggered");
         if (key.contains("use_themes")) {
-            if (!sharedPreferences.getBoolean(key,false)) {
-                Logger.d("MainActivity: Trying to reset palette");
-                this.recreate();
-            } else {
-                Logger.d("MainActivity: Not trying to reset palette");
-                this.recreate();
-            }
+            reResume();
         }
+    }
+
+    private void reResume() {
+        Context context = this.getApplicationContext();
+        Intent intent = new Intent(context, com.woalk.apps.xposed.htcblinkfeedauthorizer.MainActivity.class);
+        intent.setComponent(new ComponentName("com.woalk.apps.xposed.htcblinkfeedauthorizer", "com.woalk.apps.xposed.htcblinkfeedauthorizer.MainActivity"));
+        intent.putExtra("toOpen", "themeFragment");
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    public static class ThemeFragment extends PreferenceFragment {
+
+
+        @Override
+
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+            // Load the preferences from an XML resource
+            addPreferencesFromResource(R.xml.pref_themes);
+
+        }
+
+        public void onResume() {
+            super.onResume();
+
+        }
+
     }
 
     public static class ThemeUpdateReceiver extends BroadcastReceiver {
@@ -550,13 +477,70 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
                     editor.putInt("theme_PrimaryDarkColor", color2);
                     editor.putInt("theme_AccentColor", color3);
                     editor.apply();
-                     intent = new Intent(context, com.woalk.apps.xposed.htcblinkfeedauthorizer.MainActivity.class);
+                    intent = new Intent(context, MainActivity.class);
                     intent.setComponent(new ComponentName("com.woalk.apps.xposed.htcblinkfeedauthorizer", "com.woalk.apps.xposed.htcblinkfeedauthorizer.MainActivity"));
                     intent.putExtra("toOpen", "themeFragment");
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                 }
             }
+        }
+    }
+
+    //Custom class for our nav items
+    class NavItem {
+        String mTitle;
+
+        int mIcon;
+
+        public NavItem(String title, int icon) {
+            mTitle = title;
+
+            mIcon = icon;
+        }
+    }
+
+    class DrawerListAdapter extends BaseAdapter {
+
+        Context mContext;
+        ArrayList<NavItem> mNavItems;
+
+        public DrawerListAdapter(Context context, ArrayList<NavItem> navItems) {
+            mContext = context;
+            mNavItems = navItems;
+        }
+
+        @Override
+        public int getCount() {
+            return mNavItems.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return mNavItems.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View view;
+
+            if (convertView == null) {
+                LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.drawer_item, null);
+            } else {
+                view = convertView;
+            }
+
+            TextView titleView = (TextView) view.findViewById(R.id.title);
+            ImageView iconView = (ImageView) view.findViewById(R.id.icon);
+            titleView.setText(mNavItems.get(position).mTitle);
+            iconView.setImageResource(mNavItems.get(position).mIcon);
+            return view;
         }
     }
 }
