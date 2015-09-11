@@ -1,0 +1,70 @@
+<LinearLayout
+    android:id="@+id/drawerPane"
+    android:orientation="vertical"
+    android:layout_width="235dp"
+    android:layout_height="match_parent"
+    android:layout_below="@+id/toolbar"
+    android:layout_gravity="start"
+    android:background="@color/background_material_light"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListView
+        android:id="@+id/navList"
+        android:layout_width="235dp"
+        android:layout_height="wrap_content"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"/>
+    <LinearLayout
+        android:id="@+id/whiteSpace"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_gravity="bottom"
+        android:layout_height="fill_parent"
+        android:layout_weight="1">
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/drawerSeparator"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:background="@android:color/background_dark">
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/drawerBottom"
+        android:paddingTop="15dip"
+        android:paddingBottom="15dip"
+        android:clickable="true"
+        android:background="?attr/selectableItemBackground"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="17dp"
+            android:layout_marginTop="0dip"
+            android:tint="#424242"
+            android:src="@drawable/ic_info"/>
+
+        <TextView
+            android:id="@+id/title1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dip"
+            android:text="About"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_vertical"
+            android:textColor="#424242"
+            android:textSize="16sp"/>
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

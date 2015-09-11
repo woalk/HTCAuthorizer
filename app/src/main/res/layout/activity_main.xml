@@ -37,32 +37,17 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:background="@color/white"
                     android:choiceMode="singleChoice"
+                    android:background="?attr/selectableItemBackground"
                     android:dividerHeight="1dp"/>
+
+
             </FrameLayout>
 
 
         </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/drawerPane"
-            android:layout_width="235dp"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/toolbar"
-            android:layout_gravity="start">
-
-            <ListView
-                android:id="@+id/navList"
-                android:layout_width="235dp"
-                android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:background="@color/white"
-                android:choiceMode="singleChoice"
-                android:divider="@android:color/transparent"
-                android:dividerHeight="0dp"/>
-
-        </RelativeLayout>
+        <include
+            layout="@layout/drawer_pane"/>
 
     </android.support.v4.widget.DrawerLayout>
 </LinearLayout>

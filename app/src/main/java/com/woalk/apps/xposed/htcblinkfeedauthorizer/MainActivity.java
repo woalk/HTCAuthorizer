@@ -30,8 +30,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.negusoft.greenmatter.MatPalette;
@@ -50,7 +50,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     public int mMainColor, mSecondaryColor, mAccentColor;
     public boolean mUseThemes;
     ListView mDrawerList;
-    RelativeLayout mDrawerPane;
+    LinearLayout mDrawerPane, mDrawerBotom;
     ArrayList<NavItem> mNavItems = new ArrayList<>();
     private android.support.v7.widget.Toolbar toolbar;
     private String curTitle;
@@ -89,9 +89,9 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
         mNavItems.add(new NavItem("Main", R.drawable.ic_settings));
         mNavItems.add(new NavItem("Themes", R.drawable.ic_style));
         mNavItems.add(new NavItem("Reboot", R.drawable.ic_replay_white_24dp));
-        mNavItems.add(new NavItem("About", R.drawable.ic_info));
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-        mDrawerPane = (RelativeLayout) findViewById(R.id.drawerPane);
+        mDrawerPane = (LinearLayout) findViewById(R.id.drawerPane);
+        mDrawerBotom = (LinearLayout) findViewById(R.id.drawerBottom);
         mDrawerList = (ListView) findViewById(R.id.navList);
         DrawerListAdapter adapter = new DrawerListAdapter(this, mNavItems);
         mDrawerList.setAdapter(adapter);
@@ -105,6 +105,21 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
         tv2.setText(curTitle);
         tv1.setPivotX(0);
         tv2.setPivotX(0);
+
+        // Set up onclick for bottom elements in drawer
+
+        View.OnClickListener onClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (v.equals(mDrawerBotom)) {
+                    fragmentSelect(3);
+                    curPos=3;
+                    mDrawerLayout.closeDrawer(GravityCompat.START);
+
+                }
+            }
+        };
+        mDrawerBotom.setOnClickListener(onClickListener);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         // Drawer Item click listeners
@@ -323,16 +338,16 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     //Drawer selection logic
     private void selectItemFromDrawer(final int position) {
         if (position == 2) showRebootDialog();
-        else {
+        else if (position == 3) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+            curPos = position;
+
+        } else {
+            fragmentSelect(position);
             mDrawerLayout.closeDrawer(GravityCompat.START);
             mDrawerList.setItemChecked(position, true);
             curPos = position;
-            mDrawerLayout.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    fragmentSelect(position);
-                }
-            }, 100);
+
         }
     }
 
@@ -393,9 +408,14 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
             ft.replace(android.R.id.widget_frame, new ThemeFragment());
         } else if (position == 3) {
             ft.replace(android.R.id.widget_frame, new AboutSensifyFragment());
+            tv2.setText("About");
         }
-        curTitle = mNavItems.get(curPos).mTitle;
-        tv2.setText(curTitle);
+        if (curPos != 3) {
+            curTitle = mNavItems.get(curPos).mTitle;
+            tv2.setText(curTitle);
+        }
+
+
         ft.commit();
     }
 
