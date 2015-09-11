@@ -57,6 +57,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     private int curPos = 0;
     private DrawerLayout mDrawerLayout;
     private SharedPreferences sharedPreferences;
+    private FragmentTransaction ft;
 
 
     public MainActivity() {
@@ -69,6 +70,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
+
 
         super.onCreate(savedInstanceState);
         mUseThemes = sharedPreferences.getBoolean("use_themes", false);
@@ -400,21 +402,24 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     //Fragment selector
     private void fragmentSelect(int position) {
 
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.setCustomAnimations(R.anim.enter, R.anim.exit);
+        ft = getFragmentManager().beginTransaction();
+        if (getIntent().hasExtra("toOpen")) {
+            ft.setCustomAnimations(0, 0);
+
+        } else {
+            ft.setCustomAnimations(R.anim.enter, R.anim.exit);
+
+        }
         if (position == 0) {
             ft.replace(android.R.id.widget_frame, new MainPreferenceFragment());
+            tv2.setText("Main");
         } else if (position == 1) {
             ft.replace(android.R.id.widget_frame, new ThemeFragment());
+            tv2.setText("Themes");
         } else if (position == 3) {
             ft.replace(android.R.id.widget_frame, new AboutSensifyFragment());
             tv2.setText("About");
         }
-        if (curPos != 3) {
-            curTitle = mNavItems.get(curPos).mTitle;
-            tv2.setText(curTitle);
-        }
-
 
         ft.commit();
     }

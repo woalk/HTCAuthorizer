@@ -220,6 +220,7 @@ public class X_Mod
                         continue;
                     case "ext_dir":
                         pathExternal = prefs.getString(SettingsProvider.QUERY_ALL_VALUE);
+                        Logger.d("X_Mod: Variable read for accent color of " + pathExternal);
                         continue;
                     case "usb_dir":
                         pathUSB = prefs.getString(SettingsProvider.QUERY_ALL_VALUE);
