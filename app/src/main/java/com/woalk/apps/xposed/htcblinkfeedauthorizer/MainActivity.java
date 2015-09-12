@@ -15,6 +15,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
@@ -37,6 +38,9 @@ import android.widget.TextView;
 import com.negusoft.greenmatter.MatPalette;
 import com.negusoft.greenmatter.activity.MatActivity;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 
@@ -77,6 +81,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
         mMainColor = sharedPreferences.getInt("theme_PrimaryColor", -16728577);
         mSecondaryColor = sharedPreferences.getInt("theme_PrimaryDarkColor", -16763828);
         mAccentColor = sharedPreferences.getInt("theme_AccentColor", -16728577);
+        checkRomType();
         mDefaultMainColor = -16728577;
         mDefaultSecondaryColor = -16763828;
         mDefaultAccentColor = -16728577;
@@ -397,6 +402,44 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
 
         builder.setIcon(R.drawable.ic_replay_black_24dp);
         builder.show();
+    }
+
+    private void checkRomType() {
+        Logger.v("MainActivity: here's some info. " + Build.BRAND + " " + Build.DEVICE + " " + Build.DISPLAY + " " + Build.HOST);
+        Process p = null;
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        String sense_version = "";
+        String sense_sdk = "";
+        try {
+            p = new ProcessBuilder("/system/bin/getprop", "ro.build.sense.version").redirectErrorStream(true).start();
+            BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line = "";
+            while ((line=br.readLine()) != null){
+                sense_version = line;
+            }
+            p.destroy();
+            p = new ProcessBuilder("/system/bin/getprop", "ro.build.version.htcsdk").redirectErrorStream(true).start();
+            BufferedReader br2 = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line2 = "";
+            while ((line2=br2.readLine()) != null){
+                sense_sdk = line2;
+            }
+
+            p.destroy();
+            if ((!(sense_sdk=="")) && (!(sense_version=="")) ) {
+                Logger.d("MainActivity: Sense ROM found. " + sense_sdk + " and " + sense_version);
+                editor.putString("romtype","Sense");
+                editor.commit();
+
+            } else if (Build.HOST.contains("google.com")) {
+                Logger.d("MainActivity: Google ROM found " + Build.HOST);
+                editor.putString("romtype","Google");
+                editor.commit();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     //Fragment selector

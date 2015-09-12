@@ -3,8 +3,7 @@ package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
 import android.app.Activity;
 import android.app.AndroidAppHelper;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,7 +23,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.Preference;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -40,6 +38,7 @@ import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LayoutInflated;
@@ -167,6 +166,7 @@ public class X_Mod
     private static boolean useExternal = false;
     private static boolean rotateLauncher = false;
     private static String pathUSB;
+    private static String romType;
     private static String pathExternal;
     private static int colorPrimary = 0;
     private static int colorPrimaryDark = 0;
@@ -174,63 +174,75 @@ public class X_Mod
 
     private static final class Config {
 
-        private static final Uri ALL_PREFS_URI = Uri.parse("content://" + SettingsProvider.AUTHORITY + "/all");
 
         // Give us some sane defaults, just in case
 
 
         private static void reload(Context ctx) {
-            Cursor prefs = ctx.getContentResolver().query(ALL_PREFS_URI, null, null, null, null);
-            if(prefs == null) {
-                Logger.d("X_Mod: Failed to retrieve settings!");
-                return;
-            }
-            while(prefs.moveToNext()) {
-                Logger.d("X_Mod: Reading variables (switching)");
-                int tempColor = 0;
-                switch (prefs.getString(SettingsProvider.QUERY_ALL_KEY)) {
-                    case "use_themes":
-                        themesEnabled = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE) == SettingsProvider.TRUE;
-                        Logger.d("X_Mod: Variable read for theme enabled of " + themesEnabled);
-                        continue;
-                    case "systemui_use_launcher_theme":
-                        themeSystemUI = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE) == SettingsProvider.TRUE;
-                        Logger.d("X_Mod: Variable read for theme sysui enabled of " + themesEnabled);
-                        continue;
-                    case "theme_PrimaryColor":
-                        tempColor = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE);
-                        colorPrimary = Color.rgb(Color.red(tempColor), Color.green(tempColor),
-                                Color.blue(tempColor));
-                        Logger.d("X_Mod: Variable read for primary color of " + colorPrimary);
-                        continue;
-                    case "theme_PrimaryDarkColor":
-                        tempColor = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE);
-                        colorPrimaryDark = Color.rgb(Color.red(tempColor), Color.green(tempColor),
-                                Color.blue(tempColor));
-                        Logger.d("X_Mod: Variable read for primarydark color of " + colorPrimaryDark);
-                        continue;
-                    case "theme_AccentColor":
-                        tempColor = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE);
-                        colorAccent = Color.rgb(Color.red(tempColor), Color.green(tempColor),
-                                Color.blue(tempColor));
-                        Logger.d("X_Mod: Variable read for accent color of " + colorAccent);
-                        continue;
-                    case "has_external":
-                        rotateLauncher = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE) == SettingsProvider.TRUE;
-                        continue;
-                    case "ext_dir":
-                        pathExternal = prefs.getString(SettingsProvider.QUERY_ALL_VALUE);
-                        Logger.d("X_Mod: Variable read for accent color of " + pathExternal);
-                        continue;
-                    case "usb_dir":
-                        pathUSB = prefs.getString(SettingsProvider.QUERY_ALL_VALUE);
-                        continue;
-                    case "has_usb":
-                        rotateLauncher = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE) == SettingsProvider.TRUE;
+            //try {
+                Uri ALL_PREFS_URI = Uri.parse("content://" + SettingsProvider.AUTHORITY + "/all");
+                ContentResolver contentResolver = ctx.getContentResolver();
+                if (!(contentResolver == null)) {
+                    Cursor prefs = contentResolver.query(ALL_PREFS_URI, null, null, null, null);
+                    if (prefs == null) {
+                        Logger.d("X_Mod: Failed to retrieve settings!");
+                        return;
+                    }
+                    while (prefs.moveToNext()) {
+                        Logger.d("X_Mod: Reading variables (switching)");
+                        int tempColor = 0;
+                        switch (prefs.getString(SettingsProvider.QUERY_ALL_KEY)) {
+                            case "use_themes":
+                                themesEnabled = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE) == SettingsProvider.TRUE;
+                                Logger.d("X_Mod: Variable read for theme enabled of " + themesEnabled);
+                                continue;
+                            case "systemui_use_launcher_theme":
+                                themeSystemUI = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE) == SettingsProvider.TRUE;
+                                Logger.d("X_Mod: Variable read for theme sysui enabled of " + themesEnabled);
+                                continue;
+                            case "theme_PrimaryColor":
+                                tempColor = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE);
+                                colorPrimary = Color.rgb(Color.red(tempColor), Color.green(tempColor),
+                                        Color.blue(tempColor));
+                                Logger.d("X_Mod: Variable read for primary color of " + colorPrimary);
+                                continue;
+                            case "theme_PrimaryDarkColor":
+                                tempColor = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE);
+                                colorPrimaryDark = Color.rgb(Color.red(tempColor), Color.green(tempColor),
+                                        Color.blue(tempColor));
+                                Logger.d("X_Mod: Variable read for primarydark color of " + colorPrimaryDark);
+                                continue;
+                            case "theme_AccentColor":
+                                tempColor = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE);
+                                colorAccent = Color.rgb(Color.red(tempColor), Color.green(tempColor),
+                                        Color.blue(tempColor));
+                                Logger.d("X_Mod: Variable read for accent color of " + colorAccent);
+                                continue;
+                            case "has_external":
+                                rotateLauncher = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE) == SettingsProvider.TRUE;
+                                continue;
+                            case "ext_dir":
+                                pathExternal = prefs.getString(SettingsProvider.QUERY_ALL_VALUE);
+                                Logger.d("X_Mod: Variable read for accent color of " + pathExternal);
+                                continue;
+                            case "usb_dir":
+                                pathUSB = prefs.getString(SettingsProvider.QUERY_ALL_VALUE);
+                                continue;
+                            case "romtype":
+                                romType = prefs.getString(SettingsProvider.QUERY_ALL_VALUE);
+                                Logger.v("X_Mod: Romtype identified as " + romType);
+                                continue;
+                            case "has_usb":
+                                rotateLauncher = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE) == SettingsProvider.TRUE;
 
 
+                        }
+                    }
+                    prefs.close();
                 }
-            }
+//            }catch (NullPointerException | IllegalArgumentException e) {
+//                Logger.e("X_Mod: NPE.  Probably settingsProvider isn't ready yet" + e);
+//            }
         }
     }
 
@@ -1031,11 +1043,12 @@ public class X_Mod
     @Override
     public void handleInitPackageResources(final XC_InitPackageResources.InitPackageResourcesParam
                                                    resparam) throws Throwable {
-
+        XposedBridge.log("Sensify: handleInit Started");
         if (themesEnabled) {
 
-            if (resparam.packageName.equals(PKG_SYSTEMUI) && themeSystemUI) {
-                Logger.v("Replacing Theme resources for SystemUI.");
+            if (resparam.packageName.equals(PKG_SYSTEMUI) && themeSystemUI && romType.equals("Google")) {
+                Logger.v("X_Mod: ROM build identified as " + romType);
+                Logger.v("X_Mod: Replacing Theme resources for Google SystemUI.");
 
                 resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_primary_color",
                         colorPrimary);
@@ -1052,8 +1065,37 @@ public class X_Mod
                 resparam.res.setReplacement(PKG_SYSTEMUI, "color", "notification_material_background_media_default_color",
                         colorPrimary);
 
-                Logger.v("Replaced Theme resources for SystemUI.");
-            } else if (resparam.packageName.equals(PKG_SETTINGS)) {
+                Logger.v("X_Mod: Replaced Theme resources for Google SystemUI.");
+
+            } else if (resparam.packageName.equals(PKG_SYSTEMUI) && romType.equals("Sense")) {
+                Logger.v("X_Mod: ROM build identified as " + romType);
+                if (themeSystemUI) {
+                    Logger.v("X_Mod: Replacing Theme resources for Sense SystemUI.");
+
+                    resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_primary_color",
+                            colorPrimary);
+                    resparam.res.setReplacement(PKG_SYSTEMUI, "color", "category_color",
+                            colorAccent);
+                    resparam.res.setReplacement(PKG_SYSTEMUI, "color", "keyguard_avatar_frame_pressed_color",
+                            colorAccent);
+                    resparam.res.setReplacement(PKG_SYSTEMUI, "color", "CategoryTwo_category_color",
+                            colorPrimary);
+                    resparam.res.setReplacement(PKG_SYSTEMUI, "color", "CategoryTwo_dark_category_color", colorPrimaryDark);
+                    resparam.res.setReplacement(PKG_SYSTEMUI, "color", "CategoryTwo_multiply_color", colorPrimary);
+                    resparam.res.setReplacement(PKG_SYSTEMUI, "color", "CategoryTwo_overlay_color", colorPrimary);
+                    resparam.res.setReplacement(PKG_SYSTEMUI, "color", "CategoryTwo_dark_progress_fill_center_color", colorPrimary);
+                    resparam.res.setReplacement(PKG_SYSTEMUI, "color", "CategoryTwo_dark_progress_fill_end_color", colorPrimaryDark);
+
+                    resparam.res.setReplacement(PKG_SYSTEMUI, "color", "CategoryTwo_text_selection_color",
+                            colorPrimaryDark);
+                    resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_accent_color",
+                            colorAccent);
+                    resparam.res.setReplacement(PKG_SYSTEMUI, "color", "qs_detail_progress_track",
+                            colorAccent);
+
+                    Logger.v("X_Mod: Replaced Theme resources for Sense SystemUI.");
+                }
+                } else if (resparam.packageName.equals(PKG_SETTINGS)) {
                 Logger.v("Replacing Theme resources for Settings app.");
 
                 resparam.res.setReplacement(PKG_SETTINGS, "color", "theme_primary",
@@ -1264,14 +1306,15 @@ public class X_Mod
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable {
         MODULE_PATH = startupParam.modulePath;
+        XposedBridge.log("Sensify: initZygote Started");
         if (themesEnabled) {
             replaceSystemWideThemes();
-            Logger.v("Themes are enabled in module settings.");
+            Logger.v("X_Mod:Themes are enabled in module settings.");
         } else {
-            Logger.v("Themes are turned off in module settings.");
+            Logger.v("X_Mod:Themes are turned off in module settings.");
         }
 
-        Logger.v("Loading hook to add HTC features to system feature list...");
+        Logger.v("X_Mod: Loading hook to add HTC features to system feature list...");
 
         XposedHelpers.findAndHookMethod(CLASS_PACKAGEMANAGER, null, "getSystemAvailableFeatures",
                 new XC_MethodHook() {
@@ -1324,7 +1367,38 @@ public class X_Mod
         XResources.setSystemWideReplacement("android", "color", "material_deep_teal_200",
                 colorPrimaryDark);
 
+
+
         Logger.v("Theme resources replaced.");
+        if (romType.equals("Sense")) {
+            Logger.d("X_Mod: Replacing Sense system resources.");
+            XResources.setSystemWideReplacement("android", "color", "text_selection_opacity_color", colorAccent);
+            XResources.setSystemWideReplacement("android", "color", "text_selection_color", colorPrimary);
+            XResources.setSystemWideReplacement("android", "color", "light_category_color", colorAccent);
+            XResources.setSystemWideReplacement("android", "color", "category_color", colorPrimary);
+            XResources.setSystemWideReplacement("android", "color", "dark_category_color", colorPrimaryDark);
+            XResources.setSystemWideReplacement("android", "color", "overlay_color", colorPrimary);
+            XResources.setSystemWideReplacement("android", "color", "standard_color", colorPrimary);
+            XResources.setSystemWideReplacement("android", "color", "active_color", colorPrimary);
+            XResources.setSystemWideReplacement("android", "color", "CategoryOne_active_color", colorPrimary);
+            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_text_selection_opacity_color", colorAccent);
+            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_text_selection_color", colorPrimary);
+            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_light_category_color", colorPrimary);
+            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_category_color", colorPrimaryDark);
+            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_dark_category_color", colorPrimaryDark);
+            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_multiply_color", colorPrimary);
+            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_overlay_color", colorPrimary);
+            XResources.setSystemWideReplacement("android", "color", "CategoryThree_active_color", colorPrimary);
+            XResources.setSystemWideReplacement("android", "color", "CategoryFour_text_selection_opacity_color", colorAccent);
+            XResources.setSystemWideReplacement("android", "color", "CategoryFour_text_selection_color", colorPrimary);
+            XResources.setSystemWideReplacement("android", "color", "CategoryFour_light_category_color", colorAccent);
+            XResources.setSystemWideReplacement("android", "color", "CategoryFour_category_color", colorPrimary);
+            XResources.setSystemWideReplacement("android", "color", "CategoryFour_dark_category_color", colorPrimaryDark);
+            XResources.setSystemWideReplacement("android", "color", "CategoryFour_overlay_color", colorPrimary);
+            XResources.setSystemWideReplacement("android", "color", "CategoryFour_standard_color", colorPrimaryDark);
+            XResources.setSystemWideReplacement("android", "color", "CategoryFour_active_color", colorPrimary);
+        }
+
     }
 
 }
