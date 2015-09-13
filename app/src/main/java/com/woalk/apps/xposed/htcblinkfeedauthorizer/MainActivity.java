@@ -30,7 +30,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -484,7 +483,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
             ft.replace(android.R.id.widget_frame, new DownloadFragment());
             tv2.setText("Downloads");
         } else if (position == 3) {
-            ft.replace(android.R.id.widget_frame, new AboutSensifyFragment());
+            ft.replace(android.R.id.widget_frame, new ModuleFragment());
             tv2.setText("Module");
         }
         tv2.setText(mNavItems.get(position).mTitle);

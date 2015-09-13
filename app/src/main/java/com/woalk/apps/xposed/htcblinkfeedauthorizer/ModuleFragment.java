@@ -9,7 +9,7 @@ import android.preference.PreferenceFragment;
 
 import java.io.File;
 
-public class AboutSensifyFragment extends PreferenceFragment {
+public class ModuleFragment extends PreferenceFragment {
 
     private static final String KEY_LOG_WARN_SHOWN = "log_warn";
     private String file;

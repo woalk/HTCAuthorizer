@@ -28,10 +28,9 @@
             android:key="has_ext"
             android:summary="@string/pref_storage_ext_check_summary"
             android:title="@string/pref_storage_ext_check_title"/>
-        <EditTextPreference
+        <Preference
             android:defaultValue="/storage/ext_sd"
             android:dependency="has_ext"
-            android:inputType="textNoSuggestions"
             android:key="ext_dir"
             android:summary=""
             android:title="@string/pref_storage_ext_path_title"/>
@@ -40,10 +39,9 @@
             android:key="has_usb"
             android:summary="@string/pref_storage_usb_check_summary"
             android:title="@string/pref_storage_usb_check_title"/>
-        <EditTextPreference
+        <Preference
             android:defaultValue="/storage/usb"
             android:dependency="has_usb"
-            android:inputType="textNoSuggestions"
             android:key="usb_dir"
             android:summary=""
             android:title="@string/pref_storage_usb_path_title"/>
