@@ -40,11 +40,17 @@ android {
 dependencies {
     repositories {
         jcenter()
+        flatDir {
+            dirs 'libs'
+        }
+
     }
 
     provided fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.1.0'
     compile 'com.android.support:palette-v7:22.0.0'
-    compile 'com.negusoft.greenmatter:GreenMatter:0.7-alpha'
+    compile(name:'GreenMatter', ext:'aar')
+
+    //compile 'com.negusoft.greenmatter:GreenMatter:0.7-alpha'
 
 }

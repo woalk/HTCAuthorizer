@@ -19,7 +19,7 @@
 
     </style>
 
-    <style name="AppTheme2" parent="Theme.GreenMatter">
+    <style name="AppTheme2" parent="Theme.GreenMatter.Light">
         <item name="matColorPrimary">@color/Primary</item>
         <item name="matColorPrimaryDark">@color/PrimaryDark</item>
         <item name="matColorAccent">@color/Accent</item>
