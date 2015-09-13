@@ -1,0 +1,39 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Downloads">
+        <Preference
+            android:key="dl_Prism"
+            android:title="Sense Home"
+            android:summary="Download HTC Sense Home launcher"/>
+        <Preference
+            android:key="dl_Clock"
+            android:title="Deskclock"
+            android:summary="Download HTC Deskclock"/>
+        <Preference
+            android:key="dl_Weather"
+            android:title="Weather"
+            android:summary="Download HTC Weather"/>
+        <Preference
+            android:key="dl_IME"
+            android:title="HTC IME"
+            android:summary="Download HTC Keyboard"/>
+        <Preference
+            android:key="dl_Gallery"
+            android:title="HTC Gallery"
+            android:summary="Download HTC Gallery"/>
+        <Preference
+            android:key="dl_Camera"
+            android:title="HTC Camera"
+            android:summary="Download HTC Camera"/>
+        <Preference
+            android:key="dl_Browser"
+            android:title="HTC Browser"
+            android:summary="Download HTC Browser"/>
+        <Preference
+            android:key="dl_Scribble"
+            android:title="HTC Scribble"
+            android:summary="Download HTC Scribble"/>
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

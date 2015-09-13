@@ -20,18 +20,7 @@
             android:summary="@string/pref_debug_export_log_summary"
             android:title="@string/pref_debug_export_log_title"/>
 
-
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/pref_cat_about">
-        <Preference
-            android:key="version"
-            android:selectable="false"
-            android:title="@string/pref_about_version_title"/>
-        <Preference
-            android:key="version"
-            android:selectable="false"
-            android:summary="@string/pref_about_dev_summary"
-            android:title="@string/pref_about_dev_title"/>
-    </PreferenceCategory>
+
 </PreferenceScreen>

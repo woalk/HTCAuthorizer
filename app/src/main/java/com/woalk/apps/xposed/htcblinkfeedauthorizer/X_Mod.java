@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.FeatureInfo;
 import android.content.res.Resources;
-import android.content.res.XModuleResources;
 import android.content.res.XResources;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -159,7 +158,6 @@ public class X_Mod
             PKG_HTC_FEATURE + ".hdk2",
             PKG_HTC_FEATURE + ".hdk3"
     };
-    private static String MODULE_PATH = null;
     private static boolean themesEnabled = false;
     private static boolean themeSystemUI = false;
     private static boolean useUSB = false;
@@ -179,7 +177,7 @@ public class X_Mod
 
 
         private static void reload(Context ctx) {
-            //try {
+            try {
                 Uri ALL_PREFS_URI = Uri.parse("content://" + SettingsProvider.AUTHORITY + "/all");
                 ContentResolver contentResolver = ctx.getContentResolver();
                 if (!(contentResolver == null)) {
@@ -189,7 +187,6 @@ public class X_Mod
                         return;
                     }
                     while (prefs.moveToNext()) {
-                        Logger.d("X_Mod: Reading variables (switching)");
                         int tempColor = 0;
                         switch (prefs.getString(SettingsProvider.QUERY_ALL_KEY)) {
                             case "use_themes":
@@ -219,8 +216,13 @@ public class X_Mod
                                 Logger.d("X_Mod: Variable read for accent color of " + colorAccent);
                                 continue;
                             case "has_external":
-                                rotateLauncher = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE) == SettingsProvider.TRUE;
+                                useExternal = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE) == SettingsProvider.TRUE;
                                 continue;
+                            case "force_rotate":
+                                rotateLauncher = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE) == SettingsProvider.TRUE;
+                                Logger.d("X_Mod: Variable read for rotation of " + rotateLauncher);
+                                continue;
+
                             case "ext_dir":
                                 pathExternal = prefs.getString(SettingsProvider.QUERY_ALL_VALUE);
                                 Logger.d("X_Mod: Variable read for accent color of " + pathExternal);
@@ -233,16 +235,16 @@ public class X_Mod
                                 Logger.v("X_Mod: Romtype identified as " + romType);
                                 continue;
                             case "has_usb":
-                                rotateLauncher = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE) == SettingsProvider.TRUE;
+                                useUSB = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE) == SettingsProvider.TRUE;
 
 
                         }
                     }
                     prefs.close();
                 }
-//            }catch (NullPointerException | IllegalArgumentException e) {
-//                Logger.e("X_Mod: NPE.  Probably settingsProvider isn't ready yet" + e);
-//            }
+            }catch (NullPointerException | IllegalArgumentException e) {
+                Logger.e("X_Mod: NPE.  Probably settingsProvider isn't ready yet" + e);
+            }
         }
     }
 
@@ -402,7 +404,6 @@ public class X_Mod
                                     }
                                     Context context = (Context) AndroidAppHelper.currentApplication();
                                     int PICK_CONTACT_REQUEST = 1;
-                                    Logger.d("X_MOD: Sending intent");
                                     context.sendBroadcast(intent);
 
                                 }
@@ -413,9 +414,7 @@ public class X_Mod
                     });
 
             try {
-
                 if (rotateLauncher) {
-                    Logger.v("Loading hook for BlinkFeed rotation.");
                     XposedHelpers.findAndHookMethod(Activity.class, "setRequestedOrientation",
                             int.class, new XC_MethodHook() {
                                 @Override
@@ -425,8 +424,6 @@ public class X_Mod
                                     param.args[0] = 2;
                                 }
                             });
-                } else {
-                    Logger.v("Rotation seems to be disabled");
                 }
             } catch (Throwable e) {
                 Logger.w("Rotation hook not loaded.", e);
@@ -1043,7 +1040,6 @@ public class X_Mod
     @Override
     public void handleInitPackageResources(final XC_InitPackageResources.InitPackageResourcesParam
                                                    resparam) throws Throwable {
-        XposedBridge.log("Sensify: handleInit Started");
         if (themesEnabled) {
 
             if (resparam.packageName.equals(PKG_SYSTEMUI) && themeSystemUI && romType.equals("Google")) {
@@ -1220,7 +1216,6 @@ public class X_Mod
                 Logger.v("Replaced Theme resources for Dialer app.");
             } else if (resparam.packageName.equals(PKG_GOOGLECONTACTS)) {
                 Logger.v("Replacing Theme resources for Contacts app.");
-                XModuleResources modRes = XModuleResources.createInstance(MODULE_PATH, resparam.res);
 
                 resparam.res.setReplacement(PKG_CONTACTS, "color", "floating_action_button_icon_color",
                         colorPrimaryDark);
@@ -1305,7 +1300,6 @@ public class X_Mod
 
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable {
-        MODULE_PATH = startupParam.modulePath;
         XposedBridge.log("Sensify: initZygote Started");
         if (themesEnabled) {
             replaceSystemWideThemes();

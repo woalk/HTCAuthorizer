@@ -33,7 +33,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/drawerBottom"
+        android:id="@+id/drawerReboot"
         android:paddingTop="15dip"
         android:paddingBottom="15dip"
         android:clickable="true"
@@ -50,10 +50,42 @@
             android:layout_marginEnd="17dp"
             android:layout_marginTop="0dip"
             android:tint="#424242"
-            android:src="@drawable/ic_info"/>
+            android:src="@drawable/ic_replay_black_24dp"/>
 
         <TextView
             android:id="@+id/title1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dip"
+            android:text="Reboot"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_vertical"
+            android:textColor="#424242"
+            android:textSize="16sp"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/drawerAbout"
+        android:paddingTop="15dip"
+        android:paddingBottom="15dip"
+        android:clickable="true"
+        android:background="?attr/selectableItemBackground"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/icon2"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="17dp"
+            android:layout_marginTop="0dip"
+            android:tint="#424242"
+            android:src="@drawable/ic_info"/>
+
+        <TextView
+            android:id="@+id/title2"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="0dip"
@@ -64,7 +96,6 @@
             android:textSize="16sp"/>
 
     </LinearLayout>
-
 
 
 </LinearLayout>

@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -54,7 +55,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     public int mMainColor, mSecondaryColor, mAccentColor;
     public boolean mUseThemes;
     ListView mDrawerList;
-    LinearLayout mDrawerPane, mDrawerBotom;
+    LinearLayout mDrawerPane, mDrawerReboot, mDrawerAbout;
     ArrayList<NavItem> mNavItems = new ArrayList<>();
     private android.support.v7.widget.Toolbar toolbar;
     private String curTitle;
@@ -95,10 +96,12 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
         //Add drawerdown items
         mNavItems.add(new NavItem("Main", R.drawable.ic_settings));
         mNavItems.add(new NavItem("Themes", R.drawable.ic_style));
-        mNavItems.add(new NavItem("Reboot", R.drawable.ic_replay_white_24dp));
+        mNavItems.add(new NavItem("Downloads", R.drawable.ic_get_app_white_24dp));
+        mNavItems.add(new NavItem("Module Settings", R.drawable.ic_info));
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         mDrawerPane = (LinearLayout) findViewById(R.id.drawerPane);
-        mDrawerBotom = (LinearLayout) findViewById(R.id.drawerBottom);
+        mDrawerReboot = (LinearLayout) findViewById(R.id.drawerReboot);
+        mDrawerAbout = (LinearLayout) findViewById(R.id.drawerAbout);
         mDrawerList = (ListView) findViewById(R.id.navList);
         DrawerListAdapter adapter = new DrawerListAdapter(this, mNavItems);
         mDrawerList.setAdapter(adapter);
@@ -118,15 +121,18 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (v.equals(mDrawerBotom)) {
-                    fragmentSelect(3);
-                    curPos=3;
+                if (v.equals(mDrawerReboot)) {
                     mDrawerLayout.closeDrawer(GravityCompat.START);
+                    showRebootDialog();
 
+                } else if (v.equals(mDrawerAbout)) {
+                    mDrawerLayout.closeDrawer(GravityCompat.START);
+                    showAboutDialog();
                 }
             }
         };
-        mDrawerBotom.setOnClickListener(onClickListener);
+        mDrawerReboot.setOnClickListener(onClickListener);
+        mDrawerAbout.setOnClickListener(onClickListener);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         // Drawer Item click listeners
@@ -134,6 +140,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selectItemFromDrawer(position);
+                Logger.d("MainActivity: Onclick at position " + position);
 
             }
         });
@@ -320,7 +327,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
                             public void onClick(DialogInterface dialog, int which) {
                                 try {
                                     startActivity(new Intent(Intent.ACTION_VIEW,
-                                            Uri.parse("market://details?id=" + PKG_HSP)));
+                                            Uri.parse("http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=18731")));
                                 } catch (android.content.ActivityNotFoundException e) {
                                     startActivity(new Intent(Intent.ACTION_VIEW,
                                             Uri.parse("https://play.google.com/store/apps/" +
@@ -344,18 +351,12 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
 
     //Drawer selection logic
     private void selectItemFromDrawer(final int position) {
-        if (position == 2) showRebootDialog();
-        else if (position == 3) {
-            mDrawerLayout.closeDrawer(GravityCompat.START);
-            curPos = position;
-
-        } else {
             fragmentSelect(position);
             mDrawerLayout.closeDrawer(GravityCompat.START);
             mDrawerList.setItemChecked(position, true);
             curPos = position;
 
-        }
+
     }
 
     //Self explanatory
@@ -404,8 +405,28 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
         builder.show();
     }
 
+    private void showAboutDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("About Sensify")
+                .setMessage("Version: " + Common.versionName + "\nCreated by: Woalk & Digitalhigh")
+                .setCancelable(true);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.setIcon(R.drawable.ic_info);
+        AlertDialog alert = builder.create();
+        alert.show();
+
+
+    }
+
+
     private void checkRomType() {
-        Logger.v("MainActivity: here's some info. " + Build.BRAND + " " + Build.DEVICE + " " + Build.DISPLAY + " " + Build.HOST);
+        Logger.v("MainActivity: here's some info. " + Build.FINGERPRINT + " " + Build.DEVICE + " " + Build.DISPLAY + " " + Build.HOST);
         Process p = null;
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -427,13 +448,13 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
             }
 
             p.destroy();
-            if ((!(sense_sdk=="")) && (!(sense_version=="")) ) {
+            if ((!sense_sdk.equals("")) && (!sense_version.equals(""))) {
                 Logger.d("MainActivity: Sense ROM found. " + sense_sdk + " and " + sense_version);
                 editor.putString("romtype","Sense");
                 editor.commit();
 
-            } else if (Build.HOST.contains("google.com")) {
-                Logger.d("MainActivity: Google ROM found " + Build.HOST);
+            } else if (Build.HOST.contains("google.com") || Build.FINGERPRINT.contains("google")) {
+                Logger.d("MainActivity: Google ROM found " + Build.FINGERPRINT);
                 editor.putString("romtype","Google");
                 editor.commit();
             }
@@ -459,11 +480,14 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
         } else if (position == 1) {
             ft.replace(android.R.id.widget_frame, new ThemeFragment());
             tv2.setText("Themes");
+        } else if (position == 2) {
+            ft.replace(android.R.id.widget_frame, new DownloadFragment());
+            tv2.setText("Downloads");
         } else if (position == 3) {
             ft.replace(android.R.id.widget_frame, new AboutSensifyFragment());
-            tv2.setText("About");
+            tv2.setText("Module");
         }
-
+        tv2.setText(mNavItems.get(position).mTitle);
         ft.commit();
     }
 
@@ -563,7 +587,6 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
 
         public NavItem(String title, int icon) {
             mTitle = title;
-
             mIcon = icon;
         }
     }
