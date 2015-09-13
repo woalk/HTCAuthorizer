@@ -3,16 +3,26 @@ package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
+import android.preference.PreferenceManager;
 import android.widget.Toast;
+
+import java.io.File;
 
 public class MainPreferenceFragment extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
+    private Preference killpref;
+    private static Preference pathUSB;
+    private static Preference pathExt;
+
     public static final String EXTRA_SUBSCREEN_ID = "subscreen_id";
     public static final int SUBSCREEN_ID_ALWAYS_ACTIVE = 1;
+    private File directory = new File(Environment.getExternalStorageDirectory().toString());
+
 
     /**
      * Set a preference's summary text to the value it holds.
@@ -25,8 +35,8 @@ public class MainPreferenceFragment extends PreferenceFragment
      * @param pref The {@link Preference} to check and edit, if possible.
      */
     public static void setPreferenceValueToSummary(Preference pref) {
-        if (pref instanceof EditTextPreference) {
-            pref.setSummary(((EditTextPreference) pref).getText());
+        if (pref.getKey().contains("_dir")) {
+            pref.setSummary(pref.getSharedPreferences().getString(pref.getKey(),""));
         }
     }
 
@@ -41,14 +51,9 @@ public class MainPreferenceFragment extends PreferenceFragment
      * @param prefG The {@link PreferenceGroup} to iterate over, check and edit, if possible.
      */
     public static void setAllPreferenceValuesToSummary(PreferenceGroup prefG) {
-        for (int i = 0; i < prefG.getPreferenceCount(); i++) {
-            Preference pref = prefG.getPreference(i);
-            if (pref instanceof PreferenceGroup) {
-                setAllPreferenceValuesToSummary((PreferenceGroup) pref);
-            } else {
-                setPreferenceValueToSummary(pref);
-            }
-        }
+                    setPreferenceValueToSummary(pathExt);
+                    setPreferenceValueToSummary(pathUSB);
+
     }
 
     public void onCreate(Bundle savedInstanceState) {
@@ -65,8 +70,10 @@ public class MainPreferenceFragment extends PreferenceFragment
 
         addPreferencesFromResource(R.xml.pref_general);
         Preference permpref = findPreference("create_perm");
-        Preference killpref = findPreference("kill_launcher");
+        killpref = findPreference("kill_launcher");
 
+        pathUSB = findPreference("usb_dir");
+        pathExt = findPreference("ext_dir");
 
         permpref.setOnPreferenceClickListener(
                 new Preference.OnPreferenceClickListener() {
@@ -97,6 +104,47 @@ public class MainPreferenceFragment extends PreferenceFragment
                     }
                 });
 
+        pathUSB.setOnPreferenceClickListener(
+                new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(final Preference preference) {
+                        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                        File curPath = new File (sharedPreferences.getString("usb_dir",directory.toString()));
+                        FileDialog fd = new FileDialog(getActivity(),curPath);
+                        fd.setSelectDirectoryOption(true);
+                        fd.createFileDialog();
+                        fd.addDirectoryListener(new FileDialog.DirectorySelectedListener() {
+                            @Override
+                            public void directorySelected(File directory) {
+                                preference.getEditor().putString("usb_dir", directory.toString());
+                                //preference.setSummary(directory.toString());
+                            }
+                        });
+                        return true;
+                    }
+                }
+        );
+
+        pathExt.setOnPreferenceClickListener(
+                new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(final Preference preference) {
+                        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                        File curPath = new File (sharedPreferences.getString("ext_dir",directory.toString()));
+                        FileDialog fd = new FileDialog(getActivity(),curPath);
+                        fd.setSelectDirectoryOption(true);
+                        fd.createFileDialog();
+                        fd.addDirectoryListener(new FileDialog.DirectorySelectedListener() {
+                            @Override
+                            public void directorySelected(File directory) {
+                                preference.getEditor().putString("ext_dir", directory.toString());
+                                //preference.setSummary(directory.toString());
+                            }
+                        });
+                        return true;
+                    }
+                }
+        );
 
         setAllPreferenceValuesToSummary(getPreferenceScreen());
     }
@@ -105,7 +153,7 @@ public class MainPreferenceFragment extends PreferenceFragment
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         // update value shown in summary
         Preference pref = findPreference(key);
-        if (pref instanceof EditTextPreference) {
+        if (key.contains("_dir")) {
             pref.setSummary(((EditTextPreference) pref).getText());
         }
 
