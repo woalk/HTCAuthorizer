@@ -14,20 +14,17 @@ import com.negusoft.greenmatter.activity.MatActivity;
 
 
 public class LogActivity extends MatActivity {
-    private TextView tv1;
-    private int maincolor;
-    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         final android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
-        maincolor = sharedPreferences.getInt("theme_PrimaryColor",0);;
-        toolbar.setBackgroundColor(maincolor);
-        tv1 = (TextView) findViewById(R.id.tv1);
-        tv1.setText("Logging");
+        int mainColor = sharedPreferences.getInt("theme_PrimaryColor", 0);
+        toolbar.setBackgroundColor(mainColor);
+        TextView tv1 = (TextView) findViewById(R.id.tv1);
+        tv1.setText(R.string.fragment_title_Logging);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

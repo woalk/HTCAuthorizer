@@ -3,7 +3,6 @@ package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 
@@ -11,7 +10,6 @@ import java.io.File;
 
 public class ModuleFragment extends PreferenceFragment {
 
-    private static final String KEY_LOG_WARN_SHOWN = "log_warn";
     private String file;
 
 
@@ -39,11 +37,9 @@ public class ModuleFragment extends PreferenceFragment {
                     @Override
                     public boolean onPreferenceClick(Preference preferences) {
                         saveLog(logLoc);
-                        File sd = Environment.getExternalStorageDirectory();
-                        Logger.d("AboutFragment: path " + Uri.fromFile(new File(file)));
                         Intent email = new Intent(Intent.ACTION_SEND);
                         email.setType("text/plain");
-                        Intent intent = email.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(file)));
+                        email.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(file)));
                         startActivity(Intent.createChooser(email, "Email: Text File"));
                         return true;
                     }
@@ -53,7 +49,7 @@ public class ModuleFragment extends PreferenceFragment {
     }
 
     private void saveLog(Preference logLoc) {
-        file = Logger.saveLogcat(getActivity());
+        file = Logger.saveLogcat();
         logLoc.setEnabled(true);
         logLoc.setSummary("Log file saved to" + file);
     }

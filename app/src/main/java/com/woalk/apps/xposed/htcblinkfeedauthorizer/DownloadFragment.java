@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 
+import java.util.Locale;
+
 public class DownloadFragment extends PreferenceFragment implements Preference.OnPreferenceClickListener {
     private Preference dlPrismPref, dlCameraPref, dlImePref, dlGalleryPref, dlBrowserPref, dlClockPref, dlWeatherPref, dlScribblePref;
 
@@ -35,46 +37,59 @@ public class DownloadFragment extends PreferenceFragment implements Preference.O
     @Override
     public boolean onPreferenceClick(Preference preference) {
         if (preference == dlPrismPref) {
-            String url = "http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=21581";
+            String url = getString(R.string.dl_path_Prism);
             downloadFile(url);
-            //downloadApp.cancel(true);
-            //downloadApp.execute("http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=21581");
         } else if (preference == dlCameraPref) {
-            String url = "http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=18737";
+            String url = getString(R.string.dl_path_Camera);
             downloadFile(url);
         } else if (preference == dlGalleryPref) {
-            String url = "http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=21581";
+            String url = getString(R.string.dl_path_Gallery);
             downloadFile(url);
         } else if (preference == dlImePref) {
-            String url = "http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=16867";
+            String url = getString(R.string.dl_path_Ime);
             downloadFile(url);
-            url = "http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=16106";
-            downloadFile(url);
+            url = "";
+            Locale current = getResources().getConfiguration().locale;
+            Logger.d("DownloadFragment: Locale is " + current);
+            if (current.toString().equals("en_US")) {
+                url = getString(R.string.dl_path_Ime_Eng);
+            } else if (current.toString().equals("en_GB")) {
+                url = getString(R.string.dl_path_en_GB);
+            } else if (current.toString().equals("es_US")) {
+                url = getString(R.string.dl_path_Ime_es);
+            } else if (current.toString().equals("lv_LV")) {
+                url = getString(R.string.dl_path_Ime_lv_LV);
+            } else if (current.toString().equals("lt_LT")) {
+                url = getString(R.string.dl_path_lt_LT);
+            } else if (current.toString().equals("nb_NO")) {
+                url = getString(R.string.dl_path_nb_NO);
+            } else if (current.toString().equals("it_IT")) {
+                url = getString(R.string.dl_path_it_IT);
+            } else if (current.toString().equals("ru_RU")) {
+                url = getString(R.string.dl_path_ru_RU);
+            } else if (current.toString().equals("uk_UA")) {
+                url = getString(R.string.dl_path_uk_UA);
+            } else if (current.toString().equals("de_DE")) {
+                url = getString(R.string.dl_path_de_DE);
+            }
+            if (!url.equals("")) downloadFile(url);
+
         } else if (preference == dlClockPref) {
-            String url = "http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=21581";
+            String url = getString(R.string.dl_path_Clock);
             downloadFile(url);
         } else if (preference == dlWeatherPref) {
-            String url = "http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=21581";
-            downloadFile(url);
-        } else if (preference == dlGalleryPref) {
-            String url = "http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=16517";
+            String url = getString(R.string.dl_path_Weather);
             downloadFile(url);
         } else if (preference == dlBrowserPref) {
-            String url = "http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=18733";
-            downloadFile(url);
-        } else if (preference == dlPrismPref) {
-            String url = "http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=21581";
-            downloadFile(url);
-            url = "http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=21223";
+            String url = getString(R.string.dl_path_Browser);
             downloadFile(url);
         } else if (preference == dlScribblePref) {
-            String url = "http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=16625";
+            String url = getString(R.string.dl_path_Scribble);
             downloadFile(url);
-
-
         }
         return false;
     }
+
     private void downloadFile(String url) {
         Intent i = new Intent(Intent.ACTION_VIEW);
         i.setData(Uri.parse(url));

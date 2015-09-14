@@ -1,6 +1,5 @@
 package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
@@ -107,9 +106,6 @@ public class Logger {
         return sb.toString();
     }
 
-    public static String getLogColorString(int color) {
-        return String.valueOf(color) + ":#" + Integer.toHexString(color).toUpperCase(Locale.getDefault());
-    }
 
     // v---- READING ----v \\
 
@@ -163,7 +159,7 @@ public class Logger {
         }.execute();
     }
 
-    public static String saveLogcat(final Context context) {
+    public static String saveLogcat() {
         String path = "/Sensify";
         File directory = new File(Environment.getExternalStorageDirectory().toString() + path);
         String date = new SimpleDateFormat("yyyy-MM-dd-hh-mm", Locale.getDefault())

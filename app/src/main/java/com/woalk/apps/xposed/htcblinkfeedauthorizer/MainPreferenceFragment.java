@@ -7,21 +7,19 @@ import android.os.Environment;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 import java.io.File;
 
 public class MainPreferenceFragment extends PreferenceFragment
-        implements SharedPreferences.OnSharedPreferenceChangeListener {
-    private Preference killpref;
+        implements Preference.OnPreferenceClickListener {
     private static Preference pathUSB;
     private static Preference pathExt;
 
     public static final String EXTRA_SUBSCREEN_ID = "subscreen_id";
     public static final int SUBSCREEN_ID_ALWAYS_ACTIVE = 1;
-    private File directory = new File(Environment.getExternalStorageDirectory().toString());
+    private File mDefaultDirectory = new File(Environment.getExternalStorageDirectory().toString());
 
 
     /**
@@ -48,9 +46,8 @@ public class MainPreferenceFragment extends PreferenceFragment
      * <li>{@link EditTextPreference}</li>
      * </ul>
      *
-     * @param prefG The {@link PreferenceGroup} to iterate over, check and edit, if possible.
      */
-    public static void setAllPreferenceValuesToSummary(PreferenceGroup prefG) {
+    public static void setAllPreferenceValuesToSummary() {
                     setPreferenceValueToSummary(pathExt);
                     setPreferenceValueToSummary(pathUSB);
 
@@ -65,12 +62,9 @@ public class MainPreferenceFragment extends PreferenceFragment
             return;
         }
 
-        getPreferenceManager().getSharedPreferences()
-                .registerOnSharedPreferenceChangeListener(this);
-
         addPreferencesFromResource(R.xml.pref_general);
         Preference permpref = findPreference("create_perm");
-        killpref = findPreference("kill_launcher");
+        Preference killpref = findPreference("kill_launcher");
 
         pathUSB = findPreference("usb_dir");
         pathExt = findPreference("ext_dir");
@@ -104,60 +98,32 @@ public class MainPreferenceFragment extends PreferenceFragment
                     }
                 });
 
-        pathUSB.setOnPreferenceClickListener(
-                new Preference.OnPreferenceClickListener() {
-                    @Override
-                    public boolean onPreferenceClick(final Preference preference) {
-                        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                        File curPath = new File (sharedPreferences.getString("usb_dir",directory.toString()));
-                        FileDialog fd = new FileDialog(getActivity(),curPath);
-                        fd.setSelectDirectoryOption(true);
-                        fd.createFileDialog();
-                        fd.addDirectoryListener(new FileDialog.DirectorySelectedListener() {
-                            @Override
-                            public void directorySelected(File directory) {
-                                preference.getEditor().putString("usb_dir", directory.toString());
-                                //preference.setSummary(directory.toString());
-                            }
-                        });
-                        return true;
-                    }
-                }
-        );
+        pathUSB.setOnPreferenceClickListener(this);
+        pathExt.setOnPreferenceClickListener(this);
 
-        pathExt.setOnPreferenceClickListener(
-                new Preference.OnPreferenceClickListener() {
-                    @Override
-                    public boolean onPreferenceClick(final Preference preference) {
-                        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                        File curPath = new File (sharedPreferences.getString("ext_dir",directory.toString()));
-                        FileDialog fd = new FileDialog(getActivity(),curPath);
-                        fd.setSelectDirectoryOption(true);
-                        fd.createFileDialog();
-                        fd.addDirectoryListener(new FileDialog.DirectorySelectedListener() {
-                            @Override
-                            public void directorySelected(File directory) {
-                                preference.getEditor().putString("ext_dir", directory.toString());
-                                //preference.setSummary(directory.toString());
-                            }
-                        });
-                        return true;
-                    }
-                }
-        );
-
-        setAllPreferenceValuesToSummary(getPreferenceScreen());
+        setAllPreferenceValuesToSummary();
     }
+
+
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        // update value shown in summary
-        Preference pref = findPreference(key);
-        if (key.contains("_dir")) {
-            pref.setSummary(((EditTextPreference) pref).getText());
-        }
-
+    public boolean onPreferenceClick(final Preference preference) {
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
+        final SharedPreferences.Editor editor = preference.getEditor();
+        File curPath = new File (sharedPreferences.getString(preference.getKey(), mDefaultDirectory.toString()));
+        FileDialog fd = new FileDialog(getActivity(),curPath);
+        fd.setSelectDirectoryOption(true);
+        fd.createFileDialog();
+        fd.addDirectoryListener(new FileDialog.DirectorySelectedListener() {
+            @Override
+            public void directorySelected(File directory) {
+                Logger.d("MainPrefFrag: Trying to put value of " + directory + " to " + preference.getKey());
+                editor.putString(preference.getKey(), directory.toString());
+                editor.commit();
+                Logger.d("MainPrefFrag: value of " + sharedPreferences.getString(preference.getKey(),""));
+                preference.setSummary(directory.toString());
+            }
+        });
+        return true;
     }
-
-
 }

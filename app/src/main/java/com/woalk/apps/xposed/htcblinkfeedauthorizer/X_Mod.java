@@ -64,6 +64,7 @@ public class X_Mod
     public static final String CLASS_BF_PROFILEBRIEF = "com.htc.themepicker.model.ProfileBrief";
     public static final String CLASS_BF_MIXINGTHEMECOLOR = "com.htc.themepicker.util" +
             ".MixingThemeColorUtil";
+    public static final String CLASS_BF_CURRENTTHEMEUTIL = "com.htc.themepicker.util.CurrentThemeUtil";
     public static final String CLASS_BF_THEME = "com.htc.themepicker.model.Theme";
     public static final String CLASS_BF_THEMECROP = "com.htc.themepicker.thememaker.WallpaperImageHandler";
     public static final String STRING_REBOOT = "Theme Applied, please reboot.";
@@ -254,7 +255,7 @@ public class X_Mod
     }
 
     @Override
-    public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
+    public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
         Object activityThread = XposedHelpers.callStaticMethod(XposedHelpers.findClass(ACTIVITY_THREAD_CLASS, null), ACTIVITY_THREAD_CURRENTACTHREAD);
         final Context systemCtx = (Context)XposedHelpers.callMethod(activityThread, ACTIVITY_THREAD_GETSYSCTX);
 
@@ -374,6 +375,22 @@ public class X_Mod
                 }
             });
 
+            XposedHelpers.findAndHookMethod(CLASS_BF_CURRENTTHEMEUTIL, lpparam.classLoader, "getFullColorCodes", Context.class, new XC_MethodHook() {
+
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    Logger.d("X_Mod: Hooking full theme reader.");
+                    int[] arrayOfInt = (int[]) param.getResult();
+                    Logger.logHookAfter(param);
+                    Intent intent = new Intent();
+                    intent.setAction("com.woalk.HTCAuthorizer.UPDATE_XML");
+                    intent.putExtra("full_Array", arrayOfInt);
+                    Context context = AndroidAppHelper.currentApplication();
+                    context.sendBroadcast(intent);
+
+                }
+            });
+
             // Theme permissions hook
             XposedHelpers.findAndHookMethod(CLASS_BF_MIXINGTHEMECOLOR, lpparam.classLoader,
                     "updateFullThemecolor", Context.class, CLASS_BF_THEME, new XC_MethodHook() {
@@ -382,6 +399,8 @@ public class X_Mod
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                             Logger.logHook(param);
                             Logger.v("X_Mod: HTC theme Hooked");
+                            Context context = AndroidAppHelper.currentApplication();
+                            
                             SharedPreferences theme_in = ((Context) param.args[0])
                                     .getSharedPreferences("mixing_theme_color_preference",
                                             Context.MODE_PRIVATE);
@@ -401,9 +420,11 @@ public class X_Mod
                                     } else if (x.getKey().contains("3")) {
                                         Logger.v("X_Mod: Found key containing 3");
                                         intent.putExtra("theme_AccentColor", (Integer) x.getValue());
+                                    } else if (x.getKey().contains("4")) {
+                                        Logger.v("X_Mod: Found key containing 4");
+                                        intent.putExtra("theme_Color4", (Integer) x.getValue());
+
                                     }
-                                    Context context = (Context) AndroidAppHelper.currentApplication();
-                                    int PICK_CONTACT_REQUEST = 1;
                                     context.sendBroadcast(intent);
 
                                 }

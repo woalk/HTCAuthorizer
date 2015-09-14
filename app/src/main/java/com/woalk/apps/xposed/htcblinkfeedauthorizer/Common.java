@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Arrays;
 
 public class Common {
     public static final String versionName = "2.0";
@@ -96,29 +97,24 @@ public class Common {
      * @param multiplier The {@code float} multiplier to apply to the light value.
      * @return A modified {@link Color} {@code int}.
      */
-    public static int enlightColor(int color, float multiplier) {
+    public static int enlightenColor(int color, float multiplier) {
         float[] hsv = new float[3];
         Color.RGBToHSV(Color.red(color), Color.green(color), Color.blue(color), hsv);
         hsv[2] = multiplier;
         return Color.HSVToColor(hsv);
     }
-
-    public static int tintColor(int inParamSource, int inParamDest) {
-        float[] hsvi = new float[3];
-        float[] hsvo = new float[3];
-        Color.colorToHSV(inParamSource, hsvi);
-        Color.colorToHSV(inParamDest, hsvo);
-        hsvo[0] = hsvi[0];
-        return Color.HSVToColor(hsvo);
+    public static int enlightenColor(int color, float saturation, float value) {
+        float[] hsv = new float[3];
+        Color.RGBToHSV(Color.red(color), Color.green(color), Color.blue(color), hsv);
+        hsv[2] = value;
+        hsv[1] = saturation;
+        return Color.HSVToColor(hsv);
     }
 
     /* Checks if external storage is available for read and write */
     public static boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            return true;
-        }
-        return false;
+        return Environment.MEDIA_MOUNTED.equals(state);
     }
 
     public static void killPackage(final String packageToKill) {
@@ -135,36 +131,12 @@ public class Common {
         }.execute();
     }
 
-    public static boolean isInteger(String str) {
-        if (str == null) {
-            return false;
-        }
-        int length = str.length();
-        if (length == 0) {
-            return false;
-        }
-        int i = 0;
-        if (str.charAt(0) == '-') {
-            if (length == 1) {
-                return false;
-            }
-            i = 1;
-        }
-        for (; i < length; i++) {
-            char c = str.charAt(i);
-            if (c <= '/' || c >= ':') {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public boolean copyPermFile() {
         File file = new File(Environment.getExternalStorageDirectory().toString() + "/Sensify/com.htc.software.market.xml");
         File sysfile = new File("/system/etc/permissions/com.htc.software.market.xml");
         if (!sysfile.exists()) {
             String[] cmd = {"mount -o remount,rw /system", "cp " + file + " " + sysfile, "mount -o remount,ro /system"};
-            Logger.d("Common: passing command to root - " + cmd);
+            Logger.d("Common: passing command to root - " + Arrays.toString(cmd));
             runAsRoot(cmd);
             return true;
 
@@ -235,7 +207,7 @@ public class Common {
             protected Void doInBackground(Void... params) {
                 try {
                     Process p = Runtime.getRuntime().exec("su");
-                    Logger.d("Common: runAsRoot recieved paramater " + cmds);
+                    Logger.d("Common: runAsRoot recieved paramater " + Arrays.toString(cmds));
                     DataOutputStream os = new DataOutputStream(p.getOutputStream());
 
                     for (String tmpCmd : cmds) {

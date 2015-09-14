@@ -14,8 +14,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.os.Handler;
 import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.View;
@@ -35,11 +34,10 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
     public int hue, sat, value, red, green, blue, original;
     public int mPickerBottom;
     public float[] hsv = new float[3];
-    public float[] hsvsat = new float[3];
-    public float[] hsvvalue = new float[3];
+    public float[] hsvSat = new float[3];
+    public float[] hsvValue = new float[3];
     private int myTheme;
     private ImageButton pickerButton;
-    private AnimatorSet mButtonHideSet, mButtonShowSet;
     private ObjectAnimator down, left, alphaIn, alphaOut, raise, lower, up, right;
 
     private boolean isAnimating, isPickerFrameShowing;
@@ -103,9 +101,9 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
         container = (RelativeLayout) rootView.findViewById(R.id.container);
         pickerButton = (ImageButton) rootView.findViewById(R.id.button);
         pickerFrame = (RelativeLayout) rootView.findViewById(R.id.pickerframe);
-        pickerButton.setImageResource(R.drawable.ic_add_white_24dp);
         Drawable btnIconDrawable = pickerButton.getDrawable();
-        btnIconDrawable.setAlpha(0);
+        pickerButton.setImageResource(0);
+
         isPickerFrameShowing = false;
 
         // read positions of button, container height, screen width
@@ -137,13 +135,13 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
         matrixSat = new ColorMatrix();
 
         hsv = intToHSV(myTheme);
-        hsvsat[0] = hsv[0];
-        hsvsat[1] = 0.8f;
-        hsvsat[2] = hsv[2];
+        hsvSat[0] = hsv[0];
+        hsvSat[1] = 0.8f;
+        hsvSat[2] = hsv[2];
 
-        hsvvalue[0] = hsv[0];
-        hsvvalue[1] = hsv[1];
-        hsvvalue[2] = 0.8f;
+        hsvValue[0] = hsv[0];
+        hsvValue[1] = hsv[1];
+        hsvValue[2] = 0.8f;
 
         hueSeekBar = (org.adw.library.widgets.discreteseekbar.DiscreteSeekBar) rootView.findViewById(R.id.hueSeekBar);
         satSeekBar = (org.adw.library.widgets.discreteseekbar.DiscreteSeekBar) rootView.findViewById(R.id.satSeekBar);
@@ -174,10 +172,10 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
         value = Math.round(hsv[2] * 100);
 
         //set up arrays for coloring hue and sat bars
-        hsvvalue[0] = hsv[0];
-        hsvvalue[1] = hsv[1];
-        hsvsat[0] = hsv[0];
-        hsvsat[2] = hsv[2];
+        hsvValue[0] = hsv[0];
+        hsvValue[1] = hsv[1];
+        hsvSat[0] = hsv[0];
+        hsvSat[2] = hsv[2];
 
         //convert values into filters
         matrixSat = new ColorMatrix();
@@ -186,8 +184,8 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
 
         //set filters on each seek bar
         hueSeekBar.getTrackDrawable().setColorFilter(filter);
-        satSeekBar.getTrackDrawable().setColorFilter(Color.HSVToColor(hsvsat), PorterDuff.Mode.MULTIPLY);
-        valueSeekBar.getTrackDrawable().setColorFilter(Color.HSVToColor(hsvvalue), PorterDuff.Mode.MULTIPLY);
+        satSeekBar.getTrackDrawable().setColorFilter(Color.HSVToColor(hsvSat), PorterDuff.Mode.MULTIPLY);
+        valueSeekBar.getTrackDrawable().setColorFilter(Color.HSVToColor(hsvValue), PorterDuff.Mode.MULTIPLY);
         hueSeekBar.setThumbColor(Color.HSVToColor(hsv));
         hueSeekBar.setRippleColor(Color.HSVToColor(hsv));
         satSeekBar.setThumbColor(Color.HSVToColor(hsv));
@@ -210,11 +208,21 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
 
         if (isPickerFrameShowing && !isAnimating) {
             hidePickerFrame();
-            mButtonHideSet = new AnimatorSet();
+            AnimatorSet mButtonHideSet = new AnimatorSet();
             mButtonHideSet.setDuration(SPEED_ANIMATION_TRANSITION);
             mButtonHideSet.setInterpolator(new AccelerateDecelerateInterpolator());
             mButtonHideSet.play(up).with(right).with(alphaOut).with(lower);
             mButtonHideSet.start();
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    pickerButton.setImageResource(0);
+                }
+            }, SPEED_ANIMATION_TRANSITION/2);
+
+
             if (hsv != intToHSV(original)) {
                 animateButtonColor(original);
                 hsv = intToHSV(original);
@@ -224,26 +232,23 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
         } else if (!isPickerFrameShowing && !isAnimating) {
 
             showPickerFrame();
-            mButtonShowSet = new AnimatorSet();
+            AnimatorSet mButtonShowSet = new AnimatorSet();
             mButtonShowSet.setDuration(SPEED_ANIMATION_TRANSITION);
             mButtonShowSet.setInterpolator(new AccelerateDecelerateInterpolator());
             down = ObjectAnimator.ofFloat(pickerButton, "translationY", (pickerFrame.getMeasuredHeight() - valueSeekBar.getBottom()) + (pickerButton.getHeight() * .8f));
-            mButtonShowSet.play(down).with(left).with(alphaIn).with(raise);
+            mButtonShowSet.play(down).with(left).with(raise);
             mButtonShowSet.start();
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    pickerButton.setImageResource(R.drawable.ic_add_white_24dp);
+                }
+            }, SPEED_ANIMATION_TRANSITION / 2);
+
+
         }
-//        } else if (isPickerFrameShowing && isAnimating) {
-//            hidePickerFrame();
-//            down.reverse();
-//            left.reverse();
-//            alphaIn.reverse();
-//            raise.reverse();
-//
-//        } else if (!isPickerFrameShowing && isAnimating) {
-//            up.reverse();
-//            right.reverse();
-//            left.reverse();
-//            alphaOut.reverse();
-//        }
 
     }
 
@@ -442,36 +447,4 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
 
     }
 
-    private static class SavedState extends BaseSavedState {
-
-        int value;
-
-        public SavedState(Parcelable superState) {
-            super(superState);
-        }
-
-        public SavedState(Parcel source) {
-            super(source);
-            value = source.readInt();
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            super.writeToParcel(dest, flags);
-            dest.writeInt(value);
-        }
-
-
-        public static final Parcelable.Creator<SavedState> CREATOR =
-                new Parcelable.Creator<SavedState>() {
-
-                    public SavedState createFromParcel(Parcel in) {
-                        return new SavedState(in);
-                    }
-
-                    public SavedState[] newArray(int size) {
-                        return new SavedState[size];
-                    }
-                };
-    }
 }

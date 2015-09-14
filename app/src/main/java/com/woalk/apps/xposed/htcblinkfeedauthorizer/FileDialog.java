@@ -10,6 +10,7 @@ import android.util.Log;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class FileDialog {
@@ -17,22 +18,20 @@ public class FileDialog {
     private final String TAG = getClass().getName();
     private String[] fileList;
     private File currentPath;
+
+
     public interface FileSelectedListener {
         void fileSelected(File file);
     }
     public interface DirectorySelectedListener {
         void directorySelected(File directory);
     }
-    private ListenerList<FileSelectedListener> fileListenerList = new ListenerList<FileDialog.FileSelectedListener>();
-    private ListenerList<DirectorySelectedListener> dirListenerList = new ListenerList<FileDialog.DirectorySelectedListener>();
+    private ListenerList<FileSelectedListener> fileListenerList = new ListenerList<>();
+    private ListenerList<DirectorySelectedListener> dirListenerList = new ListenerList<>();
     private final Activity activity;
-    private boolean selectDirectoryOption, selectCreateDirectoryOption;
-    private String fileEndsWith;
+    private boolean selectDirectoryOption;
+    private String fileEndsWith = "";
 
-    /**
-     * @param activity
-
-     */
     public FileDialog(Activity activity, File path) {
         this.activity = activity;
         if (!path.exists()) path = Environment.getExternalStorageDirectory();
@@ -43,7 +42,7 @@ public class FileDialog {
      * @return file dialog
      */
     public Dialog createFileDialog() {
-        Dialog dialog = null;
+        Dialog dialog;
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
         builder.setTitle(currentPath.getPath());
@@ -55,7 +54,7 @@ public class FileDialog {
                 }
             });
 
-            
+
 
             }
 
@@ -77,20 +76,8 @@ public class FileDialog {
     }
 
 
-    public void addFileListener(FileSelectedListener listener) {
-        fileListenerList.add(listener);
-    }
-
-    public void removeFileListener(FileSelectedListener listener) {
-        fileListenerList.remove(listener);
-    }
-
     public void setSelectDirectoryOption(boolean selectDirectoryOption) {
         this.selectDirectoryOption = selectDirectoryOption;
-    }
-
-    public void setCreateDirectoryOption(boolean selectCreateDirectoryOption) {
-        this.selectCreateDirectoryOption = selectCreateDirectoryOption;
     }
 
     public void addDirectoryListener(DirectorySelectedListener listener) {
@@ -126,7 +113,7 @@ public class FileDialog {
 
     private void loadFileList(File path) {
         this.currentPath = path;
-        List<String> r = new ArrayList<String>();
+        List<String> r = new ArrayList<>();
         if (path.exists()) {
             if (path.getParentFile() != null) r.add(PARENT_DIR);
             FilenameFilter filter = new FilenameFilter() {
@@ -135,17 +122,15 @@ public class FileDialog {
                     if (!sel.canRead()) return false;
                     if (selectDirectoryOption) return sel.isDirectory();
                     else {
-                        boolean endsWith = fileEndsWith != null ? filename.toLowerCase().endsWith(fileEndsWith) : true;
+                        boolean endsWith = fileEndsWith == null || filename.toLowerCase().endsWith(fileEndsWith);
                         return endsWith || sel.isDirectory();
                     }
                 }
             };
             String[] fileList1 = path.list(filter);
-            for (String file : fileList1) {
-                r.add(file);
-            }
+            Collections.addAll(r, fileList1);
         }
-        fileList = (String[]) r.toArray(new String[]{});
+        fileList = r.toArray(new String[r.size()]);
     }
 
     private File getChosenFile(String fileChosen) {
@@ -153,13 +138,10 @@ public class FileDialog {
         else return new File(currentPath, fileChosen);
     }
 
-    public void setFileEndsWith(String fileEndsWith) {
-        this.fileEndsWith = fileEndsWith != null ? fileEndsWith.toLowerCase() : fileEndsWith;
-    }
 }
 
 class ListenerList<L> {
-    private List<L> listenerList = new ArrayList<L>();
+    private List<L> listenerList = new ArrayList<>();
 
     public interface FireHandler<L> {
         void fireEvent(L listener);
@@ -170,7 +152,7 @@ class ListenerList<L> {
     }
 
     public void fireEvent(FireHandler<L> fireHandler) {
-        List<L> copy = new ArrayList<L>(listenerList);
+        List<L> copy = new ArrayList<>(listenerList);
         for (L l : copy) {
             fireHandler.fireEvent(l);
         }
@@ -180,7 +162,4 @@ class ListenerList<L> {
         listenerList.remove(listener);
     }
 
-    public List<L> getListenerList() {
-        return listenerList;
-    }
 }

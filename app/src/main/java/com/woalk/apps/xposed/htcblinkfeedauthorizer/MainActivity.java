@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -54,18 +55,22 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     public int mMainColor, mSecondaryColor, mAccentColor;
     public boolean mUseThemes;
     ListView mDrawerList;
-    LinearLayout mDrawerPane, mDrawerReboot, mDrawerAbout;
+    LinearLayout mDrawerPane, mDrawerReboot, mDrawerAbout, mMainLayout;
     ArrayList<NavItem> mNavItems = new ArrayList<>();
     private android.support.v7.widget.Toolbar toolbar;
     private String curTitle;
     private int curPos = 0;
     private DrawerLayout mDrawerLayout;
     private SharedPreferences sharedPreferences;
-    private FragmentTransaction ft;
-
 
     public MainActivity() {
+
     }
+
+    public MainActivity(String curTitle) {
+        this.curTitle = curTitle;
+    }
+
 
     public static MatPalette generateDefaultPalette() {
 
@@ -93,12 +98,13 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
         //Add drawerdown items
-        mNavItems.add(new NavItem("Main", R.drawable.ic_settings));
+        mNavItems.add(new NavItem("Main", R.drawable.ic_home_white_24dp));
         mNavItems.add(new NavItem("Themes", R.drawable.ic_style));
         mNavItems.add(new NavItem("Downloads", R.drawable.ic_get_app_white_24dp));
-        mNavItems.add(new NavItem("Module Settings", R.drawable.ic_info));
+        mNavItems.add(new NavItem("Settings", R.drawable.ic_settings));
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         mDrawerPane = (LinearLayout) findViewById(R.id.drawerPane);
+        mMainLayout = (LinearLayout) findViewById(R.id.mainLayout);
         mDrawerReboot = (LinearLayout) findViewById(R.id.drawerReboot);
         mDrawerAbout = (LinearLayout) findViewById(R.id.drawerAbout);
         mDrawerList = (ListView) findViewById(R.id.navList);
@@ -109,7 +115,15 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
         // Set up initial settings for title view(s) and bar
         tv1 = (TextView) findViewById(R.id.tv1);
         tv2 = (TextView) findViewById(R.id.tv2);
-        tv1.setText("Sensify Xposed");
+        PackageManager pm = getPackageManager();
+        ApplicationInfo appInfo = null;
+        try {
+            appInfo = pm.getApplicationInfo("com.woalk.apps.xposed.htcblinkfeedauthorizer", PackageManager.GET_META_DATA);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        tv1.setText(String.valueOf(pm.getApplicationLabel(appInfo)));
         tv1.setAlpha(0);
         tv2.setText(curTitle);
         tv1.setPivotX(0);
@@ -361,14 +375,14 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     //Self explanatory
     private void showRebootDialog() {
         TextView title = new TextView(this);
-        title.setText("Would you like to reboot?");
+        title.setText(R.string.dialog_title_reboot);
         title.setPadding(10, 10, 10, 10);
         title.setGravity(Gravity.CENTER);
         // title.setTextColor(getResources().getColor(R.color.greenBG));
         title.setTextSize(18);
 
         TextView msg = new TextView(this);
-        msg.setText("Select an option below.");
+        msg.setText(R.string.dialog_message_reboot);
         msg.setPadding(10, 10, 10, 10);
         msg.setGravity(Gravity.CENTER);
         msg.setTextSize(15);
@@ -406,8 +420,8 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
 
     private void showAboutDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setTitle("About Sensify")
-                .setMessage("Version: " + Common.versionName + "\nCreated by: Woalk & Digitalhigh")
+        builder.setTitle(getString(R.string.pref_cat_about))
+                .setMessage(getString(R.string.pref_about_version_title) + Common.versionName + "\n" + getString(R.string.pref_about_dev_title) + getString(R.string.pref_about_dev_summary))
                 .setCancelable(true);
 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -425,8 +439,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
 
 
     private void checkRomType() {
-        Logger.v("MainActivity: here's some info. " + Build.FINGERPRINT + " " + Build.DEVICE + " " + Build.DISPLAY + " " + Build.HOST);
-        Process p = null;
+        Process p;
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPref.edit();
         String sense_version = "";
@@ -434,14 +447,14 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
         try {
             p = new ProcessBuilder("/system/bin/getprop", "ro.build.sense.version").redirectErrorStream(true).start();
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line = "";
+            String line;
             while ((line=br.readLine()) != null){
                 sense_version = line;
             }
             p.destroy();
             p = new ProcessBuilder("/system/bin/getprop", "ro.build.version.htcsdk").redirectErrorStream(true).start();
             BufferedReader br2 = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line2 = "";
+            String line2;
             while ((line2=br2.readLine()) != null){
                 sense_sdk = line2;
             }
@@ -450,12 +463,12 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
             if ((!sense_sdk.equals("")) && (!sense_version.equals(""))) {
                 Logger.d("MainActivity: Sense ROM found. " + sense_sdk + " and " + sense_version);
                 editor.putString("romtype","Sense");
-                editor.commit();
+                editor.apply();
 
             } else if (Build.HOST.contains("google.com") || Build.FINGERPRINT.contains("google")) {
                 Logger.d("MainActivity: Google ROM found " + Build.FINGERPRINT);
                 editor.putString("romtype","Google");
-                editor.commit();
+                editor.apply();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -465,7 +478,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     //Fragment selector
     private void fragmentSelect(int position) {
 
-        ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
         if (getIntent().hasExtra("toOpen")) {
             ft.setCustomAnimations(0, 0);
 
@@ -475,16 +488,12 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
         }
         if (position == 0) {
             ft.replace(android.R.id.widget_frame, new MainPreferenceFragment());
-            tv2.setText("Main");
         } else if (position == 1) {
             ft.replace(android.R.id.widget_frame, new ThemeFragment());
-            tv2.setText("Themes");
         } else if (position == 2) {
             ft.replace(android.R.id.widget_frame, new DownloadFragment());
-            tv2.setText("Downloads");
         } else if (position == 3) {
             ft.replace(android.R.id.widget_frame, new ModuleFragment());
-            tv2.setText("Module");
         }
         tv2.setText(mNavItems.get(position).mTitle);
         ft.commit();
@@ -527,7 +536,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     }
 
     public static class ThemeUpdateReceiver extends BroadcastReceiver {
-        private int color1, color2, color3, mixcolor;
+        private int color1, color2, color3, color4, mixcolor;
 
         public ThemeUpdateReceiver() {
 
@@ -541,38 +550,91 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
             if (intent.getAction().equals("com.woalk.HTCAuthorizer.UPDATE_XML")) {
 
                 if (extras != null) {
+
                     SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
                     SharedPreferences.Editor editor = sharedPref.edit();
                     if (extras.containsKey("theme_PrimaryColor")) {
-                        color1 = extras.getInt("theme_PrimaryColor");
+                        editor.putInt("htc_theme_color1", extras.getInt("theme_PrimaryColor"));
+                        editor.apply();
+
+                    } else if (extras.containsKey("theme_PrimaryDarkColor")) {
+                        editor.putInt("htc_theme_color2", extras.getInt("theme_PrimaryDarkColor"));
+                        editor.apply();
+                    } else if (extras.containsKey("theme_AccentColor")) {
+                        editor.putInt("htc_theme_color3", extras.getInt("theme_AccentColor"));
+                        editor.apply();
+
+                    } else if (extras.containsKey("theme_color4")) {
+                        editor.putInt("htc_theme_color4", color4);
+                        editor.apply();
+                    } else if (extras.containsKey("full_Array")) {
+
+                        int[] arrayOfInt = extras.getIntArray("full_Array");
+                        Logger.d("MainActivity: Holy shit, it worked.");
+                        editor.putInt("htc_baseline_category", arrayOfInt[0]);
+                        editor.putInt("htc_baseline_light", arrayOfInt[1]);
+                        editor.putInt("htc_baseline_dark", arrayOfInt[2]);
+                        editor.putInt("htc_cat1_category", arrayOfInt[3]);
+                        editor.putInt("htc_cat1_light", arrayOfInt[4]);
+                        editor.putInt("htc_cat1_dark", arrayOfInt[5]);
+                        editor.putInt("htc_cat2_category", arrayOfInt[6]);
+                        editor.putInt("htc_cat2_light", arrayOfInt[7]);
+                        editor.putInt("htc_cat2_dark", arrayOfInt[8]);
+                        editor.putInt("htc_cat3_category", arrayOfInt[9]);
+                        editor.putInt("htc_cat3_light", arrayOfInt[10]);
+                        editor.putInt("htc_cat3_dark", arrayOfInt[11]);
+                        editor.apply();
+
                     }
 
-                    if (extras.containsKey("theme_PrimaryDarkColor")) {
-                        color2 = extras.getInt("theme_PrimaryDarkColor");
-                    }
+                    color1 = sharedPref.getInt("htc_theme_color1",0);
+                    color2 = sharedPref.getInt("htc_theme_color2",0);
+                    color3 = sharedPref.getInt("htc_theme_color3",0);
+                    color4 = sharedPref.getInt("htc_theme_color4",0);
 
-                    if (extras.containsKey("theme_AccentColor")) {
-                        color3 = extras.getInt("theme_AccentColor");
-
-                    }
 
                     if (sharedPref.getBoolean("systemui_automix_theme", true) && (color1 == color2)) {
-                        if (color1 == 0) mixcolor = color3;
+                        // ***  If the Main color is black, we're going to read the other
+                        // *    theme colors to see if they are *not* black.
+                        // *    So, we break down colors 3 and 4 to their HSV components
+                        // *    and figure out which has the most saturation, use that.
+                        // *
+                        // ***
+                        if (color1 == 0) {
+                            color1 = Color.rgb(Color.red(0), Color.green(0),
+                                    Color.blue(0));
+                            float[] hsv1 = new float[3];
+                            float[] hsv2 = new float[3];
+                            Color.colorToHSV(color3,hsv1);
+                            Color.colorToHSV(color4,hsv2);
+                            float satFloat = Math.max(hsv1[2],hsv2[2]);
+                            if (satFloat == hsv1[2]) {
+                                mixcolor = color3;
+                            } else {
+                                mixcolor = color4;
+                            }
+                        }
 
-                        color2 = Common.enlightColor(mixcolor, .4f);
-                        color3 = Common.enlightColor(mixcolor, 1.0f);
-                        color1 = Common.enlightColor(mixcolor, .6f);
+                        color2 = Common.enlightenColor(mixcolor, .8f, .4f);
+                        color3 = Common.enlightenColor(mixcolor, 1.0f);
+                        Logger.d("MainActivity: Colors Mixed");
+
                     }
 
+                    Logger.d("MainActivity: Saving color1 of " + color1);
                     editor.putInt("theme_PrimaryColor", color1);
+                    Logger.d("MainActivity: Saving color2 of " + color1);
                     editor.putInt("theme_PrimaryDarkColor", color2);
+                    Logger.d("MainActivity: Saving color3 of " + color3);
                     editor.putInt("theme_AccentColor", color3);
                     editor.apply();
-                    intent = new Intent(context, MainActivity.class);
-                    intent.setComponent(new ComponentName("com.woalk.apps.xposed.htcblinkfeedauthorizer", "com.woalk.apps.xposed.htcblinkfeedauthorizer.MainActivity"));
-                    intent.putExtra("toOpen", "themeFragment");
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(intent);
+                    if (!(extras.containsKey("full_Array"))) {
+                        intent = new Intent(context, MainActivity.class);
+                        intent.setComponent(new ComponentName("com.woalk.apps.xposed.htcblinkfeedauthorizer", "com.woalk.apps.xposed.htcblinkfeedauthorizer.MainActivity"));
+                        intent.putExtra("toOpen", "themeFragment");
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(intent);
+                    }
                 }
             }
         }
