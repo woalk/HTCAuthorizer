@@ -167,9 +167,7 @@ public class X_Mod
     private static String pathUSB;
     private static String romType;
     private static String pathExternal;
-    private static int colorPrimary = 0;
-    private static int colorPrimaryDark = 0;
-    private static int colorAccent = 0;
+    private static int colorPrimary, colorPrimaryDark, colorAccent, commsPrimary, commsDark, commsAccent, infoPrimary, infoDark, infoAccent, entPrimary, entDark, entAccent;
 
     private static final class Config {
 
@@ -214,6 +212,60 @@ public class X_Mod
                                 tempColor = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE);
                                 colorAccent = Color.rgb(Color.red(tempColor), Color.green(tempColor),
                                         Color.blue(tempColor));
+                                Logger.d("X_Mod: Variable read for primarydark color of " + colorPrimaryDark);
+                                continue;
+                            case "theme_Comms_Primary":
+                                tempColor = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE);
+                                commsPrimary = Color.rgb(Color.red(tempColor), Color.green(tempColor),
+                                        Color.blue(tempColor));
+                                Logger.d("X_Mod: Variable read for accent color of " + colorAccent);
+                                continue;
+                            case "theme_Comms_Light":
+                                tempColor = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE);
+                                commsAccent = Color.rgb(Color.red(tempColor), Color.green(tempColor),
+                                        Color.blue(tempColor));
+                                Logger.d("X_Mod: Variable read for accent color of " + colorAccent);
+                                continue;
+                            case "theme_Comms_Dark":
+                                tempColor = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE);
+                                commsDark = Color.rgb(Color.red(tempColor), Color.green(tempColor),
+                                        Color.blue(tempColor));
+                                Logger.d("X_Mod: Variable read for accent color of " + colorAccent);
+                                continue;
+                            case "theme_Info_Primary":
+                                tempColor = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE);
+                                infoPrimary = Color.rgb(Color.red(tempColor), Color.green(tempColor),
+                                        Color.blue(tempColor));
+                                Logger.d("X_Mod: Variable read for accent color of " + colorAccent);
+                                continue;
+                            case "theme_Info_Light":
+                                tempColor = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE);
+                                infoAccent = Color.rgb(Color.red(tempColor), Color.green(tempColor),
+                                        Color.blue(tempColor));
+                                Logger.d("X_Mod: Variable read for accent color of " + colorAccent);
+                                continue;
+                            case "theme_Info_Dark":
+                                tempColor = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE);
+                                infoDark = Color.rgb(Color.red(tempColor), Color.green(tempColor),
+                                        Color.blue(tempColor));
+                                Logger.d("X_Mod: Variable read for accent color of " + colorAccent);
+                                continue;
+                            case "theme_Entertainment_Primary":
+                                tempColor = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE);
+                                entPrimary = Color.rgb(Color.red(tempColor), Color.green(tempColor),
+                                        Color.blue(tempColor));
+                                Logger.d("X_Mod: Variable read for accent color of " + colorAccent);
+                                continue;
+                            case "theme_Entertainment_Light":
+                                tempColor = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE);
+                                entAccent = Color.rgb(Color.red(tempColor), Color.green(tempColor),
+                                        Color.blue(tempColor));
+                                Logger.d("X_Mod: Variable read for accent color of " + colorAccent);
+                                continue;
+                            case "theme_Entertainment_Dark":
+                                tempColor = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE);
+                                entDark = Color.rgb(Color.red(tempColor), Color.green(tempColor),
+                                        Color.blue(tempColor));
                                 Logger.d("X_Mod: Variable read for accent color of " + colorAccent);
                                 continue;
                             case "has_external":
@@ -223,7 +275,6 @@ public class X_Mod
                                 rotateLauncher = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE) == SettingsProvider.TRUE;
                                 Logger.d("X_Mod: Variable read for rotation of " + rotateLauncher);
                                 continue;
-
                             case "ext_dir":
                                 pathExternal = prefs.getString(SettingsProvider.QUERY_ALL_VALUE);
                                 Logger.d("X_Mod: Variable read for accent color of " + pathExternal);
@@ -375,60 +426,23 @@ public class X_Mod
                 }
             });
 
-            XposedHelpers.findAndHookMethod(CLASS_BF_CURRENTTHEMEUTIL, lpparam.classLoader, "getFullColorCodes", Context.class, new XC_MethodHook() {
 
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    Logger.d("X_Mod: Hooking full theme reader.");
-                    int[] arrayOfInt = (int[]) param.getResult();
-                    Logger.logHookAfter(param);
-                    Intent intent = new Intent();
-                    intent.setAction("com.woalk.HTCAuthorizer.UPDATE_XML");
-                    intent.putExtra("full_Array", arrayOfInt);
-                    Context context = AndroidAppHelper.currentApplication();
-                    context.sendBroadcast(intent);
-
-                }
-            });
 
             // Theme permissions hook
             XposedHelpers.findAndHookMethod(CLASS_BF_MIXINGTHEMECOLOR, lpparam.classLoader,
                     "updateFullThemecolor", Context.class, CLASS_BF_THEME, new XC_MethodHook() {
                         @Override
-
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                             Logger.logHook(param);
                             Logger.v("X_Mod: HTC theme Hooked");
                             Context context = AndroidAppHelper.currentApplication();
-                            
-                            SharedPreferences theme_in = ((Context) param.args[0])
-                                    .getSharedPreferences("mixing_theme_color_preference",
-                                            Context.MODE_PRIVATE);
+                            Class getFullColorCodesClass = XposedHelpers.findClass("com.htc.themepicker.util.CurrentThemeUtil", lpparam.classLoader);
+                            int[] result = (int[]) XposedHelpers.callStaticMethod(getFullColorCodesClass,"getFullColorCodes",context);
 
-                            for (Map.Entry<String, ?> x : theme_in.getAll().entrySet()) {
-                                Logger.v("X_Mod: Reading HTC Theme " + x.getKey() + " " + x.getValue());
-                                if (x.getValue() instanceof Integer) {
                                     Intent intent = new Intent();
                                     intent.setAction("com.woalk.HTCAuthorizer.UPDATE_XML");
-                                    Logger.v("X_Mod: Trying to pass HTC theme to writer " + x.getKey() + " " + x.getValue());
-                                    if (x.getKey().contains("1")) {
-                                        Logger.v("X_Mod: Found key containing 1");
-                                        intent.putExtra("theme_PrimaryColor", (Integer) x.getValue());
-                                    } else if (x.getKey().contains("2")) {
-                                        Logger.v("X_Mod: Found key containing 2");
-                                        intent.putExtra("theme_PrimaryDarkColor", (Integer) x.getValue());
-                                    } else if (x.getKey().contains("3")) {
-                                        Logger.v("X_Mod: Found key containing 3");
-                                        intent.putExtra("theme_AccentColor", (Integer) x.getValue());
-                                    } else if (x.getKey().contains("4")) {
-                                        Logger.v("X_Mod: Found key containing 4");
-                                        intent.putExtra("theme_Color4", (Integer) x.getValue());
-
-                                    }
+                                        intent.putExtra("full_Array", result);
                                     context.sendBroadcast(intent);
-
-                                }
-                            }
 
 
                         }
@@ -1165,43 +1179,43 @@ public class X_Mod
                 Logger.v("Replacing Theme resources for Dialer app.");
 
                 resparam.res.setReplacement(PKG_DIALER2, "color", "wallet_highlighted_text_holo_light",
-                        colorPrimary);
+                        commsPrimary);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "wallet_highlighted_text_holo_dark",
-                        colorPrimaryDark);
+                        commsDark);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "wallet_holo_blue_light",
-                        colorPrimary);
+                        commsPrimary);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "wallet_link_text_light",
-                        colorPrimary);
+                        commsPrimary);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "dialer_theme_color",
-                        colorPrimary);
+                        commsPrimary);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "dialer_theme_color_dark",
-                        colorPrimaryDark);
+                        commsDark);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "setting_primary_color",
-                        colorPrimary);
+                        commsPrimary);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "setting_secondary_color",
-                        colorPrimaryDark);
+                        commsDark);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "button_selected_color",
-                        colorPrimaryDark);
+                        commsDark);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "dialtacts_theme_color",
-                        colorPrimary);
+                        commsPrimary);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "glowpad_call_widget_normal_tint",
-                        colorPrimary);
+                        commsPrimary);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "incall_background_color",
-                        colorPrimary);
+                        commsPrimary);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "actionbar_background_color",
-                        colorPrimary);
+                        commsPrimary);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "actionbar_background_color_dark",
-                        colorPrimaryDark);
+                        commsDark);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "call_log_voicemail_highlight_color",
-                        colorAccent);
+                        commsAccent);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "contact_list_name_text_color",
-                        colorAccent);
+                        commsAccent);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "call_log_extras_text_color",
-                        colorPrimary);
+                        commsAccent);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "voicemail_playback_seek_bar_already_played",
-                        colorAccent);
+                        commsAccent);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "item_selected",
-                        colorPrimary);
+                        commsPrimary);
                 resparam.res.hookLayout(PKG_DIALER2, "layout", "dialtacts_activity", new XC_LayoutInflated() {
                     @Override
                     public void handleLayoutInflated(LayoutInflatedParam liparam) throws Throwable {
@@ -1211,7 +1225,7 @@ public class X_Mod
                         ShapeDrawable sd = new ShapeDrawable(new OvalShape());
                         sd.setIntrinsicHeight(10);
                         sd.setIntrinsicWidth(10);
-                        sd.getPaint().setColor(colorPrimary);
+                        sd.getPaint().setColor(commsPrimary);
                         fab.setBackground(sd);
 
                     }
@@ -1226,7 +1240,7 @@ public class X_Mod
                         ShapeDrawable sd = new ShapeDrawable(new OvalShape());
                         sd.setIntrinsicHeight(10);
                         sd.setIntrinsicWidth(10);
-                        sd.getPaint().setColor(colorPrimaryDark);
+                        sd.getPaint().setColor(commsPrimary);
                         fab.setBackground(sd);
 
                     }
@@ -1239,31 +1253,31 @@ public class X_Mod
                 Logger.v("Replacing Theme resources for Contacts app.");
 
                 resparam.res.setReplacement(PKG_CONTACTS, "color", "floating_action_button_icon_color",
-                        colorPrimaryDark);
+                        commsDark);
                 resparam.res.setReplacement(PKG_CONTACTS, "color", "dialer_theme_color",
-                        colorPrimaryDark);
+                        commsDark);
                 resparam.res.setReplacement(PKG_CONTACTS, "color", "wallet_holo_blue_light",
-                        colorPrimaryDark);
+                        commsDark);
                 resparam.res.setReplacement(PKG_CONTACTS, "color", "dialer_theme_color_dark",
-                        colorPrimary);
+                        commsPrimary);
                 resparam.res.setReplacement(PKG_CONTACTS, "color", "primary_color",
-                        colorPrimaryDark);
+                        commsDark);
                 resparam.res.setReplacement(PKG_CONTACTS, "color", "primary_color_dark",
-                        colorPrimary);
+                        commsPrimary);
                 resparam.res.setReplacement(PKG_CONTACTS, "color", "action_bar_background",
-                        colorPrimaryDark);
+                        commsDark);
                 resparam.res.setReplacement(PKG_CONTACTS, "color", "actionbar_background_color",
-                        colorPrimaryDark);
+                        commsDark);
                 resparam.res.setReplacement(PKG_CONTACTS, "color", "actionbar_background_color_dark",
-                        colorPrimary);
+                        commsPrimary);
                 resparam.res.setReplacement(PKG_CONTACTS, "color", "dialtacts_theme_color",
-                        colorPrimary);
+                        commsPrimary);
 
                 resparam.res.hookLayout(PKG_CONTACTS, "layout", "floating_action_button", new XC_LayoutInflated() {
                     @Override
                     public void handleLayoutInflated(LayoutInflatedParam liparam) throws Throwable {
                         ImageButton fab = (ImageButton) liparam.view.findViewById(liparam.res.getIdentifier("floating_action_button", "id", PKG_CONTACTS));
-                        fab.getBackground().setColorFilter(colorPrimary, PorterDuff.Mode.SRC_IN);
+                        fab.getBackground().setColorFilter(commsPrimary, PorterDuff.Mode.SRC_IN);
                     }
                 });
 

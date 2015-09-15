@@ -553,87 +553,28 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
 
                     SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
                     SharedPreferences.Editor editor = sharedPref.edit();
-                    if (extras.containsKey("theme_PrimaryColor")) {
-                        editor.putInt("htc_theme_color1", extras.getInt("theme_PrimaryColor"));
-                        editor.apply();
-
-                    } else if (extras.containsKey("theme_PrimaryDarkColor")) {
-                        editor.putInt("htc_theme_color2", extras.getInt("theme_PrimaryDarkColor"));
-                        editor.apply();
-                    } else if (extras.containsKey("theme_AccentColor")) {
-                        editor.putInt("htc_theme_color3", extras.getInt("theme_AccentColor"));
-                        editor.apply();
-
-                    } else if (extras.containsKey("theme_color4")) {
-                        editor.putInt("htc_theme_color4", color4);
-                        editor.apply();
-                    } else if (extras.containsKey("full_Array")) {
+                    if (extras.containsKey("full_Array")) {
 
                         int[] arrayOfInt = extras.getIntArray("full_Array");
-                        Logger.d("MainActivity: Holy shit, it worked.");
-                        editor.putInt("htc_baseline_category", arrayOfInt[0]);
-                        editor.putInt("htc_baseline_light", arrayOfInt[1]);
-                        editor.putInt("htc_baseline_dark", arrayOfInt[2]);
-                        editor.putInt("htc_cat1_category", arrayOfInt[3]);
-                        editor.putInt("htc_cat1_light", arrayOfInt[4]);
-                        editor.putInt("htc_cat1_dark", arrayOfInt[5]);
-                        editor.putInt("htc_cat2_category", arrayOfInt[6]);
-                        editor.putInt("htc_cat2_light", arrayOfInt[7]);
-                        editor.putInt("htc_cat2_dark", arrayOfInt[8]);
-                        editor.putInt("htc_cat3_category", arrayOfInt[9]);
-                        editor.putInt("htc_cat3_light", arrayOfInt[10]);
-                        editor.putInt("htc_cat3_dark", arrayOfInt[11]);
+                        editor.putInt("theme_PrimaryColor", arrayOfInt[0]);
+                        editor.putInt("theme_AccentColor", arrayOfInt[1]);
+                        editor.putInt("theme_PrimaryDarkColor", arrayOfInt[2]);
+                        editor.putInt("theme_Comms_Primary", arrayOfInt[3]);
+                        editor.putInt("theme_Comms_Light", arrayOfInt[4]);
+                        editor.putInt("theme_Comms_Dark", arrayOfInt[5]);
+                        editor.putInt("theme_Info_Primary", arrayOfInt[6]);
+                        editor.putInt("theme_Info_Light", arrayOfInt[7]);
+                        editor.putInt("theme_Info_Dark", arrayOfInt[8]);
+                        editor.putInt("theme_Entertainment_Primary", arrayOfInt[9]);
+                        editor.putInt("theme_Entertainment_Light", arrayOfInt[10]);
+                        editor.putInt("theme_Entertainment_Dark", arrayOfInt[11]);
                         editor.apply();
-
-                    }
-
-                    color1 = sharedPref.getInt("htc_theme_color1",0);
-                    color2 = sharedPref.getInt("htc_theme_color2",0);
-                    color3 = sharedPref.getInt("htc_theme_color3",0);
-                    color4 = sharedPref.getInt("htc_theme_color4",0);
-
-
-                    if (sharedPref.getBoolean("systemui_automix_theme", true) && (color1 == color2)) {
-                        // ***  If the Main color is black, we're going to read the other
-                        // *    theme colors to see if they are *not* black.
-                        // *    So, we break down colors 3 and 4 to their HSV components
-                        // *    and figure out which has the most saturation, use that.
-                        // *
-                        // ***
-                        if (color1 == 0) {
-                            color1 = Color.rgb(Color.red(0), Color.green(0),
-                                    Color.blue(0));
-                            float[] hsv1 = new float[3];
-                            float[] hsv2 = new float[3];
-                            Color.colorToHSV(color3,hsv1);
-                            Color.colorToHSV(color4,hsv2);
-                            float satFloat = Math.max(hsv1[2],hsv2[2]);
-                            if (satFloat == hsv1[2]) {
-                                mixcolor = color3;
-                            } else {
-                                mixcolor = color4;
-                            }
-                        }
-
-                        color2 = Common.enlightenColor(mixcolor, .8f, .4f);
-                        color3 = Common.enlightenColor(mixcolor, 1.0f);
-                        Logger.d("MainActivity: Colors Mixed");
-
-                    }
-
-                    Logger.d("MainActivity: Saving color1 of " + color1);
-                    editor.putInt("theme_PrimaryColor", color1);
-                    Logger.d("MainActivity: Saving color2 of " + color1);
-                    editor.putInt("theme_PrimaryDarkColor", color2);
-                    Logger.d("MainActivity: Saving color3 of " + color3);
-                    editor.putInt("theme_AccentColor", color3);
-                    editor.apply();
-                    if (!(extras.containsKey("full_Array"))) {
                         intent = new Intent(context, MainActivity.class);
                         intent.setComponent(new ComponentName("com.woalk.apps.xposed.htcblinkfeedauthorizer", "com.woalk.apps.xposed.htcblinkfeedauthorizer.MainActivity"));
                         intent.putExtra("toOpen", "themeFragment");
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent);
+
                     }
                 }
             }
