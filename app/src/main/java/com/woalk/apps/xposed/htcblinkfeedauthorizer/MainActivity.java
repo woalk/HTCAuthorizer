@@ -40,6 +40,7 @@ import com.negusoft.greenmatter.MatPalette;
 import com.negusoft.greenmatter.activity.MatActivity;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -62,7 +63,8 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     private int curPos = 0;
     private DrawerLayout mDrawerLayout;
     private SharedPreferences sharedPreferences;
-
+    protected static final String PACKAGE_NAME = "com.woalk.apps.xposed.htcblinkfeedauthorizer";
+    protected static final String PREFERENCE_FILE = PACKAGE_NAME + "_preferences";
 
     public MainActivity() {
 
@@ -97,6 +99,10 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
         PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication());
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        File theSharedPrefsFile;
+
+        theSharedPrefsFile = new File("/data/data/"+ PACKAGE_NAME  +"/shared_prefs/" + PREFERENCE_FILE + ".xml");
+        theSharedPrefsFile.setReadable(true, false);
 
         //Add drawerdown items
         mNavItems.add(new NavItem("Main", R.drawable.ic_home_white_24dp));

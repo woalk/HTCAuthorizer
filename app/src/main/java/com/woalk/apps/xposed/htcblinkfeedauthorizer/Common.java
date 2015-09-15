@@ -157,6 +157,8 @@ public class Common {
 
     public static void createPermFile() {
         if (!permfile.exists()) try {
+            File dirs = new File(directory.getPath());
+            dirs.mkdirs();
             Logger.d("Sensify: Creating permission file " + permfile.getPath());
 
             FileOutputStream fileos = new FileOutputStream(permfile);
@@ -164,7 +166,7 @@ public class Common {
             xmlSerializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
             StringWriter writer = new StringWriter();
             xmlSerializer.setOutput(writer);
-            xmlSerializer.startDocument("UTF-8", true);
+            xmlSerializer.startDocument(null, Boolean.valueOf(true));
             xmlSerializer.startTag(null, "permissions");
             xmlSerializer.startTag(null, "feature");
             xmlSerializer.attribute("", "name", "com.htc.software.HTC");

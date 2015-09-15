@@ -84,13 +84,13 @@ public class Logger {
 
 
     public static void logHook(XC_MethodHook.MethodHookParam param) {
-        v("Method hook %s/.%s executed, pre-result=%s;args=%s",
+        v("Sensify: Method hook %s/.%s executed, pre-result=%s;args=%s",
                 param.method.getDeclaringClass().getName(), param.method.getName(),
                 param.getResult(), getArrayString(param.args));
     }
 
     public static void logHookAfter(XC_MethodHook.MethodHookParam param) {
-        v("Method hook %s/.%s executed, post-result=%s;args=%s",
+        v("Sensify: SeMethod hook %s/.%s executed, post-result=%s;args=%s",
                 param.method.getDeclaringClass().getName(), param.method.getName(),
                 param.getResult(), getArrayString(param.args));
     }

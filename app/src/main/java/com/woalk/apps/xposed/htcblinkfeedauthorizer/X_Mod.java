@@ -35,6 +35,7 @@ import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
+import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
@@ -165,7 +166,9 @@ public class X_Mod
     private static String pathUSB;
     private static String romType;
     private static String pathExternal;
+	private final SettingsHelper mSettings;
     private static int colorPrimary, colorPrimaryDark, colorAccent, commsPrimary, commsDark, commsAccent, infoPrimary, infoDark, infoAccent, entPrimary, entDark, entAccent;
+    private static int cachedPrimary, cachedPrimaryDark, cachedAccent;
 
     private static final class Config {
 
@@ -266,7 +269,7 @@ public class X_Mod
                                         Color.blue(tempColor));
                                 Logger.d("X_Mod: Variable read for accent color of " + colorAccent);
                                 continue;
-                            case "has_external":
+                            case "has_ext":
                                 useExternal = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE) == SettingsProvider.TRUE;
                                 continue;
                             case "force_rotate":
@@ -275,10 +278,11 @@ public class X_Mod
                                 continue;
                             case "ext_dir":
                                 pathExternal = prefs.getString(SettingsProvider.QUERY_ALL_VALUE);
-                                Logger.d("X_Mod: Variable read for accent color of " + pathExternal);
+                                Logger.d("X_Mod: Variable read for external path of " + pathExternal);
                                 continue;
                             case "usb_dir":
                                 pathUSB = prefs.getString(SettingsProvider.QUERY_ALL_VALUE);
+								Logger.d("X_Mod: Variable read for USB path of " + pathUSB);
                                 continue;
                             case "romtype":
                                 romType = prefs.getString(SettingsProvider.QUERY_ALL_VALUE);
@@ -300,7 +304,11 @@ public class X_Mod
 
     public X_Mod() {
         Logger.logStart();
-
+        mSettings = new SettingsHelper();
+        cachedAccent = mSettings.getCached_ColorAccent();
+        cachedPrimary = mSettings.getCached_ColorPrimary();
+        cachedPrimaryDark = mSettings.getCached_ColorPrimaryDark();
+		
     }
 
     @Override
@@ -893,7 +901,7 @@ public class X_Mod
 
         if (lpparam.packageName.equals(PKG_HTC_GALLERY)
                 || lpparam.packageName.equals(PKG_HTC_CAMERA)) {
-            Logger.v("Loading storage hooks for package %s.", lpparam.packageName);
+            Logger.v("X_Mod: Loading storage hooks for package %s.", lpparam.packageName);
             int hooks = 0;
 
             // Following: HTC-specific methods that resolve different storage types
@@ -1083,7 +1091,7 @@ public class X_Mod
                 resparam.res.setReplacement(PKG_SYSTEMUI, "color", "screen_pinning_request_bg",
                         colorAccent);
                 resparam.res.setReplacement(PKG_SYSTEMUI, "color", "keyguard_avatar_frame_pressed_color",
-                        colorAccent);
+                        colorPrimaryDark);
                 resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_secondary_color",
                         colorPrimaryDark);
                 resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_accent_color",
@@ -1133,7 +1141,7 @@ public class X_Mod
                 resparam.res.setReplacement(PKG_SETTINGS, "color", "theme_accent",
                         colorAccent);
                 resparam.res.setReplacement(PKG_SETTINGS, "color", "switchbar_background_color",
-                        colorAccent);
+                        colorPrimaryDark);
                 resparam.res.setReplacement(PKG_SETTINGS, "color", "switch_accent_color",
                         colorAccent);
                 resparam.res.hookLayout(PKG_SETTINGS, "layout", "preference_bluetooth", new XC_LayoutInflated() {
@@ -1333,12 +1341,7 @@ public class X_Mod
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable {
         XposedBridge.log("Sensify: initZygote Started");
-        if (themesEnabled) {
-            replaceSystemWideThemes();
-            Logger.v("X_Mod:Themes are enabled in module settings.");
-        } else {
-            Logger.v("X_Mod:Themes are turned off in module settings.");
-        }
+
 
         Logger.v("X_Mod: Loading hook to add HTC features to system feature list...");
 
@@ -1359,70 +1362,78 @@ public class X_Mod
                 });
 
         Logger.v("System feature list hook loaded.");
+        if (mSettings.getCachedPref_use_themes()) {
+            replaceSystemWideThemes();
+            Logger.v("X_Mod:Themes are enabled in module settings.");
+            XposedBridge.log("Systemwide themes enabled");
+        } else {
+            Logger.v("X_Mod:Themes are turned off in module settings.");
+            XposedBridge.log("Systemwide themes disabled");
+        }
     }
 
     public static void replaceSystemWideThemes() {
         Logger.v("Replacing system-wide Theme resources.");
 
         XResources.setSystemWideReplacement("android", "color", "material_blue_grey_900",
-                colorPrimary);
+                cachedPrimary);
         XResources.setSystemWideReplacement("android", "color", "user_icon_1",
-                colorPrimary);
+                cachedPrimary);
         XResources.setSystemWideReplacement("android", "color", "highlighted_text_material_dark",
-                colorPrimaryDark);
+                cachedPrimaryDark);
         XResources.setSystemWideReplacement("android", "color", "highlighted_text_material_light",
-                colorPrimary);
+                cachedPrimary);
         XResources.setSystemWideReplacement("android", "color", "primary_material_dark",
-                colorPrimaryDark);
+                cachedPrimaryDark);
         XResources.setSystemWideReplacement("android", "color", "primary_material_light",
-                colorPrimary);
+                cachedPrimary);
         XResources.setSystemWideReplacement("android", "color", "material_blue_grey_950",
-                colorPrimaryDark);
+                cachedPrimaryDark);
         XResources.setSystemWideReplacement("android", "color", "material_blue_grey_800",
-                colorPrimary);
+                cachedPrimary);
         XResources.setSystemWideReplacement("android", "color", "primary_dark_material_dark",
-                colorPrimaryDark);
+                cachedPrimaryDark);
         XResources.setSystemWideReplacement("android", "color", "material_deep_teal_500",
-                colorPrimaryDark);
+                cachedPrimary);
         XResources.setSystemWideReplacement("android", "color", "material_deep_teal_200",
-                colorAccent);
+                cachedAccent);
         XResources.setSystemWideReplacement("android", "color", "accent_material_dark",
-                colorAccent);
+                cachedAccent);
         XResources.setSystemWideReplacement("android", "color", "accent_material_light",
-                colorAccent);
+                cachedAccent);
         XResources.setSystemWideReplacement("android", "color", "material_deep_teal_200",
-                colorPrimaryDark);
+                cachedPrimaryDark);
 
 
         Logger.v("Theme resources replaced.");
-        if (romType.equals("Sense")) {
-            Logger.d("X_Mod: Replacing Sense system resources.");
-            XResources.setSystemWideReplacement("android", "color", "text_selection_opacity_color", colorAccent);
-            XResources.setSystemWideReplacement("android", "color", "text_selection_color", colorPrimary);
-            XResources.setSystemWideReplacement("android", "color", "light_category_color", colorAccent);
-            XResources.setSystemWideReplacement("android", "color", "category_color", colorPrimary);
-            XResources.setSystemWideReplacement("android", "color", "dark_category_color", colorPrimaryDark);
-            XResources.setSystemWideReplacement("android", "color", "overlay_color", colorPrimary);
-            XResources.setSystemWideReplacement("android", "color", "standard_color", colorPrimary);
-            XResources.setSystemWideReplacement("android", "color", "active_color", colorPrimary);
-            XResources.setSystemWideReplacement("android", "color", "CategoryOne_active_color", colorPrimary);
-            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_text_selection_opacity_color", colorAccent);
-            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_text_selection_color", colorPrimary);
-            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_light_category_color", colorPrimary);
-            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_category_color", colorPrimaryDark);
-            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_dark_category_color", colorPrimaryDark);
-            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_multiply_color", colorPrimary);
-            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_overlay_color", colorPrimary);
-            XResources.setSystemWideReplacement("android", "color", "CategoryThree_active_color", colorPrimary);
-            XResources.setSystemWideReplacement("android", "color", "CategoryFour_text_selection_opacity_color", colorAccent);
-            XResources.setSystemWideReplacement("android", "color", "CategoryFour_text_selection_color", colorPrimary);
-            XResources.setSystemWideReplacement("android", "color", "CategoryFour_light_category_color", colorAccent);
-            XResources.setSystemWideReplacement("android", "color", "CategoryFour_category_color", colorPrimary);
-            XResources.setSystemWideReplacement("android", "color", "CategoryFour_dark_category_color", colorPrimaryDark);
-            XResources.setSystemWideReplacement("android", "color", "CategoryFour_overlay_color", colorPrimary);
-            XResources.setSystemWideReplacement("android", "color", "CategoryFour_standard_color", colorPrimaryDark);
-            XResources.setSystemWideReplacement("android", "color", "CategoryFour_active_color", colorPrimary);
-        }
+//        if (romType.equals("Sense")) {
+//            Logger.d("X_Mod: Replacing Sense system resources.");
+//            XResources.setSystemWideReplacement("android", "color", "text_selection_opacity_color", colorAccent);
+//            XResources.setSystemWideReplacement("android", "color", "text_selection_color", colorPrimary);
+//            XResources.setSystemWideReplacement("android", "color", "light_category_color", colorAccent);
+//            XResources.setSystemWideReplacement("android", "color", "category_color", colorPrimary);
+//            XResources.setSystemWideReplacement("android", "color", "dark_category_color", colorPrimaryDark);
+//            XResources.setSystemWideReplacement("android", "color", "overlay_color", colorPrimary);
+//            XResources.setSystemWideReplacement("android", "color", "standard_color", colorPrimary);
+//            XResources.setSystemWideReplacement("android", "color", "active_color", colorPrimary);
+//            XResources.setSystemWideReplacement("android", "color", "CategoryOne_active_color", colorPrimary);
+//            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_text_selection_opacity_color", colorAccent);
+//            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_text_selection_color", colorPrimary);
+//            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_light_category_color", colorPrimary);
+//            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_category_color", colorPrimaryDark);
+//            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_dark_category_color", colorPrimaryDark);
+//            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_multiply_color", colorPrimary);
+//            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_overlay_color", colorPrimary);
+//            XResources.setSystemWideReplacement("android", "color", "CategoryThree_active_color", colorPrimary);
+//            XResources.setSystemWideReplacement("android", "color", "CategoryFour_text_selection_opacity_color", colorAccent);
+//            XResources.setSystemWideReplacement("android", "color", "CategoryFour_text_selection_color", colorPrimary);
+//            XResources.setSystemWideReplacement("android", "color", "CategoryFour_light_category_color", colorAccent);
+//            XResources.setSystemWideReplacement("android", "color", "CategoryFour_category_color", colorPrimary);
+//            XResources.setSystemWideReplacement("android", "color", "CategoryFour_dark_category_color", colorPrimaryDark);
+//            XResources.setSystemWideReplacement("android", "color", "CategoryFour_overlay_color", colorPrimary);
+//            XResources.setSystemWideReplacement("android", "color", "CategoryFour_standard_color", colorPrimaryDark);
+//            XResources.setSystemWideReplacement("android", "color", "CategoryFour_active_color", colorPrimary);
+//        }
 
     }
 
