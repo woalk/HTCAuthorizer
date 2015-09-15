@@ -20,7 +20,7 @@
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_gravity="bottom"
-        android:layout_height="fill_parent"
+        android:layout_height="0dp"
         android:layout_weight="1">
     </LinearLayout>
 
@@ -30,6 +30,38 @@
         android:layout_width="fill_parent"
         android:layout_height="1dip"
         android:background="@android:color/background_dark">
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/drawerQuickReboot"
+        android:paddingTop="15dip"
+        android:paddingBottom="15dip"
+        android:clickable="true"
+        android:background="?attr/selectableItemBackground"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iconQuick"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="17dp"
+            android:layout_marginTop="0dip"
+            android:tint="#424242"
+            android:src="@drawable/ic_reset"/>
+
+        <TextView
+            android:id="@+id/titleQuick"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dip"
+            android:text="@string/drawer_title_quickreboot"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_vertical"
+            android:textColor="#424242"
+            android:textSize="16sp"/>
+
     </LinearLayout>
 
     <LinearLayout
@@ -57,7 +89,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="0dip"
-            android:text="Reboot"
+            android:text="@string/drawer_title_reboot"
             android:fontFamily="sans-serif-medium"
             android:gravity="center_vertical"
             android:textColor="#424242"
@@ -89,7 +121,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="0dip"
-            android:text="About"
+            android:text="@string/drawer_title_about"
             android:fontFamily="sans-serif-medium"
             android:gravity="center_vertical"
             android:textColor="#424242"

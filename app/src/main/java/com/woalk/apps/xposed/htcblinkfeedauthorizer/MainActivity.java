@@ -63,6 +63,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     private DrawerLayout mDrawerLayout;
     private SharedPreferences sharedPreferences;
 
+
     public MainActivity() {
 
     }
@@ -556,9 +557,9 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
                     if (extras.containsKey("full_Array")) {
 
                         int[] arrayOfInt = extras.getIntArray("full_Array");
-                        editor.putInt("theme_PrimaryColor", arrayOfInt[0]);
+                        editor.putInt("theme_PrimaryColor", Common.lightenColor(arrayOfInt[2], .095f));
                         editor.putInt("theme_AccentColor", arrayOfInt[1]);
-                        editor.putInt("theme_PrimaryDarkColor", arrayOfInt[2]);
+                        editor.putInt("theme_PrimaryDarkColor", Common.lightenColor(arrayOfInt[2],-.25f));
                         editor.putInt("theme_Comms_Primary", arrayOfInt[3]);
                         editor.putInt("theme_Comms_Light", arrayOfInt[4]);
                         editor.putInt("theme_Comms_Dark", arrayOfInt[5]);

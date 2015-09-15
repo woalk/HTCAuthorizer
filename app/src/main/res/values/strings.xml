@@ -61,14 +61,18 @@
     <string name="pref_cat_about">About</string>
     <string name="pref_about_version_title">Version: </string>
     <string name="pref_about_dev_title">Authors: </string>
-    <string name="action_settings">Settings</string>
+    <string name="drawer_title_main">Main</string>
+    <string name="drawer_title_themes">Themes</string>
+    <string name="drawer_title_downloads">Downloads</string>
+    <string name="drawer_title_settings">Settings</string>
+    <string name="drawer_title_quickreboot">Quick Reboot</string>
+    <string name="drawer_title_reboot">Reboot</string>
+    <string name="drawer_title_about">About</string>
     <string name="pref_about_dev_summary" translatable="false">&#169; 2015 Woalk, DigitalHigh
         \nLicensed under GNU GPL v2.
         \nSee at github.com/woalk/HTCAuthorizer</string>
     <string name="ImageViewDescriptor">You\'re invited to the pants party!</string>
     <string name="Descriptor2">Welcome to thunderdome.</string>
-    <string name="pref_log_location">Saved Log Location</string>
-    <string name="pref_always_active_summary">See what\'s going on under the hood.</string>
     <string name="pref_create_permfile_summary">Creates permission file necessary for some devices to download HTC apps from store.</string>
     <string name="pref_create_permfile_title">Create Permission File</string>
     <string name="drawer_open">Open</string>
@@ -77,6 +81,8 @@
     <string name="pref_themes_automix_themes_title">Auto-mix theme colors</string>
     <string name="dialog_title_reboot">Would you like to reboot?</string>
     <string name="dialog_message_reboot">Select an option below.</string>
+
+    <!--Download links-->
     <string name="dl_path_Prism" translatable="false">http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=21581</string>
     <string name="dl_path_Camera" translatable="false">http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=18737</string>
     <string name="dl_path_Gallery" translatable="false">http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=16517</string>

@@ -6,7 +6,6 @@ import android.app.AndroidAppHelper;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.FeatureInfo;
 import android.content.res.Resources;
 import android.content.res.XResources;
@@ -30,7 +29,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
-import java.util.Map;
 
 import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
@@ -294,7 +292,7 @@ public class X_Mod
                     }
                     prefs.close();
                 }
-            }catch (NullPointerException | IllegalArgumentException e) {
+            } catch (NullPointerException | IllegalArgumentException e) {
                 Logger.e("X_Mod: NPE.  Probably settingsProvider isn't ready yet" + e);
             }
         }
@@ -308,7 +306,7 @@ public class X_Mod
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
         Object activityThread = XposedHelpers.callStaticMethod(XposedHelpers.findClass(ACTIVITY_THREAD_CLASS, null), ACTIVITY_THREAD_CURRENTACTHREAD);
-        final Context systemCtx = (Context)XposedHelpers.callMethod(activityThread, ACTIVITY_THREAD_GETSYSCTX);
+        final Context systemCtx = (Context) XposedHelpers.callMethod(activityThread, ACTIVITY_THREAD_GETSYSCTX);
 
         Config.reload(systemCtx);
 
@@ -427,7 +425,6 @@ public class X_Mod
             });
 
 
-
             // Theme permissions hook
             XposedHelpers.findAndHookMethod(CLASS_BF_MIXINGTHEMECOLOR, lpparam.classLoader,
                     "updateFullThemecolor", Context.class, CLASS_BF_THEME, new XC_MethodHook() {
@@ -437,12 +434,12 @@ public class X_Mod
                             Logger.v("X_Mod: HTC theme Hooked");
                             Context context = AndroidAppHelper.currentApplication();
                             Class getFullColorCodesClass = XposedHelpers.findClass("com.htc.themepicker.util.CurrentThemeUtil", lpparam.classLoader);
-                            int[] result = (int[]) XposedHelpers.callStaticMethod(getFullColorCodesClass,"getFullColorCodes",context);
+                            int[] result = (int[]) XposedHelpers.callStaticMethod(getFullColorCodesClass, "getFullColorCodes", context);
 
-                                    Intent intent = new Intent();
-                                    intent.setAction("com.woalk.HTCAuthorizer.UPDATE_XML");
-                                        intent.putExtra("full_Array", result);
-                                    context.sendBroadcast(intent);
+                            Intent intent = new Intent();
+                            intent.setAction("com.woalk.HTCAuthorizer.UPDATE_XML");
+                            intent.putExtra("full_Array", result);
+                            context.sendBroadcast(intent);
 
 
                         }
@@ -1126,7 +1123,7 @@ public class X_Mod
 
                     Logger.v("X_Mod: Replaced Theme resources for Sense SystemUI.");
                 }
-                } else if (resparam.packageName.equals(PKG_SETTINGS)) {
+            } else if (resparam.packageName.equals(PKG_SETTINGS)) {
                 Logger.v("Replacing Theme resources for Settings app.");
 
                 resparam.res.setReplacement(PKG_SETTINGS, "color", "theme_primary",
@@ -1395,7 +1392,6 @@ public class X_Mod
                 colorAccent);
         XResources.setSystemWideReplacement("android", "color", "material_deep_teal_200",
                 colorPrimaryDark);
-
 
 
         Logger.v("Theme resources replaced.");

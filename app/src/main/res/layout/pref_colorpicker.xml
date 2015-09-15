@@ -28,7 +28,7 @@
         android:layout_marginTop="6.0dip"
         android:animateLayoutChanges="true"
         android:clickable="true"
-        android:paddingRight="10dip"
+        android:paddingEnd="10dip"
 
         tools:ignore="RtlSymmetry">
 

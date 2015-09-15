@@ -8,12 +8,6 @@
         android:key="use_themes"
         android:summary="@string/pref_themes_check_summary"
         android:title="@string/pref_themes_check_title"/>
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:dependency="use_themes"
-        android:key="systemui_automix_theme"
-        android:summary="@string/pref_themes_automix_themes_summary"
-        android:title="@string/pref_themes_automix_themes_title"/>
 
     <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
         android:id="@+id/Picker1"

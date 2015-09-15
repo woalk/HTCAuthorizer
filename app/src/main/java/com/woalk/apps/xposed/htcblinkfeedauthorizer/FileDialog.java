@@ -12,6 +12,7 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class FileDialog {
     private static final String PARENT_DIR = "..";
@@ -122,7 +123,7 @@ public class FileDialog {
                     if (!sel.canRead()) return false;
                     if (selectDirectoryOption) return sel.isDirectory();
                     else {
-                        boolean endsWith = fileEndsWith == null || filename.toLowerCase().endsWith(fileEndsWith);
+                        boolean endsWith = fileEndsWith == null || filename.toLowerCase(Locale.getDefault()).endsWith(fileEndsWith);
                         return endsWith || sel.isDirectory();
                     }
                 }
