@@ -141,7 +141,7 @@ public class Common {
         File file = new File(Environment.getExternalStorageDirectory().toString() + "/Sensify/com.htc.software.market.xml");
         File sysfile = new File("/system/etc/permissions/com.htc.software.market.xml");
         if (!sysfile.exists()) {
-            String[] cmd = {"mount -o remount,rw /system", "cp " + file + " " + sysfile, "mount -o remount,ro /system"};
+            String[] cmd = {"mount -o remount,rw /system", "cp " + file + " " + sysfile, "chmod 0644 " + sysfile, "mount -o remount,ro /system"};
             Logger.d("Common: passing command to root - " + Arrays.toString(cmd));
             runAsRoot(cmd);
             return true;
@@ -159,7 +159,7 @@ public class Common {
         File file = new File(Environment.getExternalStorageDirectory().toString() + "/Sensify/com.htc.software.market.xml");
         File sysfile = new File("/system/etc/permissions/com.htc.software.market.xml");
         if (force) {
-            String[] cmd = {"mount -o remount,rw /system", "cp " + file + " " + sysfile, "mount -o remount,ro /system"};
+            String[] cmd = {"mount -o remount,rw /system", "cp " + file + " " + sysfile, "chmod 0644 " + sysfile, "mount -o remount,ro /system"};
             Logger.d("Common: passing command to root - " + Arrays.toString(cmd));
             runAsRoot(cmd);
             return true;
@@ -181,10 +181,11 @@ public class Common {
 
             FileOutputStream fileos = new FileOutputStream(permfile);
             XmlSerializer xmlSerializer = Xml.newSerializer();
+
             xmlSerializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
             StringWriter writer = new StringWriter();
             xmlSerializer.setOutput(writer);
-            xmlSerializer.startDocument(null, Boolean.valueOf(true));
+            xmlSerializer.startDocument("UTF-8", null);
             xmlSerializer.startTag(null, "permissions");
             xmlSerializer.startTag(null, "feature");
             xmlSerializer.attribute("", "name", "com.htc.software.HTC");
