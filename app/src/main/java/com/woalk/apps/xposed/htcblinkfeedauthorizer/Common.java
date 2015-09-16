@@ -128,7 +128,7 @@ public class Common {
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    Runtime.getRuntime().exec(new String[]{"su", "-c", "pkill " + packageToKill});
+                    Runtime.getRuntime().exec(new String[]{"su", "-c", "pkill com.android.systemui; pkill com.android.settings; pkill com.google.android.inputmethod.latin; pkill com.google.android.dialer"});
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -141,6 +141,24 @@ public class Common {
         File file = new File(Environment.getExternalStorageDirectory().toString() + "/Sensify/com.htc.software.market.xml");
         File sysfile = new File("/system/etc/permissions/com.htc.software.market.xml");
         if (!sysfile.exists()) {
+            String[] cmd = {"mount -o remount,rw /system", "cp " + file + " " + sysfile, "mount -o remount,ro /system"};
+            Logger.d("Common: passing command to root - " + Arrays.toString(cmd));
+            runAsRoot(cmd);
+            return true;
+
+        } else {
+            Logger.d("Common: Sysfile exists.");
+            return false;
+
+        }
+
+
+    }
+    public boolean copyPermFile(boolean force) {
+
+        File file = new File(Environment.getExternalStorageDirectory().toString() + "/Sensify/com.htc.software.market.xml");
+        File sysfile = new File("/system/etc/permissions/com.htc.software.market.xml");
+        if (force) {
             String[] cmd = {"mount -o remount,rw /system", "cp " + file + " " + sysfile, "mount -o remount,ro /system"};
             Logger.d("Common: passing command to root - " + Arrays.toString(cmd));
             runAsRoot(cmd);
@@ -209,7 +227,7 @@ public class Common {
     }
 
 
-    public void runAsRoot(final String[] cmds) {
+    public static void runAsRoot(final String[] cmds) {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {

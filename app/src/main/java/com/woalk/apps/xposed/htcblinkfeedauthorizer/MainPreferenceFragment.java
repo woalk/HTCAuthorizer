@@ -16,10 +16,12 @@ public class MainPreferenceFragment extends PreferenceFragment
         implements Preference.OnPreferenceClickListener {
     private static Preference pathUSB;
     private static Preference pathExt;
+    private static int mCount;
 
     public static final String EXTRA_SUBSCREEN_ID = "subscreen_id";
     public static final int SUBSCREEN_ID_ALWAYS_ACTIVE = 1;
     private File mDefaultDirectory = new File(Environment.getExternalStorageDirectory().toString());
+    private Toast toast;
 
 
     /**
@@ -65,6 +67,8 @@ public class MainPreferenceFragment extends PreferenceFragment
         addPreferencesFromResource(R.xml.pref_general);
         Preference permpref = findPreference("create_perm");
         Preference killpref = findPreference("kill_launcher");
+        mCount = 0;
+        toast = null;
 
         pathUSB = findPreference("usb_dir");
         pathExt = findPreference("ext_dir");
@@ -77,8 +81,20 @@ public class MainPreferenceFragment extends PreferenceFragment
                         Common common;
                         common = new Common();
                         if (!common.copyPermFile()) {
-                            Toast.makeText(getActivity(), "File already exists.",
-                                    Toast.LENGTH_SHORT).show();
+                            if (mCount == 7) {
+
+
+                                toast = Toast.makeText(getActivity(), "File already exists.", Toast.LENGTH_SHORT);
+                                        toast.show();
+                                mCount += 1;
+                            } else {
+                                common.copyPermFile(true);
+                                toast.cancel();
+                                toast = Toast.makeText(getActivity(), "Fiiiiiine.  I'll do it already.", Toast.LENGTH_SHORT);
+                                        toast.show();
+                                mCount = 0;
+                            }
+
                         }
 
                         return true;

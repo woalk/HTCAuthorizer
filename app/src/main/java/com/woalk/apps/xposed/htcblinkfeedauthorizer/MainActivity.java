@@ -56,7 +56,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     public int mMainColor, mSecondaryColor, mAccentColor;
     public boolean mUseThemes;
     ListView mDrawerList;
-    LinearLayout mDrawerPane, mDrawerReboot, mDrawerAbout, mMainLayout;
+    LinearLayout mDrawerPane, mDrawerReboot, mDrawerAbout, mMainLayout, mDrawerQuickReboot;
     ArrayList<NavItem> mNavItems = new ArrayList<>();
     private android.support.v7.widget.Toolbar toolbar;
     private String curTitle;
@@ -113,6 +113,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
         mDrawerPane = (LinearLayout) findViewById(R.id.drawerPane);
         mMainLayout = (LinearLayout) findViewById(R.id.mainLayout);
         mDrawerReboot = (LinearLayout) findViewById(R.id.drawerReboot);
+        mDrawerQuickReboot = (LinearLayout) findViewById(R.id.drawerQuickReboot);
         mDrawerAbout = (LinearLayout) findViewById(R.id.drawerAbout);
         mDrawerList = (ListView) findViewById(R.id.navList);
         DrawerListAdapter adapter = new DrawerListAdapter(this, mNavItems);
@@ -148,10 +149,21 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
                 } else if (v.equals(mDrawerAbout)) {
                     mDrawerLayout.closeDrawer(GravityCompat.START);
                     showAboutDialog();
+                } else if (v.equals(mDrawerQuickReboot)) {
+                    mHook(mMainColor,mSecondaryColor,mAccentColor);
+                    String[] cmd = new String[1];
+                    cmd[0] = "pkill com.android.systemui; pkill com.android.settings; pkill com.google.android.inputmethod.latin; pkill com.google.android.dialer";
+                    Common.killPackage("foo");
+                    Common.runAsRoot(cmd);
+//                    Common.killPackage("com.android.settings");
+//                    Common.killPackage("com.android.dialer");
+//                    Common.killPackage("com.google.android.inputmethod");
+
                 }
             }
         };
         mDrawerReboot.setOnClickListener(onClickListener);
+        mDrawerQuickReboot.setOnClickListener(onClickListener);
         mDrawerAbout.setOnClickListener(onClickListener);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -326,6 +338,11 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
         tvset.setDuration(450);
         tvset.play(tv1X).with(tv1alpha).with(tv2X).with(tv2alpha);
         tvset.start();
+
+    }
+    //This doesn't really do anything, it's just for Xposed to hook on a button click.  :D
+    private void mHook(int main, int dark, int accent) {
+        Logger.d("X_Mod: Not really.  mHook Called.");
 
     }
 
@@ -563,7 +580,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
                     if (extras.containsKey("full_Array")) {
 
                         int[] arrayOfInt = extras.getIntArray("full_Array");
-                        editor.putInt("theme_PrimaryColor", Common.lightenColor(arrayOfInt[2], .095f));
+                        editor.putInt("theme_PrimaryColor", arrayOfInt[2]);
                         editor.putInt("theme_AccentColor", arrayOfInt[1]);
                         editor.putInt("theme_PrimaryDarkColor", Common.lightenColor(arrayOfInt[2],-.25f));
                         editor.putInt("theme_Comms_Primary", arrayOfInt[3]);

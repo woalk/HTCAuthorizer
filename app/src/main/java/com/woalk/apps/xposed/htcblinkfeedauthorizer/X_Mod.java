@@ -35,7 +35,6 @@ import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
-import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
@@ -536,6 +535,30 @@ public class X_Mod
 
             } catch (Throwable e) {
                 Logger.w("Google+ hooks could not be loaded.", e);
+            }
+
+        } else if (lpparam.packageName.equals("com.woalk.apps.xposed.htcblinkfeedauthorizer")) {
+
+            Logger.v("Load hooks for Sensify...");
+
+            try {
+                XposedHelpers.findAndHookMethod("com.woalk.apps.xposed.htcblinkfeedauthorizer.MainActivity", lpparam.classLoader,
+                        "mHook",int.class, int.class, int.class, new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+                                Logger.d("X_Mod: Hook called to replace systemwide");
+                                mSettings.loadCachePrefs();
+                                replaceSystemWideThemes();
+                                Logger.logHookAfter(param);
+                            }
+                        });
+
+
+                Logger.v("All hooks for Sensify loaded.");
+
+            } catch (Throwable e) {
+                Logger.w("Sensify hooks could not be loaded.", e);
             }
 
         } else if (lpparam.packageName.equals(PKG_HTC_INSTAGRAM)) {
@@ -1373,10 +1396,13 @@ public class X_Mod
     }
 
     public static void replaceSystemWideThemes() {
+
+
         Logger.v("Replacing system-wide Theme resources.");
 
         XResources.setSystemWideReplacement("android", "color", "material_blue_grey_900",
                 cachedPrimary);
+        Logger.v("X_Mod: trying to set a color for systemwide " + cachedPrimary);
         XResources.setSystemWideReplacement("android", "color", "user_icon_1",
                 cachedPrimary);
         XResources.setSystemWideReplacement("android", "color", "highlighted_text_material_dark",
