@@ -81,7 +81,7 @@ public class MainPreferenceFragment extends PreferenceFragment
                         Common common;
                         common = new Common();
                         if (!common.copyPermFile()) {
-                            if (mCount == 7) {
+                            if (mCount != 7) {
 
 
                                 toast = Toast.makeText(getActivity(), "File already exists.", Toast.LENGTH_SHORT);
