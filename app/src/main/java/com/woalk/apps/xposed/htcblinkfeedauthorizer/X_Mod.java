@@ -952,6 +952,43 @@ public class X_Mod
                 Logger.i("A storage hook failed for package %s.", lpparam.packageName);
                 Logger.i("getPhoneStorageDirectory() hook", e);
             }
+            if (lpparam.packageName.equals(PKG_HTC_GALLERY) && Common.getDeviceName().contains("M8"))  {
+                try {
+                    XposedHelpers.findAndHookMethod("com.htc.photoenhancer.utility.EnviromentFlagUtils", lpparam.classLoader,
+                            "shouldHide3DEffectIcon", new XC_MethodHook() {
+                                @Override
+                                protected void beforeHookedMethod(MethodHookParam param)
+                                        throws Throwable {
+
+                                    Logger.d("X_Mod: Hooking dual flag check for device " + Common.getDeviceName());
+                                    Logger.logHook(param);
+                                    param.setResult(false);
+                                    Logger.logHookAfter(param);
+                                }
+                            });
+                    hooks++;
+                } catch (Throwable e) {
+                    Logger.i("A dual hook for camera failed.", lpparam.packageName);
+                    Logger.i("Error: ", e);
+                }
+                try {
+                    XposedHelpers.findAndHookMethod("com.htc.duallensservice.Dualservice", lpparam.classLoader,
+                            "isRefocusSupported", new XC_MethodHook() {
+                                @Override
+                                protected void beforeHookedMethod(MethodHookParam param)
+                                        throws Throwable {
+                                    Logger.d("X_Mod: hooking dual check");
+                                    Logger.logHook(param);
+                                    param.setResult(true);
+                                    Logger.logHookAfter(param);
+                                }
+                            });
+                    hooks++;
+                } catch (Throwable e) {
+                    Logger.i("Dual service hook failed for.", lpparam.packageName);
+                    Logger.i("Error is: ", e);
+                }
+            }
             try {
                 XposedHelpers.findAndHookMethod(CLASS_HTC_LIB3, lpparam.classLoader,
                         "getPhoneStorageState", new XC_MethodHook() {
