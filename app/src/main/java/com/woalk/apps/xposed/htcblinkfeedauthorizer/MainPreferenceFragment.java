@@ -1,7 +1,9 @@
 package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.EditTextPreference;
@@ -11,12 +13,16 @@ import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 import java.io.File;
+import java.util.Timer;
+import java.util.TimerTask;
+import android.os.Handler;
 
 public class MainPreferenceFragment extends PreferenceFragment
         implements Preference.OnPreferenceClickListener {
     private static Preference pathUSB;
     private static Preference pathExt;
-    private static int mCount;
+    private static int mToastHitCountdown;
+
 
     public static final String EXTRA_SUBSCREEN_ID = "subscreen_id";
     public static final int SUBSCREEN_ID_ALWAYS_ACTIVE = 1;
@@ -67,8 +73,11 @@ public class MainPreferenceFragment extends PreferenceFragment
         addPreferencesFromResource(R.xml.pref_general);
         Preference permpref = findPreference("create_perm");
         Preference killpref = findPreference("kill_launcher");
-        mCount = 0;
+        if (Common.checkPermFileExists()) {
+            mToastHitCountdown = 7;
+        } else mToastHitCountdown = 0;
         toast = null;
+
 
         pathUSB = findPreference("usb_dir");
         pathExt = findPreference("ext_dir");
@@ -80,20 +89,68 @@ public class MainPreferenceFragment extends PreferenceFragment
                         Common.createPermFile();
                         Common common;
                         common = new Common();
-                        if (!common.copyPermFile()) {
-                            if (mCount != 7) {
+                        final Context context = getActivity();
+                        Logger.v("MainPreferenceFragment: Toast count is " + mToastHitCountdown);
+                        if (common.checkPermFileExists()) {
+                            Logger.v("MainPreferenceFragment: File exists " + mToastHitCountdown);
+                            if (mToastHitCountdown > 0) {
+                                mToastHitCountdown -= 1;
+                                if (mToastHitCountdown == 0) {
+                                    if (toast != null) {
+                                        toast.cancel();
+                                    }
+                                    toast = Toast.makeText(getActivity(), "Fiiiiiine.  I'll do it already.", Toast.LENGTH_SHORT);
+                                    toast.show();
+                                    common.copyPermFile(true);
+                                    final Handler handler = new Handler();
+                                    Timer t = new Timer();
+                                    t.schedule(new TimerTask() {
+                                        public void run() {
+                                            handler.post(new Runnable() {
+                                                public void run() {
 
+                                                    if (Common.checkPermFileExists()) {
+                                                        toast = Toast.makeText(context, "File created successfully.", Toast.LENGTH_SHORT);
+                                                        toast.show();
+                                                    }
 
-                                toast = Toast.makeText(getActivity(), "File already exists.", Toast.LENGTH_SHORT);
-                                        toast.show();
-                                mCount += 1;
-                            } else {
-                                common.copyPermFile(true);
-                                toast.cancel();
-                                toast = Toast.makeText(getActivity(), "Fiiiiiine.  I'll do it already.", Toast.LENGTH_SHORT);
-                                        toast.show();
-                                mCount = 0;
+                                                }
+                                            });
+                                        }
+                                    }, 5000);
+                                    mToastHitCountdown = 7;
+
+                                } else if ((mToastHitCountdown > 0) && (mToastHitCountdown < 8)) {
+                                    if (toast != null) {
+                                        toast.cancel();
+                                    }
+                                    toast = Toast.makeText(getActivity(), "File already exists.", Toast.LENGTH_SHORT);
+                                    toast.show();
+                                }
                             }
+                        } else {
+                            Logger.v("MainPreferenceFragment: File does not exist " + mToastHitCountdown);
+                            common.copyPermFile();
+                            final Handler handler = new Handler();
+                            Timer t = new Timer();
+                            t.schedule(new TimerTask() {
+                                public void run() {
+                                    handler.post(new Runnable() {
+                                        public void run() {
+
+                                            if (Common.checkPermFileExists()) {
+                                                toast = Toast.makeText(context, "File created successfully.", Toast.LENGTH_SHORT);
+                                                toast.show();
+                                            }
+
+                                        }
+                                    });
+                                }
+                            }, 5000);
+
+
+                            mToastHitCountdown = 7;
+
 
                         }
 
@@ -136,10 +193,12 @@ public class MainPreferenceFragment extends PreferenceFragment
                 Logger.d("MainPrefFrag: Trying to put value of " + directory + " to " + preference.getKey());
                 editor.putString(preference.getKey(), directory.toString());
                 editor.commit();
-                Logger.d("MainPrefFrag: value of " + sharedPreferences.getString(preference.getKey(),""));
+                Logger.d("MainPrefFrag: value of " + sharedPreferences.getString(preference.getKey(), ""));
                 preference.setSummary(directory.toString());
             }
         });
         return true;
     }
+
+
 }

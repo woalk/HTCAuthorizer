@@ -161,6 +161,13 @@ public class Common {
         }.execute();
     }
 
+    public static boolean checkPermFileExists() {
+        File sysfile = new File("/system/etc/permissions/com.htc.software.market.xml");
+        if (sysfile.exists()) return true;
+        else return false;
+
+    }
+
     public boolean copyPermFile() {
         File file = new File(Environment.getExternalStorageDirectory().toString() + "/Sensify/com.htc.software.market.xml");
         File sysfile = new File("/system/etc/permissions/com.htc.software.market.xml");
