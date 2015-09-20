@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
 
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -33,7 +34,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <receiver android:name=".MainActivity$ThemeUpdateReceiver" >
+        <receiver android:name=".ThemeUpdateReceiver" >
             <intent-filter>
                 <action android:name="com.woalk.HTCAuthorizer.UPDATE_XML" />
             </intent-filter>

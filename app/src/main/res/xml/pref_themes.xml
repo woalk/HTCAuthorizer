@@ -41,6 +41,11 @@
         android:key="systemui_use_launcher_theme"
         android:summary="@string/pref_themes_systemui_use_launcher_summary"
         android:title="@string/pref_themes_systemui_use_launcher_title"/>
+    <Preference
+        android:key="apply_theme"
+        android:title="Apply theme"
+        android:summary="Apply current theme colors"
+        />
 </PreferenceCategory>
 
 </PreferenceScreen>

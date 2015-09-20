@@ -6,6 +6,7 @@ import android.app.AndroidAppHelper;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.FeatureInfo;
 import android.content.res.Resources;
 import android.content.res.XResources;
@@ -162,7 +163,6 @@ public class X_Mod
     private static boolean useUSB = false;
     private static boolean useExternal = false;
     private static boolean rotateLauncher = false;
-    private static boolean cachedUsethemes = false;
     private static String cachedRomType = "";
     private static String pathUSB;
     private static String romType;
@@ -288,7 +288,7 @@ public class X_Mod
     public X_Mod() {
         Logger.logStart();
         mSettings = new SettingsHelper();
-        cachedUsethemes = mSettings.getCachedPref_use_themes();
+        boolean cachedUsethemes = mSettings.getCachedPref_use_themes();
         cachedAccent = mSettings.getCached_ColorAccent();
         cachedPrimary = mSettings.getCached_ColorPrimary();
         cachedPrimaryDark = mSettings.getCached_ColorPrimaryDark();
@@ -416,6 +416,32 @@ public class X_Mod
                 }
             });
 
+            XposedHelpers.findAndHookMethod("com.htc.themepicker.AssetBrowsingActivity", lpparam.classLoader, "onCreate",Bundle.class, new XC_MethodHook() {
+
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    Logger.d("X_Mod: Oncreate Hooked for ThemePicker");
+                    if (((Activity) param.thisObject).getIntent().hasExtra("update_colors")) {
+                        Bundle extras = ((Activity) param.thisObject).getIntent().getExtras();
+                            int array[] = extras.getIntArray("update_colors");
+                        SharedPreferences.Editor sharedPreferences = ((Activity) param.thisObject).getApplication().getSharedPreferences("mixing_theme_color_preference",Context.MODE_PRIVATE).edit();
+                        sharedPreferences.putInt("full_theme_colo1", array[0]);
+                        sharedPreferences.putInt("full_theme_colo2", array[1]);
+                        sharedPreferences.putInt("full_theme_colo3", array[2]);
+                        sharedPreferences.putInt("full_theme_colo4", array[3]);
+                        sharedPreferences.apply();
+                        Intent colorPickIntent = new Intent("com.htc.themepicker.ACTION_PICK_COLOR");
+                        colorPickIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        ((Activity) param.thisObject).getApplication().startActivity(colorPickIntent);
+                        Logger.d("X_Mod: Oncreate Extras received, array contains " + array[0]);
+                    }
+
+                    Logger.logHookAfter(param);
+                }
+            });
+
+
+
 
             // Theme permissions hook
             XposedHelpers.findAndHookMethod(CLASS_BF_MIXINGTHEMECOLOR, lpparam.classLoader,
@@ -435,6 +461,7 @@ public class X_Mod
 
                         }
                     });
+
 
             try {
                 if (rotateLauncher) {
