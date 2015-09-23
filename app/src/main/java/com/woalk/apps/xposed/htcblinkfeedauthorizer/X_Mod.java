@@ -30,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
@@ -430,9 +431,19 @@ public class X_Mod
                         sharedPreferences.putInt("full_theme_colo3", array[2]);
                         sharedPreferences.putInt("full_theme_colo4", array[3]);
                         sharedPreferences.apply();
+                        Context context = AndroidAppHelper.currentApplication();
+                        ArrayList<Integer> paramArraylist = new ArrayList<>(4);
+                        paramArraylist.add(0, array[0]);
+                        paramArraylist.add(1, array[1]);
+                        paramArraylist.add(2, array[2]);
+                        paramArraylist.add(3, array[3]);
+                        Class getFullColorCodesClass = XposedHelpers.findClass("com.htc.themepicker.util.CurrentThemeUtil", lpparam.classLoader);
+                        XposedHelpers.callStaticMethod(getFullColorCodesClass, "saveColorsConfig", context, paramArraylist);
                         Intent colorPickIntent = new Intent("com.htc.themepicker.ACTION_PICK_COLOR");
                         colorPickIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        colorPickIntent.putExtra("Sensify", "true");
                         ((Activity) param.thisObject).getApplication().startActivity(colorPickIntent);
+
                         Logger.d("X_Mod: Oncreate Extras received, array contains " + array[0]);
                     }
 
@@ -478,6 +489,64 @@ public class X_Mod
             } catch (Throwable e) {
                 Logger.w("Rotation hook not loaded.", e);
             }
+
+            XposedHelpers.findAndHookMethod("com.htc.themepicker.MixingThemeColorActivity", lpparam.classLoader, "onCreate", Bundle.class,
+                    new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            if (((Activity) param.thisObject).getIntent().hasExtra("Sensify")) {
+                                Logger.d("X_Mod: MTE called for onCreate");
+                                XposedHelpers.callMethod(param.thisObject,"applySelectColor");
+                            }
+                            Logger.logHookAfter(param);
+                        }
+                    });
+
+            XposedHelpers.findAndHookMethod("com.htc.themepicker.MixingThemeColorActivity$ColorItem", lpparam.classLoader, "getMultiColor", int.class,
+                    new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            Logger.d("X_Mod: MTE getMultiColor called " + param.args[0] + param.getResult());
+                            Logger.logHookAfter(param);
+                        }
+                    });
+
+            XposedHelpers.findAndHookMethod("com.htc.themepicker.MixingThemeColorActivity$ColorItem", lpparam.classLoader, "getSingleColor",
+                    new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            Logger.d("X_Mod: MTE getSingleColor called " + param.getResult());
+                            Logger.logHookAfter(param);
+                        }
+                    });
+
+            XposedHelpers.findAndHookMethod("com.htc.themepicker.MixingThemeColorActivity$ColorItem", lpparam.classLoader, "IsMultiColors",
+                    new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            Logger.d("X_Mod: MTE isMultiColors called " + param.getResult());
+                            Logger.logHookAfter(param);
+                        }
+                    });
+
+            XposedHelpers.findAndHookMethod("com.htc.themepicker.util.CurrentThemeUtil", lpparam.classLoader, "saveColorsConfig", Context.class, ArrayList.class,
+                    new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            Logger.d("X_Mod: MTE saveColorsConfig called " + param.getResult());
+                            ArrayList<Integer> paramArrayList = new ArrayList<Integer>();
+
+                            paramArrayList = (ArrayList<Integer>) param.args[1];
+
+
+                            for (int i=0; i<paramArrayList.size();i++){
+                                Logger.d("X_Mod: Array stuff - " + paramArrayList.get(i));
+
+                            }
+
+                            Logger.logHookAfter(param);
+                        }
+                    });
 
             Logger.v("All hooks for Sense Home loaded.");
 
@@ -746,6 +815,16 @@ public class X_Mod
                             }
                         });
 
+                XposedHelpers.findAndHookMethod(CLASS_CAMERA_CAMERACONTROLLER, lpparam.classLoader,
+                        "doSetCameraParameters", new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
+                                param.setResult(true);
+                                Logger.logHookAfter(param);
+                            }
+                        });
+
                 XposedHelpers.findAndHookMethod(CLASS_CAMERA_DISPLAYDEVICE, lpparam.classLoader,
                         "isHtcDevice", new XC_MethodHook() {
                             @Override
@@ -914,20 +993,20 @@ public class X_Mod
 
             Logger.v("Load Play Store hooks...");
 
-            XposedHelpers.findAndHookMethod(CLASS_FINSKY_LIBRARY_UTILS,
-                    lpparam.classLoader, "isAvailable", CLASS_FINSKY_DOCUMENT, CLASS_FINSKY_DFETOC,
-                    CLASS_FINSKY_LIBRARY, new XC_MethodHook() {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            Object doc = param.args[0];
-                            String id = (String) XposedHelpers.callMethod(doc, "getDocId");
-                            if (id.startsWith("com.htc.")) {
-                                Logger.logHook(param);
-                                param.setResult(true);
-                                Logger.logHookAfter(param);
-                            }
-                        }
-                    });
+//            XposedHelpers.findAndHookMethod(CLASS_FINSKY_LIBRARY_UTILS,
+//                    lpparam.classLoader, "isAvailable", CLASS_FINSKY_DOCUMENT, CLASS_FINSKY_DFETOC,
+//                    CLASS_FINSKY_LIBRARY, new XC_MethodHook() {
+//                        @Override
+//                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+//                            Object doc = param.args[0];
+//                            String id = (String) XposedHelpers.callMethod(doc, "getDocId");
+//                            if (id.startsWith("com.htc.")) {
+//                                Logger.logHook(param);
+//                                param.setResult(true);
+//                                Logger.logHookAfter(param);
+//                            }
+//                        }
+//                    });
 
             Logger.v("All Play Store hooks loaded.");
 

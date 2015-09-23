@@ -97,5 +97,18 @@
         <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
         <item name="android:padding">6dp</item>
     </style>
+    <style name="WelcomePageIndicatorStyle">
+        <item name="android:layout_width">6.0dip</item>
+        <item name="android:layout_height">6.0dip</item>
+        <item name="android:layout_marginLeft">3.0dip</item>
+        <item name="android:layout_marginRight">3.0dip</item>
+        <item name="android:src">@drawable/page_indicator</item>
+    </style>
+    <style name="WelcomeImageStyle">
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">0.0dip</item>
+        <item name="android:layout_weight">1.0</item>
+    </style>
 
 </resources>

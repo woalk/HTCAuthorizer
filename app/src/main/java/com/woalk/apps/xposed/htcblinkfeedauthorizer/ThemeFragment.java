@@ -50,6 +50,7 @@ public class ThemeFragment extends PreferenceFragment implements Preference.OnPr
         colorArray[11] = sharedPref.getInt("theme_Entertainment_Dark", 0);
 
         Intent intent = new Intent("com.htc.themepicker.ACTION_THEME_SELECTOR");
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         intent.putExtra("update_colors",colorArray);
         //intent.setComponent(new ComponentName("com.htc.launcher", "com.htc.themepicker.thememaker.ColorsActivity"));
         startActivity(intent);

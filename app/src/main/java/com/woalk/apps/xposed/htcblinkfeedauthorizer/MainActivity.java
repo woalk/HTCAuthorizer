@@ -82,6 +82,8 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
 
 
         super.onCreate(savedInstanceState);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication());
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         mUseThemes = sharedPreferences.getBoolean("use_themes", false);
         mMainColor = sharedPreferences.getInt("theme_PrimaryColor", -16728577);
         mSecondaryColor = sharedPreferences.getInt("theme_PrimaryDarkColor", -16763828);
@@ -90,16 +92,14 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
         mDefaultMainColor = -16728577;
         mDefaultSecondaryColor = -16763828;
         mDefaultAccentColor = -16728577;
-        setContentView(R.layout.activity_main);
         PreferenceManager.setDefaultValues(this, R.xml.pref_themes, false);
         PreferenceManager.setDefaultValues(this, R.xml.pref_always_active, false);
         PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication());
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         File theSharedPrefsFile;
 
         theSharedPrefsFile = new File("/data/data/"+ PACKAGE_NAME  +"/shared_prefs/" + PREFERENCE_FILE + ".xml");
         theSharedPrefsFile.setReadable(true, false);
+        setContentView(R.layout.activity_main);
 
         //Add drawerdown items
         mNavItems.add(new NavItem("Main", R.drawable.ic_home_white_24dp));
@@ -287,12 +287,13 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
         selectItemFromDrawer(curPos);
         if (mUseThemes) {
             toolbar.setBackgroundColor(mMainColor);
+            overridePalette(generateCustomPalette());
 
 
         } else {
             toolbar.setBackgroundColor(Color.rgb(Color.red(-16728577), Color.green(-16728577),
                     Color.blue(-16728577)));
-            overridePalette(generateCustomPalette());
+            overridePalette(generateDefaultPalette());
         }
 
     }
