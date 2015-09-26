@@ -924,7 +924,7 @@ public class X_Mod
                             Logger.logHook(param);
                             try {
                                 Drawable d = (Drawable) param.args[0];
-                                d.setColorFilter(colorAccent, PorterDuff.Mode.MULTIPLY);
+                                d.setColorFilter(colorAccent, PorterDuff.Mode.LIGHTEN);
                                 param.args[0] = d;
                             } catch (NullPointerException e) {
                                 Logger.e("X_Mod - error hooking icons" + e);

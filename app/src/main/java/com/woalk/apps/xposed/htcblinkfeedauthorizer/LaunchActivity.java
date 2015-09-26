@@ -56,7 +56,7 @@ public class LaunchActivity extends FragmentActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication());
 
-        if (sharedPreferences.getBoolean("SkipWelcome",false)) {
+        if (!(sharedPreferences.getBoolean("SkipWelcome",false))) {
             setContentView(R.layout.activity_launch);
             dotFrame = (LinearLayout) findViewById(R.id.viewPagerCountDots);
             mPager = (ViewPager) findViewById(R.id.viewPager);

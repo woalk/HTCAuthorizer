@@ -1,10 +1,13 @@
 package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.support.v4.app.NotificationCompat;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -24,10 +27,11 @@ public class HTMLHelper {
 
 
     private static String TAG = "HTMLHelper: ";
-    private String inUrl, newName, parsedHtmlNode;
+    private String inUrl, originalName, newName, parsedHtmlNode;
     private Boolean doDownload;
     private Context context;
     private File dir;
+    private int id;
 
     public HTMLHelper() {
 
@@ -46,8 +50,10 @@ public class HTMLHelper {
      *                     resulting apk.
      */
 
-    protected void fetchApp(String inputAppName, Context appContext) {
+    protected void fetchApp(String inputAppName, Context appContext, int appIndex) {
         //Set our input app name to be URL-friendly
+        originalName = inputAppName;
+        id=appIndex;
         newName = inputAppName.replaceAll("\\s", "+");
         //Set up search URL
         String holderUrl = "http://www.apkmirror.com/?s=" + newName + "&post_type=apps_post";
@@ -66,15 +72,21 @@ public class HTMLHelper {
 
 
     protected void doDownloadInstall(final String urlLink, final String fileName) {
+
         Thread dx = new Thread() {
 
             public void run() {
+                final NotificationManager mNotifyManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
+                mBuilder.setTicker("");
+                mBuilder.setContentTitle("Downloading " + originalName)
+                        .setContentText("Download in progress")
+                        .setSmallIcon(R.drawable.dl_anim);
+
                 //Set up download path
                 File root = android.os.Environment.getExternalStorageDirectory();
-                dir = new File(root.getAbsolutePath() + "/Sensify/");
-                if (!dir.exists()) {
-                    dir.mkdirs();
-                }
+                dir = new File(root.getAbsolutePath() + "/Download/");
+
 
                 try {
                     // Open connection to download file.
@@ -84,6 +96,7 @@ public class HTMLHelper {
 
                     // this will be useful so that you can show a typical 0-100% progress bar
                     int fileLength = connection.getContentLength();
+                    Logger.d(TAG + "FileLength is " + fileLength);
 
                     // download the file
                     InputStream input = new BufferedInputStream(url.openStream());
@@ -91,9 +104,19 @@ public class HTMLHelper {
 
                     byte data[] = new byte[1024];
                     long total = 0;
+                    long total2 = 0;
                     int count;
                     while ((count = input.read(data)) != -1) {
+                        // Set up the current filesize as a percentage
+                        double mPercentage = 100.0 * total / fileLength;
                         total += count;
+                        // We have to make sure to only update the notification
+                        // after so many blocks, else it bogs down SystemUI.
+                        if ((total - total2) > 40000) {
+                            mBuilder.setProgress(100, (int) Math.round(mPercentage), false);
+                            mNotifyManager.notify(id, mBuilder.build());
+                            total2 = total;
+                        }
 
                         output.write(data, 0, count);
                     }
@@ -101,14 +124,25 @@ public class HTMLHelper {
                     output.flush();
                     output.close();
                     input.close();
+                    Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
+                    notificationIntent.setDataAndType(Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/Download/" + newName + ".apk")), "application/vnd.android.package-archive");
+                    notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                    notificationIntent.addFlags(Intent.FLAG_FROM_BACKGROUND);
 
-                    // Start an intent to install our file
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setDataAndType(Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/Sensify/" + newName + ".apk")), "application/vnd.android.package-archive");
-                    i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                    i.addFlags(Intent.FLAG_FROM_BACKGROUND);
-                    context.startActivity(i);
+                    PendingIntent intent = PendingIntent.getActivity(context, 0,
+                            notificationIntent, 0);
+
+
+                    mBuilder.setContentTitle("Download Complete")
+                            .setContentText("Tap to install " + originalName)
+                            .setProgress(0, 0, false)
+                            .setSmallIcon(R.drawable.stat_sys_download_anim0)
+                            .setContentIntent(intent);
+                    mNotifyManager.notify(id, mBuilder.build());
+
+
+                    //context.startActivity(i);
 
                 } catch (Exception e) {
                     e.printStackTrace();
