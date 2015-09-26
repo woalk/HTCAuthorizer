@@ -16,6 +16,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -169,7 +170,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selectItemFromDrawer(position);
-                Logger.d("MainActivity: Onclick at position " + position);
+
 
             }
         });
@@ -386,10 +387,15 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
 
     //Drawer selection logic
     private void selectItemFromDrawer(final int position) {
-            fragmentSelect(position);
             mDrawerLayout.closeDrawer(GravityCompat.START);
             mDrawerList.setItemChecked(position, true);
             curPos = position;
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                fragmentSelect(position);
+            }
+        }, 200);
 
 
     }
@@ -501,13 +507,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     private void fragmentSelect(int position) {
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
-        if (getIntent().hasExtra("toOpen")) {
-            ft.setCustomAnimations(0, 0);
-
-        } else {
-            ft.setCustomAnimations(R.anim.enter, R.anim.exit);
-
-        }
+        ft.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.enter, R.anim.exit);
         if (position == 0) {
             ft.replace(android.R.id.widget_frame, new MainPreferenceFragment());
         } else if (position == 1) {
@@ -518,6 +518,9 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
             ft.replace(android.R.id.widget_frame, new ModuleFragment());
         }
         tv2.setText(mNavItems.get(position).mTitle);
+        ft.addToBackStack(null);
+
+
         ft.commit();
     }
 
