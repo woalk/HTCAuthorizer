@@ -3,11 +3,11 @@
     package="com.woalk.apps.xposed.htcblinkfeedauthorizer"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.ACCESS_SUPERUSER"/>
-    <uses-permission android:name="android.permission.READ_LOGS"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-
+    <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
 
     <application
@@ -17,20 +17,20 @@
         android:theme="@style/AppTheme2">
         <meta-data
             android:name="xposedmodule"
-            android:value="true"/>
+            android:value="true" />
         <meta-data
             android:name="xposeddescription"
-            android:value="@string/app_description"/>
+            android:value="@string/app_description" />
         <meta-data
             android:name="xposedminversion"
-            android:value="64"/>
+            android:value="64" />
 
         <activity
             android:name=".LaunchActivity"
             android:label="@string/app_name">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
@@ -39,7 +39,8 @@
             android:label="@string/app_name">
 
         </activity>
-        <receiver android:name=".ThemeUpdateReceiver" >
+
+        <receiver android:name=".ThemeUpdateReceiver">
             <intent-filter>
                 <action android:name="com.woalk.HTCAuthorizer.UPDATE_XML" />
             </intent-filter>
@@ -50,14 +51,14 @@
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.woalk.apps.xposed.htcblinkfeedauthorizer.MainActivity"/>
+                android:value="com.woalk.apps.xposed.htcblinkfeedauthorizer.MainActivity" />
         </activity>
-	<provider
+        <provider
             android:name=".SettingsProvider"
             android:authorities="com.woalk.HTCAuthorizer.settings"
             android:enabled="true"
-            android:exported="true" >
-        </provider>
+            android:exported="true"></provider>
     </application>
+
 
 </manifest>

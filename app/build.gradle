@@ -51,6 +51,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.1.0'
     compile 'com.android.support:cardview-v7:22.0.0'
     compile 'com.android.support:palette-v7:22.0.0'
+    compile 'org.jsoup:jsoup:1.8.3'
     compile(name:'GreenMatter', ext:'aar')
 
     //compile 'com.negusoft.greenmatter:GreenMatter:0.7-alpha'

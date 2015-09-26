@@ -81,11 +81,11 @@
     <string name="pref_themes_automix_themes_title">Auto-mix theme colors</string>
     <string name="dialog_title_reboot">Would you like to reboot?</string>
     <string name="dialog_message_reboot">Select an option below.</string>
-    <string name="welcome1_title">Sensify Xposed.</string>
+    <string name="welcome1_title">Sensify Xposed</string>
     <string name="welcome1_summary">Unleash your ROM.</string>
-    <string name="welcome2_title">Themeing Redefined.</string>
+    <string name="welcome2_title">Themeing, Redefined</string>
     <string name="welcome2_summary">Your device, your way.  No limitations.</string>
-    <string name="welcome3_title">Unlock everything.</string>
+    <string name="welcome3_title">Unlock everything</string>
     <string name="welcome3_summary">Use your apps the way they were meant to be used, without restriction.</string>
 
     <!--Download links-->

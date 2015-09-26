@@ -4,6 +4,7 @@ package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 
@@ -11,6 +12,8 @@ import java.util.Locale;
 
 public class DownloadFragment extends PreferenceFragment implements Preference.OnPreferenceClickListener {
     private Preference dlPrismPref, dlCameraPref, dlImePref, dlGalleryPref, dlBrowserPref, dlClockPref, dlWeatherPref, dlScribblePref;
+    private HTMLHelper htmlHelper;
+    private String secondaryApp;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,45 +37,102 @@ public class DownloadFragment extends PreferenceFragment implements Preference.O
         dlScribblePref.setOnPreferenceClickListener(this);
     }
 
+
     @Override
     public boolean onPreferenceClick(Preference preference) {
+        htmlHelper = new HTMLHelper();
         if (preference == dlPrismPref) {
-            String url = getString(R.string.dl_path_Prism);
-            downloadFile(url);
+            htmlHelper.fetchApp("Sense Home", getActivity());
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    HTMLHelper htmlHelper1 = new HTMLHelper();
+
+                    htmlHelper1.fetchApp("Htc Account", getActivity());
+                }
+            }, 2000);
+
         } else if (preference == dlCameraPref) {
-            String url = getString(R.string.dl_path_Camera);
-            downloadFile(url);
+            htmlHelper.fetchApp("HTC Camera", getActivity());
         } else if (preference == dlGalleryPref) {
-            String url = getString(R.string.dl_path_Gallery);
-            downloadFile(url);
+            htmlHelper.fetchApp("HTC Gallery", getActivity());
         } else if (preference == dlImePref) {
-            String url = getString(R.string.dl_path_Ime);
-            downloadFile(url);
-            url = "";
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    HTMLHelper htmlHelper1 = new HTMLHelper();
+
+                    htmlHelper1.fetchApp("HTC Input", getActivity());
+                }
+            }, 2000);
             Locale current = getResources().getConfiguration().locale;
             Logger.d("DownloadFragment: Locale is " + current);
             if (current.toString().equals("en_US")) {
-                url = getString(R.string.dl_path_Ime_Eng);
-            } else if (current.toString().equals("en_GB")) {
-                url = getString(R.string.dl_path_en_GB);
+                htmlHelper.fetchApp("Keyboard - English Pack with ALM", getActivity());
             } else if (current.toString().equals("es_US")) {
-                url = getString(R.string.dl_path_Ime_es);
+                htmlHelper.fetchApp("Keyboard Spanish ALM", getActivity());
+            } else if (current.toString().contains("en_")) {
+                htmlHelper.fetchApp("Keyboard English_UK ALM", getActivity());
             } else if (current.toString().equals("lv_LV")) {
-                url = getString(R.string.dl_path_Ime_lv_LV);
+                htmlHelper.fetchApp("Keyboard Latvian ALM", getActivity());
             } else if (current.toString().equals("lt_LT")) {
-                url = getString(R.string.dl_path_lt_LT);
+                htmlHelper.fetchApp("Keyboard Lithuanian ALM", getActivity());
             } else if (current.toString().equals("nb_NO")) {
-                url = getString(R.string.dl_path_nb_NO);
-            } else if (current.toString().equals("it_IT")) {
-                url = getString(R.string.dl_path_it_IT);
+                htmlHelper.fetchApp("Keyboard Norwegian ALM", getActivity());
+            } else if ((current.toString().equals("it_IT")) || (current.toString().equals("it_CH"))) {
+                htmlHelper.fetchApp("Keyboard Italian ALM", getActivity());
             } else if (current.toString().equals("ru_RU")) {
-                url = getString(R.string.dl_path_ru_RU);
+                htmlHelper.fetchApp("Keyboard Russian ALM", getActivity());
             } else if (current.toString().equals("uk_UA")) {
-                url = getString(R.string.dl_path_uk_UA);
-            } else if (current.toString().equals("de_DE")) {
-                url = getString(R.string.dl_path_de_DE);
+                htmlHelper.fetchApp("Keyboard Ukranian ALM", getActivity());
+            } else if (current.toString().contains("de_")) {
+                htmlHelper.fetchApp("Keyboard German ALM", getActivity());
+            } else if (current.toString().equals("cs_CZ")) {
+                htmlHelper.fetchApp("Keyboard Czech ALM", getActivity());
+            } else if ((current.toString().equals("nl_BE")) || (current.toString().equals("nl_NL"))) {
+                htmlHelper.fetchApp("Keyboard Dutch ALM", getActivity());
+            } else if (current.toString().contains("fr_")) {
+                htmlHelper.fetchApp("Keyboard French ALM", getActivity());
+            } else if (current.toString().equals("pl_PL")) {
+                htmlHelper.fetchApp("Keyboard Polish ALM", getActivity());
+            } else if (current.toString().contains("ar_")) {
+                htmlHelper.fetchApp("Keyboard Arabic ALM", getActivity());
+            } else if (current.toString().equals("es_ES")) {
+                htmlHelper.fetchApp("Keyboard Polish ALM", getActivity());
+            } else if (current.toString().equals("bg_BG")) {
+                htmlHelper.fetchApp("Keyboard Bulgarian ALM", getActivity());
+            } else if (current.toString().equals("ca_ES")) {
+                htmlHelper.fetchApp("Keyboard Catalan ALM", getActivity());
+            } else if (current.toString().equals("hr_HR")) {
+                htmlHelper.fetchApp("Keyboard Croatian ALM", getActivity());
+            } else if (current.toString().equals("da_DK")) {
+                htmlHelper.fetchApp("Keyboard Danish ALM", getActivity());
+            } else if (current.toString().equals("el_GR")) {
+                htmlHelper.fetchApp("Keyboard Greek ALM", getActivity());
+            } else if (current.toString().equals("iw_IL")) {
+                htmlHelper.fetchApp("Keyboard Hebrew ALM", getActivity());
+            } else if (current.toString().equals("in_ID")) {
+                htmlHelper.fetchApp("Keyboard Indonesian ALM", getActivity());
+            } else if (current.toString().equals("bg_BG")) {
+                htmlHelper.fetchApp("Keyboard Bulgarian ALM", getActivity());
+            } else if (current.toString().contains("pt_")) {
+                htmlHelper.fetchApp("Keyboard Portuguese ALM", getActivity());
+            } else if (current.toString().equals("ro_RO")) {
+                htmlHelper.fetchApp("Keyboard Romanian ALM", getActivity());
+            } else if (current.toString().equals("sr_RS")) {
+                htmlHelper.fetchApp("Keyboard Serbian ALM", getActivity());
+            } else if (current.toString().equals("sk_SK")) {
+                htmlHelper.fetchApp("Keyboard Slovakian ALM", getActivity());
+            } else if (current.toString().equals("sl_SI")) {
+                htmlHelper.fetchApp("Keyboard Slovenian ALM", getActivity());
+            } else if (current.toString().equals("sv_SE")) {
+                htmlHelper.fetchApp("Keyboard Swedish ALM", getActivity());
+            } else if (current.toString().equals("th_TH")) {
+                htmlHelper.fetchApp("Keyboard Thai ALM", getActivity());
+            } else if (current.toString().equals("tr_RT")) {
+                htmlHelper.fetchApp("Keyboard Turkish ALM", getActivity());
             }
-            if (!url.equals("")) downloadFile(url);
+
 
         } else if (preference == dlClockPref) {
             String url = getString(R.string.dl_path_Clock);
