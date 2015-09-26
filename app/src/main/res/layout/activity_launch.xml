@@ -4,6 +4,7 @@
     android:id="@+id/content"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="#00ffffff"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ex="http://schemas.android.com/apk/res-auto">
     <android.support.v4.view.ViewPager
@@ -24,7 +25,7 @@
         <ImageView android:id="@+id/pager3" style="@style/WelcomePageIndicatorStyle" />
 
     </LinearLayout>
-    <android.support.v7.widget.CardView android:layout_gravity="center_horizontal" android:id="@+id/skip_welcome" android:clickable="true" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="48.0dip" android:foreground="?android:selectableItemBackground" ex:cardBackgroundColor="@android:color/white" ex:cardCornerRadius="2.0dip" ex:cardElevation="2.0dip" ex:cardMaxElevation="6.0dip">
+    <android.support.v7.widget.CardView android:layout_gravity="center_horizontal" android:id="@+id/skip_welcome" android:clickable="true" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="48.0dip" android:foreground="@drawable/card_foreground_selector" ex:cardBackgroundColor="@android:color/white" ex:cardCornerRadius="2.0dip" ex:cardElevation="2.0dip" ex:cardMaxElevation="6.0dip">
         <TextView android:textSize="14.0sp" android:textColor="@android:color/black" android:gravity="center" android:paddingLeft="16.0dip" android:paddingRight="16.0dip" android:layout_width="wrap_content" android:layout_height="wrap_content" android:minHeight="44.0dip" android:text="GET STARTED" />
     </android.support.v7.widget.CardView>
 </LinearLayout>

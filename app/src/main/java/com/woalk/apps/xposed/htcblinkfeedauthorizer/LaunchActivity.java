@@ -1,8 +1,6 @@
 package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
 import android.animation.ArgbEvaluator;
-import android.animation.ValueAnimator;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -17,9 +15,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -30,6 +26,7 @@ public class LaunchActivity extends FragmentActivity implements View.OnClickList
     public static int mDefaultMainColor;
     public static int mDefaultSecondaryColor;
     public static int mDefaultAccentColor;
+    private SharedPreferences sharedPreferences;
     public int mNumItems;
     private int dotsCount;
     private LinearLayout dotFrame;
@@ -57,50 +54,56 @@ public class LaunchActivity extends FragmentActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication());
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication());
-        if (sharedPreferences.getBoolean("use_themes", false)) {
-
-            mDefaultMainColor = sharedPreferences.getInt("theme_PrimaryColor", -16728577);
-            mDefaultSecondaryColor = sharedPreferences.getInt("theme_PrimaryDarkColor", -16763828);
-            mDefaultAccentColor = sharedPreferences.getInt("theme_AccentColor", -16728577);
+        if (sharedPreferences.getBoolean("SkipWelcome",false)) {
+            setContentView(R.layout.activity_launch);
+            dotFrame = (LinearLayout) findViewById(R.id.viewPagerCountDots);
+            mPager = (ViewPager) findViewById(R.id.viewPager);
+            mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
+            mPager.setAdapter(mPagerAdapter);
+            mPager.setOnPageChangeListener(this);
+            findViewById(R.id.skip_welcome).setOnClickListener(this);
+            mViewDot1 = (ImageView) findViewById(R.id.pager1);
+            mViewDot2 = (ImageView) findViewById(R.id.pager2);
+            mViewDot3 = (ImageView) findViewById(R.id.pager3);
+            mDot1 = mViewDot1.getDrawable();
+            mDot2 = mViewDot2.getDrawable();
+            mDot3 = mViewDot3.getDrawable();
+            mDot1.setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
+            mDot2.setColorFilter(Color.LTGRAY, PorterDuff.Mode.MULTIPLY);
+            mDot3.setColorFilter(Color.LTGRAY, PorterDuff.Mode.MULTIPLY);
+            color1 = Color.rgb(245, 245, 245);
+            color2 = Color.rgb(255, 200, 160);
+            color3 = Color.rgb(204, 218, 251);
+            colors = new Integer[3];
+            colors[0] = color1;
+            colors[1] = color2;
+            colors[2] = color3;
+            argbEvaluator = new ArgbEvaluator();
         } else {
-            mDefaultMainColor = -16728577;
-            mDefaultSecondaryColor = -16763828;
-            mDefaultAccentColor = -16728577;
-        }
-        setContentView(R.layout.activity_launch);
-        dotFrame = (LinearLayout) findViewById(R.id.viewPagerCountDots);
-        mPager = (ViewPager) findViewById(R.id.viewPager);
-        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
-        mPager.setAdapter(mPagerAdapter);
-        mPager.setOnPageChangeListener(this);
-        findViewById(R.id.skip_welcome).setOnClickListener(this);
-        mViewDot1 = (ImageView) findViewById(R.id.pager1);
-        mViewDot2 = (ImageView) findViewById(R.id.pager2);
-        mViewDot3 = (ImageView) findViewById(R.id.pager3);
-        mDot1 = mViewDot1.getDrawable();
-        mDot2 = mViewDot2.getDrawable();
-        mDot3 = mViewDot3.getDrawable();
-        mDot1.setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
-        mDot2.setColorFilter(Color.LTGRAY, PorterDuff.Mode.MULTIPLY);
-        mDot3.setColorFilter(Color.LTGRAY, PorterDuff.Mode.MULTIPLY);
-        color1 = Color.rgb(245,245,245);
-        color2 = Color.rgb(247,218,186);
-        color3 = Color.rgb(204,218,251);
-        colors = new Integer[3];
-        colors[0] = color1;
-        colors[1] = color2;
-        colors[2] = color3;
-        argbEvaluator = new ArgbEvaluator();
+            setContentView(R.layout.welcome);
+            ImageView icon = (ImageView) findViewById(R.id.iconWelcome);
+            TextView title = (TextView) findViewById(R.id.titleWelcome);
+            TextView summary = (TextView) findViewById(R.id.summaryWelcome);
+            title.setText(getResources().getString(R.string.welcome1_title));
+            summary.setText(getResources().getString(R.string.welcome1_summary));
+            icon.setBackground(getDrawable(R.drawable.ic_warm_welcome_0));
+            new BackgroundTask().execute();
 
-        //new BackgroundTask().execute();
+
+        }
+
+
 
 
     }
 
     @Override
     public void onClick(View v) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("SkipWelcome",true);
+        editor.apply();
         Intent intent = new Intent(LaunchActivity.this, MainActivity.class);
         startActivity(intent);
     }
@@ -132,14 +135,12 @@ public class LaunchActivity extends FragmentActivity implements View.OnClickList
                 mDot2.setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
                 mDot3.setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
 
-
-
             }
             if (position == 2) {
                 mDot1.setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
                 mDot2.setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
                 mDot3.setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
-                getWindow().getDecorView().setBackgroundColor(Color.WHITE);
+
             }
 
 
@@ -242,7 +243,7 @@ public class LaunchActivity extends FragmentActivity implements View.OnClickList
             /*  Use this method to load background
             * data that your app needs. */
             try {
-                Thread.sleep(SPLASH_TIME);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -251,8 +252,6 @@ public class LaunchActivity extends FragmentActivity implements View.OnClickList
         @Override
         protected void onPostExecute(Object o) {
             super.onPostExecute(o);
-//            Pass your loaded data here using Intent
-//            intent.putExtra("data_key", "");
             startActivity(intent);
             finish();
         }
