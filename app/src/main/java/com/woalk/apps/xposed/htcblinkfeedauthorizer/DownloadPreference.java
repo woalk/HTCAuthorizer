@@ -77,7 +77,7 @@ public class DownloadPreference extends Preference {
     protected void onClick() {
         super.onClick();
         HTMLHelper htmlHelper = new HTMLHelper();
-        if (mPackageVersionInstalled != 0) {
+        if (mPackageVersionInstalled == 0) {
             htmlHelper.fetchApp((String) this.getTitle(), getContext(), 0, mKey);
         } else {
                 Toast toast = Toast.makeText(getContext(),"Latest package already installed", Toast.LENGTH_SHORT);

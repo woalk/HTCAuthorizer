@@ -18,7 +18,7 @@
         <com.woalk.apps.xposed.htcblinkfeedauthorizer.DownloadPreference
             android:key="dl_Weather"
             android:title="HTC Weather"
-            sensify:package_name="com.htc.weather"
+            sensify:package_name="com.htc.Weather"
             android:summary="Download HTC Weather"
             android:defaultValue="0"/>
         <com.woalk.apps.xposed.htcblinkfeedauthorizer.DownloadPreference
