@@ -4,9 +4,12 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
 import org.jsoup.Jsoup;
@@ -28,10 +31,16 @@ public class HTMLHelper {
 
     private static String TAG = "HTMLHelper: ";
     private String inUrl, originalName, newName, parsedHtmlNode;
+    public static String parsedVersionNumber, parsedFileName;
+    public static int parsedVersionCode;
     private Boolean doDownload;
+    private Boolean mSkipDownload = false;
     private Context context;
     private File dir;
     private int id;
+    private Preference mPreference;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
 
     public HTMLHelper() {
 
@@ -50,7 +59,7 @@ public class HTMLHelper {
      *                     resulting apk.
      */
 
-    protected void fetchApp(String inputAppName, Context appContext, int appIndex) {
+    protected void fetchApp(String inputAppName, Context appContext, int appIndex, Preference preference) {
         //Set our input app name to be URL-friendly
         originalName = inputAppName;
         id=appIndex;
@@ -66,8 +75,38 @@ public class HTMLHelper {
         //Get a context for intents
         context = appContext;
         //Set up and fire Jsoup task
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        editor = sharedPreferences.edit();
+        mPreference = preference;
+        mSkipDownload = false;
         JsoupAsyncTask jsoupAsyncTask = new JsoupAsyncTask();
         jsoupAsyncTask.execute();
+    }
+
+
+    protected void fetchApp(String inputAppName, Context appContext, int appIndex, Preference preference, Boolean skipDownload) {
+        //Set our input app name to be URL-friendly
+        originalName = inputAppName;
+        id=appIndex;
+        newName = inputAppName.replaceAll("\\s", "+");
+        //Set up search URL
+        String holderUrl = "http://www.apkmirror.com/?s=" + newName + "&post_type=apps_post";
+        //Set input app name for a Filename
+        newName = inputAppName.replaceAll("\\s", "");
+        //Set the input URL for the background task.
+        inUrl = holderUrl;
+        //Set "download" boolean to false for intial string.
+        doDownload = false;
+        //Get a context for intents
+        context = appContext;
+        //Set up and fire Jsoup task
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        editor = sharedPreferences.edit();
+        mPreference = preference;
+        JsoupAsyncTask jsoupAsyncTask = new JsoupAsyncTask();
+        mSkipDownload = skipDownload;
+        jsoupAsyncTask.execute();
+
     }
 
 
@@ -96,11 +135,13 @@ public class HTMLHelper {
 
                     // this will be useful so that you can show a typical 0-100% progress bar
                     int fileLength = connection.getContentLength();
-                    Logger.d(TAG + "FileLength is " + fileLength);
+
+
+                    Logger.d(TAG + "FileLength is " + fileLength + " and filename is " + parsedFileName + ".apk");
 
                     // download the file
                     InputStream input = new BufferedInputStream(url.openStream());
-                    OutputStream output = new FileOutputStream(dir + "/" + fileName);
+                    OutputStream output = new FileOutputStream(dir + "/" + parsedFileName + ".apk");
 
                     byte data[] = new byte[1024];
                     long total = 0;
@@ -125,7 +166,7 @@ public class HTMLHelper {
                     output.close();
                     input.close();
                     Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
-                    notificationIntent.setDataAndType(Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/Download/" + newName + ".apk")), "application/vnd.android.package-archive");
+                    notificationIntent.setDataAndType(Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/Download/" + parsedFileName + ".apk")), "application/vnd.android.package-archive");
                     notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                     notificationIntent.addFlags(Intent.FLAG_FROM_BACKGROUND);
@@ -139,10 +180,10 @@ public class HTMLHelper {
                             .setProgress(0, 0, false)
                             .setSmallIcon(R.drawable.stat_sys_download_anim0)
                             .setContentIntent(intent);
+
                     mNotifyManager.notify(id, mBuilder.build());
 
 
-                    //context.startActivity(i);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -154,6 +195,9 @@ public class HTMLHelper {
         //Start the thread
         dx.start();
     }
+
+
+
 
 
     private class JsoupAsyncTask extends AsyncTask<Void, Void, Void> {
@@ -169,7 +213,7 @@ public class HTMLHelper {
 
 
             // Connect to the web site
-            Document document = null;
+            Document document;
             try {
                 document = Jsoup.connect(inUrl).get();
 
@@ -188,9 +232,20 @@ public class HTMLHelper {
                 } else {
                     // Look for the class that holds the download link.
                     Element url = document.select("a[class=waves-effect waves-button downloadButton]").first();
+                    Element versionNumber = document.select("h1[class=marginZero wrapText apk-title]").first();
+                    Element versionCode = document.select("span[class=  fontBlue]").first();
                     // Grabs the href attribute
                     parsedHtmlNode = url.attr("href");
+                    parsedVersionNumber = versionNumber.attr("title");
+                    parsedFileName = parsedVersionNumber.replaceAll("\\s", "_");
+                    parsedVersionNumber = parsedVersionNumber.replaceAll("[^0-9.]", "");
+                    String parsedVersionString = versionCode.childNode(0).toString().replace(parsedVersionNumber,"");
+                    parsedVersionString = parsedVersionString.substring(1,4);
+                    Logger.d(TAG + "Version code is " + parsedVersionString);
+                    editor.putString(mPreference.getKey(), parsedVersionNumber);
+                    editor.apply();
                     Logger.d(TAG + "Parsed url for DL is " + parsedHtmlNode);
+                    Logger.d(TAG + "Putting version number for preference of " + mPreference.getKey() + " and " + parsedVersionNumber);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -216,13 +271,17 @@ public class HTMLHelper {
         protected void onPostExecute(Void result) {
             if (doDownload) {
                 Logger.d(TAG + "Starting download for url of " + parsedHtmlNode);
-                doDownloadInstall(parsedHtmlNode, newName + ".apk");
+                if (!mSkipDownload) {
+                    mSkipDownload = true;
+                    doDownloadInstall(parsedHtmlNode, newName + ".apk");
+                }
                 doDownload = false;
             } else {
                 inUrl = "http://www.apkmirror.com" + parsedHtmlNode;
                 JsoupAsyncTask jsoupAsyncTask = new JsoupAsyncTask();
                 jsoupAsyncTask.execute();
-                doDownload = true;
+
+                    doDownload = true;
 
             }
 

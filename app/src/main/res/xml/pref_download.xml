@@ -1,38 +1,50 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:sensify="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory android:title="Downloads">
-        <Preference
+        <com.woalk.apps.xposed.htcblinkfeedauthorizer.DownloadPreference
             android:key="dl_Prism"
             android:title="Sense Home"
-            android:summary="Download HTC Sense Home launcher"/>
+            android:summary="Download HTC Sense Home launcher"
+            android:defaultValue="0"
+            android:layout="@layout/preference"
+            sensify:package_name="com.htc.launcher"
+            />
         <Preference
             android:key="dl_Clock"
-            android:title="Deskclock"
-            android:summary="Download HTC Deskclock"/>
+            android:title="HTC Clock"
+            android:summary="Download HTC Clock"
+            android:defaultValue="0"/>
         <Preference
             android:key="dl_Weather"
-            android:title="Weather"
-            android:summary="Download HTC Weather"/>
+            android:title="HTC Weather"
+            android:summary="Download HTC Weather"
+            android:defaultValue="0"/>
         <Preference
             android:key="dl_IME"
-            android:title="HTC IME"
-            android:summary="Download HTC Keyboard"/>
+            android:title="HTC Input"
+            android:summary="Download HTC Keyboard"
+            android:defaultValue="0"/>
         <Preference
             android:key="dl_Gallery"
             android:title="HTC Gallery"
-            android:summary="Download HTC Gallery"/>
+            android:summary="Download HTC Gallery"
+            android:defaultValue="0"/>
         <Preference
             android:key="dl_Camera"
             android:title="HTC Camera"
-            android:summary="Download HTC Camera"/>
+            android:summary="Download HTC Camera"
+            android:defaultValue="0"/>
         <Preference
             android:key="dl_Browser"
-            android:title="HTC Browser"
-            android:summary="Download HTC Browser"/>
+            android:title="HTC Internet"
+            android:summary="Download HTC Browser"
+            android:defaultValue="0"/>
         <Preference
             android:key="dl_Scribble"
             android:title="HTC Scribble"
-            android:summary="Download HTC Scribble"/>
+            android:summary="Download HTC Scribble"
+            android:defaultValue="0"/>
     </PreferenceCategory>
 
 
