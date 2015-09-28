@@ -15,6 +15,8 @@ import android.support.v4.app.NotificationCompat;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.select.Elements;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -30,7 +32,7 @@ public class HTMLHelper {
 
 
     private static String TAG = "HTMLHelper: ";
-    private String inUrl, originalName, newName, parsedHtmlNode;
+    private String inUrl, originalName, newName, parsedHtmlNode, versionString;
     public static String parsedVersionNumber, parsedFileName;
     public static int parsedVersionCode;
     private Boolean doDownload;
@@ -38,7 +40,7 @@ public class HTMLHelper {
     private Context context;
     private File dir;
     private int id;
-    private Preference mPreference;
+    private String mPrefKey;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
@@ -59,7 +61,7 @@ public class HTMLHelper {
      *                     resulting apk.
      */
 
-    protected void fetchApp(String inputAppName, Context appContext, int appIndex, Preference preference) {
+    protected void fetchApp(String inputAppName, Context appContext, int appIndex, String prefKey) {
         //Set our input app name to be URL-friendly
         originalName = inputAppName;
         id=appIndex;
@@ -77,14 +79,13 @@ public class HTMLHelper {
         //Set up and fire Jsoup task
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         editor = sharedPreferences.edit();
-        mPreference = preference;
-        mSkipDownload = false;
+        mPrefKey = prefKey;
         JsoupAsyncTask jsoupAsyncTask = new JsoupAsyncTask();
         jsoupAsyncTask.execute();
     }
 
 
-    protected void fetchApp(String inputAppName, Context appContext, int appIndex, Preference preference, Boolean skipDownload) {
+    protected void fetchApp(String inputAppName, Context appContext, int appIndex, String prefKey, Boolean skipDownload) {
         //Set our input app name to be URL-friendly
         originalName = inputAppName;
         id=appIndex;
@@ -102,7 +103,7 @@ public class HTMLHelper {
         //Set up and fire Jsoup task
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         editor = sharedPreferences.edit();
-        mPreference = preference;
+        mPrefKey = prefKey;
         JsoupAsyncTask jsoupAsyncTask = new JsoupAsyncTask();
         mSkipDownload = skipDownload;
         jsoupAsyncTask.execute();
@@ -233,19 +234,30 @@ public class HTMLHelper {
                     // Look for the class that holds the download link.
                     Element url = document.select("a[class=waves-effect waves-button downloadButton]").first();
                     Element versionNumber = document.select("h1[class=marginZero wrapText apk-title]").first();
-                    Element versionCode = document.select("span[class=  fontBlue]").first();
+                    Elements versionCode = document.select("span[class=  fontBlue]");
                     // Grabs the href attribute
                     parsedHtmlNode = url.attr("href");
                     parsedVersionNumber = versionNumber.attr("title");
                     parsedFileName = parsedVersionNumber.replaceAll("\\s", "_");
                     parsedVersionNumber = parsedVersionNumber.replaceAll("[^0-9.]", "");
-                    String parsedVersionString = versionCode.childNode(0).toString().replace(parsedVersionNumber,"");
-                    parsedVersionString = parsedVersionString.substring(1,4);
+                    for (Element element : versionCode) {
+                        Logger.d("HTMLHelper: element text is: " + element.ownText());
+                        if (element.ownText().equals("Version:")) {
+                            Node node = element.nextSibling();
+                            versionString = node.toString();
+                            Logger.d("HTMLHelper: Found matching code.  Substring is " + node.toString());
+                            break;
+                        }
+                    }
+
+                    String parsedVersionString = versionString.replace(parsedVersionNumber, "");
+                    parsedVersionString = parsedVersionString.substring(2,parsedVersionString.length()-1);
                     Logger.d(TAG + "Version code is " + parsedVersionString);
-                    editor.putString(mPreference.getKey(), parsedVersionNumber);
+                    editor.putString(mPrefKey, parsedVersionNumber);
+                    editor.putInt(mPrefKey + "_code", Integer.valueOf(parsedVersionString));
                     editor.apply();
                     Logger.d(TAG + "Parsed url for DL is " + parsedHtmlNode);
-                    Logger.d(TAG + "Putting version number for preference of " + mPreference.getKey() + " and " + parsedVersionNumber);
+                    Logger.d(TAG + "Putting version number for pref_download of " + mPrefKey + " and " + parsedVersionNumber);
                 }
             } catch (IOException e) {
                 e.printStackTrace();

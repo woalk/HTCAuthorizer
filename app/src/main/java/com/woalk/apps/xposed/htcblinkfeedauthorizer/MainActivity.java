@@ -4,6 +4,8 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -27,8 +29,11 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -60,6 +65,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     private String curTitle;
     private int curPos = 0;
     private DrawerLayout mDrawerLayout;
+    private Button mButtonRefresh;
     private SharedPreferences sharedPreferences;
     protected static final String PACKAGE_NAME = "com.woalk.apps.xposed.htcblinkfeedauthorizer";
     protected static final String PREFERENCE_FILE = PACKAGE_NAME + "_preferences";
@@ -121,6 +127,21 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
         // Set up initial settings for title view(s) and bar
         tv1 = (TextView) findViewById(R.id.tv1);
         tv2 = (TextView) findViewById(R.id.tv2);
+        mButtonRefresh = (Button) findViewById(R.id.menuRefresh);
+        mButtonRefresh.setVisibility(View.GONE);
+        mButtonRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Animation rotation = AnimationUtils.loadAnimation(getApplication(), R.anim.clockwise_refresh);
+                rotation.setRepeatCount(5);
+                mButtonRefresh.startAnimation(rotation);
+                DownloadFragment myFragment = (DownloadFragment) getFragmentManager().findFragmentByTag("DL_FRAGMENT");
+                if (myFragment != null && myFragment.isVisible()) {
+                    myFragment.queryAllPackages();
+                }
+
+            }
+        });
         PackageManager pm = getPackageManager();
         ApplicationInfo appInfo = null;
         try {
@@ -509,12 +530,16 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.enter, R.anim.exit);
         if (position == 0) {
+            if (mButtonRefresh.getVisibility() == View.VISIBLE) {mButtonRefresh.setVisibility(View.GONE);}
             ft.replace(android.R.id.widget_frame, new MainPreferenceFragment());
         } else if (position == 1) {
+            if (mButtonRefresh.getVisibility() == View.VISIBLE) {mButtonRefresh.setVisibility(View.GONE);}
             ft.replace(android.R.id.widget_frame, new ThemeFragment());
         } else if (position == 2) {
-            ft.replace(android.R.id.widget_frame, new DownloadFragment());
+            if (mButtonRefresh.getVisibility() == View.GONE) {mButtonRefresh.setVisibility(View.VISIBLE);}
+            ft.replace(android.R.id.widget_frame, new DownloadFragment(),"DL_FRAGMENT");
         } else if (position == 3) {
+            if (mButtonRefresh.getVisibility() == View.VISIBLE) {mButtonRefresh.setVisibility(View.GONE);}
             ft.replace(android.R.id.widget_frame, new ModuleFragment());
         }
         tv2.setText(mNavItems.get(position).mTitle);

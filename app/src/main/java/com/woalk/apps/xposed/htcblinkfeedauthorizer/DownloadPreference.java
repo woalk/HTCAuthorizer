@@ -7,15 +7,21 @@ import android.content.pm.PackageManager;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
+
 public class DownloadPreference extends Preference {
 
-    private String mPackageName, mPackageVersionName, mKey, mTitleText, mSummaryText;
+    public static String mPackageName;
+    private String pName;
+    private String mPackageVersionName;
+    private String mKey;
+    private String mTitleText;
+    private String mSummaryText;
     private int mPackageVersionInstalled, mPackageVersionAvailable;
     private Boolean mIsInstalled;
     private SharedPreferences sharedPreferences;
@@ -24,8 +30,11 @@ public class DownloadPreference extends Preference {
     public DownloadPreference(Context context, AttributeSet attrs) {
         super(context);
         init(context, attrs);
+    }
 
-
+    public DownloadPreference(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        init(context, attrs);
     }
 
     public DownloadPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -33,28 +42,35 @@ public class DownloadPreference extends Preference {
         init(context, attrs);
     }
 
+
+
+    @Override
+    protected View onCreateView(ViewGroup parent) {
+        this.setLayoutResource(R.layout.pref_download);
+        return super.onCreateView(parent);
+
+    }
+
+    @Override
+    public CharSequence getTitle() {
+        return mTitle.getText();
+    }
+
+    @Override
+    public String getKey() {
+        return mKey;
+    }
+
     @Override
     protected void onBindView(View rootView) {
         super.onBindView(rootView);
-        LayoutInflater inflater = LayoutInflater.from(getContext());
-        View v = inflater.inflate(R.layout.preference, null);
-        mTitle = (TextView) v.findViewById(R.id.titleDownload);
-        mSummary = (TextView) v.findViewById(R.id.summaryDownload);
+        Logger.d("DownloadPreference: Setting title and summary to " + mTitleText + " and " + mSummaryText);
+        mTitle = (TextView) rootView.findViewById(R.id.title);
+        mSummary = (TextView) rootView.findViewById(R.id.summary);
         mTitle.setText(mTitleText);
         mSummary.setText(mSummaryText);
 
-    }
 
-    @Override
-    public void setTitle(CharSequence title) {
-        super.setTitle(title);
-        mTitle.setText(title);
-    }
-
-    @Override
-    public void setSummary(CharSequence summary) {
-        super.setSummary(summary);
-        mSummary.setText(summary);
     }
 
     @Override
@@ -62,7 +78,7 @@ public class DownloadPreference extends Preference {
         super.onClick();
         HTMLHelper htmlHelper = new HTMLHelper();
         if (mPackageVersionInstalled != 0) {
-            htmlHelper.fetchApp((String) this.getTitle(), getContext(), 0, this);
+            htmlHelper.fetchApp((String) this.getTitle(), getContext(), 0, mKey);
         } else {
                 Toast toast = Toast.makeText(getContext(),"Latest package already installed", Toast.LENGTH_SHORT);
                 toast.show();
@@ -83,32 +99,62 @@ public class DownloadPreference extends Preference {
     protected void init(Context context, AttributeSet attributeSet) {
         if (attributeSet != null) {
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-            mPackageName = attributeSet.getAttributeValue("http://schemas.android.com/apk/res/android", "package_name");
+            PackageManager packageManager = getContext().getPackageManager();
+            mPackageName = attributeSet.getAttributeValue("http://schemas.android.com/apk/res-auto", "package_name");
+            pName = mPackageName;
             mKey = attributeSet.getAttributeValue("http://schemas.android.com/apk/res/android", "key");
             mTitleText = attributeSet.getAttributeValue("http://schemas.android.com/apk/res/android", "title");
             mSummaryText = attributeSet.getAttributeValue("http://schemas.android.com/apk/res/android", "summary");
             mPackageVersionInstalled = queryVersionCode(mPackageName);
+            mPackageVersionName = queryVersionName(mPackageName);
+            Logger.d ("DownloadPreference: Got version and name of " + mPackageVersionInstalled + " and " + mPackageVersionName);
+
             if (sharedPreferences.contains(mKey + "_onlineVersion")) {
                 mPackageVersionAvailable = sharedPreferences.getInt(mKey + "_onlineVersion", 0);
             } else {
-                mPackageVersionInstalled = 0;
+                mPackageVersionAvailable = 0;
             }
+
+
             if (mPackageVersionInstalled != 0) {
                 if (mPackageVersionInstalled < mPackageVersionAvailable) {
-                    this.setSummary("A new version is available.  Tap to download.");
+                    mSummaryText = "A new version is available.  Tap to download.";
                 } else {
-                    this.setSummary("Installed Version: " + queryVersionName(mPackageName));
+                    mSummaryText = "Installed Version: " + mPackageVersionName;
                 }
+            }
+
+        }
+    }
+
+    public void RefreshPreferenceSummary() {
+        int mInstalledVer = queryVersionCode(pName);
+        mPackageVersionAvailable = sharedPreferences.getInt(mKey + "_code", 0);
+        Logger.d("DownloadPreference: Values for installed and online are " + mInstalledVer + " and " + mPackageVersionAvailable);
+        if (mPackageVersionAvailable != 0) {
+            if (mInstalledVer > mPackageVersionInstalled) {
+                mSummaryText = "A new version is available.  Tap to download.";
+                mSummary.setText(mSummaryText);
+
+            } else if (mInstalledVer == mPackageVersionInstalled && !(mInstalledVer == 0)) {
+                mSummaryText = "Installed Version (Latest): " + mPackageVersionName;
+                mSummary.setText(mSummaryText);
             }
         }
     }
+
+    public static String getPackageNameAttr() {
+        return mPackageName;
+    }
+
 
     private int queryVersionCode (String packageName) {
         PackageManager packageManager = getContext().getPackageManager();
         try {
             PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
-            Logger.d("DownloadFragment: version code found of " + packageInfo.versionCode);
-            return packageInfo.versionCode;
+            int versionCode = packageInfo.versionCode;
+            Logger.d("DownloadPreference: version code found of " + packageInfo.versionCode);
+            return versionCode;
 
 
         } catch (PackageManager.NameNotFoundException e) {
@@ -123,8 +169,9 @@ public class DownloadPreference extends Preference {
         PackageManager packageManager = getContext().getPackageManager();
         try {
             PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
-            Logger.d("DownloadFragment: version Name found of " + packageInfo.versionName);
-            return packageInfo.versionName;
+            String versionName = packageInfo.versionName;
+            Logger.d("DownloadPreference: version Name found of " + packageInfo.versionName);
+            return versionName;
 
 
         } catch (PackageManager.NameNotFoundException e) {

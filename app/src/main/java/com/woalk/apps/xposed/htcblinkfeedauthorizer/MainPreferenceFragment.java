@@ -31,7 +31,7 @@ public class MainPreferenceFragment extends PreferenceFragment
 
 
     /**
-     * Set a preference's summary text to the value it holds.
+     * Set a pref_download's summary text to the value it holds.
      * <br/><br/>
      * <b>Works for:</b><br/>
      * <ul>
@@ -47,7 +47,7 @@ public class MainPreferenceFragment extends PreferenceFragment
     }
 
     /**
-     * Set all preferences' summary texts to the value the respective preference holds.
+     * Set all preferences' summary texts to the value the respective pref_download holds.
      * <br/><br/>
      * <b>Works for:</b><br/>
      * <ul>
