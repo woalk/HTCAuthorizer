@@ -3,9 +3,9 @@ package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -15,7 +15,6 @@ import android.widget.Toast;
 import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
-import android.os.Handler;
 
 public class MainPreferenceFragment extends PreferenceFragment
         implements Preference.OnPreferenceClickListener {
@@ -91,7 +90,7 @@ public class MainPreferenceFragment extends PreferenceFragment
                         common = new Common();
                         final Context context = getActivity();
                         Logger.v("MainPreferenceFragment: Toast count is " + mToastHitCountdown);
-                        if (common.checkPermFileExists()) {
+                        if (Common.checkPermFileExists()) {
                             Logger.v("MainPreferenceFragment: File exists " + mToastHitCountdown);
                             if (mToastHitCountdown > 0) {
                                 mToastHitCountdown -= 1;

@@ -1,14 +1,17 @@
 package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
+import android.app.DownloadManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
@@ -18,31 +21,21 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
 
 
 public class HTMLHelper {
 
 
-    private static String TAG = "HTMLHelper: ";
+
     private String inUrl, originalName, newName, parsedHtmlNode, versionString;
-    public static String parsedVersionNumber, parsedFileName;
-    public static int parsedVersionCode;
+    public static String parsedVersionNumber, parsedFileName, parsedVersionString;
     private Boolean doDownload;
     private Boolean mSkipDownload = false;
     private Context context;
-    private File dir;
     private int id;
     private String mPrefKey;
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
+    private long enqueue;
 
     public HTMLHelper() {
 
@@ -77,8 +70,6 @@ public class HTMLHelper {
         //Get a context for intents
         context = appContext;
         //Set up and fire Jsoup task
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        editor = sharedPreferences.edit();
         mPrefKey = prefKey;
         JsoupAsyncTask jsoupAsyncTask = new JsoupAsyncTask();
         jsoupAsyncTask.execute();
@@ -101,8 +92,6 @@ public class HTMLHelper {
         //Get a context for intents
         context = appContext;
         //Set up and fire Jsoup task
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        editor = sharedPreferences.edit();
         mPrefKey = prefKey;
         JsoupAsyncTask jsoupAsyncTask = new JsoupAsyncTask();
         mSkipDownload = skipDownload;
@@ -111,95 +100,51 @@ public class HTMLHelper {
     }
 
 
-    protected void doDownloadInstall(final String urlLink, final String fileName) {
+    protected void doDownloadInstall(final String urlLink) {
+        final DownloadManager dm = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(urlLink));
+        request.setTitle(originalName);
+        request.setMimeType("application/vnd.android.package-archive");
+        request.setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS, parsedFileName + ".apk");
+        enqueue = dm.enqueue(request);
+        BroadcastReceiver receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String action = intent.getAction();
+                if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)) {
+                    DownloadManager.Query query = new DownloadManager.Query();
+                    query.setFilterById(enqueue);
+                    Cursor c = dm.query(query);
+                    if (c.moveToFirst()) {
+                        int columnIndex = c.getColumnIndex(DownloadManager.COLUMN_STATUS);
+                        if (DownloadManager.STATUS_SUCCESSFUL == c.getInt(columnIndex)) {
 
-        Thread dx = new Thread() {
+                            String uriString = c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
 
-            public void run() {
-                final NotificationManager mNotifyManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
-                mBuilder.setTicker("");
-                mBuilder.setContentTitle("Downloading " + originalName)
-                        .setContentText("Download in progress")
-                        .setSmallIcon(R.drawable.dl_anim);
-
-                //Set up download path
-                File root = android.os.Environment.getExternalStorageDirectory();
-                dir = new File(root.getAbsolutePath() + "/Download/");
-
-
-                try {
-                    // Open connection to download file.
-                    URL url = new URL(urlLink);
-                    URLConnection connection = url.openConnection();
-                    connection.connect();
-
-                    // this will be useful so that you can show a typical 0-100% progress bar
-                    int fileLength = connection.getContentLength();
-
-
-                    Logger.d(TAG + "FileLength is " + fileLength + " and filename is " + parsedFileName + ".apk");
-
-                    // download the file
-                    InputStream input = new BufferedInputStream(url.openStream());
-                    OutputStream output = new FileOutputStream(dir + "/" + parsedFileName + ".apk");
-
-                    byte data[] = new byte[1024];
-                    long total = 0;
-                    long total2 = 0;
-                    int count;
-                    while ((count = input.read(data)) != -1) {
-                        // Set up the current filesize as a percentage
-                        double mPercentage = 100.0 * total / fileLength;
-                        total += count;
-                        // We have to make sure to only update the notification
-                        // after so many blocks, else it bogs down SystemUI.
-                        if ((total - total2) > 40000) {
-                            mBuilder.setProgress(100, (int) Math.round(mPercentage), false);
+                            Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
+                            notificationIntent.setDataAndType((Uri.parse(uriString)), "application/vnd.android.package-archive");
+                            notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                            notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                            notificationIntent.addFlags(Intent.FLAG_FROM_BACKGROUND);
+                            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+                            final NotificationManager mNotifyManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                            final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
+                            mBuilder.setContentTitle("Download Complete")
+                                    .setContentText("Tap to install " + originalName)
+                                    .setProgress(0, 0, false)
+                                    .setSmallIcon(R.drawable.stat_sys_download_anim0)
+                                    .setContentIntent(pendingIntent);
                             mNotifyManager.notify(id, mBuilder.build());
-                            total2 = total;
                         }
-
-                        output.write(data, 0, count);
                     }
-
-                    output.flush();
-                    output.close();
-                    input.close();
-                    Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
-                    notificationIntent.setDataAndType(Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/Download/" + parsedFileName + ".apk")), "application/vnd.android.package-archive");
-                    notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                    notificationIntent.addFlags(Intent.FLAG_FROM_BACKGROUND);
-
-                    PendingIntent intent = PendingIntent.getActivity(context, 0,
-                            notificationIntent, 0);
-
-
-                    mBuilder.setContentTitle("Download Complete")
-                            .setContentText("Tap to install " + originalName)
-                            .setProgress(0, 0, false)
-                            .setSmallIcon(R.drawable.stat_sys_download_anim0)
-                            .setContentIntent(intent);
-
-                    mNotifyManager.notify(id, mBuilder.build());
-
-
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-
                 }
             }
         };
 
-        //Start the thread
-        dx.start();
+        context.registerReceiver(receiver, new IntentFilter(
+                DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
     }
-
-
-
-
 
     private class JsoupAsyncTask extends AsyncTask<Void, Void, Void> {
 
@@ -228,7 +173,6 @@ public class HTMLHelper {
                     Element url = document.select("a[class=downloadlink fontBlue]").first();
                     // Grabs the href attribute
                     parsedHtmlNode = url.attr("href");
-                    Logger.d(TAG + "Parsed url is " + parsedHtmlNode);
 
                 } else {
                     // Look for the class that holds the download link.
@@ -241,23 +185,22 @@ public class HTMLHelper {
                     parsedFileName = parsedVersionNumber.replaceAll("\\s", "_");
                     parsedVersionNumber = parsedVersionNumber.replaceAll("[^0-9.]", "");
                     for (Element element : versionCode) {
-                        Logger.d("HTMLHelper: element text is: " + element.ownText());
                         if (element.ownText().equals("Version:")) {
                             Node node = element.nextSibling();
                             versionString = node.toString();
-                            Logger.d("HTMLHelper: Found matching code.  Substring is " + node.toString());
+
                             break;
                         }
                     }
 
-                    String parsedVersionString = versionString.replace(parsedVersionNumber, "");
+                    parsedVersionString = versionString.replace(parsedVersionNumber, "");
                     parsedVersionString = parsedVersionString.substring(2,parsedVersionString.length()-1);
-                    Logger.d(TAG + "Version code is " + parsedVersionString);
+                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString(mPrefKey, parsedVersionNumber);
+                    Logger.d("HTMLHelper: Version Code found of " + parsedVersionString + " for package " + originalName);
                     editor.putInt(mPrefKey + "_code", Integer.valueOf(parsedVersionString));
                     editor.apply();
-                    Logger.d(TAG + "Parsed url for DL is " + parsedHtmlNode);
-                    Logger.d(TAG + "Putting version number for pref_download of " + mPrefKey + " and " + parsedVersionNumber);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -282,10 +225,13 @@ public class HTMLHelper {
         // * *****
         protected void onPostExecute(Void result) {
             if (doDownload) {
-                Logger.d(TAG + "Starting download for url of " + parsedHtmlNode);
                 if (!mSkipDownload) {
                     mSkipDownload = true;
-                    doDownloadInstall(parsedHtmlNode, newName + ".apk");
+                    doDownloadInstall(parsedHtmlNode);
+                } else {
+                    Intent intent = new Intent("com.woalk.HTCAuthorizer.VERSION_FETCHED");
+                    intent.putExtra("version_code",Integer.valueOf(parsedVersionString));
+                    context.sendBroadcast(intent);
                 }
                 doDownload = false;
             } else {

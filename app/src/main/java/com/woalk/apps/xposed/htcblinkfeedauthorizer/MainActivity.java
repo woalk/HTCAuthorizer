@@ -4,18 +4,14 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -133,7 +129,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
             @Override
             public void onClick(View v) {
                 Animation rotation = AnimationUtils.loadAnimation(getApplication(), R.anim.clockwise_refresh);
-                rotation.setRepeatCount(5);
+                rotation.setRepeatCount(10);
                 mButtonRefresh.startAnimation(rotation);
                 DownloadFragment myFragment = (DownloadFragment) getFragmentManager().findFragmentByTag("DL_FRAGMENT");
                 if (myFragment != null && myFragment.isVisible()) {
@@ -382,14 +378,8 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                try {
-                                    startActivity(new Intent(Intent.ACTION_VIEW,
-                                            Uri.parse("http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=18731")));
-                                } catch (android.content.ActivityNotFoundException e) {
-                                    startActivity(new Intent(Intent.ACTION_VIEW,
-                                            Uri.parse("https://play.google.com/store/apps/" +
-                                                    "details?id=" + PKG_HSP)));
-                                }
+                                HTMLHelper htmlHelper = new HTMLHelper();
+                                htmlHelper.fetchApp("HTC Service pack",getApplicationContext(),0,"dl_HSP");
                             }
                         })
                 .setNegativeButton(android.R.string.no,
