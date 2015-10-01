@@ -24,7 +24,6 @@ import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.content.UriMatcher;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.MatrixCursor;
 import android.net.Uri;
 import android.preference.PreferenceManager;
@@ -92,7 +91,6 @@ public final class SettingsProvider extends ContentProvider {
                     cursor.addRow(row);
 
                 }
-                Logger.d("SettingsProvider: Got a cursor "+ DatabaseUtils.dumpCursorToString(cursor));
                 return cursor;
         }
         return null;

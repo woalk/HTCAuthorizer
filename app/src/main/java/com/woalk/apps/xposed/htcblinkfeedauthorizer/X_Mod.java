@@ -191,27 +191,6 @@ public class X_Mod
                     while (prefs.moveToNext()) {
                         int tempColor = 0;
                         switch (prefs.getString(SettingsProvider.QUERY_ALL_KEY)) {
-                            case "use_themes":
-                                themesEnabled = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE) == SettingsProvider.TRUE;
-                                continue;
-                            case "systemui_use_launcher_theme":
-                                themeSystemUI = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE) == SettingsProvider.TRUE;
-                                continue;
-                            case "theme_PrimaryColor":
-                                tempColor = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE);
-                                colorPrimary = Color.rgb(Color.red(tempColor), Color.green(tempColor),
-                                        Color.blue(tempColor));
-                                continue;
-                            case "theme_PrimaryDarkColor":
-                                tempColor = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE);
-                                colorPrimaryDark = Color.rgb(Color.red(tempColor), Color.green(tempColor),
-                                        Color.blue(tempColor));
-                                continue;
-                            case "theme_AccentColor":
-                                tempColor = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE);
-                                colorAccent = Color.rgb(Color.red(tempColor), Color.green(tempColor),
-                                        Color.blue(tempColor));
-                                continue;
                             case "theme_Comms_Primary":
                                 tempColor = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE);
                                 commsPrimary = Color.rgb(Color.red(tempColor), Color.green(tempColor),
@@ -283,17 +262,31 @@ public class X_Mod
             } catch (NullPointerException | IllegalArgumentException e) {
                 Logger.e("X_Mod: NPE.  Probably settingsProvider isn't ready yet" + e);
             }
+            SettingsHelper settingsHelper = new SettingsHelper();
+            settingsHelper.loadCachePrefs();
+
         }
     }
 
     public X_Mod() {
         Logger.logStart();
         mSettings = new SettingsHelper();
-        boolean cachedUsethemes = mSettings.getCachedPref_use_themes();
         cachedAccent = mSettings.getCached_ColorAccent();
         cachedPrimary = mSettings.getCached_ColorPrimary();
         cachedPrimaryDark = mSettings.getCached_ColorPrimaryDark();
         cachedRomType = mSettings.getCachedPref_romtype();
+        themesEnabled = mSettings.getCachedPref_use_themes();
+        themeSystemUI = mSettings.getCachedPref_theme_systemui();
+        int tempColor;
+        tempColor = mSettings.getCached_ColorPrimary();
+        colorPrimary = Color.rgb(Color.red(tempColor), Color.green(tempColor),
+                Color.blue(tempColor));
+        tempColor = mSettings.getCached_ColorPrimaryDark();
+        colorPrimaryDark = Color.rgb(Color.red(tempColor), Color.green(tempColor),
+                Color.blue(tempColor));
+        tempColor = mSettings.getCached_ColorPrimary();
+        colorAccent = Color.rgb(Color.red(tempColor), Color.green(tempColor),
+                Color.blue(tempColor));
 		
     }
 
@@ -806,6 +799,25 @@ public class X_Mod
                         });
 
                 XposedHelpers.findAndHookMethod(CLASS_CAMERA_CAMERACONTROLLER, lpparam.classLoader,
+                        "getIntCameraParameter",String.class, new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
+                                Logger.d("X_Mod: Cameracontroller hooked, param is " + param.args[0]);
+                                if (param.args[0].equals("slow-motion-video-base-frame-rdoate"))
+                                param.setResult(120);
+                                Logger.logHookAfter(param);
+                            }
+                            @Override
+                            protected void afterHookedMethod(MethodHookParam param)
+                                    throws Throwable {
+
+                                Logger.d("X_Mod: Cameracontroller hooked, param result is " + param.getResult());
+
+                            }
+                        });
+
+                XposedHelpers.findAndHookMethod(CLASS_CAMERA_CAMERACONTROLLER, lpparam.classLoader,
                         "isZoeSupported", new XC_MethodHook() {
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param)
@@ -820,7 +832,7 @@ public class X_Mod
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param)
                                     throws Throwable {
-                                param.setResult(true);
+                                Logger.d("X_Mod: doSet param is " + param.getResult());
                                 Logger.logHookAfter(param);
                             }
                         });

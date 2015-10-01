@@ -10,9 +10,10 @@ public class SettingsHelper {
 
     private final XSharedPreferences mPref;
 
-    private boolean cachedPref_use_themes;
+    private boolean cachedPref_use_themes, cachedPref_theme_systemui;
     private int mPrimaryColor, mPrimaryDarkColor, mAccentColor;
     private String mRomType;
+
 
 
     public SettingsHelper() {
@@ -27,6 +28,7 @@ public class SettingsHelper {
         getColorPrimaryDark();
         getColorAccent();
         getPref_romtype();
+        getPref_theme_systemui();
 
     }
 
@@ -55,6 +57,10 @@ public class SettingsHelper {
 
     }
 
+    protected void getPref_theme_systemui() {
+        cachedPref_theme_systemui = mPref.getBoolean("systemui_use_launcher_theme", false);
+
+    }
 
     public boolean getCachedPref_use_themes() {
         return cachedPref_use_themes;
@@ -62,6 +68,10 @@ public class SettingsHelper {
 
     public String getCachedPref_romtype() {
         return mRomType;
+    }
+
+    public Boolean getCachedPref_theme_systemui() {
+        return cachedPref_theme_systemui;
     }
 
     public int getCached_ColorPrimary() {

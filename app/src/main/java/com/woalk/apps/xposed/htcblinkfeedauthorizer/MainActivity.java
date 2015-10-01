@@ -39,7 +39,6 @@ import com.negusoft.greenmatter.MatPalette;
 import com.negusoft.greenmatter.activity.MatActivity;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -98,10 +97,6 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
         PreferenceManager.setDefaultValues(this, R.xml.pref_themes, false);
         PreferenceManager.setDefaultValues(this, R.xml.pref_always_active, false);
         PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
-        File theSharedPrefsFile;
-
-        theSharedPrefsFile = new File("/data/data/"+ PACKAGE_NAME  +"/shared_prefs/" + PREFERENCE_FILE + ".xml");
-        theSharedPrefsFile.setReadable(true, false);
         setContentView(R.layout.activity_main);
 
         //Add drawerdown items

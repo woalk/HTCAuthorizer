@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -27,13 +29,12 @@ import java.io.IOException;
 public class HTMLHelper {
 
 
-
     private String inUrl, originalName, newName, parsedHtmlNode, versionString;
     public static String parsedVersionNumber, parsedFileName, parsedVersionString;
     private Boolean doDownload;
     private Boolean mSkipDownload = false;
     private Context context;
-    private int id;
+    private int id, accentColor;
     private String mPrefKey;
     private long enqueue;
 
@@ -57,7 +58,7 @@ public class HTMLHelper {
     protected void fetchApp(String inputAppName, Context appContext, int appIndex, String prefKey) {
         //Set our input app name to be URL-friendly
         originalName = inputAppName;
-        id=appIndex;
+        id = appIndex;
         newName = inputAppName.replaceAll("\\s", "+");
         //Set up search URL
         String holderUrl = "http://www.apkmirror.com/?s=" + newName + "&post_type=apps_post";
@@ -79,7 +80,7 @@ public class HTMLHelper {
     protected void fetchApp(String inputAppName, Context appContext, int appIndex, String prefKey, Boolean skipDownload) {
         //Set our input app name to be URL-friendly
         originalName = inputAppName;
-        id=appIndex;
+        id = appIndex;
         newName = inputAppName.replaceAll("\\s", "+");
         //Set up search URL
         String holderUrl = "http://www.apkmirror.com/?s=" + newName + "&post_type=apps_post";
@@ -107,9 +108,19 @@ public class HTMLHelper {
         request.setMimeType("application/vnd.android.package-archive");
         request.setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS, parsedFileName + ".apk");
         enqueue = dm.enqueue(request);
+        Drawable notifyIcon;
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean mUseThemes = sharedPreferences.getBoolean("use_themes",false);
+        if (mUseThemes) {
+            accentColor = sharedPreferences.getInt("theme_AccentColor", 0);
+        } else {
+            accentColor = Color.parseColor("#FF607D8B");
+        }
         BroadcastReceiver receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                final NotificationManager mNotifyManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
                 String action = intent.getAction();
                 if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)) {
                     DownloadManager.Query query = new DownloadManager.Query();
@@ -118,25 +129,52 @@ public class HTMLHelper {
                     if (c.moveToFirst()) {
                         int columnIndex = c.getColumnIndex(DownloadManager.COLUMN_STATUS);
                         if (DownloadManager.STATUS_SUCCESSFUL == c.getInt(columnIndex)) {
-
                             String uriString = c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
-
                             Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
                             notificationIntent.setDataAndType((Uri.parse(uriString)), "application/vnd.android.package-archive");
                             notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                             notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                             notificationIntent.addFlags(Intent.FLAG_FROM_BACKGROUND);
                             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
-                            final NotificationManager mNotifyManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                            final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
+
                             mBuilder.setContentTitle("Download Complete")
                                     .setContentText("Tap to install " + originalName)
                                     .setProgress(0, 0, false)
+                                    .setAutoCancel(true)
                                     .setSmallIcon(R.drawable.stat_sys_download_anim0)
+                                    .setColor(accentColor)
                                     .setContentIntent(pendingIntent);
                             mNotifyManager.notify(id, mBuilder.build());
                         }
                     }
+                } else {
+                    mBuilder.setContentTitle("Download Error")
+                            .setProgress(0, 0, false)
+                            .setAutoCancel(true)
+                            .setSmallIcon(R.drawable.stat_sys_download_anim0)
+                            .setColor(accentColor);
+
+                    if (action.equals(DownloadManager.ERROR_CANNOT_RESUME)) {
+
+                        mBuilder.setContentText("Cannot resume downloading " + originalName);
+                    } else if (action.equals(DownloadManager.ERROR_DEVICE_NOT_FOUND)) {
+                        mBuilder.setContentText("Device not found");
+                    } else if (action.equals(DownloadManager.ERROR_FILE_ALREADY_EXISTS)) {
+                        mBuilder.setContentText("File already exists");
+                    } else if (action.equals(DownloadManager.ERROR_DEVICE_NOT_FOUND)) {
+                        mBuilder.setContentText("Device not found");
+                    } else if (action.equals(DownloadManager.ERROR_HTTP_DATA_ERROR)) {
+                        mBuilder.setContentText("HTTP Data error");
+                    } else if (action.equals(DownloadManager.ERROR_INSUFFICIENT_SPACE)) {
+                        mBuilder.setContentText("Insufficient space");
+                    } else if (action.equals(DownloadManager.ERROR_UNHANDLED_HTTP_CODE)) {
+                        mBuilder.setContentText("Unhandled HTTP Code");
+                    } else if (action.equals(DownloadManager.ERROR_TOO_MANY_REDIRECTS)) {
+                        mBuilder.setContentText("Too many redirects");
+                    } else if (action.equals(DownloadManager.ERROR_UNKNOWN)) {
+                        mBuilder.setContentText("Unknown Error");
+                    }
+                    mNotifyManager.notify(id, mBuilder.build());
                 }
             }
         };
@@ -194,7 +232,7 @@ public class HTMLHelper {
                     }
 
                     parsedVersionString = versionString.replace(parsedVersionNumber, "");
-                    parsedVersionString = parsedVersionString.substring(2,parsedVersionString.length()-1);
+                    parsedVersionString = parsedVersionString.substring(2, parsedVersionString.length() - 1);
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString(mPrefKey, parsedVersionNumber);
@@ -230,7 +268,7 @@ public class HTMLHelper {
                     doDownloadInstall(parsedHtmlNode);
                 } else {
                     Intent intent = new Intent("com.woalk.HTCAuthorizer.VERSION_FETCHED");
-                    intent.putExtra("version_code",Integer.valueOf(parsedVersionString));
+                    intent.putExtra("version_code", Integer.valueOf(parsedVersionString));
                     context.sendBroadcast(intent);
                 }
                 doDownload = false;
@@ -239,7 +277,7 @@ public class HTMLHelper {
                 JsoupAsyncTask jsoupAsyncTask = new JsoupAsyncTask();
                 jsoupAsyncTask.execute();
 
-                    doDownload = true;
+                doDownload = true;
 
             }
 

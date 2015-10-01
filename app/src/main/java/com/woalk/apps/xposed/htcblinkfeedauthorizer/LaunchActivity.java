@@ -20,6 +20,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.io.File;
+
 
 public class LaunchActivity extends FragmentActivity implements View.OnClickListener, ViewPager.OnPageChangeListener {
     private static int SPLASH_TIME = 3000;
@@ -36,6 +38,8 @@ public class LaunchActivity extends FragmentActivity implements View.OnClickList
     private Integer[] colors;
     private int color1, color2, color3;
     private ArgbEvaluator argbEvaluator;
+    protected static final String PACKAGE_NAME = "com.woalk.apps.xposed.htcblinkfeedauthorizer";
+    protected static final String PREFERENCE_FILE = PACKAGE_NAME + "_preferences";
 
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
@@ -55,6 +59,10 @@ public class LaunchActivity extends FragmentActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication());
+        File theSharedPrefsFile;
+
+        theSharedPrefsFile = new File("/data/data/"+ PACKAGE_NAME  +"/shared_prefs/" + PREFERENCE_FILE + ".xml");
+        theSharedPrefsFile.setReadable(true, false);
 
         if (!(sharedPreferences.getBoolean("SkipWelcome",false))) {
             setContentView(R.layout.activity_launch);
