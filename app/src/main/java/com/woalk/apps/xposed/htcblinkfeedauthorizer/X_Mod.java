@@ -3,14 +3,12 @@ package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
 import android.app.Activity;
 import android.app.AndroidAppHelper;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.FeatureInfo;
 import android.content.res.Resources;
 import android.content.res.XResources;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
@@ -49,14 +47,9 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 public class X_Mod
         implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
 
-    private static final String ACTIVITY_THREAD_CLASS = "android.app.ActivityThread";
-    private static final String ACTIVITY_THREAD_CURRENTACTHREAD = "currentActivityThread";
-    private static final String ACTIVITY_THREAD_GETSYSCTX = "getSystemContext";
-
     public static final String PKG_HTC_LAUNCHER = "com.htc.launcher";
     public static final String PKG_HTC_LIB0 = "com.htc.lib0";
     public static final String PKG_HTC_SOCIALNETWORK_UI = "com.htc.socialnetwork.common.utils.ui";
-
     public static final String CLASS_BF_HELPER = PKG_HTC_LAUNCHER + ".util.HspUpdateHelper";
     public static final String CLASS_BF_SETTINGUTIL = PKG_HTC_LAUNCHER + ".util.SettingUtil";
     public static final String CLASS_BF_LIB2 = "com.htc.lib2.Hms";
@@ -64,72 +57,53 @@ public class X_Mod
     public static final String CLASS_BF_PROFILEBRIEF = "com.htc.themepicker.model.ProfileBrief";
     public static final String CLASS_BF_MIXINGTHEMECOLOR = "com.htc.themepicker.util" +
             ".MixingThemeColorUtil";
-    public static final String CLASS_BF_CURRENTTHEMEUTIL = "com.htc.themepicker.util.CurrentThemeUtil";
     public static final String CLASS_BF_THEME = "com.htc.themepicker.model.Theme";
     public static final String CLASS_BF_THEMECROP = "com.htc.themepicker.thememaker.WallpaperImageHandler";
     public static final String STRING_REBOOT = "Theme Applied, please reboot.";
-
     public static final String PKG_HTC_CAMERA = "com.htc.camera";
     public static final String CLASS_HTC_LIB3 = "com.htc.lib3.android.os.HtcEnvironment";
     public static final String CLASS_CAMERA_ZOECAPTUREMODE = "com.htc.camera.zoe.ZoeCaptureMode";
     public static final String CLASS_CAMERA_CAMERACONTROLLER = "com.htc.camera.CameraController";
     public static final String CLASS_CAMERA_FEATUREFILE = "com.htc.camera.CameraFeatureFile";
     public static final String CLASS_CAMERA_DISPLAYDEVICE = "com.htc.camera.DisplayDevice";
-
     public static final String PKG_HTC_GALLERY = "com.htc.album";
-
     public static final String PKG_HTC_FB = "com.htc.sense.socialnetwork.facebook";
     public static final String CLASS_FB_BASE_ACTIVITY2 = "com.htc.socialnetwork.facebook" +
             ".FacebookBaseActivity";
     public static final String CLASS_FB_UPDATE = "com.htc.socialnetwork.facebook.HMSUpdateActivity";
-
     public static final String PKG_HTC_GPLUS_APP = "com.htc.sense.socialnetwork.googleplus";
     public static final String PKG_HTC_GPLUS = "com.htc.socialnetwork.googleplus";
     public static final String CLASS_GPLUS_ACTIVITY = PKG_HTC_GPLUS + ".GooglePlusActivity";
     public static final String CLASS_GPLUS_DEEPLINK_ACTIVITY = PKG_HTC_GPLUS +
             ".DeeplinkRedirectActivity";
-
     public static final String PKG_HTC_INSTAGRAM = "com.htc.sense.socialnetwork.instagram";
     public static final String PKG_HTC_INSTAGRAM_COMM = PKG_HTC_INSTAGRAM + ".common";
     public static final String PKG_HTC_LIB2 = "com.htc.lib2";
     public static final String CLASS_HTC_BBA = "com.htc.b.b.a";
-
     public static final String PKG_HTC_LINKEDIN = "com.htc.sense.linkedin";
     public static final String PKG_HTC_LINKEDIN_COMM = PKG_HTC_LINKEDIN + ".common";
     public static final String CLASS_LINKEDIN_ACTIVITY = PKG_HTC_LINKEDIN_COMM +
             ".LinkedInActivity";
     public static final String CLASS_LINKEDIN_LIB2_A = PKG_HTC_LIB2 + ".a";
-
     public static final String PKG_HTC_TWITTER = "com.htc.sense.socialnetwork.twitter";
     public static final String PKG_HTC_TWITTER2 = "com.htc.htctwitter";
     public static final String CLASS_TWITTER_ACTIVITY = PKG_HTC_TWITTER2 +
             ".TwitterActivity";
     public static final String CLASS_TWITTER_DEEPLINK_ACTIVITY = PKG_HTC_TWITTER2 +
             ".DeeplinkRedirectActivity";
-
     public static final String PKG_HTC_IME = "com.htc.sense.ime";
     public static final String CLASS_IME_ASDK = PKG_HTC_IME + ".NonAndroidSDK$HtcAdded";
     public static final String CLASS_IME_AAB = "com.htc.a.a";
-
     public static final String CLASS_HDK0UTIL = PKG_HTC_LIB0 + ".HDKLib0Util";
     public static final String CLASS_BASE_ACTIVITY = PKG_HTC_SOCIALNETWORK_UI + ".BaseActivity";
     public static final String CLASS_COMMON_MF_MAIN_ACTIVITY = PKG_HTC_SOCIALNETWORK_UI +
             ".CommonMfMainActivity";
-
     public static final String CLASS_INSTAGRAM_ACTIVITY = PKG_HTC_INSTAGRAM_COMM +
             ".InstagramActivity";
     public static final String CLASS_INSTAGRAM_LIB2_A = PKG_HTC_LIB2 + ".a";
     public static final String CLASS_INSTAGRAM_DBA = "com.htc.sphere.d.b.a";
-
     public static final String PKG_VENDING = "com.android.vending";
-    public static final String PKG_FINSKY = "com.google.android.finsky";
-    public static final String PKG_FINSKY_API = "com.google.android.finsky.api.model";
-    public static final String CLASS_FINSKY_LIBRARY_UTILS = PKG_FINSKY + ".utils.LibraryUtils";
-    public static final String CLASS_FINSKY_DOCUMENT = PKG_FINSKY_API + ".Document";
-    public static final String CLASS_FINSKY_DFETOC = PKG_FINSKY_API + ".DfeToc";
-    public static final String CLASS_FINSKY_LIBRARY = PKG_FINSKY + ".library.Library";
-
-    public static final String PKG_SYSTEMUI = "com.android.systemui";
+     public static final String PKG_SYSTEMUI = "com.android.systemui";
     public static final String PKG_SETTINGS = "com.android.settings";
     public static final String PKG_DIALER = "com.google.android.dialer";
     public static final String PKG_DIALER2 = "com.android.dialer";
@@ -159,6 +133,9 @@ public class X_Mod
             PKG_HTC_FEATURE + ".hdk2",
             PKG_HTC_FEATURE + ".hdk3"
     };
+//    private static final String ACTIVITY_THREAD_CLASS = "android.app.ActivityThread";
+//    private static final String ACTIVITY_THREAD_CURRENTACTHREAD = "currentActivityThread";
+//    private static final String ACTIVITY_THREAD_GETSYSCTX = "getSystemContext";
     private static boolean themesEnabled = false;
     private static boolean themeSystemUI = false;
     private static boolean useUSB = false;
@@ -168,105 +145,9 @@ public class X_Mod
     private static String pathUSB;
     private static String romType;
     private static String pathExternal;
-	private final SettingsHelper mSettings;
-    private static int colorPrimary, colorPrimaryDark, colorAccent, commsPrimary, commsDark, commsAccent, infoPrimary, infoDark, infoAccent, entPrimary, entDark, entAccent;
+    private static int colorPrimary, colorPrimaryDark, colorAccent;
     private static int cachedPrimary, cachedPrimaryDark, cachedAccent;
-
-    private static final class Config {
-
-
-        // Give us some sane defaults, just in case
-
-
-        private static void reload(Context ctx) {
-            try {
-                Uri ALL_PREFS_URI = Uri.parse("content://" + SettingsProvider.AUTHORITY + "/all");
-                ContentResolver contentResolver = ctx.getContentResolver();
-                if (!(contentResolver == null)) {
-                    Cursor prefs = contentResolver.query(ALL_PREFS_URI, null, null, null, null);
-                    if (prefs == null) {
-                        Logger.d("X_Mod: Failed to retrieve settings!");
-                        return;
-                    }
-                    while (prefs.moveToNext()) {
-                        int tempColor = 0;
-                        switch (prefs.getString(SettingsProvider.QUERY_ALL_KEY)) {
-                            case "theme_Comms_Primary":
-                                tempColor = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE);
-                                commsPrimary = Color.rgb(Color.red(tempColor), Color.green(tempColor),
-                                        Color.blue(tempColor));
-                                continue;
-                            case "theme_Comms_Light":
-                                tempColor = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE);
-                                commsAccent = Color.rgb(Color.red(tempColor), Color.green(tempColor),
-                                        Color.blue(tempColor));
-                                continue;
-                            case "theme_Comms_Dark":
-                                tempColor = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE);
-                                commsDark = Color.rgb(Color.red(tempColor), Color.green(tempColor),
-                                        Color.blue(tempColor));
-                                continue;
-                            case "theme_Info_Primary":
-                                tempColor = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE);
-                                infoPrimary = Color.rgb(Color.red(tempColor), Color.green(tempColor),
-                                        Color.blue(tempColor));
-                                continue;
-                            case "theme_Info_Light":
-                                tempColor = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE);
-                                infoAccent = Color.rgb(Color.red(tempColor), Color.green(tempColor),
-                                        Color.blue(tempColor));
-                                continue;
-                            case "theme_Info_Dark":
-                                tempColor = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE);
-                                infoDark = Color.rgb(Color.red(tempColor), Color.green(tempColor),
-                                        Color.blue(tempColor));
-                                continue;
-                            case "theme_Entertainment_Primary":
-                                tempColor = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE);
-                                entPrimary = Color.rgb(Color.red(tempColor), Color.green(tempColor),
-                                        Color.blue(tempColor));
-                                continue;
-                            case "theme_Entertainment_Light":
-                                tempColor = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE);
-                                entAccent = Color.rgb(Color.red(tempColor), Color.green(tempColor),
-                                        Color.blue(tempColor));
-                                continue;
-                            case "theme_Entertainment_Dark":
-                                tempColor = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE);
-                                entDark = Color.rgb(Color.red(tempColor), Color.green(tempColor),
-                                        Color.blue(tempColor));
-                                continue;
-                            case "has_ext":
-                                useExternal = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE) == SettingsProvider.TRUE;
-                                continue;
-                            case "force_rotate":
-                                rotateLauncher = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE) == SettingsProvider.TRUE;
-                                continue;
-                            case "ext_dir":
-                                pathExternal = prefs.getString(SettingsProvider.QUERY_ALL_VALUE);
-                                continue;
-                            case "usb_dir":
-                                pathUSB = prefs.getString(SettingsProvider.QUERY_ALL_VALUE);
-                                continue;
-                            case "romtype":
-                                romType = prefs.getString(SettingsProvider.QUERY_ALL_VALUE);
-                                continue;
-                            case "has_usb":
-                                useUSB = prefs.getInt(SettingsProvider.QUERY_ALL_VALUE) == SettingsProvider.TRUE;
-
-
-                        }
-                    }
-                    prefs.close();
-                }
-            } catch (NullPointerException | IllegalArgumentException e) {
-                Logger.e("X_Mod: NPE.  Probably settingsProvider isn't ready yet" + e);
-            }
-            SettingsHelper settingsHelper = new SettingsHelper();
-            settingsHelper.loadCachePrefs();
-
-        }
-    }
+    private final SettingsHelper mSettings;
 
     public X_Mod() {
         Logger.logStart();
@@ -274,7 +155,7 @@ public class X_Mod
         cachedAccent = mSettings.getCached_ColorAccent();
         cachedPrimary = mSettings.getCached_ColorPrimary();
         cachedPrimaryDark = mSettings.getCached_ColorPrimaryDark();
-        cachedRomType = mSettings.getCachedPref_romtype();
+        cachedRomType = mSettings.getCachedPref_romType();
         themesEnabled = mSettings.getCachedPref_use_themes();
         themeSystemUI = mSettings.getCachedPref_theme_systemui();
         int tempColor;
@@ -287,15 +168,87 @@ public class X_Mod
         tempColor = mSettings.getCached_ColorPrimary();
         colorAccent = Color.rgb(Color.red(tempColor), Color.green(tempColor),
                 Color.blue(tempColor));
-		
+
+        useExternal = mSettings.getCachedPref_useExternal();
+        rotateLauncher = mSettings.getCachedPref_rotateLauncher();
+        pathExternal = mSettings.getCachedPref_pathExternal();
+        pathUSB = mSettings.getCachedPref_pathUSB();
+        romType = mSettings.getCachedPref_romType();
+        useUSB = mSettings.getCachedPref_useUSB();
+
+    }
+
+    public static void replaceSystemWideThemes() {
+
+
+        Logger.v("Replacing system-wide Theme resources.");
+
+        XResources.setSystemWideReplacement("android", "color", "material_blue_grey_900",
+                cachedPrimary);
+        XResources.setSystemWideReplacement("android", "color", "user_icon_1",
+                cachedPrimary);
+        XResources.setSystemWideReplacement("android", "color", "highlighted_text_material_dark",
+                cachedPrimaryDark);
+        XResources.setSystemWideReplacement("android", "color", "highlighted_text_material_light",
+                cachedPrimary);
+        XResources.setSystemWideReplacement("android", "color", "primary_material_dark",
+                cachedPrimaryDark);
+        XResources.setSystemWideReplacement("android", "color", "primary_material_light",
+                cachedPrimary);
+        XResources.setSystemWideReplacement("android", "color", "material_blue_grey_950",
+                cachedPrimaryDark);
+        XResources.setSystemWideReplacement("android", "color", "material_blue_grey_800",
+                cachedPrimary);
+        XResources.setSystemWideReplacement("android", "color", "primary_dark_material_dark",
+                cachedPrimaryDark);
+        XResources.setSystemWideReplacement("android", "color", "material_deep_teal_500",
+                cachedPrimary);
+        XResources.setSystemWideReplacement("android", "color", "material_deep_teal_200",
+                cachedAccent);
+        XResources.setSystemWideReplacement("android", "color", "accent_material_dark",
+                cachedAccent);
+        XResources.setSystemWideReplacement("android", "color", "accent_material_light",
+                cachedAccent);
+        XResources.setSystemWideReplacement("android", "color", "material_deep_teal_200",
+                cachedPrimaryDark);
+
+
+        Logger.v("Theme resources replaced.");
+        if (cachedRomType.equals("Sense")) {
+            Logger.d("X_Mod: Replacing Sense system resources.");
+            XResources.setSystemWideReplacement("android", "color", "text_selection_opacity_color", colorAccent);
+            XResources.setSystemWideReplacement("android", "color", "text_selection_color", colorPrimary);
+            XResources.setSystemWideReplacement("android", "color", "light_category_color", colorAccent);
+            XResources.setSystemWideReplacement("android", "color", "category_color", colorPrimary);
+            XResources.setSystemWideReplacement("android", "color", "dark_category_color", colorPrimaryDark);
+            XResources.setSystemWideReplacement("android", "color", "overlay_color", colorPrimary);
+            XResources.setSystemWideReplacement("android", "color", "standard_color", colorPrimary);
+            XResources.setSystemWideReplacement("android", "color", "active_color", colorPrimary);
+            XResources.setSystemWideReplacement("android", "color", "CategoryOne_active_color", colorPrimary);
+            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_text_selection_opacity_color", colorAccent);
+            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_text_selection_color", colorPrimary);
+            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_light_category_color", colorPrimary);
+            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_category_color", colorPrimaryDark);
+            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_dark_category_color", colorPrimaryDark);
+            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_multiply_color", colorPrimary);
+            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_overlay_color", colorPrimary);
+            XResources.setSystemWideReplacement("android", "color", "CategoryThree_active_color", colorPrimary);
+            XResources.setSystemWideReplacement("android", "color", "CategoryFour_text_selection_opacity_color", colorAccent);
+            XResources.setSystemWideReplacement("android", "color", "CategoryFour_text_selection_color", colorPrimary);
+            XResources.setSystemWideReplacement("android", "color", "CategoryFour_light_category_color", colorAccent);
+            XResources.setSystemWideReplacement("android", "color", "CategoryFour_category_color", colorPrimary);
+            XResources.setSystemWideReplacement("android", "color", "CategoryFour_dark_category_color", colorPrimaryDark);
+            XResources.setSystemWideReplacement("android", "color", "CategoryFour_overlay_color", colorPrimary);
+            XResources.setSystemWideReplacement("android", "color", "CategoryFour_standard_color", colorPrimaryDark);
+            XResources.setSystemWideReplacement("android", "color", "CategoryFour_active_color", colorPrimary);
+        }
+
     }
 
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
-        Object activityThread = XposedHelpers.callStaticMethod(XposedHelpers.findClass(ACTIVITY_THREAD_CLASS, null), ACTIVITY_THREAD_CURRENTACTHREAD);
-        final Context systemCtx = (Context) XposedHelpers.callMethod(activityThread, ACTIVITY_THREAD_GETSYSCTX);
-
-        Config.reload(systemCtx);
+//        Object activityThread = XposedHelpers.callStaticMethod(XposedHelpers.findClass(ACTIVITY_THREAD_CLASS, null), ACTIVITY_THREAD_CURRENTACTHREAD);
+//        final Context systemCtx = (Context) XposedHelpers.callMethod(activityThread, ACTIVITY_THREAD_GETSYSCTX);
 
         // First section contains common checks found in all HTC Apps
         // Need to see if OR statements are best, or if we can just check for com.htc.* apps
@@ -410,26 +363,29 @@ public class X_Mod
                 }
             });
 
-            XposedHelpers.findAndHookMethod("com.htc.themepicker.AssetBrowsingActivity", lpparam.classLoader, "onCreate",Bundle.class, new XC_MethodHook() {
+            XposedHelpers.findAndHookMethod("com.htc.themepicker.AssetBrowsingActivity", lpparam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
 
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     Logger.d("X_Mod: Oncreate Hooked for ThemePicker");
                     if (((Activity) param.thisObject).getIntent().hasExtra("update_colors")) {
                         Bundle extras = ((Activity) param.thisObject).getIntent().getExtras();
-                            int array[] = extras.getIntArray("update_colors");
-                        SharedPreferences.Editor sharedPreferences = ((Activity) param.thisObject).getApplication().getSharedPreferences("mixing_theme_color_preference",Context.MODE_PRIVATE).edit();
-                        sharedPreferences.putInt("full_theme_colo1", array[0]);
-                        sharedPreferences.putInt("full_theme_colo2", array[1]);
-                        sharedPreferences.putInt("full_theme_colo3", array[2]);
-                        sharedPreferences.putInt("full_theme_colo4", array[3]);
-                        sharedPreferences.apply();
+                        int array[] = extras.getIntArray("update_colors");
+                        SharedPreferences.Editor sharedPreferences = ((Activity) param.thisObject).getApplication().getSharedPreferences("mixing_theme_color_preference", Context.MODE_PRIVATE).edit();
+                        if (array != null) {
+                            sharedPreferences.putInt("full_theme_colo1", array[0]);
+                            sharedPreferences.putInt("full_theme_colo2", array[1]);
+                            sharedPreferences.putInt("full_theme_colo3", array[2]);
+                            sharedPreferences.putInt("full_theme_colo4", array[3]);
+                            sharedPreferences.apply();
+                        }
                         Context context = AndroidAppHelper.currentApplication();
                         ArrayList<Integer> paramArraylist = new ArrayList<>(4);
-                        paramArraylist.add(0, array[0]);
-                        paramArraylist.add(1, array[1]);
-                        paramArraylist.add(2, array[2]);
-                        paramArraylist.add(3, array[3]);
+
+                        paramArraylist.add(0, array != null ? array[0] : 0);
+                        paramArraylist.add(1, array != null ? array[1] : 0);
+                        paramArraylist.add(2, array != null ? array[2] : 0);
+                        paramArraylist.add(3, array != null ? array[3] : 0);
                         Class getFullColorCodesClass = XposedHelpers.findClass("com.htc.themepicker.util.CurrentThemeUtil", lpparam.classLoader);
                         XposedHelpers.callStaticMethod(getFullColorCodesClass, "saveColorsConfig", context, paramArraylist);
                         Intent colorPickIntent = new Intent("com.htc.themepicker.ACTION_PICK_COLOR");
@@ -437,14 +393,11 @@ public class X_Mod
                         colorPickIntent.putExtra("Sensify", "true");
                         ((Activity) param.thisObject).getApplication().startActivity(colorPickIntent);
 
-                        Logger.d("X_Mod: Oncreate Extras received, array contains " + array[0]);
                     }
 
                     Logger.logHookAfter(param);
                 }
             });
-
-
 
 
             // Theme permissions hook
@@ -489,7 +442,7 @@ public class X_Mod
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                             if (((Activity) param.thisObject).getIntent().hasExtra("Sensify")) {
                                 Logger.d("X_Mod: MTE called for onCreate");
-                                XposedHelpers.callMethod(param.thisObject,"applySelectColor");
+                                XposedHelpers.callMethod(param.thisObject, "applySelectColor");
                             }
                             Logger.logHookAfter(param);
                         }
@@ -527,12 +480,12 @@ public class X_Mod
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                             Logger.d("X_Mod: MTE saveColorsConfig called " + param.getResult());
-                            ArrayList<Integer> paramArrayList = new ArrayList<Integer>();
+                            ArrayList paramArrayList;
 
-                            paramArrayList = (ArrayList<Integer>) param.args[1];
+                            paramArrayList = (ArrayList) param.args[1];
 
 
-                            for (int i=0; i<paramArrayList.size();i++){
+                            for (int i = 0; i < paramArrayList.size(); i++) {
                                 Logger.d("X_Mod: Array stuff - " + paramArrayList.get(i));
 
                             }
@@ -616,7 +569,7 @@ public class X_Mod
 
             try {
                 XposedHelpers.findAndHookMethod("com.woalk.apps.xposed.htcblinkfeedauthorizer.MainActivity", lpparam.classLoader,
-                        "mHook",int.class, int.class, int.class, new XC_MethodHook() {
+                        "mHook", int.class, int.class, int.class, new XC_MethodHook() {
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws
                                     Throwable {
@@ -799,15 +752,16 @@ public class X_Mod
                         });
 
                 XposedHelpers.findAndHookMethod(CLASS_CAMERA_CAMERACONTROLLER, lpparam.classLoader,
-                        "getIntCameraParameter",String.class, new XC_MethodHook() {
+                        "getIntCameraParameter", String.class, new XC_MethodHook() {
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param)
                                     throws Throwable {
                                 Logger.d("X_Mod: Cameracontroller hooked, param is " + param.args[0]);
                                 if (param.args[0].equals("slow-motion-video-base-frame-rdoate"))
-                                param.setResult(120);
+                                    param.setResult(120);
                                 Logger.logHookAfter(param);
                             }
+
                             @Override
                             protected void afterHookedMethod(MethodHookParam param)
                                     throws Throwable {
@@ -1070,7 +1024,7 @@ public class X_Mod
                 Logger.i("A storage hook failed for package %s.", lpparam.packageName);
                 Logger.i("getPhoneStorageDirectory() hook", e);
             }
-            if (lpparam.packageName.equals(PKG_HTC_GALLERY) && Common.getDeviceName().contains("M8"))  {
+            if (lpparam.packageName.equals(PKG_HTC_GALLERY) && Common.getDeviceName().contains("M8")) {
                 try {
                     XposedHelpers.findAndHookMethod("com.htc.photoenhancer.utility.EnviromentFlagUtils", lpparam.classLoader,
                             "shouldHide3DEffectIcon", new XC_MethodHook() {
@@ -1346,43 +1300,43 @@ public class X_Mod
                 Logger.v("Replacing Theme resources for Dialer app.");
 
                 resparam.res.setReplacement(PKG_DIALER2, "color", "wallet_highlighted_text_holo_light",
-                        commsPrimary);
+                        colorPrimary);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "wallet_highlighted_text_holo_dark",
-                        commsDark);
+                        colorPrimaryDark);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "wallet_holo_blue_light",
-                        commsPrimary);
+                        colorPrimary);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "wallet_link_text_light",
-                        commsPrimary);
+                        colorPrimary);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "dialer_theme_color",
-                        commsPrimary);
+                        colorPrimary);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "dialer_theme_color_dark",
-                        commsDark);
+                        colorPrimaryDark);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "setting_primary_color",
-                        commsPrimary);
+                        colorPrimary);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "setting_secondary_color",
-                        commsDark);
+                        colorPrimaryDark);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "button_selected_color",
-                        commsDark);
+                        colorPrimaryDark);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "dialtacts_theme_color",
-                        commsPrimary);
+                        colorPrimary);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "glowpad_call_widget_normal_tint",
-                        commsPrimary);
+                        colorPrimary);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "incall_background_color",
-                        commsPrimary);
+                        colorPrimary);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "actionbar_background_color",
-                        commsPrimary);
+                        colorPrimary);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "actionbar_background_color_dark",
-                        commsDark);
+                        colorPrimaryDark);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "call_log_voicemail_highlight_color",
-                        commsAccent);
+                        colorAccent);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "contact_list_name_text_color",
-                        commsAccent);
+                        colorAccent);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "call_log_extras_text_color",
-                        commsAccent);
+                        colorAccent);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "voicemail_playback_seek_bar_already_played",
-                        commsAccent);
+                        colorAccent);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "item_selected",
-                        commsPrimary);
+                        colorPrimary);
                 resparam.res.hookLayout(PKG_DIALER2, "layout", "dialtacts_activity", new XC_LayoutInflated() {
                     @Override
                     public void handleLayoutInflated(LayoutInflatedParam liparam) throws Throwable {
@@ -1392,7 +1346,7 @@ public class X_Mod
                         ShapeDrawable sd = new ShapeDrawable(new OvalShape());
                         sd.setIntrinsicHeight(10);
                         sd.setIntrinsicWidth(10);
-                        sd.getPaint().setColor(commsPrimary);
+                        sd.getPaint().setColor(colorPrimary);
                         fab.setBackground(sd);
 
                     }
@@ -1407,7 +1361,7 @@ public class X_Mod
                         ShapeDrawable sd = new ShapeDrawable(new OvalShape());
                         sd.setIntrinsicHeight(10);
                         sd.setIntrinsicWidth(10);
-                        sd.getPaint().setColor(commsPrimary);
+                        sd.getPaint().setColor(colorPrimary);
                         fab.setBackground(sd);
 
                     }
@@ -1420,31 +1374,31 @@ public class X_Mod
                 Logger.v("Replacing Theme resources for Contacts app.");
 
                 resparam.res.setReplacement(PKG_CONTACTS, "color", "floating_action_button_icon_color",
-                        commsDark);
+                        colorPrimaryDark);
                 resparam.res.setReplacement(PKG_CONTACTS, "color", "dialer_theme_color",
-                        commsDark);
+                        colorPrimaryDark);
                 resparam.res.setReplacement(PKG_CONTACTS, "color", "wallet_holo_blue_light",
-                        commsDark);
+                        colorPrimaryDark);
                 resparam.res.setReplacement(PKG_CONTACTS, "color", "dialer_theme_color_dark",
-                        commsPrimary);
+                        colorPrimary);
                 resparam.res.setReplacement(PKG_CONTACTS, "color", "primary_color",
-                        commsDark);
+                        colorPrimaryDark);
                 resparam.res.setReplacement(PKG_CONTACTS, "color", "primary_color_dark",
-                        commsPrimary);
+                        colorPrimary);
                 resparam.res.setReplacement(PKG_CONTACTS, "color", "action_bar_background",
-                        commsDark);
+                        colorPrimaryDark);
                 resparam.res.setReplacement(PKG_CONTACTS, "color", "actionbar_background_color",
-                        commsDark);
+                        colorPrimaryDark);
                 resparam.res.setReplacement(PKG_CONTACTS, "color", "actionbar_background_color_dark",
-                        commsPrimary);
+                        colorPrimary);
                 resparam.res.setReplacement(PKG_CONTACTS, "color", "dialtacts_theme_color",
-                        commsPrimary);
+                        colorPrimary);
 
                 resparam.res.hookLayout(PKG_CONTACTS, "layout", "floating_action_button", new XC_LayoutInflated() {
                     @Override
                     public void handleLayoutInflated(LayoutInflatedParam liparam) throws Throwable {
                         ImageButton fab = (ImageButton) liparam.view.findViewById(liparam.res.getIdentifier("floating_action_button", "id", PKG_CONTACTS));
-                        fab.getBackground().setColorFilter(commsPrimary, PorterDuff.Mode.SRC_IN);
+                        fab.getBackground().setColorFilter(colorPrimary, PorterDuff.Mode.SRC_IN);
                     }
                 });
 
@@ -1532,73 +1486,6 @@ public class X_Mod
             Logger.v("X_Mod:Themes are turned off in module settings.");
 
         }
-    }
-
-    public static void replaceSystemWideThemes() {
-
-
-        Logger.v("Replacing system-wide Theme resources.");
-
-        XResources.setSystemWideReplacement("android", "color", "material_blue_grey_900",
-                cachedPrimary);
-        XResources.setSystemWideReplacement("android", "color", "user_icon_1",
-                cachedPrimary);
-        XResources.setSystemWideReplacement("android", "color", "highlighted_text_material_dark",
-                cachedPrimaryDark);
-        XResources.setSystemWideReplacement("android", "color", "highlighted_text_material_light",
-                cachedPrimary);
-        XResources.setSystemWideReplacement("android", "color", "primary_material_dark",
-                cachedPrimaryDark);
-        XResources.setSystemWideReplacement("android", "color", "primary_material_light",
-                cachedPrimary);
-        XResources.setSystemWideReplacement("android", "color", "material_blue_grey_950",
-                cachedPrimaryDark);
-        XResources.setSystemWideReplacement("android", "color", "material_blue_grey_800",
-                cachedPrimary);
-        XResources.setSystemWideReplacement("android", "color", "primary_dark_material_dark",
-                cachedPrimaryDark);
-        XResources.setSystemWideReplacement("android", "color", "material_deep_teal_500",
-                cachedPrimary);
-        XResources.setSystemWideReplacement("android", "color", "material_deep_teal_200",
-                cachedAccent);
-        XResources.setSystemWideReplacement("android", "color", "accent_material_dark",
-                cachedAccent);
-        XResources.setSystemWideReplacement("android", "color", "accent_material_light",
-                cachedAccent);
-        XResources.setSystemWideReplacement("android", "color", "material_deep_teal_200",
-                cachedPrimaryDark);
-
-
-        Logger.v("Theme resources replaced.");
-        if (cachedRomType.equals("Sense")) {
-            Logger.d("X_Mod: Replacing Sense system resources.");
-            XResources.setSystemWideReplacement("android", "color", "text_selection_opacity_color", colorAccent);
-            XResources.setSystemWideReplacement("android", "color", "text_selection_color", colorPrimary);
-            XResources.setSystemWideReplacement("android", "color", "light_category_color", colorAccent);
-            XResources.setSystemWideReplacement("android", "color", "category_color", colorPrimary);
-            XResources.setSystemWideReplacement("android", "color", "dark_category_color", colorPrimaryDark);
-            XResources.setSystemWideReplacement("android", "color", "overlay_color", colorPrimary);
-            XResources.setSystemWideReplacement("android", "color", "standard_color", colorPrimary);
-            XResources.setSystemWideReplacement("android", "color", "active_color", colorPrimary);
-            XResources.setSystemWideReplacement("android", "color", "CategoryOne_active_color", colorPrimary);
-            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_text_selection_opacity_color", colorAccent);
-            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_text_selection_color", colorPrimary);
-            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_light_category_color", colorPrimary);
-            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_category_color", colorPrimaryDark);
-            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_dark_category_color", colorPrimaryDark);
-            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_multiply_color", colorPrimary);
-            XResources.setSystemWideReplacement("android", "color", "CategoryTwo_overlay_color", colorPrimary);
-            XResources.setSystemWideReplacement("android", "color", "CategoryThree_active_color", colorPrimary);
-            XResources.setSystemWideReplacement("android", "color", "CategoryFour_text_selection_opacity_color", colorAccent);
-            XResources.setSystemWideReplacement("android", "color", "CategoryFour_text_selection_color", colorPrimary);
-            XResources.setSystemWideReplacement("android", "color", "CategoryFour_light_category_color", colorAccent);
-            XResources.setSystemWideReplacement("android", "color", "CategoryFour_category_color", colorPrimary);
-            XResources.setSystemWideReplacement("android", "color", "CategoryFour_dark_category_color", colorPrimaryDark);
-            XResources.setSystemWideReplacement("android", "color", "CategoryFour_overlay_color", colorPrimary);
-            XResources.setSystemWideReplacement("android", "color", "CategoryFour_standard_color", colorPrimaryDark);
-            XResources.setSystemWideReplacement("android", "color", "CategoryFour_active_color", colorPrimary);
-        }
-
     }
 
 }

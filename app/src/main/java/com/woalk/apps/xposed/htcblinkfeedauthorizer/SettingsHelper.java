@@ -10,9 +10,9 @@ public class SettingsHelper {
 
     private final XSharedPreferences mPref;
 
-    private boolean cachedPref_use_themes, cachedPref_theme_systemui;
+    private boolean cachedPref_use_themes, cachedPref_theme_systemui,cachedPref_useUSB,cachedPref_useExternal,cachedPref_rotateLauncher;
     private int mPrimaryColor, mPrimaryDarkColor, mAccentColor;
-    private String mRomType;
+    private String mRomType, cachedPref_pathUSB,cachedPref_pathExternal;
 
 
 
@@ -29,6 +29,38 @@ public class SettingsHelper {
         getColorAccent();
         getPref_romtype();
         getPref_theme_systemui();
+        getPref_useExternal();
+        getPref_useUSB();
+        getPref_rotateLauncher();
+        getPref_pathExternal();
+        getPref_pathUSB();
+
+
+
+    }
+
+    protected void getPref_pathUSB() {
+        cachedPref_pathUSB = mPref.getString("usb_dir", "");
+
+    }
+
+    protected void getPref_pathExternal() {
+        cachedPref_pathExternal = mPref.getString("ext_dir", "");
+
+    }
+
+    protected void getPref_useUSB() {
+        cachedPref_useUSB = mPref.getBoolean("has_usb", false);
+
+    }
+
+    protected void getPref_useExternal() {
+        cachedPref_useExternal = mPref.getBoolean("has_external", false);
+
+    }
+
+    protected void getPref_rotateLauncher() {
+        cachedPref_rotateLauncher = mPref.getBoolean("force_rotate", false);
 
     }
 
@@ -62,11 +94,32 @@ public class SettingsHelper {
 
     }
 
+    public boolean getCachedPref_useExternal() {
+        return cachedPref_useExternal;
+    }
+
+    public Boolean getCachedPref_useUSB() {
+        return cachedPref_useUSB;
+    }
+
+    public Boolean getCachedPref_rotateLauncher() {
+        return cachedPref_rotateLauncher;
+    }
+
+    public String getCachedPref_pathUSB() {
+        return cachedPref_pathUSB;
+    }
+
+    public String getCachedPref_pathExternal() {
+        return cachedPref_pathExternal;
+    }
+
+
     public boolean getCachedPref_use_themes() {
         return cachedPref_use_themes;
     }
 
-    public String getCachedPref_romtype() {
+    public String getCachedPref_romType() {
         return mRomType;
     }
 

@@ -61,7 +61,7 @@ public class LaunchActivity extends FragmentActivity implements View.OnClickList
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication());
         File theSharedPrefsFile;
 
-        theSharedPrefsFile = new File("/data/data/"+ PACKAGE_NAME  +"/shared_prefs/" + PREFERENCE_FILE + ".xml");
+        theSharedPrefsFile = new File(getApplication().getFilesDir().getPath() + PACKAGE_NAME  +"/shared_prefs/" + PREFERENCE_FILE + ".xml");
         theSharedPrefsFile.setReadable(true, false);
 
         if (!(sharedPreferences.getBoolean("SkipWelcome",false))) {

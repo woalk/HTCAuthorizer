@@ -10,7 +10,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -108,7 +107,6 @@ public class HTMLHelper {
         request.setMimeType("application/vnd.android.package-archive");
         request.setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS, parsedFileName + ".apk");
         enqueue = dm.enqueue(request);
-        Drawable notifyIcon;
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean mUseThemes = sharedPreferences.getBoolean("use_themes",false);
         if (mUseThemes) {

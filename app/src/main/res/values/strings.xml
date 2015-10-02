@@ -87,26 +87,6 @@
     <string name="welcome2_summary">Your device, your way.  No limitations.</string>
     <string name="welcome3_title">Unlock everything</string>
     <string name="welcome3_summary">Use your apps the way they were meant to be used, without restriction.</string>
-
-    <!--Download links-->
-    <string name="dl_path_Prism" translatable="false">http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=21581</string>
-    <string name="dl_path_Camera" translatable="false">http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=18737</string>
-    <string name="dl_path_Gallery" translatable="false">http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=16517</string>
-    <string name="dl_path_Ime" translatable="false">http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=16867</string>
-    <string name="dl_path_Ime_Eng" translatable="false">http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=16106</string>
-    <string name="dl_path_Ime_es" translatable="false">http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=16743</string>
-    <string name="dl_path_Ime_lv_LV" translatable="false">http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=16721</string>
-    <string name="dl_path_lt_LT" translatable="false">http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=16723</string>
-    <string name="dl_path_nb_NO" translatable="false">http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=16727</string>
-    <string name="dl_path_it_IT" translatable="false">http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=16717</string>
-    <string name="dl_path_ru_RU" translatable="false">http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=16885</string>
-    <string name="dl_path_uk_UA" translatable="false">http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=16889</string>
-    <string name="dl_path_en_GB" translatable="false">http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=16891</string>
-    <string name="dl_path_de_DE" translatable="false">http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=16593</string>
-    <string name="dl_path_Clock" translatable="false">http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=21581</string>
-    <string name="dl_path_Weather" translatable="false">http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=21581</string>
-    <string name="dl_path_Browser" translatable="false">http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=18733</string>
-    <string name="dl_path_Scribble" translatable="false">http://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=16625</string>
     <string name="fragment_title_Logging">Logging</string>
 
 </resources>
