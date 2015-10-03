@@ -4,7 +4,7 @@
         <Preference
             android:key="create_perm"
             android:summary="@string/pref_create_permfile_summary"
-            android:title="@string/pref_create_permfile_title"/>
+            android:title="@string/pref_create_permfile_title" />
 
         />
     </PreferenceCategory>
@@ -15,11 +15,11 @@
             android:defaultValue="false"
             android:key="force_rotate"
             android:summary="@string/pref_rotate_force_rotate_summary"
-            android:title="@string/pref_rotate_force_rotate_title"/>
+            android:title="@string/pref_rotate_force_rotate_title" />
         <Preference
             android:key="kill_launcher"
             android:summary="@string/pref_rotate_kill_launcher_summary"
-            android:title="@string/pref_rotate_kill_launcher_title"/>
+            android:title="@string/pref_rotate_kill_launcher_title" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_cat_storage">
@@ -27,24 +27,24 @@
             android:defaultValue="false"
             android:key="has_ext"
             android:summary="@string/pref_storage_ext_check_summary"
-            android:title="@string/pref_storage_ext_check_title"/>
+            android:title="@string/pref_storage_ext_check_title" />
         <Preference
             android:defaultValue="/storage/ext_sd"
             android:dependency="has_ext"
             android:key="ext_dir"
             android:summary=""
-            android:title="@string/pref_storage_ext_path_title"/>
+            android:title="@string/pref_storage_ext_path_title" />
         <SwitchPreference
             android:defaultValue="false"
             android:key="has_usb"
             android:summary="@string/pref_storage_usb_check_summary"
-            android:title="@string/pref_storage_usb_check_title"/>
+            android:title="@string/pref_storage_usb_check_title" />
         <Preference
             android:defaultValue="/storage/usb"
             android:dependency="has_usb"
             android:key="usb_dir"
             android:summary=""
-            android:title="@string/pref_storage_usb_path_title"/>
+            android:title="@string/pref_storage_usb_path_title" />
     </PreferenceCategory>
 
 

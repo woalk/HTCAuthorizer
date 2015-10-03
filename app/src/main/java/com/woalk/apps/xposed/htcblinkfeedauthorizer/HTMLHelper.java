@@ -28,8 +28,8 @@ import java.io.IOException;
 public class HTMLHelper {
 
 
-    private String inUrl, originalName, newName, parsedHtmlNode, versionString;
     public static String parsedVersionNumber, parsedFileName, parsedVersionString;
+    private String inUrl, originalName, newName, parsedHtmlNode, versionString;
     private Boolean doDownload;
     private Boolean mSkipDownload = false;
     private Context context;
@@ -37,8 +37,8 @@ public class HTMLHelper {
     private String mPrefKey;
     private long enqueue;
 
-    public HTMLHelper() {
-
+    public HTMLHelper(Context appcontext) {
+        context = appcontext;
     }
 
 
@@ -60,7 +60,7 @@ public class HTMLHelper {
         id = appIndex;
         newName = inputAppName.replaceAll("\\s", "+");
         //Set up search URL
-        String holderUrl = "http://www.apkmirror.com/?s=" + newName + "&post_type=apps_post";
+        String holderUrl = context.getString(R.string.url_apkmirror) + "/?s=" + newName + "&post_type=apps_post";
         //Set input app name for a Filename
         newName = inputAppName.replaceAll("\\s", "");
         //Set the input URL for the background task.
@@ -82,7 +82,7 @@ public class HTMLHelper {
         id = appIndex;
         newName = inputAppName.replaceAll("\\s", "+");
         //Set up search URL
-        String holderUrl = "http://www.apkmirror.com/?s=" + newName + "&post_type=apps_post";
+        String holderUrl = context.getString(R.string.url_apkmirror) + "/?s=" + newName + "&post_type=apps_post";
         //Set input app name for a Filename
         newName = inputAppName.replaceAll("\\s", "");
         //Set the input URL for the background task.
@@ -108,7 +108,7 @@ public class HTMLHelper {
         request.setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS, parsedFileName + ".apk");
         enqueue = dm.enqueue(request);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        boolean mUseThemes = sharedPreferences.getBoolean("use_themes",false);
+        boolean mUseThemes = sharedPreferences.getBoolean("use_themes", false);
         if (mUseThemes) {
             accentColor = sharedPreferences.getInt("theme_AccentColor", 0);
         } else {
@@ -126,7 +126,11 @@ public class HTMLHelper {
                     Cursor c = dm.query(query);
                     if (c.moveToFirst()) {
                         int columnIndex = c.getColumnIndex(DownloadManager.COLUMN_STATUS);
-                        if (DownloadManager.STATUS_SUCCESSFUL == c.getInt(columnIndex)) {
+                        int status = c.getInt(columnIndex);
+                        int columnReason = c.getColumnIndex(DownloadManager.COLUMN_REASON);
+                        int reason = c.getInt(columnReason);
+                        c.close();
+                        if (DownloadManager.STATUS_SUCCESSFUL == reason) {
                             String uriString = c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
                             Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
                             notificationIntent.setDataAndType((Uri.parse(uriString)), "application/vnd.android.package-archive");
@@ -135,44 +139,76 @@ public class HTMLHelper {
                             notificationIntent.addFlags(Intent.FLAG_FROM_BACKGROUND);
                             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 
-                            mBuilder.setContentTitle("Download Complete")
-                                    .setContentText("Tap to install " + originalName)
+                            mBuilder.setContentTitle(context.getString(R.string.msg_download_complete_title))
+                                    .setContentText(context.getString(R.string.msg_download_complete_body) + originalName)
                                     .setProgress(0, 0, false)
                                     .setAutoCancel(true)
                                     .setSmallIcon(R.drawable.stat_sys_download_anim0)
                                     .setColor(accentColor)
                                     .setContentIntent(pendingIntent);
                             mNotifyManager.notify(id, mBuilder.build());
+
+                        } else {
+                            switch (status) {
+                                case DownloadManager.STATUS_FAILED:
+                                    mBuilder.setContentTitle(context.getString(R.string.msg_download_failed_title));
+                                    switch (reason) {
+                                        case DownloadManager.ERROR_CANNOT_RESUME:
+                                            mBuilder.setContentText(context.getString(R.string.msg_download_cannot_resume_body));
+                                            break;
+                                        case DownloadManager.ERROR_DEVICE_NOT_FOUND:
+                                            mBuilder.setContentText(context.getString(R.string.msg_download_not_found_body));
+                                            break;
+                                        case DownloadManager.ERROR_FILE_ALREADY_EXISTS:
+                                            mBuilder.setContentText(context.getString(R.string.msg_download_already_exists_body));
+                                            break;
+                                        case DownloadManager.ERROR_FILE_ERROR:
+                                            mBuilder.setContentText(context.getString(R.string.msg_download_file_error_body));
+                                            break;
+                                        case DownloadManager.ERROR_HTTP_DATA_ERROR:
+                                            mBuilder.setContentText(context.getString(R.string.msg_download_http_error_body));
+                                            break;
+                                        case DownloadManager.ERROR_INSUFFICIENT_SPACE:
+                                            mBuilder.setContentText(context.getString(R.string.msg_download_low_space_body));
+                                            break;
+                                        case DownloadManager.ERROR_TOO_MANY_REDIRECTS:
+                                            mBuilder.setContentText(context.getString(R.string.msg_body_toomany_redirects_body));
+                                            break;
+                                        case DownloadManager.ERROR_UNHANDLED_HTTP_CODE:
+                                            mBuilder.setContentText(context.getString(R.string.msg_download_unhandled_error_body));
+                                            break;
+                                        case DownloadManager.ERROR_UNKNOWN:
+                                            mBuilder.setContentText(context.getString(R.string.msg_download_unknown_error_body));
+                                            break;
+                                    }
+
+
+                                case DownloadManager.STATUS_PAUSED:
+                                    mBuilder.setContentText(context.getString(R.string.msg_download_paused_title));
+                                    switch (reason) {
+                                        case DownloadManager.PAUSED_QUEUED_FOR_WIFI:
+                                            mBuilder.setContentText(context.getString(R.string.msg_download_paused_queued_body));
+                                            break;
+                                        case DownloadManager.PAUSED_UNKNOWN:
+                                            mBuilder.setContentText(context.getString(R.string.msg_download_paused_unknown));
+                                            break;
+                                        case DownloadManager.PAUSED_WAITING_FOR_NETWORK:
+                                            mBuilder.setContentText(context.getString(R.string.msg_download_paused_waiting_network_body));
+                                            break;
+                                        case DownloadManager.PAUSED_WAITING_TO_RETRY:
+                                            mBuilder.setContentText(context.getString(R.string.msg_download_paused_waiting_retry_body));
+                                            break;
+                                    }
+                                    break;
+                                case DownloadManager.STATUS_PENDING:
+                                    break;
+                                case DownloadManager.STATUS_RUNNING:
+                                    break;
+
+                            }
+                            mNotifyManager.notify(id, mBuilder.build());
                         }
                     }
-                } else {
-                    mBuilder.setContentTitle("Download Error")
-                            .setProgress(0, 0, false)
-                            .setAutoCancel(true)
-                            .setSmallIcon(R.drawable.stat_sys_download_anim0)
-                            .setColor(accentColor);
-
-                    if (action.equals(DownloadManager.ERROR_CANNOT_RESUME)) {
-
-                        mBuilder.setContentText("Cannot resume downloading " + originalName);
-                    } else if (action.equals(DownloadManager.ERROR_DEVICE_NOT_FOUND)) {
-                        mBuilder.setContentText("Device not found");
-                    } else if (action.equals(DownloadManager.ERROR_FILE_ALREADY_EXISTS)) {
-                        mBuilder.setContentText("File already exists");
-                    } else if (action.equals(DownloadManager.ERROR_DEVICE_NOT_FOUND)) {
-                        mBuilder.setContentText("Device not found");
-                    } else if (action.equals(DownloadManager.ERROR_HTTP_DATA_ERROR)) {
-                        mBuilder.setContentText("HTTP Data error");
-                    } else if (action.equals(DownloadManager.ERROR_INSUFFICIENT_SPACE)) {
-                        mBuilder.setContentText("Insufficient space");
-                    } else if (action.equals(DownloadManager.ERROR_UNHANDLED_HTTP_CODE)) {
-                        mBuilder.setContentText("Unhandled HTTP Code");
-                    } else if (action.equals(DownloadManager.ERROR_TOO_MANY_REDIRECTS)) {
-                        mBuilder.setContentText("Too many redirects");
-                    } else if (action.equals(DownloadManager.ERROR_UNKNOWN)) {
-                        mBuilder.setContentText("Unknown Error");
-                    }
-                    mNotifyManager.notify(id, mBuilder.build());
                 }
             }
         };
@@ -234,7 +270,6 @@ public class HTMLHelper {
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString(mPrefKey, parsedVersionNumber);
-                    Logger.d("HTMLHelper: Version Code found of " + parsedVersionString + " for package " + originalName);
                     editor.putInt(mPrefKey + "_code", Integer.valueOf(parsedVersionString));
                     editor.apply();
                 }
@@ -271,7 +306,7 @@ public class HTMLHelper {
                 }
                 doDownload = false;
             } else {
-                inUrl = "http://www.apkmirror.com" + parsedHtmlNode;
+                inUrl = context.getString(R.string.url_apkmirror) + parsedHtmlNode;
                 JsoupAsyncTask jsoupAsyncTask = new JsoupAsyncTask();
                 jsoupAsyncTask.execute();
 

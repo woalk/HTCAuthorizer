@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:minHeight="?android:attr/listPreferredItemHeight"
-                tools:ignore="RtlSymmetry"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    tools:ignore="RtlSymmetry"
 
     >
 
@@ -15,8 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:contentDescription="@string/Descriptor2"
-        />
+        android:contentDescription="@string/Descriptor2" />
 
     <RelativeLayout
         android:id="@+id/container"
@@ -40,7 +39,7 @@
             android:ellipsize="marquee"
             android:fadingEdge="horizontal"
             android:singleLine="true"
-            android:textAppearance="@android:style/TextAppearance"/>
+            android:textAppearance="@android:style/TextAppearance" />
 
         <TextView
             android:id="@android:id/summary"
@@ -51,7 +50,7 @@
             android:maxLines="4"
             android:paddingEnd="60dip"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="?android:attr/textColorSecondary"/>
+            android:textColor="?android:attr/textColorSecondary" />
 
         <RelativeLayout
             android:id="@+id/pickerframe"
@@ -61,8 +60,7 @@
             android:layout_below="@android:id/summary"
             android:layout_marginBottom="-250dip"
             android:animateLayoutChanges="true"
-            android:paddingBottom="80dip"
-            >
+            android:paddingBottom="80dip">
 
             <TextView
                 android:id="@+id/hueToolTip"
@@ -70,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
                 android:singleLine="true"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
 
             <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
                 android:id="@+id/hueSeekBar"
@@ -80,7 +78,7 @@
                 android:maxHeight="5dip"
                 android:minHeight="3dip"
                 app:dsb_max="360"
-                app:dsb_trackDrawable="@drawable/gradient_hue"/>
+                app:dsb_trackDrawable="@drawable/gradient_hue" />
 
             <TextView
                 android:id="@+id/satToolTip"
@@ -89,7 +87,7 @@
                 android:layout_below="@id/hueSeekBar"
                 android:fontFamily="sans-serif-medium"
                 android:singleLine="true"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
 
             <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
                 android:id="@+id/satSeekBar"
@@ -99,7 +97,7 @@
                 android:maxHeight="3dip"
                 android:minHeight="3dip"
                 app:dsb_max="100"
-                app:dsb_trackDrawable="@drawable/gradient_saturation"/>
+                app:dsb_trackDrawable="@drawable/gradient_saturation" />
 
             <TextView
                 android:id="@+id/valueToolTip"
@@ -108,7 +106,7 @@
                 android:layout_below="@id/satSeekBar"
                 android:fontFamily="sans-serif-medium"
                 android:singleLine="true"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
 
             <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
                 android:id="@+id/valueSeekBar"
@@ -118,7 +116,7 @@
                 android:maxHeight="3dip"
                 android:minHeight="3dip"
                 app:dsb_max="100"
-                app:dsb_trackDrawable="@drawable/gradient_value"/>
+                app:dsb_trackDrawable="@drawable/gradient_value" />
 
 
         </RelativeLayout>
@@ -130,7 +128,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="false"
             android:layout_centerVertical="true"
-            android:contentDescription="@string/ImageViewDescriptor"/>
+            android:contentDescription="@string/ImageViewDescriptor" />
 
     </RelativeLayout>
 

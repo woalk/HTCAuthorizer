@@ -56,26 +56,16 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     LinearLayout mDrawerPane, mDrawerReboot, mDrawerAbout, mMainLayout, mDrawerQuickReboot;
     ArrayList<NavItem> mNavItems = new ArrayList<>();
     private android.support.v7.widget.Toolbar toolbar;
-    private String curTitle;
     private int curPos = 0;
     private DrawerLayout mDrawerLayout;
     private Button mButtonRefresh;
     private SharedPreferences sharedPreferences;
-    protected static final String PACKAGE_NAME = "com.woalk.apps.xposed.htcblinkfeedauthorizer";
-    protected static final String PREFERENCE_FILE = PACKAGE_NAME + "_preferences";
-
-    public MainActivity() {
-
-    }
-
-    public MainActivity(String curTitle) {
-        this.curTitle = curTitle;
-    }
 
 
     public static MatPalette generateDefaultPalette() {
 
         return new MatPalette(mDefaultMainColor, mDefaultSecondaryColor, mDefaultAccentColor, mDefaultMainColor, mDefaultMainColor, mDefaultMainColor, mDefaultMainColor, mDefaultMainColor, mDefaultMainColor, 1.0f);
+
     }
 
     @Override
@@ -83,12 +73,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
 
 
         super.onCreate(savedInstanceState);
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication());
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        mUseThemes = sharedPreferences.getBoolean("use_themes", false);
-        mMainColor = sharedPreferences.getInt("theme_PrimaryColor", -16728577);
-        mSecondaryColor = sharedPreferences.getInt("theme_PrimaryDarkColor", -16763828);
-        mAccentColor = sharedPreferences.getInt("theme_AccentColor", -16728577);
+        refreshColorValues();
         checkRomType();
         mDefaultMainColor = -16728577;
         mDefaultSecondaryColor = -16763828;
@@ -99,10 +84,10 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
         setContentView(R.layout.activity_main);
 
         //Add drawerdown items
-        mNavItems.add(new NavItem("Main", R.drawable.ic_home_white_24dp));
-        mNavItems.add(new NavItem("Themes", R.drawable.ic_style));
-        mNavItems.add(new NavItem("Downloads", R.drawable.ic_get_app_white_24dp));
-        mNavItems.add(new NavItem("Settings", R.drawable.ic_settings));
+        mNavItems.add(new NavItem(getResources().getString(R.string.drawer_title_main), R.drawable.ic_home_white_24dp));
+        mNavItems.add(new NavItem(getResources().getString(R.string.drawer_title_themes), R.drawable.ic_style));
+        mNavItems.add(new NavItem(getResources().getString(R.string.drawer_title_downloads), R.drawable.ic_get_app_white_24dp));
+        mNavItems.add(new NavItem(getResources().getString(R.string.drawer_title_settings), R.drawable.ic_settings));
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         mDrawerPane = (LinearLayout) findViewById(R.id.drawerPane);
         mMainLayout = (LinearLayout) findViewById(R.id.mainLayout);
@@ -142,7 +127,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
 
         tv1.setText(String.valueOf(pm.getApplicationLabel(appInfo)));
         tv1.setAlpha(0);
-        tv2.setText(curTitle);
+        tv2.setText(mNavItems.get(curPos).mTitle);
         tv1.setPivotX(0);
         tv2.setPivotX(0);
 
@@ -159,14 +144,10 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
                     mDrawerLayout.closeDrawer(GravityCompat.START);
                     showAboutDialog();
                 } else if (v.equals(mDrawerQuickReboot)) {
-                    mHook(mMainColor,mSecondaryColor,mAccentColor);
+                    mHook(mMainColor, mSecondaryColor, mAccentColor);
                     String[] cmd = new String[1];
                     cmd[0] = "pkill com.android.systemui; pkill com.android.settings; pkill com.google.android.inputmethod.latin; pkill com.google.android.dialer";
-                    Common.killPackage("foo");
                     Common.runAsRoot(cmd);
-//                    Common.killPackage("com.android.settings");
-//                    Common.killPackage("com.android.dialer");
-//                    Common.killPackage("com.google.android.inputmethod");
 
                 }
             }
@@ -181,6 +162,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selectItemFromDrawer(position);
+                tv2.setText(mNavItems.get(position).mTitle);
 
 
             }
@@ -238,11 +220,13 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             if (mUseThemes) {
                 toolbar.setBackgroundColor(mMainColor);
-                //overridePalette(generateDefaultPalette());
+                overridePalette(generateCustomPalette());
+
             } else {
                 toolbar.setBackgroundColor(Color.rgb(Color.red(-16728577), Color.green(-16728577),
                         Color.blue(-16728577)));
-                //overridePalette(generateCustomPalette());
+                overridePalette(generateDefaultPalette());
+
             }
 
         }
@@ -299,6 +283,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
         selectItemFromDrawer(curPos);
         if (mUseThemes) {
             toolbar.setBackgroundColor(mMainColor);
+            refreshColorValues();
             overridePalette(generateCustomPalette());
 
 
@@ -315,7 +300,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        tv2.setText(curTitle);
+        tv2.setText(mNavItems.get(curPos).mTitle);
     }
 
     @Override
@@ -341,15 +326,17 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
 
         float invertPos = 1f - (slideOffset);
         ObjectAnimator tv1X = ObjectAnimator.ofFloat(tv1, "scaleX", slideOffset, slideOffset);
+        ObjectAnimator refreshButtonAnim = ObjectAnimator.ofFloat(mButtonRefresh, "scaleX", invertPos, invertPos);
         ObjectAnimator tv1alpha = ObjectAnimator.ofFloat(tv1, "alpha", slideOffset, slideOffset);
         ObjectAnimator tv2X = ObjectAnimator.ofFloat(tv2, "scaleX", invertPos, invertPos);
         ObjectAnimator tv2alpha = ObjectAnimator.ofFloat(tv2, "alpha", invertPos, invertPos);
         AnimatorSet tvset = new AnimatorSet();
         tvset.setDuration(450);
-        tvset.play(tv1X).with(tv1alpha).with(tv2X).with(tv2alpha);
+        tvset.play(tv1X).with(tv1alpha).with(tv2X).with(tv2alpha).with(refreshButtonAnim);
         tvset.start();
 
     }
+
     //This doesn't really do anything, it's just for Xposed to hook on a button click.  :D
     private void mHook(int main, int dark, int accent) {
         Logger.d("X_Mod: Not really.  mHook Called.");
@@ -372,8 +359,8 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                HTMLHelper htmlHelper = new HTMLHelper();
-                                htmlHelper.fetchApp("HTC Service pack",getApplicationContext(),0,"dl_HSP");
+                                HTMLHelper htmlHelper = new HTMLHelper(getApplication());
+                                htmlHelper.fetchApp("HTC Service pack", getApplicationContext(), 0, "dl_HSP");
                             }
                         })
                 .setNegativeButton(android.R.string.no,
@@ -392,9 +379,18 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
 
     //Drawer selection logic
     private void selectItemFromDrawer(final int position) {
-            mDrawerLayout.closeDrawer(GravityCompat.START);
-            mDrawerList.setItemChecked(position, true);
-            curPos = position;
+        mDrawerLayout.closeDrawer(GravityCompat.START);
+        mDrawerList.setItemChecked(position, true);
+        curPos = position;
+        if (position == 2) {
+            if (mButtonRefresh.getVisibility() == View.GONE) {
+                mButtonRefresh.setVisibility(View.VISIBLE);
+            }
+        } else {
+            if (mButtonRefresh.getVisibility() == View.VISIBLE) {
+                mButtonRefresh.setVisibility(View.GONE);
+            }
+        }
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -470,6 +466,16 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
 
     }
 
+    private void refreshColorValues() {
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication());
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        mUseThemes = sharedPreferences.getBoolean("use_themes", false);
+        mMainColor = sharedPreferences.getInt("theme_PrimaryColor", -16728577);
+        mSecondaryColor = sharedPreferences.getInt("theme_PrimaryDarkColor", -16763828);
+        mAccentColor = sharedPreferences.getInt("theme_AccentColor", -16728577);
+
+    }
+
 
     private void checkRomType() {
         Process p;
@@ -481,26 +487,26 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
             p = new ProcessBuilder("/system/bin/getprop", "ro.build.sense.version").redirectErrorStream(true).start();
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line;
-            while ((line=br.readLine()) != null){
+            while ((line = br.readLine()) != null) {
                 sense_version = line;
             }
             p.destroy();
             p = new ProcessBuilder("/system/bin/getprop", "ro.build.version.htcsdk").redirectErrorStream(true).start();
             BufferedReader br2 = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line2;
-            while ((line2=br2.readLine()) != null){
+            while ((line2 = br2.readLine()) != null) {
                 sense_sdk = line2;
             }
 
             p.destroy();
             if ((!sense_sdk.equals("")) && (!sense_version.equals(""))) {
                 Logger.d("MainActivity: Sense ROM found. " + sense_sdk + " and " + sense_version);
-                editor.putString("romtype","Sense");
+                editor.putString("romtype", "Sense");
                 editor.apply();
 
             } else if (Build.HOST.contains("google.com") || Build.FINGERPRINT.contains("google")) {
                 Logger.d("MainActivity: Google ROM found " + Build.FINGERPRINT);
-                editor.putString("romtype","Google");
+                editor.putString("romtype", "Google");
                 editor.apply();
             }
         } catch (IOException e) {
@@ -513,20 +519,16 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.enter, R.anim.exit);
+
         if (position == 0) {
-            if (mButtonRefresh.getVisibility() == View.VISIBLE) {mButtonRefresh.setVisibility(View.GONE);}
             ft.replace(android.R.id.widget_frame, new MainPreferenceFragment());
         } else if (position == 1) {
-            if (mButtonRefresh.getVisibility() == View.VISIBLE) {mButtonRefresh.setVisibility(View.GONE);}
             ft.replace(android.R.id.widget_frame, new ThemeFragment());
         } else if (position == 2) {
-            if (mButtonRefresh.getVisibility() == View.GONE) {mButtonRefresh.setVisibility(View.VISIBLE);}
-            ft.replace(android.R.id.widget_frame, new DownloadFragment(),"DL_FRAGMENT");
+            ft.replace(android.R.id.widget_frame, new DownloadFragment(), "DL_FRAGMENT");
         } else if (position == 3) {
-            if (mButtonRefresh.getVisibility() == View.VISIBLE) {mButtonRefresh.setVisibility(View.GONE);}
             ft.replace(android.R.id.widget_frame, new ModuleFragment());
         }
-        tv2.setText(mNavItems.get(position).mTitle);
         ft.addToBackStack(null);
 
 
@@ -536,13 +538,14 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.contains("use_themes")) {
-            reResume();
+            if (sharedPreferences.getBoolean(key, false)) {
+                Logger.d("XCPP: Boolean is true.");
+                refreshColorValues();
+                overridePalette(generateCustomPalette());
+            } else overridePalette(generateDefaultPalette());
+            Logger.d("XCPP: Boolean is false.");
         }
     }
-
-    private void reResume() {
-        Context context = this.getApplicationContext();
-            }
 
 
     //Custom class for our nav items
@@ -587,7 +590,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
             View view;
 
             if (convertView == null) {
-                view = View.inflate(getApplication(),R.layout.drawer_item, null);
+                view = View.inflate(getApplication(), R.layout.drawer_item, null);
             } else {
                 view = convertView;
             }

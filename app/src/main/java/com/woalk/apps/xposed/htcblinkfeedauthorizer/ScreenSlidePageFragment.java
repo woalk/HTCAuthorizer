@@ -14,6 +14,11 @@ public class ScreenSlidePageFragment extends Fragment {
     private TextView summaryTextView;
     private ImageView iconImageView;
 
+    public ScreenSlidePageFragment() {
+
+
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -26,17 +31,11 @@ public class ScreenSlidePageFragment extends Fragment {
         Bundle bundle = getArguments();
         titleTextView.setText(bundle.getString("title"));
         summaryTextView.setText(bundle.getString("summary"));
-        iconImageView.setBackground(getResources().getDrawable(bundle.getInt("icon"),null));
+        iconImageView.setBackground(getResources().getDrawable(bundle.getInt("icon"), null));
 
 
         return rootView;
     }
-
-    public ScreenSlidePageFragment() {
-
-
-    }
-
 
 
 }

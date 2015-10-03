@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingBottom="14dp"
-                android:paddingTop="14dp">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="14dp"
+    android:paddingTop="14dp">
 
     <ImageView
         android:id="@+id/icon"
@@ -11,11 +11,11 @@
         android:layout_height="24dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="16dp"
         android:layout_marginEnd="17dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="0dip"
-        android:tint="#424242"
-        android:src="@drawable/icon_btn_previous"/>
+        android:src="@drawable/icon_btn_previous"
+        android:tint="#424242" />
 
     <TextView
         android:id="@+id/title"
@@ -28,7 +28,7 @@
         android:gravity="center_vertical"
         android:text=""
         android:textColor="#424242"
-        android:textSize="16sp"/>
+        android:textSize="16sp" />
 
 
 </RelativeLayout>

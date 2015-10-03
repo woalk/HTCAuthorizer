@@ -18,13 +18,11 @@ import java.util.TimerTask;
 
 public class MainPreferenceFragment extends PreferenceFragment
         implements Preference.OnPreferenceClickListener {
+    public static final String EXTRA_SUBSCREEN_ID = "subscreen_id";
+    public static final int SUBSCREEN_ID_ALWAYS_ACTIVE = 1;
     private static Preference pathUSB;
     private static Preference pathExt;
     private static int mToastHitCountdown;
-
-
-    public static final String EXTRA_SUBSCREEN_ID = "subscreen_id";
-    public static final int SUBSCREEN_ID_ALWAYS_ACTIVE = 1;
     private File mDefaultDirectory = new File(Environment.getExternalStorageDirectory().toString());
     private Toast toast;
 
@@ -41,7 +39,7 @@ public class MainPreferenceFragment extends PreferenceFragment
      */
     public static void setPreferenceValueToSummary(Preference pref) {
         if (pref.getKey().contains("_dir")) {
-            pref.setSummary(pref.getSharedPreferences().getString(pref.getKey(),""));
+            pref.setSummary(pref.getSharedPreferences().getString(pref.getKey(), ""));
         }
     }
 
@@ -52,11 +50,10 @@ public class MainPreferenceFragment extends PreferenceFragment
      * <ul>
      * <li>{@link EditTextPreference}</li>
      * </ul>
-     *
      */
     public static void setAllPreferenceValuesToSummary() {
-                    setPreferenceValueToSummary(pathExt);
-                    setPreferenceValueToSummary(pathUSB);
+        setPreferenceValueToSummary(pathExt);
+        setPreferenceValueToSummary(pathUSB);
 
     }
 
@@ -177,13 +174,12 @@ public class MainPreferenceFragment extends PreferenceFragment
     }
 
 
-
     @Override
     public boolean onPreferenceClick(final Preference preference) {
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
         final SharedPreferences.Editor editor = preference.getEditor();
-        File curPath = new File (sharedPreferences.getString(preference.getKey(), mDefaultDirectory.toString()));
-        FileDialog fd = new FileDialog(getActivity(),curPath);
+        File curPath = new File(sharedPreferences.getString(preference.getKey(), mDefaultDirectory.toString()));
+        FileDialog fd = new FileDialog(getActivity(), curPath);
         fd.setSelectDirectoryOption(true);
         fd.createFileDialog();
         fd.addDirectoryListener(new FileDialog.DirectorySelectedListener() {

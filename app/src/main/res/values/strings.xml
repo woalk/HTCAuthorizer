@@ -77,8 +77,6 @@
     <string name="pref_create_permfile_title">Create Permission File</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
-    <string name="pref_themes_automix_themes_summary">Auto Mix theme colors where HTC theme contains all the same color.</string>
-    <string name="pref_themes_automix_themes_title">Auto-mix theme colors</string>
     <string name="dialog_title_reboot">Would you like to reboot?</string>
     <string name="dialog_message_reboot">Select an option below.</string>
     <string name="welcome1_title">Sensify Xposed</string>
@@ -88,5 +86,23 @@
     <string name="welcome3_title">Unlock everything</string>
     <string name="welcome3_summary">Use your apps the way they were meant to be used, without restriction.</string>
     <string name="fragment_title_Logging">Logging</string>
+    <string name="msg_download_complete_body">"Tap to install "</string>
+    <string name="msg_download_complete_title">Download Complete</string>
+    <string name="msg_download_failed_title">Download Failed</string>
+    <string name="msg_download_cannot_resume_body">Cannot resume.</string>
+    <string name="msg_download_not_found_body">Device not found.</string>
+    <string name="msg_download_already_exists_body">File already exists.</string>
+    <string name="msg_download_file_error_body">File error.</string>
+    <string name="msg_download_http_error_body">HTTP Data error.</string>
+    <string name="msg_download_low_space_body">Insufficient space.</string>
+    <string name="msg_body_toomany_redirects_body">Too many redirects.</string>
+    <string name="msg_download_unhandled_error_body">Unhandled HTTP code.</string>
+    <string name="msg_download_unknown_error_body">Unknown error.</string>
+    <string name="msg_download_paused_title">Download Paused</string>
+    <string name="msg_download_paused_queued_body">PAUSED_QUEUED_FOR_WIFI</string>
+    <string name="msg_download_paused_unknown">PAUSED_UNKNOWN</string>
+    <string name="msg_download_paused_waiting_network_body">PAUSED_WAITING_FOR_NETWORK</string>
+    <string name="msg_download_paused_waiting_retry_body">PAUSED_WAITING_TO_RETRY</string>
+    <string name="url_apkmirror" translatable="false">http://www.apkmirror.com</string>
 
 </resources>

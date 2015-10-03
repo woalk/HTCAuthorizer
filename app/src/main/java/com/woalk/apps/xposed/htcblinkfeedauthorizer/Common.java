@@ -127,6 +127,7 @@ public class Common {
         hsv[2] = multiplier;
         return Color.HSVToColor(hsv);
     }
+
     public static int enlightenColor(int color, float saturation, float value) {
         float[] hsv = new float[3];
         Color.RGBToHSV(Color.red(color), Color.green(color), Color.blue(color), hsv);
@@ -134,6 +135,7 @@ public class Common {
         hsv[1] = saturation;
         return Color.HSVToColor(hsv);
     }
+
     public static int lightenColor(int color, float modifier) {
         float[] hsv = new float[3];
         Color.RGBToHSV(Color.red(color), Color.green(color), Color.blue(color), hsv);
@@ -165,42 +167,6 @@ public class Common {
         File sysfile = new File("/system/etc/permissions/com.htc.software.market.xml");
         if (sysfile.exists()) return true;
         else return false;
-
-    }
-
-    public boolean copyPermFile() {
-        File file = new File(Environment.getExternalStorageDirectory().toString() + "/Sensify/com.htc.software.market.xml");
-        File sysfile = new File("/system/etc/permissions/com.htc.software.market.xml");
-        if (!sysfile.exists()) {
-            String[] cmd = {"mount -o remount,rw /system", "cp " + file + " " + sysfile, "chmod 0644 " + sysfile, "mount -o remount,ro /system"};
-            Logger.d("Common: passing command to root - " + Arrays.toString(cmd));
-            runAsRoot(cmd);
-            return true;
-
-        } else {
-            Logger.d("Common: Sysfile exists.");
-            return false;
-
-        }
-
-
-    }
-    public boolean copyPermFile(boolean force) {
-
-        File file = new File(Environment.getExternalStorageDirectory().toString() + "/Sensify/com.htc.software.market.xml");
-        File sysfile = new File("/system/etc/permissions/com.htc.software.market.xml");
-        if (force) {
-            String[] cmd = {"mount -o remount,rw /system", "cp " + file + " " + sysfile, "chmod 0644 " + sysfile, "mount -o remount,ro /system"};
-            Logger.d("Common: passing command to root - " + Arrays.toString(cmd));
-            runAsRoot(cmd);
-            return true;
-
-        } else {
-            Logger.d("Common: Sysfile exists.");
-            return false;
-
-        }
-
 
     }
 
@@ -258,7 +224,6 @@ public class Common {
         }
     }
 
-
     public static void runAsRoot(final String[] cmds) {
         new AsyncTask<Void, Void, Void>() {
             @Override
@@ -285,5 +250,42 @@ public class Common {
             }
 
         }.execute();
+    }
+
+    public boolean copyPermFile() {
+        File file = new File(Environment.getExternalStorageDirectory().toString() + "/Sensify/com.htc.software.market.xml");
+        File sysfile = new File("/system/etc/permissions/com.htc.software.market.xml");
+        if (!sysfile.exists()) {
+            String[] cmd = {"mount -o remount,rw /system", "cp " + file + " " + sysfile, "chmod 0644 " + sysfile, "mount -o remount,ro /system"};
+            Logger.d("Common: passing command to root - " + Arrays.toString(cmd));
+            runAsRoot(cmd);
+            return true;
+
+        } else {
+            Logger.d("Common: Sysfile exists.");
+            return false;
+
+        }
+
+
+    }
+
+    public boolean copyPermFile(boolean force) {
+
+        File file = new File(Environment.getExternalStorageDirectory().toString() + "/Sensify/com.htc.software.market.xml");
+        File sysfile = new File("/system/etc/permissions/com.htc.software.market.xml");
+        if (force) {
+            String[] cmd = {"mount -o remount,rw /system", "cp " + file + " " + sysfile, "chmod 0644 " + sysfile, "mount -o remount,ro /system"};
+            Logger.d("Common: passing command to root - " + Arrays.toString(cmd));
+            runAsRoot(cmd);
+            return true;
+
+        } else {
+            Logger.d("Common: Sysfile exists.");
+            return false;
+
+        }
+
+
     }
 }

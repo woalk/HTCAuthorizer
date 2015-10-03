@@ -103,7 +103,7 @@ public class X_Mod
     public static final String CLASS_INSTAGRAM_LIB2_A = PKG_HTC_LIB2 + ".a";
     public static final String CLASS_INSTAGRAM_DBA = "com.htc.sphere.d.b.a";
     public static final String PKG_VENDING = "com.android.vending";
-     public static final String PKG_SYSTEMUI = "com.android.systemui";
+    public static final String PKG_SYSTEMUI = "com.android.systemui";
     public static final String PKG_SETTINGS = "com.android.settings";
     public static final String PKG_DIALER = "com.google.android.dialer";
     public static final String PKG_DIALER2 = "com.android.dialer";
@@ -133,7 +133,7 @@ public class X_Mod
             PKG_HTC_FEATURE + ".hdk2",
             PKG_HTC_FEATURE + ".hdk3"
     };
-//    private static final String ACTIVITY_THREAD_CLASS = "android.app.ActivityThread";
+    //    private static final String ACTIVITY_THREAD_CLASS = "android.app.ActivityThread";
 //    private static final String ACTIVITY_THREAD_CURRENTACTHREAD = "currentActivityThread";
 //    private static final String ACTIVITY_THREAD_GETSYSCTX = "getSystemContext";
     private static boolean themesEnabled = false;

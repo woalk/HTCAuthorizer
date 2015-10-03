@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.preference.Preference;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
 import java.util.Locale;
 
 
@@ -29,21 +31,13 @@ public class DownloadPreference extends Preference {
     private int mPackageVersionInstalled, mPackageVersionAvailable;
     private SharedPreferences sharedPreferences;
     private TextView mTitle, mSummary;
+    private Boolean mIsInstalled;
 
-    public DownloadPreference(Context context, AttributeSet attrs) {
-        super(context);
-        init(context, attrs);
+    public DownloadPreference(Context context, AttributeSet attributeSet) {
+        super(context, attributeSet);
+        init(context, attributeSet);
     }
 
-    public DownloadPreference(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        init(context, attrs);
-    }
-
-    public DownloadPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init(context, attrs);
-    }
 
     @Override
     protected View onCreateView(ViewGroup parent) {
@@ -58,7 +52,9 @@ public class DownloadPreference extends Preference {
     }
 
     @Override
-    public String getKey() { return mKey; }
+    public String getKey() {
+        return mKey;
+    }
 
     @Override
     protected void onBindView(View view) {
@@ -66,7 +62,9 @@ public class DownloadPreference extends Preference {
         mTitle = (TextView) view.findViewById(R.id.title);
         mSummary = (TextView) view.findViewById(R.id.summary);
         mTitle.setText(mTitleText);
-        mSummary.setText(mSummaryText);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        mPackageVersionAvailable = sharedPreferences.getInt(mKey + "_code", 0);
+        mIsInstalled = isPackageInstalled(pName);
         RefreshPreferenceSummary();
 
 
@@ -75,14 +73,14 @@ public class DownloadPreference extends Preference {
     @Override
     protected void onClick() {
         super.onClick();
-        HTMLHelper htmlHelper = new HTMLHelper();
-        HTMLHelper htmlHelper1 = new HTMLHelper();
-        if ((mPackageVersionInstalled == 0) || ((mPackageVersionInstalled < mPackageVersionAvailable) && mPackageVersionInstalled != 0 )) {
+        HTMLHelper htmlHelper = new HTMLHelper(getContext());
+        HTMLHelper htmlHelper1 = new HTMLHelper(getContext());
+
+        if (!mIsInstalled || mPackageVersionInstalled < mPackageVersionAvailable) {
             htmlHelper.fetchApp((String) this.getTitle(), getContext(), 1, mKey);
             Locale current = getContext().getResources().getConfiguration().locale;
-            Logger.d("DownloadFragment: Locale is " + current);
             if (mKey.equals("dl_Prism")) {
-                htmlHelper1.fetchApp((String) "HTC Account", getContext(), 1, mKey);
+                htmlHelper1.fetchApp("HTC Account", getContext(), 1, mKey);
             } else if (mKey.equals("dl_IME")) {
                 if (current.toString().equals("en_US")) {
                     htmlHelper1.fetchApp("Keyboard - English Pack with ALM", getContext(), 0, mKey);
@@ -158,19 +156,9 @@ public class DownloadPreference extends Preference {
         }
     }
 
-    @Override
-    protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
-        super.onSetInitialValue(restorePersistedValue, defaultValue);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        // Add default value for the online version we'll be checking for.
-        editor.putInt(mKey + "_code", 0);
-        editor.apply();
-
-    }
 
     protected void init(Context context, AttributeSet attributeSet) {
         if (attributeSet != null) {
-            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
             mPackageName = attributeSet.getAttributeValue("http://schemas.android.com/apk/res-auto", "package_name");
             pName = mPackageName;
             mKey = attributeSet.getAttributeValue("http://schemas.android.com/apk/res/android", "key");
@@ -178,15 +166,13 @@ public class DownloadPreference extends Preference {
             mSummaryText = attributeSet.getAttributeValue("http://schemas.android.com/apk/res/android", "summary");
             mPackageVersionInstalled = queryVersionCode(mPackageName);
             mPackageVersionName = queryVersionName(mPackageName);
-            mPackageVersionAvailable = sharedPreferences.getInt(mKey + "_code", 0);
 
             BroadcastReceiver receiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     String action = intent.getAction();
                     if (action.equals("com.woalk.HTCAuthorizer.VERSION_FETCHED")) {
-                        mPackageVersionAvailable = intent.getIntExtra("version_code",0);
-                        Logger.d("DownloadPreference: Recevied extra of " + mPackageVersionAvailable);
+                        mPackageVersionAvailable = intent.getIntExtra("version_code", 0);
                         RefreshPreferenceSummary();
 
                     }
@@ -200,22 +186,41 @@ public class DownloadPreference extends Preference {
         }
     }
 
+    public void QuerySelf() {
+        HTMLHelper htmlHelper = new HTMLHelper(getContext());
+        htmlHelper.fetchApp((String) this.getTitle(), getContext(), 0, this.getKey(), true);
+
+    }
+
     public void RefreshPreferenceSummary() {
         int mInstalledVer = queryVersionCode(pName);
-        String mKeyCode = mKey + "_code";
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        mIsInstalled = isPackageInstalled(pName);
         mPackageVersionAvailable = sharedPreferences.getInt(mKey + "_code", 0);
-        Logger.d("DownloadPreference: a summary refresh was triggered for package " + pName + " and " + mKeyCode + " with installed of " + mInstalledVer + " and available of " + mPackageVersionAvailable);
         if (mPackageVersionAvailable != 0) {
-            if (mInstalledVer < mPackageVersionAvailable && !(mInstalledVer == 0)) {
+            if (mInstalledVer < mPackageVersionAvailable && (mIsInstalled)) {
                 mSummaryText = "A new version is available.  Tap to download.";
-                mSummary.setText(mSummaryText);
 
-            } else if (mInstalledVer == mPackageVersionAvailable && !(mInstalledVer == 0)) {
+            } else if (mInstalledVer == mPackageVersionAvailable && (mIsInstalled)) {
                 mSummaryText = "Installed Version (Latest): " + mPackageVersionName;
-                mSummary.setText(mSummaryText);
             }
+        } else {
+            mSummaryText = "Tap to download";
+
         }
+        mSummary.setText(mSummaryText);
+    }
+
+    private boolean isPackageInstalled(String packageName) {
+        List<ApplicationInfo> packages;
+        PackageManager pm;
+
+        pm = getContext().getPackageManager();
+        packages = pm.getInstalledApplications(0);
+        for (ApplicationInfo packageInfo : packages) {
+            if (packageInfo.packageName.equals(packageName))
+                return true;
+        }
+        return false;
     }
 
     private int queryVersionCode(String packageName) {

@@ -17,22 +17,13 @@ import java.util.Locale;
 public class FileDialog {
     private static final String PARENT_DIR = "..";
     private final String TAG = getClass().getName();
+    private final Activity activity;
     private String[] fileList;
     private File currentPath;
-
-
-    public interface FileSelectedListener {
-        void fileSelected(File file);
-    }
-    public interface DirectorySelectedListener {
-        void directorySelected(File directory);
-    }
     private ListenerList<FileSelectedListener> fileListenerList = new ListenerList<>();
     private ListenerList<DirectorySelectedListener> dirListenerList = new ListenerList<>();
-    private final Activity activity;
     private boolean selectDirectoryOption;
     private String fileEndsWith = "";
-
     public FileDialog(Activity activity, File path) {
         this.activity = activity;
         if (!path.exists()) path = Environment.getExternalStorageDirectory();
@@ -56,8 +47,7 @@ public class FileDialog {
             });
 
 
-
-            }
+        }
 
         builder.setItems(fileList, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
@@ -75,7 +65,6 @@ public class FileDialog {
         dialog = builder.show();
         return dialog;
     }
-
 
     public void setSelectDirectoryOption(boolean selectDirectoryOption) {
         this.selectDirectoryOption = selectDirectoryOption;
@@ -139,14 +128,18 @@ public class FileDialog {
         else return new File(currentPath, fileChosen);
     }
 
+    public interface FileSelectedListener {
+        void fileSelected(File file);
+    }
+
+    public interface DirectorySelectedListener {
+        void directorySelected(File directory);
+    }
+
 }
 
 class ListenerList<L> {
     private List<L> listenerList = new ArrayList<>();
-
-    public interface FireHandler<L> {
-        void fireEvent(L listener);
-    }
 
     public void add(L listener) {
         listenerList.add(listener);
@@ -161,6 +154,10 @@ class ListenerList<L> {
 
     public void remove(L listener) {
         listenerList.remove(listener);
+    }
+
+    public interface FireHandler<L> {
+        void fireEvent(L listener);
     }
 
 }

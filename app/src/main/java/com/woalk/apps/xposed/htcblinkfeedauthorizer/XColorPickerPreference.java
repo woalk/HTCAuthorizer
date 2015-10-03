@@ -27,37 +27,35 @@ import android.widget.RelativeLayout;
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
 public class XColorPickerPreference extends Preference implements View.OnClickListener, DiscreteSeekBar.onSeekBarChangeListener {
-    public static int SPEED_ANIMATION_TRANSITION = 600;
-    public RelativeLayout container;
-    public RelativeLayout pickerFrame;
-    public org.adw.library.widgets.discreteseekbar.DiscreteSeekBar hueSeekBar, satSeekBar, valueSeekBar;
-    public int hue, sat, value, red, green, blue, original;
-    public int mPickerBottom;
-    public float[] hsv = new float[3];
-    public float[] hsvSat = new float[3];
-    public float[] hsvValue = new float[3];
+    private static int SPEED_ANIMATION_TRANSITION = 600;
+    private RelativeLayout container;
+    private RelativeLayout pickerFrame;
+    private org.adw.library.widgets.discreteseekbar.DiscreteSeekBar hueSeekBar, satSeekBar, valueSeekBar;
+    private int hue;
+    private int sat;
+    private int value;
+    private int original;
+    private float[] hsv = new float[3];
+    private float[] hsvSat = new float[3];
+    private float[] hsvValue = new float[3];
     private int myTheme;
     private ImageButton pickerButton;
-    private ObjectAnimator down, left, alphaIn, alphaOut, raise, lower, up, right;
+    private ObjectAnimator down;
+    private ObjectAnimator left;
+    private ObjectAnimator alphaOut;
+    private ObjectAnimator raise;
+    private ObjectAnimator lower;
+    private ObjectAnimator up;
+    private ObjectAnimator right;
 
     private boolean isAnimating, isPickerFrameShowing;
-    private ColorMatrix  matrixSat;
-
-    public XColorPickerPreference(Context context) {
-        super(context);
-        init(context, null);
-    }
+    private ColorMatrix matrixSat;
 
     public XColorPickerPreference(Context context, AttributeSet attrs) {
-
         super(context, attrs);
-        init(context, attrs);
+
     }
 
-    public XColorPickerPreference(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        init(context, attrs);
-    }
 
     @Override
     protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
@@ -65,7 +63,7 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
             // Restore existing state
             int DEFAULT_VALUE = -2533018;
             myTheme = this.getPersistedInt(DEFAULT_VALUE);
-            Logger.d("XCPP: mytheme set initial is " + myTheme);
+
         } else {
             // Set default state from the XML attribute
             Integer mCurrentValue = (Integer) defaultValue;
@@ -81,17 +79,9 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
             valueInt = Integer.parseInt(mHexDefaultValue);
             return valueInt;
         }
-         return 2533018;
+        return 2533018;
     }
 
-
-    private void init(Context context, AttributeSet attrs) {
-
-        if (attrs != null) {
-            String colorname = attrs.getAttributeValue("http://schemas.android.com/apk/res/android", "key");
-            Logger.d("XCPP: colorname is " + colorname);
-        }
-    }
 
     @Override
     public void onBindView(View rootView) {
@@ -109,9 +99,8 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
         // read positions of button, container height, screen width
         float buttonX = pickerButton.getX();
         float buttonY = pickerButton.getY();
-        mPickerBottom = pickerButton.getBottom();
         int mScreenWidth = ((getContext().getResources().getDisplayMetrics().widthPixels / 2) - 120);
-        alphaIn = ObjectAnimator.ofInt(btnIconDrawable, "alpha", 0, 255);
+        ObjectAnimator alphaIn = ObjectAnimator.ofInt(btnIconDrawable, "alpha", 0, 255);
         alphaOut = ObjectAnimator.ofInt(btnIconDrawable, "alpha", 255, 0);
         alphaIn.setDuration(SPEED_ANIMATION_TRANSITION);
         //set up animations
@@ -160,7 +149,6 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
         setMyColor(myTheme);
         original = myTheme;
 
-//        setMyName(colorname);
 
     }
 
@@ -195,9 +183,9 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
     }
 
     public float[] intToHSV(int inColor) {
-        red = Color.red(inColor);
-        green = Color.green(inColor);
-        blue = Color.blue(inColor);
+        int red = Color.red(inColor);
+        int green = Color.green(inColor);
+        int blue = Color.blue(inColor);
         float hsv[] = new float[3];
 
         Color.RGBToHSV(red, green, blue, hsv);
@@ -220,7 +208,7 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
 
                     pickerButton.setImageResource(0);
                 }
-            }, SPEED_ANIMATION_TRANSITION/2);
+            }, SPEED_ANIMATION_TRANSITION / 2);
 
 
             if (hsv != intToHSV(original)) {
@@ -289,19 +277,16 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
     }
 
 
-
     public void setSeekbarPositions(float hsv[]) {
         hue = Math.round(hsv[0]);
         sat = Math.round(hsv[1] * 100);
         value = Math.round(hsv[2] * 100);
-        Logger.d("XCPP: positions calculated to " + hue + " " + sat + " " + value);
         if (hue > 360) hue = 360;
         if (hue < 0) hue = 0;
         if (sat > 100) sat = 100;
         if (sat < 0) sat = 0;
         if (value > 100) value = 100;
         if (value < 0) value = 0;
-        Logger.d("XCPP: positions calculated to " + hue + " " + sat + " " + value);
         ObjectAnimator animationHue = ObjectAnimator.ofInt(hueSeekBar, "progress", hue);
         ObjectAnimator animationSat = ObjectAnimator.ofInt(satSeekBar, "progress", sat);
         ObjectAnimator animationValue = ObjectAnimator.ofInt(valueSeekBar, "progress", value);
@@ -354,8 +339,7 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
 
             }
         });
-            showAnimator.start();
-
+        showAnimator.start();
 
 
     }

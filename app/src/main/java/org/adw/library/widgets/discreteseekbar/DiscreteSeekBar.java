@@ -112,6 +112,7 @@ public class DiscreteSeekBar extends View {
         }
 
     };
+
     public DiscreteSeekBar(Context context) {
         this(context, null);
     }
@@ -1036,9 +1037,9 @@ public class DiscreteSeekBar extends View {
 
     /**
      * Interface to transform the current internal value of this DiscreteSeekBar to anther one for the visualization.
-     * <p>
+     * <p/>
      * This will be used on the floating bubble to display a different value if needed.
-     * <p>
+     * <p/>
      * Using this in conjunction with {@link #setIndicatorFormatter(String)} you will be able to manipulate the
      * value seen by the user
      *

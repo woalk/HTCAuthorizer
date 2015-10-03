@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/mainLayout"
-              xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/toolbar_custom"/>
+        layout="@layout/toolbar_custom" />
 
     <android.support.v4.widget.DrawerLayout
-        android:id="@+id/drawerLayout"
         xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/drawerLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -37,17 +38,17 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:choiceMode="singleChoice"
                     android:background="?attr/selectableItemBackground"
-                    android:dividerHeight="1dp"/>
+                    android:choiceMode="singleChoice"
+                    android:dividerHeight="1dp" />
 
 
             </FrameLayout>
 
 
         </RelativeLayout>
-        <include
-            layout="@layout/drawer_pane"/>
+
+        <include layout="@layout/drawer_pane" />
 
     </android.support.v4.widget.DrawerLayout>
 </LinearLayout>

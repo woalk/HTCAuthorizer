@@ -21,9 +21,6 @@ public class ThemeFragment extends PreferenceFragment implements Preference.OnPr
         buttonPreference.setOnPreferenceClickListener(this);
 
 
-
-
-
     }
 
     public void onResume() {
@@ -36,9 +33,9 @@ public class ThemeFragment extends PreferenceFragment implements Preference.OnPr
         Logger.d("MainActivity: We got something, Jim.");
         int[] colorArray = new int[12];
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        colorArray[0] = sharedPref.getInt("theme_PrimaryColor",0);
-        colorArray[1] = sharedPref.getInt("theme_AccentColor",0);
-        colorArray[2] = sharedPref.getInt("theme_PrimaryDarkColor",0);
+        colorArray[0] = sharedPref.getInt("theme_PrimaryColor", 0);
+        colorArray[1] = sharedPref.getInt("theme_AccentColor", 0);
+        colorArray[2] = sharedPref.getInt("theme_PrimaryDarkColor", 0);
         colorArray[3] = sharedPref.getInt("theme_Comms_Primary", 0);
         colorArray[4] = sharedPref.getInt("theme_Comms_Light", 0);
         colorArray[5] = sharedPref.getInt("theme_Comms_Dark", 0);
@@ -51,7 +48,7 @@ public class ThemeFragment extends PreferenceFragment implements Preference.OnPr
 
         Intent intent = new Intent("com.htc.themepicker.ACTION_THEME_SELECTOR");
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        intent.putExtra("update_colors",colorArray);
+        intent.putExtra("update_colors", colorArray);
         //intent.setComponent(new ComponentName("com.htc.launcher", "com.htc.themepicker.thememaker.ColorsActivity"));
         startActivity(intent);
 

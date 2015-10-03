@@ -10,10 +10,9 @@ public class SettingsHelper {
 
     private final XSharedPreferences mPref;
 
-    private boolean cachedPref_use_themes, cachedPref_theme_systemui,cachedPref_useUSB,cachedPref_useExternal,cachedPref_rotateLauncher;
+    private boolean cachedPref_use_themes, cachedPref_theme_systemui, cachedPref_useUSB, cachedPref_useExternal, cachedPref_rotateLauncher;
     private int mPrimaryColor, mPrimaryDarkColor, mAccentColor;
-    private String mRomType, cachedPref_pathUSB,cachedPref_pathExternal;
-
+    private String mRomType, cachedPref_pathUSB, cachedPref_pathExternal;
 
 
     public SettingsHelper() {
@@ -34,7 +33,6 @@ public class SettingsHelper {
         getPref_rotateLauncher();
         getPref_pathExternal();
         getPref_pathUSB();
-
 
 
     }

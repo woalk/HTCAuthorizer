@@ -2,55 +2,54 @@
     xmlns:sensify="http://schemas.android.com/apk/res-auto">
 
 
-        <com.woalk.apps.xposed.htcblinkfeedauthorizer.DownloadPreference
-            android:key="dl_Prism"
-            android:title="Sense Home"
-            android:summary="Download HTC Sense Home launcher"
-            android:defaultValue="0"
-            sensify:package_name="com.htc.launcher"
-            />
-        <com.woalk.apps.xposed.htcblinkfeedauthorizer.DownloadPreference
-            android:key="dl_Clock"
-            android:title="HTC Clock"
-            android:summary="Download HTC Clock"
-            sensify:package_name="com.htc.android.worldclock"
-            android:defaultValue="0"/>
-        <com.woalk.apps.xposed.htcblinkfeedauthorizer.DownloadPreference
-            android:key="dl_Weather"
-            android:title="HTC Weather"
-            sensify:package_name="com.htc.Weather"
-            android:summary="Download HTC Weather"
-            android:defaultValue="0"/>
-        <com.woalk.apps.xposed.htcblinkfeedauthorizer.DownloadPreference
-            android:key="dl_IME"
-            android:title="HTC Input"
-            sensify:package_name="com.htc.sense.ime"
-            android:summary="Download HTC Keyboard"
-            android:defaultValue="0"/>
-        <com.woalk.apps.xposed.htcblinkfeedauthorizer.DownloadPreference
-            android:key="dl_Gallery"
-            android:title="HTC Gallery"
-            sensify:package_name="com.htc.album"
-            android:summary="Download HTC Gallery"
-            android:defaultValue="0"/>
-        <com.woalk.apps.xposed.htcblinkfeedauthorizer.DownloadPreference
-            android:key="dl_Camera"
-            android:title="HTC Camera"
-            sensify:package_name="com.htc.camera"
-            android:summary="Download HTC Camera"
-            android:defaultValue="0"/>
-        <com.woalk.apps.xposed.htcblinkfeedauthorizer.DownloadPreference
-            android:key="dl_Browser"
-            android:title="HTC Internet"
-            sensify:package_name="com.htc.internet"
-            android:summary="Download HTC Browser"
-            android:defaultValue="0"/>
-        <com.woalk.apps.xposed.htcblinkfeedauthorizer.DownloadPreference
-            android:key="dl_Scribble"
-            android:title="HTC Scribble"
-            sensify:package_name="com.htc.lucy"
-            android:summary="Download HTC Scribble"
-            android:defaultValue="0"/>
+    <com.woalk.apps.xposed.htcblinkfeedauthorizer.DownloadPreference
+        android:defaultValue="0"
+        android:key="dl_Prism"
+        android:summary="Download HTC Sense Home launcher"
+        android:title="Sense Home"
+        sensify:package_name="com.htc.launcher" />
+    <com.woalk.apps.xposed.htcblinkfeedauthorizer.DownloadPreference
+        android:defaultValue="0"
+        android:key="dl_Clock"
+        android:summary="Download HTC Clock"
+        android:title="HTC Clock"
+        sensify:package_name="com.htc.android.worldclock" />
+    <com.woalk.apps.xposed.htcblinkfeedauthorizer.DownloadPreference
+        android:defaultValue="0"
+        android:key="dl_Weather"
+        android:summary="Download HTC Weather"
+        android:title="HTC Weather"
+        sensify:package_name="com.htc.Weather" />
+    <com.woalk.apps.xposed.htcblinkfeedauthorizer.DownloadPreference
+        android:defaultValue="0"
+        android:key="dl_IME"
+        android:summary="Download HTC Keyboard"
+        android:title="HTC Input"
+        sensify:package_name="com.htc.sense.ime" />
+    <com.woalk.apps.xposed.htcblinkfeedauthorizer.DownloadPreference
+        android:defaultValue="0"
+        android:key="dl_Gallery"
+        android:summary="Download HTC Gallery"
+        android:title="HTC Gallery"
+        sensify:package_name="com.htc.album" />
+    <com.woalk.apps.xposed.htcblinkfeedauthorizer.DownloadPreference
+        android:defaultValue="0"
+        android:key="dl_Camera"
+        android:summary="Download HTC Camera"
+        android:title="HTC Camera"
+        sensify:package_name="com.htc.camera" />
+    <com.woalk.apps.xposed.htcblinkfeedauthorizer.DownloadPreference
+        android:defaultValue="0"
+        android:key="dl_Browser"
+        android:summary="Download HTC Browser"
+        android:title="HTC Internet"
+        sensify:package_name="com.htc.internet" />
+    <com.woalk.apps.xposed.htcblinkfeedauthorizer.DownloadPreference
+        android:defaultValue="0"
+        android:key="dl_Scribble"
+        android:summary="Download HTC Scribble"
+        android:title="HTC Scribble"
+        sensify:package_name="com.htc.lucy" />
 
 
 </PreferenceScreen>

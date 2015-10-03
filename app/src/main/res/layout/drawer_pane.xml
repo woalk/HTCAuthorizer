@@ -1,12 +1,12 @@
 <LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawerPane"
-    android:orientation="vertical"
     android:layout_width="235dp"
     android:layout_height="match_parent"
     android:layout_below="@+id/toolbar"
     android:layout_gravity="start"
     android:background="@color/background_material_light"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:orientation="vertical">
 
     <ListView
         android:id="@+id/navList"
@@ -14,118 +14,119 @@
         android:layout_height="wrap_content"
         android:choiceMode="singleChoice"
         android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"/>
+        android:dividerHeight="0dp" />
+
     <LinearLayout
         android:id="@+id/whiteSpace"
-        android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_gravity="bottom"
         android:layout_height="0dp"
-        android:layout_weight="1">
-    </LinearLayout>
+        android:layout_gravity="bottom"
+        android:layout_weight="1"
+        android:orientation="horizontal"></LinearLayout>
 
     <LinearLayout
         android:id="@+id/drawerSeparator"
-        android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="1dip"
-        android:background="@android:color/background_dark">
-    </LinearLayout>
+        android:background="@android:color/background_dark"
+        android:orientation="horizontal"></LinearLayout>
+
     <LinearLayout
         android:id="@+id/drawerQuickReboot"
-        android:paddingTop="15dip"
-        android:paddingBottom="15dip"
-        android:clickable="true"
-        android:background="?attr/selectableItemBackground"
-        android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:orientation="horizontal"
+        android:paddingBottom="15dip"
+        android:paddingTop="15dip">
 
         <ImageView
             android:id="@+id/iconQuick"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginStart="16dp"
             android:layout_marginEnd="17dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="0dip"
-            android:tint="#424242"
-            android:src="@drawable/ic_reset"/>
+            android:src="@drawable/ic_reset"
+            android:tint="#424242" />
 
         <TextView
             android:id="@+id/titleQuick"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="0dip"
-            android:text="@string/drawer_title_quickreboot"
             android:fontFamily="sans-serif-medium"
             android:gravity="center_vertical"
+            android:text="@string/drawer_title_quickreboot"
             android:textColor="#424242"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/drawerReboot"
-        android:paddingTop="15dip"
-        android:paddingBottom="15dip"
-        android:clickable="true"
-        android:background="?attr/selectableItemBackground"
-        android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:orientation="horizontal"
+        android:paddingBottom="15dip"
+        android:paddingTop="15dip">
 
         <ImageView
             android:id="@+id/icon"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginStart="16dp"
             android:layout_marginEnd="17dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="0dip"
-            android:tint="#424242"
-            android:src="@drawable/ic_replay_white_24dp"/>
+            android:src="@drawable/ic_replay_white_24dp"
+            android:tint="#424242" />
 
         <TextView
             android:id="@+id/title1"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="0dip"
-            android:text="@string/drawer_title_reboot"
             android:fontFamily="sans-serif-medium"
             android:gravity="center_vertical"
+            android:text="@string/drawer_title_reboot"
             android:textColor="#424242"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/drawerAbout"
-        android:paddingTop="15dip"
-        android:paddingBottom="15dip"
-        android:clickable="true"
-        android:background="?attr/selectableItemBackground"
-        android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:orientation="horizontal"
+        android:paddingBottom="15dip"
+        android:paddingTop="15dip">
 
         <ImageView
             android:id="@+id/icon2"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginStart="16dp"
             android:layout_marginEnd="17dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="0dip"
-            android:tint="#424242"
-            android:src="@drawable/ic_info"/>
+            android:src="@drawable/ic_info"
+            android:tint="#424242" />
 
         <TextView
             android:id="@+id/title2"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="0dip"
-            android:text="@string/drawer_title_about"
             android:fontFamily="sans-serif-medium"
             android:gravity="center_vertical"
+            android:text="@string/drawer_title_about"
             android:textColor="#424242"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
     </LinearLayout>
 
