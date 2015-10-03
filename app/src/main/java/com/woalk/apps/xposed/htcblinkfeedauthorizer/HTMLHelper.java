@@ -1,20 +1,16 @@
 package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
 import android.app.DownloadManager;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.support.v4.app.NotificationCompat;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -99,10 +95,20 @@ public class HTMLHelper {
 
     }
 
+    private Boolean checkNetworkState() {
+        ConnectivityManager cm = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return null != activeNetwork && ((activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) || activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE);
+    }
+
 
     protected void doDownloadInstall(final String urlLink) {
+
         final DownloadManager dm = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(urlLink));
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setTitle(originalName);
         request.setMimeType("application/vnd.android.package-archive");
         request.setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS, parsedFileName + ".apk");
@@ -114,107 +120,7 @@ public class HTMLHelper {
         } else {
             accentColor = Color.parseColor("#FF607D8B");
         }
-        BroadcastReceiver receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                final NotificationManager mNotifyManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
-                String action = intent.getAction();
-                if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)) {
-                    DownloadManager.Query query = new DownloadManager.Query();
-                    query.setFilterById(enqueue);
-                    Cursor c = dm.query(query);
-                    if (c.moveToFirst()) {
-                        int columnIndex = c.getColumnIndex(DownloadManager.COLUMN_STATUS);
-                        int status = c.getInt(columnIndex);
-                        int columnReason = c.getColumnIndex(DownloadManager.COLUMN_REASON);
-                        int reason = c.getInt(columnReason);
-                        c.close();
-                        if (DownloadManager.STATUS_SUCCESSFUL == reason) {
-                            String uriString = c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
-                            Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
-                            notificationIntent.setDataAndType((Uri.parse(uriString)), "application/vnd.android.package-archive");
-                            notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                            notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                            notificationIntent.addFlags(Intent.FLAG_FROM_BACKGROUND);
-                            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
-
-                            mBuilder.setContentTitle(context.getString(R.string.msg_download_complete_title))
-                                    .setContentText(context.getString(R.string.msg_download_complete_body) + originalName)
-                                    .setProgress(0, 0, false)
-                                    .setAutoCancel(true)
-                                    .setSmallIcon(R.drawable.stat_sys_download_anim0)
-                                    .setColor(accentColor)
-                                    .setContentIntent(pendingIntent);
-                            mNotifyManager.notify(id, mBuilder.build());
-
-                        } else {
-                            switch (status) {
-                                case DownloadManager.STATUS_FAILED:
-                                    mBuilder.setContentTitle(context.getString(R.string.msg_download_failed_title));
-                                    switch (reason) {
-                                        case DownloadManager.ERROR_CANNOT_RESUME:
-                                            mBuilder.setContentText(context.getString(R.string.msg_download_cannot_resume_body));
-                                            break;
-                                        case DownloadManager.ERROR_DEVICE_NOT_FOUND:
-                                            mBuilder.setContentText(context.getString(R.string.msg_download_not_found_body));
-                                            break;
-                                        case DownloadManager.ERROR_FILE_ALREADY_EXISTS:
-                                            mBuilder.setContentText(context.getString(R.string.msg_download_already_exists_body));
-                                            break;
-                                        case DownloadManager.ERROR_FILE_ERROR:
-                                            mBuilder.setContentText(context.getString(R.string.msg_download_file_error_body));
-                                            break;
-                                        case DownloadManager.ERROR_HTTP_DATA_ERROR:
-                                            mBuilder.setContentText(context.getString(R.string.msg_download_http_error_body));
-                                            break;
-                                        case DownloadManager.ERROR_INSUFFICIENT_SPACE:
-                                            mBuilder.setContentText(context.getString(R.string.msg_download_low_space_body));
-                                            break;
-                                        case DownloadManager.ERROR_TOO_MANY_REDIRECTS:
-                                            mBuilder.setContentText(context.getString(R.string.msg_body_toomany_redirects_body));
-                                            break;
-                                        case DownloadManager.ERROR_UNHANDLED_HTTP_CODE:
-                                            mBuilder.setContentText(context.getString(R.string.msg_download_unhandled_error_body));
-                                            break;
-                                        case DownloadManager.ERROR_UNKNOWN:
-                                            mBuilder.setContentText(context.getString(R.string.msg_download_unknown_error_body));
-                                            break;
-                                    }
-
-
-                                case DownloadManager.STATUS_PAUSED:
-                                    mBuilder.setContentText(context.getString(R.string.msg_download_paused_title));
-                                    switch (reason) {
-                                        case DownloadManager.PAUSED_QUEUED_FOR_WIFI:
-                                            mBuilder.setContentText(context.getString(R.string.msg_download_paused_queued_body));
-                                            break;
-                                        case DownloadManager.PAUSED_UNKNOWN:
-                                            mBuilder.setContentText(context.getString(R.string.msg_download_paused_unknown));
-                                            break;
-                                        case DownloadManager.PAUSED_WAITING_FOR_NETWORK:
-                                            mBuilder.setContentText(context.getString(R.string.msg_download_paused_waiting_network_body));
-                                            break;
-                                        case DownloadManager.PAUSED_WAITING_TO_RETRY:
-                                            mBuilder.setContentText(context.getString(R.string.msg_download_paused_waiting_retry_body));
-                                            break;
-                                    }
-                                    break;
-                                case DownloadManager.STATUS_PENDING:
-                                    break;
-                                case DownloadManager.STATUS_RUNNING:
-                                    break;
-
-                            }
-                            mNotifyManager.notify(id, mBuilder.build());
-                        }
-                    }
-                }
-            }
-        };
-
-        context.registerReceiver(receiver, new IntentFilter(
-                DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+//
 
     }
 
@@ -223,7 +129,12 @@ public class HTMLHelper {
 
         @Override
         protected void onPreExecute() {
+
             super.onPreExecute();
+            if (!checkNetworkState()) {
+                Logger.d("HtmlHelper: Download cancelled, no network");
+                this.cancel(true);
+            }
         }
 
         @Override
@@ -233,6 +144,7 @@ public class HTMLHelper {
             // Connect to the web site
             Document document;
             try {
+
                 document = Jsoup.connect(inUrl).get();
 
                 // Using Elements to get the class data
@@ -296,7 +208,7 @@ public class HTMLHelper {
         // * *****
         protected void onPostExecute(Void result) {
             if (doDownload) {
-                if (!mSkipDownload) {
+                if ((!mSkipDownload) && (!parsedHtmlNode.equals(""))) {
                     mSkipDownload = true;
                     doDownloadInstall(parsedHtmlNode);
                 } else {
