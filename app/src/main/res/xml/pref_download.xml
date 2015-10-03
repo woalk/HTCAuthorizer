@@ -43,7 +43,7 @@
         android:key="dl_Browser"
         android:summary="Download HTC Browser"
         android:title="HTC Internet"
-        sensify:package_name="com.htc.internet" />
+        sensify:package_name="com.htc.sense.browser" />
     <com.woalk.apps.xposed.htcblinkfeedauthorizer.DownloadPreference
         android:defaultValue="0"
         android:key="dl_Scribble"
