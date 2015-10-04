@@ -77,75 +77,75 @@ public class DownloadPreference extends Preference {
         HTMLHelper htmlHelper1 = new HTMLHelper(getContext());
 
         if (!mIsInstalled || mPackageVersionInstalled < mPackageVersionAvailable) {
-            htmlHelper.fetchApp((String) this.getTitle(), getContext(), 1, mKey);
+            htmlHelper.fetchApp((String) this.getTitle(), getContext(), mKey);
             Locale current = getContext().getResources().getConfiguration().locale;
             if (mKey.equals("dl_Prism")) {
-                htmlHelper1.fetchApp("HTC Account", getContext(), 1, mKey);
+                htmlHelper1.fetchApp("HTC Account", getContext(), mKey);
             } else if (mKey.equals("dl_IME")) {
                 if (current.toString().equals("en_US")) {
-                    htmlHelper1.fetchApp("Keyboard - English Pack with ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard - English Pack with ALM", getContext(), mKey);
                 } else if (current.toString().equals("es_US")) {
-                    htmlHelper1.fetchApp("Keyboard Spanish ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard Spanish ALM", getContext(), mKey);
                 } else if (current.toString().contains("en_")) {
-                    htmlHelper1.fetchApp("Keyboard English_UK ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard English_UK ALM", getContext(), mKey);
                 } else if (current.toString().equals("lv_LV")) {
-                    htmlHelper1.fetchApp("Keyboard Latvian ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard Latvian ALM", getContext(), mKey);
                 } else if (current.toString().equals("lt_LT")) {
-                    htmlHelper1.fetchApp("Keyboard Lithuanian ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard Lithuanian ALM", getContext(), mKey);
                 } else if (current.toString().equals("nb_NO")) {
-                    htmlHelper1.fetchApp("Keyboard Norwegian ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard Norwegian ALM", getContext(), mKey);
                 } else if ((current.toString().equals("it_IT")) || (current.toString().equals("it_CH"))) {
-                    htmlHelper1.fetchApp("Keyboard Italian ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard Italian ALM", getContext(), mKey);
                 } else if (current.toString().equals("ru_RU")) {
-                    htmlHelper1.fetchApp("Keyboard Russian ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard Russian ALM", getContext(), mKey);
                 } else if (current.toString().equals("uk_UA")) {
-                    htmlHelper1.fetchApp("Keyboard Ukranian ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard Ukranian ALM", getContext(), mKey);
                 } else if (current.toString().contains("de_")) {
-                    htmlHelper1.fetchApp("Keyboard German ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard German ALM", getContext(), mKey);
                 } else if (current.toString().equals("cs_CZ")) {
-                    htmlHelper1.fetchApp("Keyboard Czech ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard Czech ALM", getContext(), mKey);
                 } else if ((current.toString().equals("nl_BE")) || (current.toString().equals("nl_NL"))) {
-                    htmlHelper1.fetchApp("Keyboard Dutch ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard Dutch ALM", getContext(), mKey);
                 } else if (current.toString().contains("fr_")) {
-                    htmlHelper1.fetchApp("Keyboard French ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard French ALM", getContext(), mKey);
                 } else if (current.toString().equals("pl_PL")) {
-                    htmlHelper1.fetchApp("Keyboard Polish ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard Polish ALM", getContext(), mKey);
                 } else if (current.toString().contains("ar_")) {
-                    htmlHelper1.fetchApp("Keyboard Arabic ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard Arabic ALM", getContext(), mKey);
                 } else if (current.toString().equals("es_ES")) {
-                    htmlHelper1.fetchApp("Keyboard Polish ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard Polish ALM", getContext(), mKey);
                 } else if (current.toString().equals("bg_BG")) {
-                    htmlHelper1.fetchApp("Keyboard Bulgarian ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard Bulgarian ALM", getContext(), mKey);
                 } else if (current.toString().equals("ca_ES")) {
-                    htmlHelper1.fetchApp("Keyboard Catalan ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard Catalan ALM", getContext(), mKey);
                 } else if (current.toString().equals("hr_HR")) {
-                    htmlHelper1.fetchApp("Keyboard Croatian ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard Croatian ALM", getContext(), mKey);
                 } else if (current.toString().equals("da_DK")) {
-                    htmlHelper1.fetchApp("Keyboard Danish ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard Danish ALM", getContext(), mKey);
                 } else if (current.toString().equals("el_GR")) {
-                    htmlHelper1.fetchApp("Keyboard Greek ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard Greek ALM", getContext(), mKey);
                 } else if (current.toString().equals("iw_IL")) {
-                    htmlHelper1.fetchApp("Keyboard Hebrew ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard Hebrew ALM", getContext(), mKey);
                 } else if (current.toString().equals("in_ID")) {
-                    htmlHelper1.fetchApp("Keyboard Indonesian ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard Indonesian ALM", getContext(), mKey);
                 } else if (current.toString().equals("bg_BG")) {
-                    htmlHelper1.fetchApp("Keyboard Bulgarian ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard Bulgarian ALM", getContext(), mKey);
                 } else if (current.toString().contains("pt_")) {
-                    htmlHelper1.fetchApp("Keyboard Portuguese ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard Portuguese ALM", getContext(), mKey);
                 } else if (current.toString().equals("ro_RO")) {
-                    htmlHelper1.fetchApp("Keyboard Romanian ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard Romanian ALM", getContext(), mKey);
                 } else if (current.toString().equals("sr_RS")) {
-                    htmlHelper1.fetchApp("Keyboard Serbian ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard Serbian ALM", getContext(), mKey);
                 } else if (current.toString().equals("sk_SK")) {
-                    htmlHelper1.fetchApp("Keyboard Slovakian ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard Slovakian ALM", getContext(), mKey);
                 } else if (current.toString().equals("sl_SI")) {
-                    htmlHelper1.fetchApp("Keyboard Slovenian ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard Slovenian ALM", getContext(), mKey);
                 } else if (current.toString().equals("sv_SE")) {
-                    htmlHelper1.fetchApp("Keyboard Swedish ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard Swedish ALM", getContext(), mKey);
                 } else if (current.toString().equals("th_TH")) {
-                    htmlHelper1.fetchApp("Keyboard Thai ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard Thai ALM", getContext(), mKey);
                 } else if (current.toString().equals("tr_RT")) {
-                    htmlHelper1.fetchApp("Keyboard Turkish ALM", getContext(), 0, mKey);
+                    htmlHelper1.fetchApp("Keyboard Turkish ALM", getContext(), mKey);
                 }
             }
         } else {
@@ -188,7 +188,7 @@ public class DownloadPreference extends Preference {
 
     public void QuerySelf() {
         HTMLHelper htmlHelper = new HTMLHelper(getContext());
-        htmlHelper.fetchApp((String) this.getTitle(), getContext(), 0, this.getKey(), true);
+        htmlHelper.fetchApp((String) this.getTitle(), getContext(), this.getKey(), true);
 
     }
 

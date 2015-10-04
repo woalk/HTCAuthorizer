@@ -9,10 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class ScreenSlidePageFragment extends Fragment {
-    private View mainContent;
-    private TextView titleTextView;
-    private TextView summaryTextView;
-    private ImageView iconImageView;
 
     public ScreenSlidePageFragment() {
 
@@ -25,9 +21,9 @@ public class ScreenSlidePageFragment extends Fragment {
         ViewGroup rootView = (ViewGroup) inflater.inflate(
                 R.layout.welcome, container, false);
 
-        titleTextView = (TextView) rootView.findViewById(R.id.titleWelcome);
-        summaryTextView = (TextView) rootView.findViewById(R.id.summaryWelcome);
-        iconImageView = (ImageView) rootView.findViewById(R.id.iconWelcome);
+        TextView titleTextView = (TextView) rootView.findViewById(R.id.titleWelcome);
+        TextView summaryTextView = (TextView) rootView.findViewById(R.id.summaryWelcome);
+        ImageView iconImageView = (ImageView) rootView.findViewById(R.id.iconWelcome);
         Bundle bundle = getArguments();
         titleTextView.setText(bundle.getString("title"));
         summaryTextView.setText(bundle.getString("summary"));

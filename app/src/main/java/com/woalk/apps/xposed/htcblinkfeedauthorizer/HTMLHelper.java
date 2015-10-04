@@ -29,9 +29,7 @@ public class HTMLHelper {
     private Boolean doDownload;
     private Boolean mSkipDownload = false;
     private Context context;
-    private int id, accentColor;
     private String mPrefKey;
-    private long enqueue;
 
     public HTMLHelper(Context appcontext) {
         context = appcontext;
@@ -50,10 +48,9 @@ public class HTMLHelper {
      *                     resulting apk.
      */
 
-    protected void fetchApp(String inputAppName, Context appContext, int appIndex, String prefKey) {
+    protected void fetchApp(String inputAppName, Context appContext, String prefKey) {
         //Set our input app name to be URL-friendly
         originalName = inputAppName;
-        id = appIndex;
         newName = inputAppName.replaceAll("\\s", "+");
         //Set up search URL
         String holderUrl = context.getString(R.string.url_apkmirror) + "/?s=" + newName + "&post_type=apps_post";
@@ -72,10 +69,9 @@ public class HTMLHelper {
     }
 
 
-    protected void fetchApp(String inputAppName, Context appContext, int appIndex, String prefKey, Boolean skipDownload) {
+    protected void fetchApp(String inputAppName, Context appContext, String prefKey, Boolean skipDownload) {
         //Set our input app name to be URL-friendly
         originalName = inputAppName;
-        id = appIndex;
         newName = inputAppName.replaceAll("\\s", "+");
         //Set up search URL
         String holderUrl = context.getString(R.string.url_apkmirror) + "/?s=" + newName + "&post_type=apps_post";
@@ -112,9 +108,10 @@ public class HTMLHelper {
         request.setTitle(originalName);
         request.setMimeType("application/vnd.android.package-archive");
         request.setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS, parsedFileName + ".apk");
-        enqueue = dm.enqueue(request);
+        long enqueue = dm.enqueue(request);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean mUseThemes = sharedPreferences.getBoolean("use_themes", false);
+        int accentColor;
         if (mUseThemes) {
             accentColor = sharedPreferences.getInt("theme_AccentColor", 0);
         } else {

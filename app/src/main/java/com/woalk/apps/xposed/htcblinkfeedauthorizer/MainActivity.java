@@ -12,6 +12,8 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -57,6 +59,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     ArrayList<NavItem> mNavItems = new ArrayList<>();
     private android.support.v7.widget.Toolbar toolbar;
     private int curPos = 0;
+    private int[] colorArray;
     private DrawerLayout mDrawerLayout;
     private Button mButtonRefresh;
     private SharedPreferences sharedPreferences;
@@ -340,6 +343,11 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     //This doesn't really do anything, it's just for Xposed to hook on a button click.  :D
     private void mHook(int main, int dark, int accent) {
         Logger.d("X_Mod: Not really.  mHook Called.");
+        colorArray = new int[3];
+        colorArray[0] = main;
+        colorArray[1] = dark;
+        colorArray[2] = accent;
+
 
     }
 
@@ -360,7 +368,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 HTMLHelper htmlHelper = new HTMLHelper(getApplication());
-                                htmlHelper.fetchApp("HTC Service pack", getApplicationContext(), 0, "dl_HSP");
+                                htmlHelper.fetchApp("HTC Service pack", getApplicationContext(), "dl_HSP");
                             }
                         })
                 .setNegativeButton(android.R.string.no,
@@ -448,18 +456,22 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     }
 
     private void showAboutDialog() {
+        Drawable iconDrawable = getDrawable(R.drawable.ic_info);
+        if (iconDrawable != null) {
+            iconDrawable.setColorFilter(mSecondaryColor, PorterDuff.Mode.MULTIPLY);
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle(getString(R.string.pref_cat_about))
+                .setIcon(iconDrawable)
                 .setMessage(getString(R.string.pref_about_version_title) + Common.versionName + "\n" + getString(R.string.pref_about_dev_title) + getString(R.string.pref_about_dev_summary))
-                .setCancelable(true);
-
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                .setCancelable(true)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.dismiss();
             }
         });
 
-        builder.setIcon(R.drawable.ic_info);
+
         AlertDialog alert = builder.create();
         alert.show();
 

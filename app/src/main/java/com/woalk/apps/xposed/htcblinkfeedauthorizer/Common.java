@@ -111,30 +111,6 @@ public class Common {
 
     }
 
-    /**
-     * Change light value of a color.
-     * <p>
-     * <b>Warning:</b> Removes alpha channel. Only pass colors with alpha = {@code 0xFF}.
-     * </p>
-     *
-     * @param color      The {@link Color} {@code int} to use.
-     * @param multiplier The {@code float} multiplier to apply to the light value.
-     * @return A modified {@link Color} {@code int}.
-     */
-    public static int enlightenColor(int color, float multiplier) {
-        float[] hsv = new float[3];
-        Color.RGBToHSV(Color.red(color), Color.green(color), Color.blue(color), hsv);
-        hsv[2] = multiplier;
-        return Color.HSVToColor(hsv);
-    }
-
-    public static int enlightenColor(int color, float saturation, float value) {
-        float[] hsv = new float[3];
-        Color.RGBToHSV(Color.red(color), Color.green(color), Color.blue(color), hsv);
-        hsv[2] = value;
-        hsv[1] = saturation;
-        return Color.HSVToColor(hsv);
-    }
 
     public static int lightenColor(int color, float modifier) {
         float[] hsv = new float[3];
@@ -154,7 +130,7 @@ public class Common {
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    Runtime.getRuntime().exec(new String[]{"su", "-c", "pkill com.android.systemui; pkill com.android.settings; pkill com.google.android.inputmethod.latin; pkill com.google.android.dialer"});
+                    Runtime.getRuntime().exec(new String[]{"su", "-c", "pkill " + packageToKill});
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -165,8 +141,7 @@ public class Common {
 
     public static boolean checkPermFileExists() {
         File sysfile = new File("/system/etc/permissions/com.htc.software.market.xml");
-        if (sysfile.exists()) return true;
-        else return false;
+        return sysfile.exists();
 
     }
 

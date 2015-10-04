@@ -74,9 +74,6 @@ public class FileDialog {
         dirListenerList.add(listener);
     }
 
-    public void removeDirectoryListener(DirectorySelectedListener listener) {
-        dirListenerList.remove(listener);
-    }
 
     /**
      * Show file dialog
@@ -150,10 +147,6 @@ class ListenerList<L> {
         for (L l : copy) {
             fireHandler.fireEvent(l);
         }
-    }
-
-    public void remove(L listener) {
-        listenerList.remove(listener);
     }
 
     public interface FireHandler<L> {
