@@ -11,8 +11,11 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -123,6 +126,9 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
 
             }
         });
+
+
+
         PackageManager pm = getPackageManager();
         ApplicationInfo appInfo = null;
         try {
@@ -238,6 +244,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
         }
 
     }
+
 
     @Override
     protected void onDestroy() {
@@ -362,6 +369,8 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
 
     }
 
+
+
     //Warning for missing HTC Service pack
     private void maybeShowNoHSPWarn() {
         final String PKG_HSP = "com.htc.sense.hsp";
@@ -477,10 +486,10 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
                 .setMessage(getString(R.string.pref_about_version_title) + Common.versionName + "\n" + getString(R.string.pref_about_dev_title) + getString(R.string.pref_about_dev_summary))
                 .setCancelable(true)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.dismiss();
-            }
-        });
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
 
 
         AlertDialog alert = builder.create();
@@ -533,25 +542,41 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
         }
     }
 
+    private Drawable getScreenShot() {
+        View view = getWindow().getDecorView();
+        view.setDrawingCacheEnabled(true);
+        view.buildDrawingCache();
+        Bitmap drawingCache = view.getDrawingCache();
+        Rect frame = new Rect();
+        getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
+        int statusBarHeight = frame.top;
+        Bitmap b = Bitmap.createBitmap(drawingCache, 0, statusBarHeight, drawingCache.getWidth(), drawingCache.getHeight() - statusBarHeight);
+        view.destroyDrawingCache();
+        return new BitmapDrawable(getResources(),b);
+    }
+
     //Fragment selector
     private void fragmentSelect(int position) {
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.enter, R.anim.exit);
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        ft.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.slideup, R.anim.slidedown);
+        String tag = "";
 
         if (position == 0) {
-            ft.replace(android.R.id.widget_frame, new MainPreferenceFragment());
+            ft.replace(android.R.id.widget_frame, new MainPreferenceFragment(),"MainPref");
+            tag = "MainPref";
         } else if (position == 1) {
-            ft.replace(android.R.id.widget_frame, new ThemeFragment());
+            ft.replace(android.R.id.widget_frame, new ThemeFragment(),"ThemePref");
+            tag = "ThemePref";
         } else if (position == 2) {
-            ft.replace(android.R.id.widget_frame, new DownloadFragment(), "DL_FRAGMENT");
+            ft.replace(android.R.id.widget_frame, new DownloadFragment(), "DownloadPref");
+            tag = "DownloadPref";
         } else if (position == 3) {
-            ft.replace(android.R.id.widget_frame, new ModuleFragment());
+            ft.replace(android.R.id.widget_frame, new ModuleFragment(), "ModulePref");
+            tag = "ModulePref";
         }
-        ft.addToBackStack(null);
-
-
-        ft.commit();
+        ft.addToBackStack(tag).commit();
     }
 
     @Override
