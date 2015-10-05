@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
@@ -193,21 +194,38 @@ public class DownloadPreference extends Preference {
     }
 
     public void RefreshPreferenceSummary() {
-        int mInstalledVer = queryVersionCode(pName);
-        mIsInstalled = isPackageInstalled(pName);
-        mPackageVersionAvailable = sharedPreferences.getInt(mKey + "_code", 0);
-        if (mPackageVersionAvailable != 0) {
-            if (mInstalledVer < mPackageVersionAvailable && (mIsInstalled)) {
-                mSummaryText = "A new version is available.  Tap to download.";
+        new RefreshAsync().execute();
+    }
 
-            } else if (mInstalledVer == mPackageVersionAvailable && (mIsInstalled)) {
-                mSummaryText = "Installed Version (Latest): " + mPackageVersionName;
-            }
-        } else {
-            mSummaryText = "Tap to download";
+    class RefreshAsync extends AsyncTask<Void, Integer, String>
+    {
+        protected void onPreExecute (){
 
         }
-        mSummary.setText(mSummaryText);
+
+        protected String doInBackground(Void...arg0) {
+            int mInstalledVer = queryVersionCode(pName);
+            mIsInstalled = isPackageInstalled(pName);
+            mPackageVersionAvailable = sharedPreferences.getInt(mKey + "_code", 0);
+            if (mPackageVersionAvailable != 0) {
+                if (mInstalledVer < mPackageVersionAvailable && (mIsInstalled)) {
+                    mSummaryText = "A new version is available.  Tap to download.";
+
+                } else if (mInstalledVer == mPackageVersionAvailable && (mIsInstalled)) {
+                    mSummaryText = "Installed Version (Latest): " + mPackageVersionName;
+                }
+            } else {
+                mSummaryText = "Tap to download";
+
+            }
+
+        return null;
+        }
+
+
+        protected void onPostExecute(String result) {
+            mSummary.setText(mSummaryText);
+        }
     }
 
     private boolean isPackageInstalled(String packageName) {

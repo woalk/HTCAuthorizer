@@ -85,6 +85,9 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
         PreferenceManager.setDefaultValues(this, R.xml.pref_always_active, false);
         PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
         setContentView(R.layout.activity_main);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication());
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+
 
         //Add drawerdown items
         mNavItems.add(new NavItem(getResources().getString(R.string.drawer_title_main), R.drawable.ic_home_white_24dp));
@@ -237,6 +240,12 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
     public MatPalette overridePalette(MatPalette palette) {
         //Get colors
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication());
@@ -283,6 +292,9 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     @Override
     protected void onResume() {
         super.onResume();
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication());
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+
         selectItemFromDrawer(curPos);
         if (mUseThemes) {
             toolbar.setBackgroundColor(mMainColor);
@@ -342,7 +354,6 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
 
     //This doesn't really do anything, it's just for Xposed to hook on a button click.  :D
     private void mHook(int main, int dark, int accent) {
-        Logger.d("X_Mod: Not really.  mHook Called.");
         colorArray = new int[3];
         colorArray[0] = main;
         colorArray[1] = dark;
@@ -404,7 +415,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
             public void run() {
                 fragmentSelect(position);
             }
-        }, 200);
+        }, 300);
 
 
     }
@@ -479,8 +490,6 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     }
 
     private void refreshColorValues() {
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication());
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         mUseThemes = sharedPreferences.getBoolean("use_themes", false);
         mMainColor = sharedPreferences.getInt("theme_PrimaryColor", -16728577);
         mSecondaryColor = sharedPreferences.getInt("theme_PrimaryDarkColor", -16763828);
@@ -512,12 +521,10 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
 
             p.destroy();
             if ((!sense_sdk.equals("")) && (!sense_version.equals(""))) {
-                Logger.d("MainActivity: Sense ROM found. " + sense_sdk + " and " + sense_version);
                 editor.putString("romtype", "Sense");
                 editor.apply();
 
             } else if (Build.HOST.contains("google.com") || Build.FINGERPRINT.contains("google")) {
-                Logger.d("MainActivity: Google ROM found " + Build.FINGERPRINT);
                 editor.putString("romtype", "Google");
                 editor.apply();
             }
@@ -549,13 +556,18 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.contains("use_themes")) {
+        if (key.equals("use_themes")) {
             if (sharedPreferences.getBoolean(key, false)) {
-                Logger.d("XCPP: Boolean is true.");
                 refreshColorValues();
                 overridePalette(generateCustomPalette());
-            } else overridePalette(generateDefaultPalette());
-            Logger.d("XCPP: Boolean is false.");
+            } else {
+                overridePalette(generateDefaultPalette());
+            }
+
+            this.onResume();
+
+
+
         }
     }
 

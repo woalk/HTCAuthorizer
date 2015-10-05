@@ -250,6 +250,11 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
             sd.setIntrinsicWidth(10);
             sd.getPaint().setColor(myTheme);
             pickerButton.setBackground(sd);
+            if (getPreferenceManager().getDefaultSharedPreferences(getContext()).getBoolean("use_themes",false)) {
+                pickerButton.setAlpha(1.0f);
+            } else {
+                pickerButton.setAlpha(.3f);
+            }
 
         }
 
