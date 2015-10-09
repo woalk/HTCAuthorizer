@@ -448,51 +448,7 @@ public class X_Mod
                         }
                     });
 
-            XposedHelpers.findAndHookMethod("com.htc.themepicker.MixingThemeColorActivity$ColorItem", lpparam.classLoader, "getMultiColor", int.class,
-                    new XC_MethodHook() {
-                        @Override
-                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            Logger.d("X_Mod: MTE getMultiColor called " + param.args[0] + param.getResult());
-                            Logger.logHookAfter(param);
-                        }
-                    });
 
-            XposedHelpers.findAndHookMethod("com.htc.themepicker.MixingThemeColorActivity$ColorItem", lpparam.classLoader, "getSingleColor",
-                    new XC_MethodHook() {
-                        @Override
-                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            Logger.d("X_Mod: MTE getSingleColor called " + param.getResult());
-                            Logger.logHookAfter(param);
-                        }
-                    });
-
-            XposedHelpers.findAndHookMethod("com.htc.themepicker.MixingThemeColorActivity$ColorItem", lpparam.classLoader, "IsMultiColors",
-                    new XC_MethodHook() {
-                        @Override
-                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            Logger.d("X_Mod: MTE isMultiColors called " + param.getResult());
-                            Logger.logHookAfter(param);
-                        }
-                    });
-
-            XposedHelpers.findAndHookMethod("com.htc.themepicker.util.CurrentThemeUtil", lpparam.classLoader, "saveColorsConfig", Context.class, ArrayList.class,
-                    new XC_MethodHook() {
-                        @Override
-                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            Logger.d("X_Mod: MTE saveColorsConfig called " + param.getResult());
-                            ArrayList paramArrayList;
-
-                            paramArrayList = (ArrayList) param.args[1];
-
-
-                            for (int i = 0; i < paramArrayList.size(); i++) {
-                                Logger.d("X_Mod: Array stuff - " + paramArrayList.get(i));
-
-                            }
-
-                            Logger.logHookAfter(param);
-                        }
-                    });
 
             Logger.v("All hooks for Sense Home loaded.");
 
