@@ -38,7 +38,7 @@ public class ThemeUpdateReceiver extends BroadcastReceiver {
                         editor.putInt("theme_Info_Primary", arrayOfInt[6]);
                         editor.putInt("theme_Info_Light", arrayOfInt[7]);
                         editor.putInt("theme_Info_Dark", arrayOfInt[8]);
-                        editor.putInt("theme_Entertainment_Primary", arrayOfInt[9]);
+                        editor.putInt("theme_Color4", arrayOfInt[9]);
                         editor.putInt("theme_Entertainment_Light", arrayOfInt[10]);
                         editor.putInt("theme_Entertainment_Dark", arrayOfInt[11]);
                         editor.apply();

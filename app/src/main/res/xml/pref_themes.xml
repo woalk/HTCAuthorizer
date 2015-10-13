@@ -32,6 +32,14 @@
         android:layout="@layout/pref_colorpicker"
         android:summary="@string/pref_themes_theme_AccentColor_summary"
         android:title="@string/pref_themes_theme_AccentColor_title" />
+    <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
+        android:id="@+id/Picker4"
+        android:defaultValue="2533018"
+        android:dependency="use_themes"
+        android:key="theme_Color4"
+        android:layout="@layout/pref_colorpicker"
+        android:summary="@string/pref_themes_theme_AccentColor2_summary"
+        android:title="@string/pref_themes_theme_AccentColor2_title" />
 
     <CheckBoxPreference
         android:defaultValue="true"

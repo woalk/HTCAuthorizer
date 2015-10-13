@@ -55,6 +55,9 @@
     <string name="pref_themes_theme_AccentColor_title">Accent Color 1</string>
     <string name="pref_themes_theme_AccentColor_summary">Color to use for accent items like buttons.
         </string>
+    <string name="pref_themes_theme_AccentColor2_title">Accent Color 2</string>
+    <string name="pref_themes_theme_AccentColor2_summary">Secondary Accent color, used mainly by HTC Apps.
+        </string>
     <string name="pref_themes_systemui_use_launcher_title">Theme SystemUI</string>
     <string name="pref_themes_systemui_use_launcher_summary">Use Theme colors
         for SystemUI.</string>

@@ -46,7 +46,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
  */
 public class X_Mod
         implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
-
+    private Context context;
     public static final String PKG_HTC_LAUNCHER = "com.htc.launcher";
     public static final String PKG_HTC_LIB0 = "com.htc.lib0";
     public static final String PKG_HTC_SOCIALNETWORK_UI = "com.htc.socialnetwork.common.utils.ui";
@@ -57,6 +57,7 @@ public class X_Mod
     public static final String CLASS_BF_PROFILEBRIEF = "com.htc.themepicker.model.ProfileBrief";
     public static final String CLASS_BF_MIXINGTHEMECOLOR = "com.htc.themepicker.util" +
             ".MixingThemeColorUtil";
+    public static final String CLASS_BF_THEMEUTILS = "com.htc.lib1.cc.util.HtcThemeUtils";
     public static final String CLASS_BF_THEME = "com.htc.themepicker.model.Theme";
     public static final String CLASS_BF_THEMECROP = "com.htc.themepicker.thememaker.WallpaperImageHandler";
     public static final String STRING_REBOOT = "Theme Applied, please reboot.";
@@ -158,16 +159,13 @@ public class X_Mod
         cachedRomType = mSettings.getCachedPref_romType();
         themesEnabled = mSettings.getCachedPref_use_themes();
         themeSystemUI = mSettings.getCachedPref_theme_systemui();
-        int tempColor;
-        tempColor = mSettings.getCached_ColorPrimary();
-        colorPrimary = Color.rgb(Color.red(tempColor), Color.green(tempColor),
-                Color.blue(tempColor));
-        tempColor = mSettings.getCached_ColorPrimaryDark();
-        colorPrimaryDark = Color.rgb(Color.red(tempColor), Color.green(tempColor),
-                Color.blue(tempColor));
-        tempColor = mSettings.getCached_ColorPrimary();
-        colorAccent = Color.rgb(Color.red(tempColor), Color.green(tempColor),
-                Color.blue(tempColor));
+
+        colorPrimary = Color.rgb(Color.red(cachedPrimary), Color.green(cachedPrimary),
+                Color.blue(cachedPrimary));
+        colorPrimaryDark = Color.rgb(Color.red(cachedPrimaryDark), Color.green(cachedPrimaryDark),
+                Color.blue(cachedPrimaryDark));
+        colorAccent = Color.rgb(Color.red(cachedAccent), Color.green(cachedAccent),
+                Color.blue(cachedAccent));
 
         useExternal = mSettings.getCachedPref_useExternal();
         rotateLauncher = mSettings.getCachedPref_rotateLauncher();
@@ -181,7 +179,7 @@ public class X_Mod
     public static void replaceSystemWideThemes() {
 
 
-        Logger.v("Replacing system-wide Theme resources.");
+        Logger.v("X-Mod: Replacing system-wide Theme resources.  Colors are " + cachedPrimary + " and " + cachedPrimaryDark + " and " +cachedAccent);
 
         XResources.setSystemWideReplacement("android", "color", "material_blue_grey_900",
                 cachedPrimary);
@@ -252,6 +250,20 @@ public class X_Mod
 
         // First section contains common checks found in all HTC Apps
         // Need to see if OR statements are best, or if we can just check for com.htc.* apps
+
+//        if (lpparam.packageName.equals("android")) {
+//
+//            XposedHelpers.findAndHookMethod("com.android.internal.app.ShutdownActivity", lpparam.classLoader, "onCreate", Bundle.class,
+//                    new XC_MethodHook() {
+//                        @Override
+//                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+//                            Logger.d("X_Mod: Shutdown hooked");
+//                            Common.fixPermissions();
+//
+//                        }
+//                    });
+//        }
+
         if (lpparam.packageName.equals(PKG_HTC_LAUNCHER)) {
 
             Logger.v("Load hooks for Sense Home...");
@@ -367,10 +379,11 @@ public class X_Mod
 
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    Logger.d("X_Mod: Oncreate Hooked for ThemePicker");
+                    Logger.d("X_Mod: Oncreate Hooked for ThemePicker, saving colors");
                     if (((Activity) param.thisObject).getIntent().hasExtra("update_colors")) {
                         Bundle extras = ((Activity) param.thisObject).getIntent().getExtras();
                         int array[] = extras.getIntArray("update_colors");
+                        String colorParam = extras.getString("colorParam");
                         SharedPreferences.Editor sharedPreferences = ((Activity) param.thisObject).getApplication().getSharedPreferences("mixing_theme_color_preference", Context.MODE_PRIVATE).edit();
                         if (array != null) {
                             sharedPreferences.putInt("full_theme_colo1", array[0]);
@@ -388,10 +401,14 @@ public class X_Mod
                         paramArraylist.add(3, array != null ? array[3] : 0);
                         Class getFullColorCodesClass = XposedHelpers.findClass("com.htc.themepicker.util.CurrentThemeUtil", lpparam.classLoader);
                         XposedHelpers.callStaticMethod(getFullColorCodesClass, "saveColorsConfig", context, paramArraylist);
+                        XposedHelpers.callStaticMethod(getFullColorCodesClass, "updateFullThemeChanged", context, true);
+                        Class themeUtilsClass = XposedHelpers.findClass(CLASS_BF_THEMEUTILS,lpparam.classLoader);
+                        XposedHelpers.callStaticMethod(themeUtilsClass,"setHtcThemePackage", context, 1, colorParam);
                         Intent colorPickIntent = new Intent("com.htc.themepicker.ACTION_PICK_COLOR");
                         colorPickIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         colorPickIntent.putExtra("Sensify", "true");
                         ((Activity) param.thisObject).getApplication().startActivity(colorPickIntent);
+
 
                     }
 
@@ -409,11 +426,21 @@ public class X_Mod
                             Context context = AndroidAppHelper.currentApplication();
                             Class getFullColorCodesClass = XposedHelpers.findClass("com.htc.themepicker.util.CurrentThemeUtil", lpparam.classLoader);
                             int[] result = (int[]) XposedHelpers.callStaticMethod(getFullColorCodesClass, "getFullColorCodes", context);
-
                             Intent intent = new Intent();
                             intent.setAction("com.woalk.HTCAuthorizer.UPDATE_XML");
                             intent.putExtra("full_Array", result);
                             context.sendBroadcast(intent);
+
+
+                        }
+                    });
+
+            XposedHelpers.findAndHookMethod(CLASS_BF_THEMEUTILS, lpparam.classLoader,
+                    "setHtcThemePackage", Context.class, int.class, String.class, new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            Logger.logHook(param);
+                            Logger.d("X_Mod: setThemePackage called, params are " + param.args[1] + " and " + param.args[2]);
 
 
                         }
@@ -436,20 +463,7 @@ public class X_Mod
                 Logger.w("Rotation hook not loaded.", e);
             }
 
-            XposedHelpers.findAndHookMethod("com.htc.themepicker.MixingThemeColorActivity", lpparam.classLoader, "onCreate", Bundle.class,
-                    new XC_MethodHook() {
-                        @Override
-                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            if (((Activity) param.thisObject).getIntent().hasExtra("Sensify")) {
-                                Logger.d("X_Mod: MTE called for onCreate");
-                                XposedHelpers.callMethod(param.thisObject, "applySelectColor");
-                            }
-                            Logger.logHookAfter(param);
-                        }
-                    });
-
-
-
+            
             Logger.v("All hooks for Sense Home loaded.");
 
         } else if (lpparam.packageName.equals(PKG_HTC_FB)) {
@@ -1157,6 +1171,7 @@ public class X_Mod
             if (resparam.packageName.equals(PKG_SYSTEMUI) && themeSystemUI && romType.equals("Google")) {
                 Logger.v("X_Mod: ROM build identified as " + romType);
                 Logger.v("X_Mod: Replacing Theme resources for Google SystemUI.");
+                Logger.v("X_Mod: Replacing SystemUI colors.  Colors are " + cachedPrimary + " and " + cachedPrimaryDark + " and " +cachedAccent);
 
                 resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_primary_color",
                         colorPrimary);

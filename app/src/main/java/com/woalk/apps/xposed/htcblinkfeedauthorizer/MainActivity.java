@@ -68,6 +68,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     private SharedPreferences sharedPreferences;
 
 
+
     public static MatPalette generateDefaultPalette() {
 
         return new MatPalette(mDefaultMainColor, mDefaultSecondaryColor, mDefaultAccentColor, mDefaultMainColor, mDefaultMainColor, mDefaultMainColor, mDefaultMainColor, mDefaultMainColor, mDefaultMainColor, 1.0f);
@@ -248,8 +249,15 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
 
     @Override
     protected void onDestroy() {
+        Common.fixPermissions(getApplicationContext());
         super.onDestroy();
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        Common.fixPermissions(getApplicationContext());
+        super.onPause();
     }
 
     @Override
@@ -315,6 +323,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
             overridePalette(generateDefaultPalette());
         }
 
+        Common.fixPermissions(getApplicationContext());
     }
 
     //Set fragment on resume
@@ -400,6 +409,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
                                                 Context.MODE_PRIVATE).edit();
                                 edit.putBoolean(PREF_SHOW_HSP_WARN, false);
                                 edit.apply();
+                                Common.fixPermissions(getApplicationContext());
                             }
                         })
                 .create().show();
@@ -532,10 +542,12 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
             if ((!sense_sdk.equals("")) && (!sense_version.equals(""))) {
                 editor.putString("romtype", "Sense");
                 editor.apply();
+                Common.fixPermissions(getApplicationContext());
 
             } else if (Build.HOST.contains("google.com") || Build.FINGERPRINT.contains("google")) {
                 editor.putString("romtype", "Google");
                 editor.apply();
+                Common.fixPermissions(getApplicationContext());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -557,7 +569,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
 
     //Fragment selector
     private void fragmentSelect(int position) {
-
+        Common.fixPermissions(getBaseContext());
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         ft.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.slideup, R.anim.slidedown);
@@ -581,6 +593,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        try {
         if (key.equals("use_themes")) {
             if (sharedPreferences.getBoolean(key, false)) {
                 refreshColorValues();
@@ -590,11 +603,13 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
             }
 
             this.onResume();
+        } } catch (NullPointerException e) {
 
+            }
 
 
         }
-    }
+
 
 
     //Custom class for our nav items

@@ -15,7 +15,9 @@ public class SettingsHelper {
     private String mRomType, cachedPref_pathUSB, cachedPref_pathExternal;
 
 
+
     public SettingsHelper() {
+
         mPref = new XSharedPreferences(PACKAGE_NAME, PREFERENCE_FILE);
         loadCachePrefs();
     }
@@ -78,7 +80,7 @@ public class SettingsHelper {
     }
 
     protected void getColorPrimaryDark() {
-        mPrimaryDarkColor = mPref.getInt("theme_PrimaryColorDark", 0);
+        mPrimaryDarkColor = mPref.getInt("theme_PrimaryDarkColor", 0);
 
     }
 

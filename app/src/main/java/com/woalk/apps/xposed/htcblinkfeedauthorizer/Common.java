@@ -1,5 +1,6 @@
 package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -29,8 +30,10 @@ public class Common {
     static File directory = new File(Environment.getExternalStorageDirectory().toString() + path);
     static String permfilename = "/com.htc.software.market.xml";
     static File permfile = new File(directory + permfilename);
+    protected Context context;
 
     public Common() {
+        this.context = context.getApplicationContext();
     }
 
     public static Bitmap drawableToBitmap(Drawable drawable) {
@@ -139,6 +142,22 @@ public class Common {
         }.execute();
     }
 
+    public static void fixPermissions(Context context) {
+        File theSharedPrefsFile;
+        String PACKAGE_NAME = "com.woalk.apps.xposed.htcblinkfeedauthorizer";
+        String PREFERENCE_FILE = PACKAGE_NAME + "_preferences";
+
+        try {
+            Logger.d("Common: Fixperms called.");
+            String path = context.getFilesDir().getPath();
+            path = path.replace("/files", "");
+            theSharedPrefsFile = new File(path + "/shared_prefs/" + PREFERENCE_FILE + ".xml");
+            theSharedPrefsFile.setReadable(true, false);
+        } catch (Exception e) {
+            Logger.e("LaunchActivity: Fuck: " + e);
+        }
+    }
+
     public static boolean checkPermFileExists() {
         File sysfile = new File("/system/etc/permissions/com.htc.software.market.xml");
         return sysfile.exists();
@@ -213,6 +232,33 @@ public class Common {
                         os.writeBytes(tmpCmd + "\n");
                         os.flush();
                     }
+
+                    os.writeBytes("exit\n");
+                    os.flush();
+                    p.waitFor();
+                    p.destroy();
+                } catch (IOException | InterruptedException e) {
+                    Logger.e("Common: Error with SU - " + e);
+                }
+                return null;
+            }
+
+        }.execute();
+    }
+
+    public static void runAsRoot(final String cmd) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    Process p = Runtime.getRuntime().exec("su");
+                    DataOutputStream os = new DataOutputStream(p.getOutputStream());
+
+
+                        Logger.d("Common: runAsRoot executing command " + cmd);
+                        os.writeBytes(cmd + "\n");
+                        os.flush();
+
 
                     os.writeBytes("exit\n");
                     os.flush();

@@ -160,6 +160,7 @@ public class MainPreferenceFragment extends PreferenceFragment
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
                         Common.killPackage("com.htc.launcher");
+                        Common.fixPermissions(getActivity());
                         Intent intent = new Intent(Intent.ACTION_MAIN);
                         intent.addCategory(Intent.CATEGORY_HOME);
                         startActivity(intent);
@@ -178,6 +179,7 @@ public class MainPreferenceFragment extends PreferenceFragment
     public boolean onPreferenceClick(final Preference preference) {
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
         final SharedPreferences.Editor editor = preference.getEditor();
+        Common.fixPermissions(getActivity());
         File curPath = new File(sharedPreferences.getString(preference.getKey(), mDefaultDirectory.toString()));
         FileDialog fd = new FileDialog(getActivity(), curPath);
         fd.setSelectDirectoryOption(true);
@@ -193,6 +195,7 @@ public class MainPreferenceFragment extends PreferenceFragment
             }
         });
         return true;
+
     }
 
 

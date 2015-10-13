@@ -40,6 +40,7 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
     private float[] hsvValue = new float[3];
     private int myTheme;
     private ImageButton pickerButton;
+    private String mKey;
     private ObjectAnimator down;
     private ObjectAnimator left;
     private ObjectAnimator alphaOut;
@@ -54,6 +55,10 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
     public XColorPickerPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
 
+    }
+
+    private void init(AttributeSet attrs) {
+        mKey = attrs.getAttributeValue("http://schemas.android.com/apk/res/android", "key");
     }
 
 
@@ -391,12 +396,39 @@ public class XColorPickerPreference extends Preference implements View.OnClickLi
     @Override
     public void onClick(View v) {
         if (v == pickerButton) {
+
             persistInt(myTheme);
             original = Color.HSVToColor(hsv);
+
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    Common.fixPermissions(getContext());
+                }
+            }, 500);
+
+
+            if (hsv != intToHSV(original)) {
+                animateButtonColor(original);
+                hsv = intToHSV(original);
+                setSeekbarPositions(hsv);
+            }
+
+
+
             toggle_contents();
         } else if (v == container) {
             toggle_contents();
         }
+    }
+
+    @Override
+    protected boolean persistInt(int value) {
+        Common.fixPermissions(getContext());
+        return super.persistInt(value);
+
     }
 
     @Override

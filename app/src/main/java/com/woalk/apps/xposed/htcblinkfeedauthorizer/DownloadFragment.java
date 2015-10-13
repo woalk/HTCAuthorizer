@@ -12,6 +12,7 @@ public class DownloadFragment extends PreferenceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.pref_download);
+        Common.fixPermissions(getActivity());
 
     }
 

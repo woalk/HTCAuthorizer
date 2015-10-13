@@ -15,7 +15,7 @@
         android:layout_gravity="center" />
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="6.0dip"
         android:layout_marginEnd="6.0dip"
@@ -30,7 +30,6 @@
             android:ellipsize="marquee"
             android:fadingEdge="horizontal"
             android:singleLine="true"
-            android:text="Test1"
             android:textAppearance="@android:style/TextAppearance" />
 
         <TextView
@@ -40,7 +39,6 @@
             android:layout_alignStart="@id/title"
             android:layout_below="@id/title"
             android:maxLines="4"
-            android:text="Test2"
             android:textAppearance="@android:style/TextAppearance.Small"
             android:textColor="?android:attr/textColorSecondary" />
     </RelativeLayout>

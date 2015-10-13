@@ -19,8 +19,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.File;
-
 
 public class LaunchActivity extends FragmentActivity implements View.OnClickListener, ViewPager.OnPageChangeListener {
     protected static final String PACKAGE_NAME = "com.woalk.apps.xposed.htcblinkfeedauthorizer";
@@ -44,14 +42,8 @@ public class LaunchActivity extends FragmentActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication());
-        File theSharedPrefsFile;
-
-        String path = getApplication().getFilesDir().getPath();
-        path = path.replace("/files","");
-        theSharedPrefsFile = new File(path + "/shared_prefs/" + PREFERENCE_FILE + ".xml");
-        theSharedPrefsFile.setReadable(true, false);
-
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        Common.fixPermissions(getBaseContext());
         if (!(sharedPreferences.getBoolean("SkipWelcome", false))) {
             setContentView(R.layout.activity_launch);
             mPager = (ViewPager) findViewById(R.id.viewPager);
