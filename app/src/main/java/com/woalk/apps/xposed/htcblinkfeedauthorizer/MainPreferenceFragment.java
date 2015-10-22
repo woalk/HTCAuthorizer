@@ -82,9 +82,10 @@ public class MainPreferenceFragment extends PreferenceFragment
                 new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
-                        Common.createPermFile();
                         Common common;
-                        common = new Common();
+                        common = new Common(getActivity());
+                        Common.createPermFile();
+
                         final Context context = getActivity();
                         Logger.v("MainPreferenceFragment: Toast count is " + mToastHitCountdown);
                         if (Common.checkPermFileExists()) {

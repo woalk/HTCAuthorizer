@@ -33,7 +33,11 @@ public class Common {
     protected Context context;
 
     public Common() {
-        this.context = context.getApplicationContext();
+
+    }
+
+    public Common(Context appcontext) {
+        context = appcontext;
     }
 
     public static Bitmap drawableToBitmap(Drawable drawable) {

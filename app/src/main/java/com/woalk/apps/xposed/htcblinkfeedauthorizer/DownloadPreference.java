@@ -74,10 +74,14 @@ public class DownloadPreference extends Preference {
     @Override
     protected void onClick() {
         super.onClick();
+
         HTMLHelper htmlHelper = new HTMLHelper(getContext());
         HTMLHelper htmlHelper1 = new HTMLHelper(getContext());
 
         if (!mIsInstalled || mPackageVersionInstalled < mPackageVersionAvailable) {
+            Toast toast;
+            toast = Toast.makeText(getContext(), "Your download of " + getTitle() + " will begin shortly.", Toast.LENGTH_SHORT);
+            toast.show();
             htmlHelper.fetchApp((String) this.getTitle(), getContext(), mKey);
             Locale current = getContext().getResources().getConfiguration().locale;
             if (mKey.equals("dl_Prism")) {
@@ -150,8 +154,8 @@ public class DownloadPreference extends Preference {
                 }
             }
         } else {
-
-            Toast toast = Toast.makeText(getContext(), "Latest package already installed", Toast.LENGTH_SHORT);
+            Toast toast;
+            toast = Toast.makeText(getContext(), "Latest package already installed", Toast.LENGTH_SHORT);
             toast.show();
 
         }
