@@ -96,14 +96,19 @@ public class Logger {
     }
 
     public static String getArrayString(Object[] array) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{");
-        for (Object o : array) {
-            sb.append(o)
-                    .append(",");
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append("{");
+            for (Object o : array) {
+                sb.append(o)
+                        .append(",");
+            }
+            sb.append("}");
+            return sb.toString();
+        } catch (NullPointerException e) {
+            Logger.d("Error logging " + e);
+            return null;
         }
-        sb.append("}");
-        return sb.toString();
     }
 
 
