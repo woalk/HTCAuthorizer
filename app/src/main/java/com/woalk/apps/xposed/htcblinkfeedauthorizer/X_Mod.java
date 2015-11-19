@@ -17,6 +17,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.Preference;
@@ -52,6 +53,7 @@ public class X_Mod
     public static final String PKG_HTC_SOCIALNETWORK_UI = "com.htc.socialnetwork.common.utils.ui";
     public static final String CLASS_BF_HELPER = PKG_HTC_LAUNCHER + ".util.HspUpdateHelper";
     public static final String CLASS_BF_SETTINGUTIL = PKG_HTC_LAUNCHER + ".util.SettingUtil";
+    public static final String CLASS_BF_M_SETTINGUTIL = PKG_HTC_LIB0 + "HDKLib0Util";
     public static final String CLASS_BF_LIB2 = "com.htc.lib2.Hms";
     public static final String CLASS_BF_UDACT = PKG_HTC_SOCIALNETWORK_UI + ".HMSUpdateActivity";
     public static final String CLASS_BF_PROFILEBRIEF = "com.htc.themepicker.model.ProfileBrief";
@@ -180,36 +182,93 @@ public class X_Mod
 
 
         Logger.v("X-Mod: Replacing system-wide Theme resources.  Colors are " + cachedPrimary + " and " + cachedPrimaryDark + " and " +cachedAccent);
+        try {
+            XResources.setSystemWideReplacement("android", "color", "primary_material_dark",
+                    cachedPrimary);
+            XResources.setSystemWideReplacement("android", "color", "primary_dark_material_dark",
+                    cachedPrimary);
+            XResources.setSystemWideReplacement("android", "color", "primary_dark_material_light",
+                    cachedPrimary);
+            XResources.setSystemWideReplacement("android", "color", "primary_dark_material_light_light_status_bar",
+                    cachedPrimary);
+            XResources.setSystemWideReplacement("android", "color", "accent_material_light",
+                    cachedAccent);
+            XResources.setSystemWideReplacement("android", "color", "accent_material_dark",
+                    cachedAccent);
+            XResources.setSystemWideReplacement("android", "color", "button_material_dark",
+                    cachedPrimary);
+            XResources.setSystemWideReplacement("android", "color", "button_material_light",
+                    cachedPrimary);
+            XResources.setSystemWideReplacement("android", "color", "material_blue_grey_900",
+                    cachedPrimary);
+            XResources.setSystemWideReplacement("android", "color", "user_icon_1",
+                    cachedPrimary);
+            XResources.setSystemWideReplacement("android", "color", "highlighted_text_material_dark",
+                    cachedPrimaryDark);
+            XResources.setSystemWideReplacement("android", "color", "system_notification_accent_color",
+                    cachedAccent);
+            XResources.setSystemWideReplacement("android", "color", "notification_icon_bg_color",
+                    cachedPrimary);
+            XResources.setSystemWideReplacement("android", "color", "notification_action_color_filter",
+                    cachedPrimary);
+            XResources.setSystemWideReplacement("android", "color", "notification_media_primary_color",
+                    cachedPrimary);
+            XResources.setSystemWideReplacement("android", "color", "notification_media_secondary_color",
+                    cachedPrimaryDark);
+            XResources.setSystemWideReplacement("android", "color", "notification_progress_background_color",
+                    cachedPrimaryDark);
+            XResources.setSystemWideReplacement("android", "color", "highlighted_text_material_light",
+                    cachedPrimary);
+            XResources.setSystemWideReplacement("android", "color", "user_icon_1",
+                    cachedPrimary);
+            XResources.setSystemWideReplacement("android", "color", "user_icon_2",
+                    cachedPrimaryDark);
+            XResources.setSystemWideReplacement("android", "color", "user_icon_3",
+                    cachedAccent);
+            XResources.setSystemWideReplacement("android", "color", "primary_material_dark",
+                    cachedPrimaryDark);
+            XResources.setSystemWideReplacement("android", "color", "primary_material_light",
+                    cachedPrimary);
+            XResources.setSystemWideReplacement("android", "color", "material_blue_grey_950",
+                    cachedPrimaryDark);
+            XResources.setSystemWideReplacement("android", "color", "material_blue_grey_900",
+                    cachedPrimaryDark);
+            XResources.setSystemWideReplacement("android", "color", "material_blue_grey_800",
+                    cachedPrimary);
+            XResources.setSystemWideReplacement("android", "color", "primary_dark_material_dark",
+                    cachedPrimaryDark);
+            XResources.setSystemWideReplacement("android", "color", "teal_700",
+                    cachedPrimary);
+            XResources.setSystemWideReplacement("android", "color", "teal_800",
+                    cachedAccent);
+            XResources.setSystemWideReplacement("android", "color", "material_deep_teal_500",
+                    cachedPrimary);
+            XResources.setSystemWideReplacement("android", "color", "material_deep_teal_200",
+                    cachedAccent);
+            XResources.setSystemWideReplacement("android", "color", "accent_material_dark",
+                    cachedAccent);
+            XResources.setSystemWideReplacement("android", "color", "accent_material_light",
+                    cachedAccent);
+            XResources.setSystemWideReplacement("android", "color", "material_deep_teal_200",
+                    cachedPrimaryDark);
+            XResources.setSystemWideReplacement("android", "color", "colorAccent",
+                    cachedAccent);
+            XResources.setSystemWideReplacement("android", "color", "colorPrimary",
+                    cachedPrimary);
+            XResources.setSystemWideReplacement("android", "color", "colorPrimaryDark",
+                    cachedPrimaryDark);
+            XResources.setSystemWideReplacement("android", "color", "colorAccent",
+                    cachedAccent);
+            XResources.setSystemWideReplacement("android", "color", "material_blue_grey_900",
+                    cachedPrimary);
+            XResources.setSystemWideReplacement("android", "color", "material_blue_grey_950",
+                    cachedPrimaryDark);
+            XResources.setSystemWideReplacement("android", "color", "switch_accent_color",
+                    cachedPrimary);
 
-        XResources.setSystemWideReplacement("android", "color", "material_blue_grey_900",
-                cachedPrimary);
-        XResources.setSystemWideReplacement("android", "color", "user_icon_1",
-                cachedPrimary);
-        XResources.setSystemWideReplacement("android", "color", "highlighted_text_material_dark",
-                cachedPrimaryDark);
-        XResources.setSystemWideReplacement("android", "color", "highlighted_text_material_light",
-                cachedPrimary);
-        XResources.setSystemWideReplacement("android", "color", "primary_material_dark",
-                cachedPrimaryDark);
-        XResources.setSystemWideReplacement("android", "color", "primary_material_light",
-                cachedPrimary);
-        XResources.setSystemWideReplacement("android", "color", "material_blue_grey_950",
-                cachedPrimaryDark);
-        XResources.setSystemWideReplacement("android", "color", "material_blue_grey_800",
-                cachedPrimary);
-        XResources.setSystemWideReplacement("android", "color", "primary_dark_material_dark",
-                cachedPrimaryDark);
-        XResources.setSystemWideReplacement("android", "color", "material_deep_teal_500",
-                cachedPrimary);
-        XResources.setSystemWideReplacement("android", "color", "material_deep_teal_200",
-                cachedAccent);
-        XResources.setSystemWideReplacement("android", "color", "accent_material_dark",
-                cachedAccent);
-        XResources.setSystemWideReplacement("android", "color", "accent_material_light",
-                cachedAccent);
-        XResources.setSystemWideReplacement("android", "color", "material_deep_teal_200",
-                cachedPrimaryDark);
-
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Error loading resource: " + e);
+        }
 
         Logger.v("Theme resources replaced.");
         if (cachedRomType.equals("Sense")) {
@@ -268,16 +327,19 @@ public class X_Mod
 
             Logger.v("Load hooks for Sense Home...");
 
-            XposedHelpers.findAndHookMethod(CLASS_BF_HELPER, lpparam.classLoader, "isHSPCompatible",
-                    new XC_MethodHook() {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult(Boolean.TRUE);
-                            Logger.logHookAfter(param);
-                        }
-                    });
 
-            XposedHelpers.findAndHookMethod(CLASS_BF_HELPER, lpparam.classLoader, "isHSPCompatible",
+            int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+            if (currentapiVersion >= android.os.Build.VERSION_CODES.M) {
+                XposedHelpers.findAndHookMethod(CLASS_BF_HELPER, lpparam.classLoader, "isHSPCompatible",
+                        new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                                param.setResult(Boolean.TRUE);
+                                Logger.logHookAfter(param);
+                            }
+                        });
+
+                XposedHelpers.findAndHookMethod(CLASS_BF_HELPER, lpparam.classLoader, "isHSPCompatible",
                     Context.class, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -286,14 +348,42 @@ public class X_Mod
                         }
                     });
 
-            XposedHelpers.findAndHookMethod(CLASS_BF_HELPER, lpparam.classLoader, "isHSPCompatible",
-                    Context.class, boolean.class, new XC_MethodHook() {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult(Boolean.TRUE);
-                            Logger.logHookAfter(param);
-                        }
-                    });
+                XposedHelpers.findAndHookMethod(CLASS_BF_HELPER, lpparam.classLoader, "isHSPCompatible",
+                        Context.class, boolean.class, new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                                param.setResult(Boolean.TRUE);
+                                Logger.logHookAfter(param);
+                            }
+                        });
+            } else {
+                XposedHelpers.findAndHookMethod(CLASS_BF_HELPER, lpparam.classLoader, "isHSPCompatible",
+                        new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                                param.setResult(Boolean.TRUE);
+                                Logger.logHookAfter(param);
+                            }
+                        });
+
+                XposedHelpers.findAndHookMethod(CLASS_BF_HELPER, lpparam.classLoader, "isHSPCompatible",
+                        Context.class, new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                                param.setResult(Boolean.TRUE);
+                                Logger.logHookAfter(param);
+                            }
+                        });
+
+                XposedHelpers.findAndHookMethod(CLASS_BF_HELPER, lpparam.classLoader, "isHSPCompatible",
+                        Context.class, boolean.class, new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                                param.setResult(Boolean.TRUE);
+                                Logger.logHookAfter(param);
+                            }
+                        });
+            }
 
             XposedHelpers.findAndHookMethod(CLASS_BF_SETTINGUTIL, lpparam.classLoader,
                     "isHtcDevice", new XC_MethodHook() {
@@ -1167,11 +1257,34 @@ public class X_Mod
     public void handleInitPackageResources(final XC_InitPackageResources.InitPackageResourcesParam
                                                    resparam) throws Throwable {
         if (themesEnabled) {
+            int currentapiVersion = android.os.Build.VERSION.SDK_INT;
 
             if (resparam.packageName.equals(PKG_SYSTEMUI) && themeSystemUI && romType.equals("Google")) {
                 Logger.v("X_Mod: ROM build identified as " + romType);
-                Logger.v("X_Mod: Replacing Theme resources for Google SystemUI.");
                 Logger.v("X_Mod: Replacing SystemUI colors.  Colors are " + cachedPrimary + " and " + cachedPrimaryDark + " and " +cachedAccent);
+
+                if (currentapiVersion >= Build.VERSION_CODES.M) {
+                    Logger.v("X_Mod: Replacing Theme resources for Google M SystemUI.");
+
+                    resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_primary_color",
+                            colorPrimary);
+                    resparam.res.setReplacement(PKG_SYSTEMUI, "color", "zen_introduction_message_background",
+                            colorPrimary);
+                    resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_secondary_color",
+                            colorPrimaryDark);
+                    resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_accent_color",
+                            colorAccent);
+                    resparam.res.setReplacement(PKG_SYSTEMUI, "color", "screen_pinning_request_bg",
+                            colorAccent);
+                    resparam.res.setReplacement(PKG_SYSTEMUI, "color", "current_user_border_color",
+                            colorAccent);
+                    resparam.res.setReplacement(PKG_SYSTEMUI, "color", "notification_guts_bg_color",
+                            colorPrimaryDark);
+                    resparam.res.setReplacement(PKG_SYSTEMUI, "color", "qs_detail_progress_track",
+                            colorAccent);
+                } else {
+
+                    Logger.v("X_Mod: Replacing Theme resources for Google L SystemUI.");
 
                 resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_primary_color",
                         colorPrimary);
@@ -1187,7 +1300,7 @@ public class X_Mod
                         colorAccent);
                 resparam.res.setReplacement(PKG_SYSTEMUI, "color", "notification_material_background_media_default_color",
                         colorPrimary);
-
+                }
                 Logger.v("X_Mod: Replaced Theme resources for Google SystemUI.");
 
             } else if (resparam.packageName.equals(PKG_SYSTEMUI) && romType.equals("Sense")) {
@@ -1221,12 +1334,26 @@ public class X_Mod
             } else if (resparam.packageName.equals(PKG_SETTINGS)) {
                 Logger.v("Replacing Theme resources for Settings app.");
 
-                resparam.res.setReplacement(PKG_SETTINGS, "color", "theme_primary",
-                        colorPrimary);
-                resparam.res.setReplacement(PKG_SETTINGS, "color", "theme_primary_dark",
-                        colorPrimaryDark);
-                resparam.res.setReplacement(PKG_SETTINGS, "color", "theme_accent",
-                        colorAccent);
+                if (currentapiVersion <= Build.VERSION_CODES.LOLLIPOP) {
+
+                    resparam.res.setReplacement(PKG_SETTINGS, "color", "theme_primary",
+                            colorPrimary);
+                    resparam.res.setReplacement(PKG_SETTINGS, "color", "theme_primary_dark",
+                            colorPrimaryDark);
+                    resparam.res.setReplacement(PKG_SETTINGS, "color", "theme_accent",
+                            colorAccent);
+                } else {
+                    resparam.res.hookLayout(PKG_SETTINGS, "layout", "dashboard_category", new XC_LayoutInflated() {
+                        @Override
+                        public void handleLayoutInflated(LayoutInflatedParam liparam) throws Throwable {
+
+                            TextView title = (TextView) liparam.view.findViewById(
+                                    liparam.res.getIdentifier("category_title", "id", PKG_SETTINGS));
+                            title.setTextColor(colorAccent);
+                        }
+
+                    });
+                }
                 resparam.res.setReplacement(PKG_SETTINGS, "color", "switchbar_background_color",
                         colorPrimaryDark);
                 resparam.res.setReplacement(PKG_SETTINGS, "color", "switch_accent_color",
@@ -1242,6 +1369,7 @@ public class X_Mod
                     }
 
                 });
+
                 resparam.res.hookLayout(PKG_SETTINGS, "layout", "preference_bluetooth_profile", new XC_LayoutInflated() {
                     @Override
                     public void handleLayoutInflated(LayoutInflatedParam liparam) throws Throwable {
@@ -1302,8 +1430,10 @@ public class X_Mod
                         colorAccent);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "contact_list_name_text_color",
                         colorAccent);
-                resparam.res.setReplacement(PKG_DIALER2, "color", "call_log_extras_text_color",
-                        colorAccent);
+                if (currentapiVersion <= Build.VERSION_CODES.LOLLIPOP) {
+                    resparam.res.setReplacement(PKG_DIALER2, "color", "call_log_extras_text_color",
+                            colorAccent);
+                }
                 resparam.res.setReplacement(PKG_DIALER2, "color", "voicemail_playback_seek_bar_already_played",
                         colorAccent);
                 resparam.res.setReplacement(PKG_DIALER2, "color", "item_selected",
