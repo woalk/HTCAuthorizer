@@ -24,7 +24,7 @@ import java.io.StringWriter;
 import java.util.Arrays;
 
 public class Common {
-    public static final String versionName = "2.0";
+    public static final String versionName = "3.0";
     public static final String xhtag = "Common: ";
     static String path = "/Sensify";
     static File directory = new File(Environment.getExternalStorageDirectory().toString() + path);
