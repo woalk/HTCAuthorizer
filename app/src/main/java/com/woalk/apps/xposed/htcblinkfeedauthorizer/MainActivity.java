@@ -213,13 +213,16 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
         mDrawerLayout.setDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
         //Detect missing framework, warn if it's not there.
-        maybeShowNoHSPWarn();
+        if (sharedPreferences.getBoolean(PREF_SHOW_HSP_WARN,true)) {
+            maybeShowNoHSPWarn();
+        }
         //Set default fragment if initializing from first time.
         if (getIntent().hasExtra("toOpen")) {
             Bundle extras = getIntent().getExtras();
             String toOpen = extras.getString("toOpen");
             if (toOpen != null && toOpen.equals("themeFragment")) {
                 curPos = 1;
+                tv2.setText(mNavItems.get(curPos).mTitle);
                 overridePalette(generateDefaultPalette());
 
             }
@@ -520,37 +523,40 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     private void checkRomType() {
         Process p;
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        String sense_version = "";
-        String sense_sdk = "";
-        try {
-            p = new ProcessBuilder("/system/bin/getprop", "ro.build.sense.version").redirectErrorStream(true).start();
-            BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line;
-            while ((line = br.readLine()) != null) {
-                sense_version = line;
-            }
-            p.destroy();
-            p = new ProcessBuilder("/system/bin/getprop", "ro.build.version.htcsdk").redirectErrorStream(true).start();
-            BufferedReader br2 = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line2;
-            while ((line2 = br2.readLine()) != null) {
-                sense_sdk = line2;
-            }
+        String mRomType = sharedPref.getString("romtype", "");
+        if (mRomType.equals("")) {
+            SharedPreferences.Editor editor = sharedPref.edit();
+            String sense_version = "";
+            String sense_sdk = "";
+            try {
+                p = new ProcessBuilder("/system/bin/getprop", "ro.build.sense.version").redirectErrorStream(true).start();
+                BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                String line;
+                while ((line = br.readLine()) != null) {
+                    sense_version = line;
+                }
+                p.destroy();
+                p = new ProcessBuilder("/system/bin/getprop", "ro.build.version.htcsdk").redirectErrorStream(true).start();
+                BufferedReader br2 = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                String line2;
+                while ((line2 = br2.readLine()) != null) {
+                    sense_sdk = line2;
+                }
 
-            p.destroy();
-            if ((!sense_sdk.equals("")) && (!sense_version.equals(""))) {
-                editor.putString("romtype", "Sense");
-                editor.apply();
-                Common.fixPermissions(getApplicationContext());
+                p.destroy();
+                if ((!sense_sdk.equals("")) && (!sense_version.equals(""))) {
+                    editor.putString("romtype", "Sense");
+                    editor.apply();
+                    Common.fixPermissions(getApplicationContext());
 
-            } else if (Build.HOST.contains("google.com") || Build.FINGERPRINT.contains("google")) {
-                editor.putString("romtype", "Google");
-                editor.apply();
-                Common.fixPermissions(getApplicationContext());
+                } else if (Build.HOST.contains("google.com") || Build.FINGERPRINT.contains("google")) {
+                    editor.putString("romtype", "Google");
+                    editor.apply();
+                    Common.fixPermissions(getApplicationContext());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
