@@ -178,96 +178,323 @@ public class X_Mod
 
     }
 
-    public static void replaceSystemWideThemes() {
+    public static void replaceSystemWideThemes() {int currentapiVersion = android.os.Build.VERSION.SDK_INT;
 
 
         Logger.v("X-Mod: Replacing system-wide Theme resources.  Colors are " + cachedPrimary + " and " + cachedPrimaryDark + " and " +cachedAccent);
+
+        if (currentapiVersion <= Build.VERSION_CODES.LOLLIPOP) {
+            try {
+                XResources.setSystemWideReplacement("android", "color", "highlighted_text_material_dark",
+                        cachedPrimaryDark);
+            } catch (Resources.NotFoundException e) {
+                Logger.e("Sensify:  Error replacing systemWide: " + e);
+                XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+            }
+            try {
+                XResources.setSystemWideReplacement("android", "color", "highlighted_text_material_light",
+                        cachedPrimary);
+            } catch (Resources.NotFoundException e) {
+                Logger.e("Sensify:  Error replacing systemWide: " + e);
+                XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+            }
+            try {
+                XResources.setSystemWideReplacement("android", "color", "teal_700",
+                        cachedPrimary);
+            } catch (Resources.NotFoundException e) {
+                Logger.e("Sensify:  Error replacing systemWide: " + e);
+                XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+            }
+            try {
+                XResources.setSystemWideReplacement("android", "color", "teal_800",
+                        cachedAccent);
+            } catch (Resources.NotFoundException e) {
+                Logger.e("Sensify:  Error replacing systemWide: " + e);
+                XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+            }
+            try {
+                XResources.setSystemWideReplacement("android", "color", "switch_accent_color",
+                        cachedPrimary);
+            } catch (Resources.NotFoundException e) {
+                Logger.e("Sensify:  Error replacing systemWide: " + e);
+                XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+            }
+            try {
+                XResources.setSystemWideReplacement("?android", "color", "colorAccent",
+                        cachedAccent);
+            } catch (Resources.NotFoundException e) {
+                Logger.e("Sensify:  Error replacing systemWide: " + e);
+                XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+            }
+            try {
+                XResources.setSystemWideReplacement("android", "color", "colorPrimary",
+                        cachedPrimary);
+            } catch (Resources.NotFoundException e) {
+                Logger.e("Sensify:  Error replacing systemWide: " + e);
+                XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+            }
+            try {
+                XResources.setSystemWideReplacement("android", "color", "colorPrimaryDark",
+                        cachedPrimaryDark);
+            } catch (Resources.NotFoundException e) {
+                Logger.e("Sensify:  Error replacing systemWide: " + e);
+                XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+            }
+        } else {
+            try {
+                XResources.setSystemWideReplacement("android", "color", "notification_icon_bg_color",
+                        cachedAccent);
+            } catch (Resources.NotFoundException e) {
+                Logger.e("Sensify:  Error replacing systemWide: " + e);
+                XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+            }
+            try {
+                XResources.setSystemWideReplacement("android", "color", "notification_media_primary_color",
+                        cachedPrimary);
+            } catch (Resources.NotFoundException e) {
+                Logger.e("Sensify:  Error replacing systemWide: " + e);
+                XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+            }
+            try {
+                XResources.setSystemWideReplacement("android", "color", "notification_media_secondary_color",
+                        cachedPrimaryDark);
+            } catch (Resources.NotFoundException e) {
+                Logger.e("Sensify:  Error replacing systemWide: " + e);
+                XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+            }
+            try {
+                XResources.setSystemWideReplacement("android", "color", "notification_progress_background_color",
+                        cachedPrimaryDark);
+            } catch (Resources.NotFoundException e) {
+                Logger.e("Sensify:  Error replacing systemWide: " + e);
+                XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+            }
+
+        }
+
         try {
             XResources.setSystemWideReplacement("android", "color", "primary_material_dark",
                     cachedPrimary);
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+        try {
             XResources.setSystemWideReplacement("android", "color", "primary_dark_material_dark",
                     cachedPrimary);
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+        try {
             XResources.setSystemWideReplacement("android", "color", "primary_dark_material_light",
                     cachedPrimary);
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+        try {
             XResources.setSystemWideReplacement("android", "color", "primary_dark_material_light_light_status_bar",
                     cachedPrimary);
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+        try {
             XResources.setSystemWideReplacement("android", "color", "accent_material_light",
                     cachedAccent);
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+        try {
             XResources.setSystemWideReplacement("android", "color", "accent_material_dark",
                     cachedAccent);
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+        try {
             XResources.setSystemWideReplacement("android", "color", "button_material_dark",
                     cachedPrimary);
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+        try {
             XResources.setSystemWideReplacement("android", "color", "button_material_light",
                     cachedPrimary);
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+        try {
             XResources.setSystemWideReplacement("android", "color", "material_blue_grey_900",
                     cachedPrimary);
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+        try {
             XResources.setSystemWideReplacement("android", "color", "user_icon_1",
                     cachedPrimary);
-            XResources.setSystemWideReplacement("android", "color", "highlighted_text_material_dark",
-                    cachedPrimaryDark);
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+        try {
             XResources.setSystemWideReplacement("android", "color", "system_notification_accent_color",
                     cachedAccent);
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+        try {
             XResources.setSystemWideReplacement("android", "color", "notification_icon_bg_color",
                     cachedPrimary);
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+        try {
             XResources.setSystemWideReplacement("android", "color", "notification_action_color_filter",
                     cachedPrimary);
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+        try {
             XResources.setSystemWideReplacement("android", "color", "notification_media_primary_color",
                     cachedPrimary);
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+        try {
             XResources.setSystemWideReplacement("android", "color", "notification_media_secondary_color",
                     cachedPrimaryDark);
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+        try {
             XResources.setSystemWideReplacement("android", "color", "notification_progress_background_color",
                     cachedPrimaryDark);
-            XResources.setSystemWideReplacement("android", "color", "highlighted_text_material_light",
-                    cachedPrimary);
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+
+        try {
             XResources.setSystemWideReplacement("android", "color", "user_icon_1",
                     cachedPrimary);
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+        try {
             XResources.setSystemWideReplacement("android", "color", "user_icon_2",
                     cachedPrimaryDark);
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+        try {
             XResources.setSystemWideReplacement("android", "color", "user_icon_3",
                     cachedAccent);
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+        try {
             XResources.setSystemWideReplacement("android", "color", "primary_material_dark",
                     cachedPrimaryDark);
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+        try {
             XResources.setSystemWideReplacement("android", "color", "primary_material_light",
-                    cachedPrimary);
+                    cachedPrimary);} catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+        try {
             XResources.setSystemWideReplacement("android", "color", "material_blue_grey_950",
                     cachedPrimaryDark);
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+        try {
             XResources.setSystemWideReplacement("android", "color", "material_blue_grey_900",
                     cachedPrimaryDark);
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+        try {
             XResources.setSystemWideReplacement("android", "color", "material_blue_grey_800",
                     cachedPrimary);
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+        try {
             XResources.setSystemWideReplacement("android", "color", "primary_dark_material_dark",
                     cachedPrimaryDark);
-            XResources.setSystemWideReplacement("android", "color", "teal_700",
-                    cachedPrimary);
-            XResources.setSystemWideReplacement("android", "color", "teal_800",
-                    cachedAccent);
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+        try {
             XResources.setSystemWideReplacement("android", "color", "material_deep_teal_500",
                     cachedPrimary);
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+        try {
             XResources.setSystemWideReplacement("android", "color", "material_deep_teal_200",
                     cachedAccent);
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+        try {
             XResources.setSystemWideReplacement("android", "color", "accent_material_dark",
                     cachedAccent);
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+        try {
             XResources.setSystemWideReplacement("android", "color", "accent_material_light",
                     cachedAccent);
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+        try {
             XResources.setSystemWideReplacement("android", "color", "material_deep_teal_200",
                     cachedPrimaryDark);
-            XResources.setSystemWideReplacement("android", "color", "colorAccent",
-                    cachedAccent);
-            XResources.setSystemWideReplacement("android", "color", "colorPrimary",
-                    cachedPrimary);
-            XResources.setSystemWideReplacement("android", "color", "colorPrimaryDark",
-                    cachedPrimaryDark);
-            XResources.setSystemWideReplacement("android", "color", "colorAccent",
-                    cachedAccent);
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+        try {
             XResources.setSystemWideReplacement("android", "color", "material_blue_grey_900",
                     cachedPrimary);
+        } catch (Resources.NotFoundException e) {
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
+        }
+        try {
             XResources.setSystemWideReplacement("android", "color", "material_blue_grey_950",
                     cachedPrimaryDark);
-            XResources.setSystemWideReplacement("android", "color", "switch_accent_color",
-                    cachedPrimary);
-
         } catch (Resources.NotFoundException e) {
-            Logger.e("Error loading resource: " + e);
+            Logger.e("Sensify:  Error replacing systemWide: " + e);
+            XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
         }
 
         Logger.v("Theme resources replaced.");
@@ -950,7 +1177,9 @@ public class X_Mod
                             Logger.logHook(param);
                             try {
                                 Drawable d = (Drawable) param.args[0];
-                                d.setColorFilter(colorAccent, PorterDuff.Mode.LIGHTEN);
+                                BitmapDrawable b = new BitmapDrawable((Resources) param.args[1],
+                                        Common.drawableToBitmap(d));
+                                b.setTint(colorAccent);
                                 param.args[0] = d;
                             } catch (NullPointerException e) {
                                 Logger.e("X_Mod - error hooking icons" + e);
@@ -1282,6 +1511,16 @@ public class X_Mod
                             colorPrimaryDark);
                     resparam.res.setReplacement(PKG_SYSTEMUI, "color", "qs_detail_progress_track",
                             colorAccent);
+                    resparam.res.hookLayout(PKG_SYSTEMUI, "layout", "status_bar_expanded_header", new XC_LayoutInflated() {
+                        @Override
+                        public void handleLayoutInflated(LayoutInflatedParam liparam) throws Throwable {
+
+                            ImageView frame = (ImageView) liparam.view.findViewById(
+                                    liparam.res.getIdentifier("multi_user_avatar", "id", PKG_SYSTEMUI));
+                            frame.setColorFilter(colorAccent);
+                        }
+
+                    });
                 } else {
 
                     Logger.v("X_Mod: Replacing Theme resources for Google L SystemUI.");
@@ -1353,6 +1592,7 @@ public class X_Mod
                         }
 
                     });
+
                 }
                 resparam.res.setReplacement(PKG_SETTINGS, "color", "switchbar_background_color",
                         colorPrimaryDark);
@@ -1364,7 +1604,7 @@ public class X_Mod
 
                         ImageView settings = (ImageView) liparam.view.findViewById(
                                 liparam.res.getIdentifier("deviceDetails", "id", PKG_SETTINGS));
-                        settings.setColorFilter(colorAccent, PorterDuff.Mode.MULTIPLY);
+                        settings.setColorFilter(colorAccent);
 
                     }
 
@@ -1376,7 +1616,7 @@ public class X_Mod
 
                         ImageView settings = (ImageView) liparam.view.findViewById(
                                 liparam.res.getIdentifier("profileExpand", "id", PKG_SETTINGS));
-                        settings.setColorFilter(colorAccent, PorterDuff.Mode.MULTIPLY);
+                        settings.setColorFilter(colorAccent);
 
                     }
 
@@ -1387,7 +1627,7 @@ public class X_Mod
 
                         ImageView settings = (ImageView) liparam.view.findViewById(
                                 liparam.res.getIdentifier("deviceDetails", "id", PKG_SETTINGS));
-                        settings.setColorFilter(colorAccent, PorterDuff.Mode.MULTIPLY);
+                        settings.setColorFilter(colorAccent);
 
                     }
 
