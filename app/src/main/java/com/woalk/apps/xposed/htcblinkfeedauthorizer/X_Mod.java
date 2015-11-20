@@ -103,14 +103,14 @@ public class X_Mod
             ".InstagramActivity";
     public static final String CLASS_INSTAGRAM_LIB2_A = PKG_HTC_LIB2 + ".a";
     public static final String CLASS_INSTAGRAM_DBA = "com.htc.sphere.d.b.a";
+    public static final String PKG_CALCULATOR = "com.android.calculator2";
+    public static final String PKG_GCALCULATOR = "com.google.android.calculator";
     public static final String PKG_MUSIC = "com.android.music";
     public static final String PKG_GMUSIC = "com.google.android.music";
-
     public static final String PKG_SYSTEMUI = "com.android.systemui";
     public static final String PKG_SETTINGS = "com.android.settings";
-    public static final String PKG_CALCULATOR = "com.android.calculator2";
-    public static final String PKG_DIALER = "com.google.android.dialer";
-    public static final String PKG_DIALER2 = "com.android.dialer";
+    public static final String PKG_GDIALER = "com.google.android.dialer";
+    public static final String PKG_DIALER = "com.android.dialer";
     public static final String PKG_CONTACTS = "com.android.contacts";
     public static final String PKG_GOOGLECONTACTS = "com.google.android.contacts";
     public static final String PKG_LATINIME = "com.android.inputmethod.latin";
@@ -1559,8 +1559,7 @@ public class X_Mod
                     @Override
                     public void handleLayoutInflated(LayoutInflatedParam liparam) throws Throwable {
 
-                        ImageView settings = (ImageView) liparam.view.findViewById(
-                                liparam.res.getIdentifier("deviceDetails", "id", PKG_SETTINGS));
+                        ImageView settings = (ImageView) liparam.view.findViewById(liparam.res.getIdentifier("deviceDetails", "id", PKG_SETTINGS));
                         settings.setColorFilter(colorAccent);
 
                     }
@@ -1592,55 +1591,55 @@ public class X_Mod
 
 
                 Logger.v("Replaced Theme resources for Settings app.");
-            } else if (resparam.packageName.equals(PKG_DIALER)) {
+            } else if (resparam.packageName.equals(PKG_GDIALER)) {
                 Logger.v("Replacing Theme resources for Dialer app.");
 
-                resparam.res.setReplacement(PKG_DIALER2, "color", "wallet_highlighted_text_holo_light",
+                resparam.res.setReplacement(PKG_DIALER, "color", "wallet_highlighted_text_holo_light",
                         colorPrimary);
-                resparam.res.setReplacement(PKG_DIALER2, "color", "wallet_highlighted_text_holo_dark",
+                resparam.res.setReplacement(PKG_DIALER, "color", "wallet_highlighted_text_holo_dark",
                         colorPrimaryDark);
-                resparam.res.setReplacement(PKG_DIALER2, "color", "wallet_holo_blue_light",
+                resparam.res.setReplacement(PKG_DIALER, "color", "wallet_holo_blue_light",
                         colorPrimary);
-                resparam.res.setReplacement(PKG_DIALER2, "color", "wallet_link_text_light",
+                resparam.res.setReplacement(PKG_DIALER, "color", "wallet_link_text_light",
                         colorPrimary);
-                resparam.res.setReplacement(PKG_DIALER2, "color", "dialer_theme_color",
+                resparam.res.setReplacement(PKG_DIALER, "color", "dialer_theme_color",
                         colorPrimary);
-                resparam.res.setReplacement(PKG_DIALER2, "color", "dialer_theme_color_dark",
+                resparam.res.setReplacement(PKG_DIALER, "color", "dialer_theme_color_dark",
                         colorPrimaryDark);
-                resparam.res.setReplacement(PKG_DIALER2, "color", "setting_primary_color",
+                resparam.res.setReplacement(PKG_DIALER, "color", "setting_primary_color",
                         colorPrimary);
-                resparam.res.setReplacement(PKG_DIALER2, "color", "setting_secondary_color",
+                resparam.res.setReplacement(PKG_DIALER, "color", "setting_secondary_color",
                         colorPrimaryDark);
-                resparam.res.setReplacement(PKG_DIALER2, "color", "button_selected_color",
+                resparam.res.setReplacement(PKG_DIALER, "color", "button_selected_color",
                         colorPrimaryDark);
-                resparam.res.setReplacement(PKG_DIALER2, "color", "dialtacts_theme_color",
+                resparam.res.setReplacement(PKG_DIALER, "color", "dialtacts_theme_color",
                         colorPrimary);
-                resparam.res.setReplacement(PKG_DIALER2, "color", "glowpad_call_widget_normal_tint",
+                resparam.res.setReplacement(PKG_DIALER, "color", "glowpad_call_widget_normal_tint",
                         colorPrimary);
-                resparam.res.setReplacement(PKG_DIALER2, "color", "incall_background_color",
+                resparam.res.setReplacement(PKG_DIALER, "color", "incall_background_color",
                         colorPrimary);
-                resparam.res.setReplacement(PKG_DIALER2, "color", "actionbar_background_color",
+                resparam.res.setReplacement(PKG_DIALER, "color", "actionbar_background_color",
                         colorPrimary);
-                resparam.res.setReplacement(PKG_DIALER2, "color", "actionbar_background_color_dark",
+                resparam.res.setReplacement(PKG_DIALER, "color", "actionbar_background_color_dark",
                         colorPrimaryDark);
-                resparam.res.setReplacement(PKG_DIALER2, "color", "call_log_voicemail_highlight_color",
+                resparam.res.setReplacement(PKG_DIALER, "color", "call_log_voicemail_highlight_color",
                         colorAccent);
-                resparam.res.setReplacement(PKG_DIALER2, "color", "contact_list_name_text_color",
+                resparam.res.setReplacement(PKG_DIALER, "color", "contact_list_name_text_color",
                         colorAccent);
                 if (currentapiVersion <= Build.VERSION_CODES.LOLLIPOP) {
-                    resparam.res.setReplacement(PKG_DIALER2, "color", "call_log_extras_text_color",
+                    resparam.res.setReplacement(PKG_DIALER, "color", "call_log_extras_text_color",
                             colorAccent);
                 }
-                resparam.res.setReplacement(PKG_DIALER2, "color", "voicemail_playback_seek_bar_already_played",
+                resparam.res.setReplacement(PKG_DIALER, "color", "voicemail_playback_seek_bar_already_played",
                         colorAccent);
-                resparam.res.setReplacement(PKG_DIALER2, "color", "item_selected",
+                resparam.res.setReplacement(PKG_DIALER, "color", "item_selected",
                         colorPrimary);
-                resparam.res.hookLayout(PKG_DIALER2, "layout", "dialtacts_activity", new XC_LayoutInflated() {
+                resparam.res.hookLayout(PKG_DIALER, "layout", "dialtacts_activity", new XC_LayoutInflated() {
                     @Override
                     public void handleLayoutInflated(LayoutInflatedParam liparam) throws Throwable {
 
                         FrameLayout fab = (FrameLayout) liparam.view.findViewById(
-                                liparam.res.getIdentifier("floating_action_button_container", "id", PKG_DIALER2));
+                                liparam.res.getIdentifier("floating_action_button_container", "id", PKG_DIALER));
                         ShapeDrawable sd = new ShapeDrawable(new OvalShape());
                         sd.setIntrinsicHeight(10);
                         sd.setIntrinsicWidth(10);
@@ -1650,12 +1649,12 @@ public class X_Mod
                     }
 
                 });
-                resparam.res.hookLayout(PKG_DIALER2, "layout", "dialpad_fragment", new XC_LayoutInflated() {
+                resparam.res.hookLayout(PKG_DIALER, "layout", "dialpad_fragment", new XC_LayoutInflated() {
                     @Override
                     public void handleLayoutInflated(LayoutInflatedParam liparam) throws Throwable {
 
                         FrameLayout fab = (FrameLayout) liparam.view.findViewById(
-                                liparam.res.getIdentifier("dialpad_floating_action_button_container", "id", PKG_DIALER2));
+                                liparam.res.getIdentifier("dialpad_floating_action_button_container", "id", PKG_DIALER));
                         ShapeDrawable sd = new ShapeDrawable(new OvalShape());
                         sd.setIntrinsicHeight(10);
                         sd.setIntrinsicWidth(10);
@@ -1747,25 +1746,55 @@ public class X_Mod
 
                 Logger.v("Replaced string resource for Sense Home.");
 
-            } else if (resparam.packageName.equals("com.google.android.calculator")) {
-                Logger.v("Replacing string resource for Calculator.");
+            } else if (resparam.packageName.equals(PKG_GCALCULATOR)) {
+                Logger.v("Sensify: Replacing string resource for Calculator.");
 
-                resparam.res.setReplacement("com.android.calculator", "color", "pad_numeric_background_color",
+                resparam.res.setReplacement(PKG_CALCULATOR, "color", "pad_numeric_background_color",
                         colorPrimaryDark);
-                resparam.res.setReplacement("com.android.calculator", "color", "pad_operator_background_color",
+                resparam.res.setReplacement(PKG_CALCULATOR, "color", "pad_operator_background_color",
                         colorPrimary);
-                resparam.res.setReplacement("com.android.calculator", "color", "pad_advanced_background_color",
+                resparam.res.setReplacement(PKG_CALCULATOR, "color", "pad_advanced_background_color",
                         colorAccent);
 
-                Logger.v("Replaced string resource for Calculator.");
+                Logger.v("Sensify: Replaced string resource for Calculator.");
 
             } else if (resparam.packageName.equals(PKG_GMUSIC)) {
-                Logger.v("Replacing string resource for Google Music.");
+                Logger.v("Sensify: Replacing string resource for Google Music.");
 
-                resparam.res.setReplacement(PKG_MUSIC, "color", "play_music_primary",
+                resparam.res.setReplacement(PKG_GMUSIC, "color", "play_music_primary",
+                        colorPrimary);
+                resparam.res.setReplacement(PKG_GMUSIC, "color", "signup_header_text",
+                        colorPrimary);
+                resparam.res.setReplacement(PKG_GMUSIC, "color", "sound_search_start_search_button_color",
+                        colorPrimary);
+                resparam.res.setReplacement(PKG_GMUSIC, "color", "tutorial_action_item",
+                        colorPrimary);
+                resparam.res.setReplacement(PKG_GMUSIC, "color", "common_signin_btn_default_background",
+                        colorPrimaryDark);
+                resparam.res.setReplacement(PKG_GMUSIC, "color", "nus_title_text_color",
+                        colorPrimary);
+                resparam.res.setReplacement(PKG_GMUSIC, "color", "empty_screen_learn_more_color",
+                        colorPrimary);
+                resparam.res.setReplacement(PKG_GMUSIC, "color", "gearhead_color_accent",
                         colorAccent);
+                resparam.res.setReplacement(PKG_GMUSIC, "color", "gearhead_primary_color_dark",
+                        colorPrimaryDark);
+                resparam.res.setReplacement(PKG_GMUSIC, "color", "play_music_secondary",
+                        colorPrimaryDark);
+                resparam.res.setReplacement(PKG_GMUSIC, "color", "play_music_recents",
+                        colorPrimaryDark);
+                resparam.res.setReplacement(PKG_GMUSIC, "color", "play_music_primary_disabled",
+                        colorAccent);
+                resparam.res.setReplacement(PKG_GMUSIC, "color", "play_music_light",
+                        colorAccent);
+                resparam.res.setReplacement(PKG_GMUSIC, "color", "music_banner_color",
+                        colorPrimaryDark);
+                resparam.res.setReplacement(PKG_GMUSIC, "color", "lb_default_search_color",
+                        colorPrimary);
+                resparam.res.setReplacement(PKG_GMUSIC, "color", "leanback_search_orb_background_color",
+                        colorPrimary);
 
-                Logger.v("Replaced string resource for Google Music.");
+                Logger.v("Sensify: Replaced string resource for Google Music.");
             }
 
         } else {
