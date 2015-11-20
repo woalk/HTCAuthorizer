@@ -47,13 +47,11 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
  */
 public class X_Mod
         implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
-    private Context context;
     public static final String PKG_HTC_LAUNCHER = "com.htc.launcher";
     public static final String PKG_HTC_LIB0 = "com.htc.lib0";
     public static final String PKG_HTC_SOCIALNETWORK_UI = "com.htc.socialnetwork.common.utils.ui";
     public static final String CLASS_BF_HELPER = PKG_HTC_LAUNCHER + ".util.HspUpdateHelper";
     public static final String CLASS_BF_SETTINGUTIL = PKG_HTC_LAUNCHER + ".util.SettingUtil";
-    public static final String CLASS_BF_M_SETTINGUTIL = PKG_HTC_LIB0 + "HDKLib0Util";
     public static final String CLASS_BF_LIB2 = "com.htc.lib2.Hms";
     public static final String CLASS_BF_UDACT = PKG_HTC_SOCIALNETWORK_UI + ".HMSUpdateActivity";
     public static final String CLASS_BF_PROFILEBRIEF = "com.htc.themepicker.model.ProfileBrief";
@@ -105,9 +103,12 @@ public class X_Mod
             ".InstagramActivity";
     public static final String CLASS_INSTAGRAM_LIB2_A = PKG_HTC_LIB2 + ".a";
     public static final String CLASS_INSTAGRAM_DBA = "com.htc.sphere.d.b.a";
-    public static final String PKG_VENDING = "com.android.vending";
+    public static final String PKG_MUSIC = "com.android.music";
+    public static final String PKG_GMUSIC = "com.google.android.music";
+
     public static final String PKG_SYSTEMUI = "com.android.systemui";
     public static final String PKG_SETTINGS = "com.android.settings";
+    public static final String PKG_CALCULATOR = "com.android.calculator2";
     public static final String PKG_DIALER = "com.google.android.dialer";
     public static final String PKG_DIALER2 = "com.android.dialer";
     public static final String PKG_CONTACTS = "com.android.contacts";
@@ -136,9 +137,6 @@ public class X_Mod
             PKG_HTC_FEATURE + ".hdk2",
             PKG_HTC_FEATURE + ".hdk3"
     };
-    //    private static final String ACTIVITY_THREAD_CLASS = "android.app.ActivityThread";
-//    private static final String ACTIVITY_THREAD_CURRENTACTHREAD = "currentActivityThread";
-//    private static final String ACTIVITY_THREAD_GETSYSCTX = "getSystemContext";
     private static boolean themesEnabled = false;
     private static boolean themeSystemUI = false;
     private static boolean useUSB = false;
@@ -178,10 +176,10 @@ public class X_Mod
 
     }
 
-    public static void replaceSystemWideThemes() {int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+    public static void replaceSystemWideThemes() {
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
 
-
-        Logger.v("X-Mod: Replacing system-wide Theme resources.  Colors are " + cachedPrimary + " and " + cachedPrimaryDark + " and " +cachedAccent);
+        Logger.v("X-Mod: Replacing system-wide Theme resources.  Colors are " + cachedPrimary + " and " + cachedPrimaryDark + " and " + cachedAccent);
 
         if (currentapiVersion <= Build.VERSION_CODES.LOLLIPOP) {
             try {
@@ -241,6 +239,7 @@ public class X_Mod
                 XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
             }
         } else {
+
             try {
                 XResources.setSystemWideReplacement("android", "color", "notification_icon_bg_color",
                         cachedAccent);
@@ -415,7 +414,8 @@ public class X_Mod
         }
         try {
             XResources.setSystemWideReplacement("android", "color", "primary_material_light",
-                    cachedPrimary);} catch (Resources.NotFoundException e) {
+                    cachedPrimary);
+        } catch (Resources.NotFoundException e) {
             Logger.e("Sensify:  Error replacing systemWide: " + e);
             XposedBridge.log("Sensify:  Error replacing systemWide: " + e);
         }
@@ -531,29 +531,9 @@ public class X_Mod
 
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
-//        Object activityThread = XposedHelpers.callStaticMethod(XposedHelpers.findClass(ACTIVITY_THREAD_CLASS, null), ACTIVITY_THREAD_CURRENTACTHREAD);
-//        final Context systemCtx = (Context) XposedHelpers.callMethod(activityThread, ACTIVITY_THREAD_GETSYSCTX);
-
-        // First section contains common checks found in all HTC Apps
-        // Need to see if OR statements are best, or if we can just check for com.htc.* apps
-
-//        if (lpparam.packageName.equals("android")) {
-//
-//            XposedHelpers.findAndHookMethod("com.android.internal.app.ShutdownActivity", lpparam.classLoader, "onCreate", Bundle.class,
-//                    new XC_MethodHook() {
-//                        @Override
-//                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-//                            Logger.d("X_Mod: Shutdown hooked");
-//                            Common.fixPermissions();
-//
-//                        }
-//                    });
-//        }
 
         if (lpparam.packageName.equals(PKG_HTC_LAUNCHER)) {
-
             Logger.v("Load hooks for Sense Home...");
-
 
             int currentapiVersion = android.os.Build.VERSION.SDK_INT;
             if (currentapiVersion >= android.os.Build.VERSION_CODES.M) {
@@ -567,13 +547,13 @@ public class X_Mod
                         });
 
                 XposedHelpers.findAndHookMethod(CLASS_BF_HELPER, lpparam.classLoader, "isHSPCompatible",
-                    Context.class, new XC_MethodHook() {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult(Boolean.TRUE);
-                            Logger.logHookAfter(param);
-                        }
-                    });
+                        Context.class, new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                                param.setResult(Boolean.TRUE);
+                                Logger.logHookAfter(param);
+                            }
+                        });
 
                 XposedHelpers.findAndHookMethod(CLASS_BF_HELPER, lpparam.classLoader, "isHSPCompatible",
                         Context.class, boolean.class, new XC_MethodHook() {
@@ -719,8 +699,8 @@ public class X_Mod
                         Class getFullColorCodesClass = XposedHelpers.findClass("com.htc.themepicker.util.CurrentThemeUtil", lpparam.classLoader);
                         XposedHelpers.callStaticMethod(getFullColorCodesClass, "saveColorsConfig", context, paramArraylist);
                         XposedHelpers.callStaticMethod(getFullColorCodesClass, "updateFullThemeChanged", context, true);
-                        Class themeUtilsClass = XposedHelpers.findClass(CLASS_BF_THEMEUTILS,lpparam.classLoader);
-                        XposedHelpers.callStaticMethod(themeUtilsClass,"setHtcThemePackage", context, 1, colorParam);
+                        Class themeUtilsClass = XposedHelpers.findClass(CLASS_BF_THEMEUTILS, lpparam.classLoader);
+                        XposedHelpers.callStaticMethod(themeUtilsClass, "setHtcThemePackage", context, 1, colorParam);
                         Intent colorPickIntent = new Intent("com.htc.themepicker.ACTION_PICK_COLOR");
                         colorPickIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         colorPickIntent.putExtra("Sensify", "true");
@@ -780,7 +760,7 @@ public class X_Mod
                 Logger.w("Rotation hook not loaded.", e);
             }
 
-            
+
             Logger.v("All hooks for Sense Home loaded.");
 
         } else if (lpparam.packageName.equals(PKG_HTC_FB)) {
@@ -1244,30 +1224,7 @@ public class X_Mod
 
             Logger.v("All hooks to tint Settings app's icons loaded.");
 
-        } else if (lpparam.packageName.equals(PKG_VENDING)) {
-
-            Logger.v("Load Play Store hooks...");
-
-//            XposedHelpers.findAndHookMethod(CLASS_FINSKY_LIBRARY_UTILS,
-//                    lpparam.classLoader, "isAvailable", CLASS_FINSKY_DOCUMENT, CLASS_FINSKY_DFETOC,
-//                    CLASS_FINSKY_LIBRARY, new XC_MethodHook() {
-//                        @Override
-//                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-//                            Object doc = param.args[0];
-//                            String id = (String) XposedHelpers.callMethod(doc, "getDocId");
-//                            if (id.startsWith("com.htc.")) {
-//                                Logger.logHook(param);
-//                                param.setResult(true);
-//                                Logger.logHookAfter(param);
-//                            }
-//                        }
-//                    });
-
-            Logger.v("All Play Store hooks loaded.");
-
-        }
-
-        if (lpparam.packageName.equals(PKG_HTC_GALLERY)
+        } else if (lpparam.packageName.equals(PKG_HTC_GALLERY)
                 || lpparam.packageName.equals(PKG_HTC_CAMERA)) {
             Logger.v("X_Mod: Loading storage hooks for package %s.", lpparam.packageName);
             int hooks = 0;
@@ -1490,7 +1447,7 @@ public class X_Mod
 
             if (resparam.packageName.equals(PKG_SYSTEMUI) && themeSystemUI && romType.equals("Google")) {
                 Logger.v("X_Mod: ROM build identified as " + romType);
-                Logger.v("X_Mod: Replacing SystemUI colors.  Colors are " + cachedPrimary + " and " + cachedPrimaryDark + " and " +cachedAccent);
+                Logger.v("X_Mod: Replacing SystemUI colors.  Colors are " + cachedPrimary + " and " + cachedPrimaryDark + " and " + cachedAccent);
 
                 if (currentapiVersion >= Build.VERSION_CODES.M) {
                     Logger.v("X_Mod: Replacing Theme resources for Google M SystemUI.");
@@ -1525,20 +1482,20 @@ public class X_Mod
 
                     Logger.v("X_Mod: Replacing Theme resources for Google L SystemUI.");
 
-                resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_primary_color",
-                        colorPrimary);
-                resparam.res.setReplacement(PKG_SYSTEMUI, "color", "screen_pinning_request_bg",
-                        colorAccent);
-                resparam.res.setReplacement(PKG_SYSTEMUI, "color", "keyguard_avatar_frame_pressed_color",
-                        colorPrimaryDark);
-                resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_secondary_color",
-                        colorPrimaryDark);
-                resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_accent_color",
-                        colorAccent);
-                resparam.res.setReplacement(PKG_SYSTEMUI, "color", "qs_detail_progress_track",
-                        colorAccent);
-                resparam.res.setReplacement(PKG_SYSTEMUI, "color", "notification_material_background_media_default_color",
-                        colorPrimary);
+                    resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_primary_color",
+                            colorPrimary);
+                    resparam.res.setReplacement(PKG_SYSTEMUI, "color", "screen_pinning_request_bg",
+                            colorAccent);
+                    resparam.res.setReplacement(PKG_SYSTEMUI, "color", "keyguard_avatar_frame_pressed_color",
+                            colorPrimaryDark);
+                    resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_secondary_color",
+                            colorPrimaryDark);
+                    resparam.res.setReplacement(PKG_SYSTEMUI, "color", "system_accent_color",
+                            colorAccent);
+                    resparam.res.setReplacement(PKG_SYSTEMUI, "color", "qs_detail_progress_track",
+                            colorAccent);
+                    resparam.res.setReplacement(PKG_SYSTEMUI, "color", "notification_material_background_media_default_color",
+                            colorPrimary);
                 }
                 Logger.v("X_Mod: Replaced Theme resources for Google SystemUI.");
 
@@ -1789,7 +1746,28 @@ public class X_Mod
                         STRING_REBOOT);
 
                 Logger.v("Replaced string resource for Sense Home.");
+
+            } else if (resparam.packageName.equals("com.google.android.calculator")) {
+                Logger.v("Replacing string resource for Calculator.");
+
+                resparam.res.setReplacement("com.android.calculator", "color", "pad_numeric_background_color",
+                        colorPrimaryDark);
+                resparam.res.setReplacement("com.android.calculator", "color", "pad_operator_background_color",
+                        colorPrimary);
+                resparam.res.setReplacement("com.android.calculator", "color", "pad_advanced_background_color",
+                        colorAccent);
+
+                Logger.v("Replaced string resource for Calculator.");
+
+            } else if (resparam.packageName.equals(PKG_GMUSIC)) {
+                Logger.v("Replacing string resource for Google Music.");
+
+                resparam.res.setReplacement(PKG_MUSIC, "color", "play_music_primary",
+                        colorAccent);
+
+                Logger.v("Replaced string resource for Google Music.");
             }
+
         } else {
             Logger.v("X_Mod: Themes disabled ");
         }

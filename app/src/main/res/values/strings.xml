@@ -90,5 +90,6 @@
     <string name="welcome3_summary">Use your apps the way they were meant to be used, without restriction.</string>
     <string name="fragment_title_Logging">Logging</string>
     <string name="url_apkmirror" translatable="false">http://www.apkmirror.com</string>
+    <string name="btn_label_getstarted">GET STARTED</string>
 
 </resources>

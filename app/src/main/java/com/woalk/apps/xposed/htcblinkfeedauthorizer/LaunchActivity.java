@@ -21,8 +21,6 @@ import android.widget.TextView;
 
 
 public class LaunchActivity extends FragmentActivity implements View.OnClickListener, ViewPager.OnPageChangeListener {
-    protected static final String PACKAGE_NAME = "com.woalk.apps.xposed.htcblinkfeedauthorizer";
-    protected static final String PREFERENCE_FILE = PACKAGE_NAME + "_preferences";
     private SharedPreferences sharedPreferences;
     private Drawable mDot1, mDot2, mDot3;
     private Integer[] colors;
