@@ -53,6 +53,7 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     public static int mDefaultMainColor;
     public static int mDefaultSecondaryColor;
     public static int mDefaultAccentColor;
+    public static int mDefaultColor4;
     public TextView tv1;
     public TextView tv2;
     public int mMainColor, mSecondaryColor, mAccentColor;
@@ -82,9 +83,10 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
         super.onCreate(savedInstanceState);
         refreshColorValues();
         checkRomType();
-        mDefaultMainColor = -16728577;
-        mDefaultSecondaryColor = -16763828;
-        mDefaultAccentColor = -16728577;
+        mDefaultMainColor = -10448664;
+        mDefaultSecondaryColor = -15724408;
+        mDefaultAccentColor = -6768408;
+        mDefaultColor4 = -16777216;
         PreferenceManager.setDefaultValues(this, R.xml.pref_themes, false);
         PreferenceManager.setDefaultValues(this, R.xml.pref_always_active, false);
         PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
@@ -239,8 +241,8 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
                 overridePalette(generateCustomPalette());
 
             } else {
-                toolbar.setBackgroundColor(Color.rgb(Color.red(-16728577), Color.green(-16728577),
-                        Color.blue(-16728577)));
+                toolbar.setBackgroundColor(Color.rgb(Color.red(mDefaultMainColor), Color.green(mDefaultMainColor),
+                        Color.blue(mDefaultMainColor)));
                 overridePalette(generateDefaultPalette());
 
             }
@@ -321,8 +323,8 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
 
 
         } else {
-            toolbar.setBackgroundColor(Color.rgb(Color.red(-16728577), Color.green(-16728577),
-                    Color.blue(-16728577)));
+            toolbar.setBackgroundColor(Color.rgb(Color.red(mDefaultMainColor), Color.green(mDefaultMainColor),
+                    Color.blue(mDefaultMainColor)));
             overridePalette(generateDefaultPalette());
         }
 

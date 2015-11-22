@@ -2,14 +2,14 @@
     android:title="@string/pref_cat_themes">
 
     <SwitchPreference
-        android:defaultValue="false"
+        android:defaultValue="true"
         android:key="use_themes"
         android:summary="@string/pref_themes_check_summary"
         android:title="@string/pref_themes_check_title" />
 
     <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
         android:id="@+id/Picker1"
-        android:defaultValue="2533018"
+        android:defaultValue="-10448664"
         android:dependency="use_themes"
         android:key="theme_PrimaryColor"
         android:layout="@layout/pref_colorpicker"
@@ -18,7 +18,7 @@
         android:title="@string/pref_themes_theme_PrimaryColor_title" />
     <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
         android:id="@+id/Picker2"
-        android:defaultValue="2533018"
+        android:defaultValue="-15724408"
         android:dependency="use_themes"
         android:key="theme_PrimaryDarkColor"
         android:layout="@layout/pref_colorpicker"
@@ -26,7 +26,7 @@
         android:title="@string/pref_themes_theme_PrimaryDarkColor_title" />
     <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
         android:id="@+id/Picker3"
-        android:defaultValue="2533018"
+        android:defaultValue="-6768408"
         android:dependency="use_themes"
         android:key="theme_AccentColor"
         android:layout="@layout/pref_colorpicker"
@@ -34,7 +34,7 @@
         android:title="@string/pref_themes_theme_AccentColor_title" />
     <com.woalk.apps.xposed.htcblinkfeedauthorizer.XColorPickerPreference
         android:id="@+id/Picker4"
-        android:defaultValue="2533018"
+        android:defaultValue="-16777216"
         android:dependency="use_themes"
         android:key="theme_Color4"
         android:layout="@layout/pref_colorpicker"
