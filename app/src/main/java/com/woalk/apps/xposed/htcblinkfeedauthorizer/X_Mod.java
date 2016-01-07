@@ -23,12 +23,15 @@ import android.os.Environment;
 import android.preference.Preference;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
+import java.security.PublicKey;
 import java.util.ArrayList;
 
 import de.robv.android.xposed.IXposedHookInitPackageResources;
@@ -762,6 +765,58 @@ public class X_Mod
 
 
             Logger.v("All hooks for Sense Home loaded.");
+
+        } else if (lpparam.packageName.equals("com.sec.musicstudio")) {
+
+            Logger.v("X_Mod: Load hooks for SoundCamp...");
+
+            try {
+                XposedHelpers.findAndHookMethod("com.google.android.vending.licensing.LicenseValidator", lpparam.classLoader,
+                        "verify", PublicKey.class, int.class, String.class, String.class, new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+                                param.args[1] = 0;
+                            }
+                        });
+
+
+                Logger.v("X_Mod: SoundCamp loaded.");
+
+            } catch (Throwable e) {
+                Logger.w("Facebook hooks could not be loaded.", e);
+            }
+        } else if (lpparam.packageName.equals(PKG_GMUSIC)) {
+
+            Logger.v("X_Mod: Load hooks for SoundCamp...");
+
+            try {
+                XposedHelpers.findAndHookMethod("com.google.android.music.MusicApplication", lpparam.classLoader,
+                        "onCreate", Bundle.class, new XC_MethodHook() {
+                            @Override
+                            protected void afterHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+                                Logger.d("X_Mod: Hooking some shit.");
+                                Activity activity = (Activity) param.thisObject;
+                                Window window = activity.getWindow();
+
+                                // clear FLAG_TRANSLUCENT_STATUS flag:
+                                window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+                                // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+                                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
+                                // finally change the color
+                                window.setStatusBarColor(cachedPrimaryDark);
+                            }
+                        });
+
+
+                Logger.v("X_Mod: SoundCamp loaded.");
+
+            } catch (Throwable e) {
+                Logger.w("Facebook hooks could not be loaded.", e);
+            }
 
         } else if (lpparam.packageName.equals(PKG_HTC_FB)) {
 
@@ -1761,6 +1816,15 @@ public class X_Mod
             } else if (resparam.packageName.equals(PKG_GMUSIC)) {
                 Logger.v("Sensify: Replacing string resource for Google Music.");
 
+                resparam.res.setReplacement(PKG_GMUSIC, "color", "gearhead_color_accent",
+                        colorAccent);
+                resparam.res.setReplacement(PKG_GMUSIC, "color", "app_color_accented",
+                        colorAccent);
+                resparam.res.setReplacement(PKG_GMUSIC, "color", "play_music_primary_disabled",
+                        colorAccent);
+                resparam.res.setReplacement(PKG_GMUSIC, "color", "play_music_light",
+                        colorAccent);
+
                 resparam.res.setReplacement(PKG_GMUSIC, "color", "play_music_primary",
                         colorPrimary);
                 resparam.res.setReplacement(PKG_GMUSIC, "color", "signup_header_text",
@@ -1769,31 +1833,43 @@ public class X_Mod
                         colorPrimary);
                 resparam.res.setReplacement(PKG_GMUSIC, "color", "tutorial_action_item",
                         colorPrimary);
-                resparam.res.setReplacement(PKG_GMUSIC, "color", "common_signin_btn_default_background",
-                        colorPrimaryDark);
                 resparam.res.setReplacement(PKG_GMUSIC, "color", "nus_title_text_color",
                         colorPrimary);
                 resparam.res.setReplacement(PKG_GMUSIC, "color", "empty_screen_learn_more_color",
                         colorPrimary);
-                resparam.res.setReplacement(PKG_GMUSIC, "color", "gearhead_color_accent",
-                        colorAccent);
+                resparam.res.setReplacement(PKG_GMUSIC, "color", "app_color",
+                        colorPrimary);
+                resparam.res.setReplacement(PKG_GMUSIC, "color", "music_banner_color",
+                        colorPrimary);
+                resparam.res.setReplacement(PKG_GMUSIC, "color", "play_header_list_banner_background_color",
+                        colorPrimary);
+                resparam.res.setReplacement(PKG_GMUSIC, "color", "lb_default_search_color",
+                        colorPrimary);
+                resparam.res.setReplacement(PKG_GMUSIC, "color", "leanback_search_orb_background_color",
+                        colorPrimary);
                 resparam.res.setReplacement(PKG_GMUSIC, "color", "gearhead_primary_color_dark",
+                        colorPrimaryDark);
+                resparam.res.setReplacement(PKG_GMUSIC, "color", "common_signin_btn_default_background",
                         colorPrimaryDark);
                 resparam.res.setReplacement(PKG_GMUSIC, "color", "play_music_secondary",
                         colorPrimaryDark);
                 resparam.res.setReplacement(PKG_GMUSIC, "color", "play_music_recents",
                         colorPrimaryDark);
                 resparam.res.setReplacement(PKG_GMUSIC, "color", "play_music_primary_disabled",
-                        colorAccent);
-                resparam.res.setReplacement(PKG_GMUSIC, "color", "play_music_light",
-                        colorAccent);
+                        colorPrimaryDark);
+                resparam.res.setReplacement(PKG_GMUSIC, "color", "settings_summary_color",
+                        colorPrimaryDark);
                 resparam.res.setReplacement(PKG_GMUSIC, "color", "music_banner_color",
                         colorPrimaryDark);
-                resparam.res.setReplacement(PKG_GMUSIC, "color", "lb_default_search_color",
-                        colorPrimary);
-                resparam.res.setReplacement(PKG_GMUSIC, "color", "leanback_search_orb_background_color",
-                        colorPrimary);
 
+
+                resparam.res.hookLayout(PKG_GMUSIC, "layout", "abc_screen_toolbar", new XC_LayoutInflated() {
+                    @Override
+                    public void handleLayoutInflated(LayoutInflatedParam liparam) throws Throwable {
+                        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) liparam.view.findViewById(liparam.res.getIdentifier("action_bar", "id", PKG_GMUSIC));
+                        toolbar.getBackground().setColorFilter(colorPrimary, PorterDuff.Mode.SRC_IN);
+                    }
+                });
                 Logger.v("Sensify: Replaced string resource for Google Music.");
             }
 
