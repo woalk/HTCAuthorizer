@@ -31,7 +31,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
-import java.security.PublicKey;
 import java.util.ArrayList;
 
 import de.robv.android.xposed.IXposedHookInitPackageResources;
@@ -766,33 +765,13 @@ public class X_Mod
 
             Logger.v("All hooks for Sense Home loaded.");
 
-        } else if (lpparam.packageName.equals("com.sec.musicstudio")) {
-
-            Logger.v("X_Mod: Load hooks for SoundCamp...");
-
-            try {
-                XposedHelpers.findAndHookMethod("com.google.android.vending.licensing.LicenseValidator", lpparam.classLoader,
-                        "verify", PublicKey.class, int.class, String.class, String.class, new XC_MethodHook() {
-                            @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws
-                                    Throwable {
-                                param.args[1] = 0;
-                            }
-                        });
-
-
-                Logger.v("X_Mod: SoundCamp loaded.");
-
-            } catch (Throwable e) {
-                Logger.w("Facebook hooks could not be loaded.", e);
-            }
         } else if (lpparam.packageName.equals(PKG_GMUSIC)) {
 
-            Logger.v("X_Mod: Load hooks for SoundCamp...");
+            Logger.v("X_Mod: Load hooks for Google Music...");
 
             try {
                 XposedHelpers.findAndHookMethod("com.google.android.music.MusicApplication", lpparam.classLoader,
-                        "onCreate", Bundle.class, new XC_MethodHook() {
+                        "onCreate", new XC_MethodHook() {
                             @Override
                             protected void afterHookedMethod(MethodHookParam param) throws
                                     Throwable {
@@ -812,10 +791,10 @@ public class X_Mod
                         });
 
 
-                Logger.v("X_Mod: SoundCamp loaded.");
+                Logger.v("X_Mod: Google Music loaded.");
 
             } catch (Throwable e) {
-                Logger.w("Facebook hooks could not be loaded.", e);
+                Logger.w("Google Music hooks could not be loaded.", e);
             }
 
         } else if (lpparam.packageName.equals(PKG_HTC_FB)) {
