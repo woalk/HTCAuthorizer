@@ -55,7 +55,7 @@ public class ThemeFragment extends PreferenceFragment implements Preference.OnPr
             editor.putInt("theme_PrimaryDarkColor",p.getDarkVibrantColor(Color.WHITE));
             editor.putInt("theme_AccentColor", p.getLightVibrantColor(Color.BLACK));
             editor.putInt("theme_Color4", p.getDarkMutedColor(Color.BLACK));
-            editor.commit();
+            editor.apply();
             Toast toast;
             toast = Toast.makeText(getActivity(), "Theme has been generated, please reboot to apply.", Toast.LENGTH_SHORT);
             toast.show();
