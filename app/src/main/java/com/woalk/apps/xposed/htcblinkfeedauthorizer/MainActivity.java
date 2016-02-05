@@ -1,5 +1,6 @@
 package com.woalk.apps.xposed.htcblinkfeedauthorizer;
 
+import android.Manifest;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
@@ -21,6 +22,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -38,6 +41,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.negusoft.greenmatter.MatPalette;
 import com.negusoft.greenmatter.activity.MatActivity;
@@ -67,6 +71,8 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     private DrawerLayout mDrawerLayout;
     private Button mButtonRefresh;
     private SharedPreferences sharedPreferences;
+    private static final int REQUEST_WRITE_STORAGE = 112;
+
 
 
 
@@ -129,7 +135,18 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
 
             }
         });
-
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        
+        if (currentapiVersion >= android.os.Build.VERSION_CODES.M) {
+            // If on Marshmallow or later, request the permissions we'll need.
+            boolean hasPermission = (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+            if (!hasPermission) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        REQUEST_WRITE_STORAGE);
+            }
+        }
 
 
         PackageManager pm = getPackageManager();
@@ -263,6 +280,24 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
     protected void onPause() {
         Common.fixPermissions(getApplicationContext());
         super.onPause();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode)
+        {
+            case REQUEST_WRITE_STORAGE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                {
+                    //reload my activity with permission granted or use the features what required the permission
+                } else
+                {
+                    Toast.makeText(this, "The app was not allowed to write to your storage. Hence, it cannot function properly. Please consider granting it this permission", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+
     }
 
     @Override
