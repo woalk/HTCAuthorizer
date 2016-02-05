@@ -175,7 +175,11 @@ public class HTMLHelper {
                     }
 
                     parsedVersionString = versionString.replace(parsedVersionNumber, "");
-                    parsedVersionString = parsedVersionString.substring(2, parsedVersionString.length() - 1);
+                    int StartPos = parsedVersionString.indexOf("(") + 1;
+                    int EndPos = parsedVersionString.indexOf(")");
+                    Logger.d("HTMLHELPER: parsedVersionString is " + parsedVersionString);
+                    parsedVersionString = parsedVersionString.substring(StartPos, EndPos);
+                    Logger.d("HTMLHELPER: parsedVersionString (split) is " + parsedVersionString);
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString(mPrefKey, parsedVersionNumber);
