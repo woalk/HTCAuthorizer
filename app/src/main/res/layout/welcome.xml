@@ -9,6 +9,8 @@
 
     <ImageView
         android:id="@+id/iconWelcome"
+        android:scaleType="centerInside"
+        android:layout_width="fill_parent"
         style="@style/WelcomeImageStyle" />
 
 
