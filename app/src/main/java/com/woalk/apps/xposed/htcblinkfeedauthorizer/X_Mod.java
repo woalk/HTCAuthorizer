@@ -800,8 +800,20 @@ public class X_Mod
         } else if (lpparam.packageName.equals(PKG_HTC_FB)) {
 
             Logger.v("Load hooks for Facebook...");
-
             try {
+                XposedHelpers.findAndHookMethod(CLASS_FB_BASE_ACTIVITY2, lpparam.classLoader,
+                        "g", new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+                                XposedHelpers.setBooleanField(param.thisObject, "b", true);
+                                param.setResult(true);
+                                Logger.logHookAfter(param);
+                            }
+                        });
+            } catch (Throwable e) {
+                Logger.w("Facebook e hook could not be loaded.", e);
+            } try {
                 XposedHelpers.findAndHookMethod(CLASS_FB_BASE_ACTIVITY2, lpparam.classLoader,
                         "e", new XC_MethodHook() {
                             @Override
@@ -812,6 +824,9 @@ public class X_Mod
                                 Logger.logHookAfter(param);
                             }
                         });
+            } catch (Throwable e) {
+                Logger.w("Facebook e hook could not be loaded.", e);
+            } try {
 
                 XposedHelpers.findAndHookMethod(CLASS_FB_UPDATE, lpparam.classLoader,
                         "onCreate", new XC_MethodHook() {
@@ -825,10 +840,28 @@ public class X_Mod
                             }
                         });
 
-                Logger.v("All hooks for Facebook loaded.");
+                Logger.v("Facebook oncreate hook 1 loaded.");
 
             } catch (Throwable e) {
-                Logger.w("Facebook hooks could not be loaded.", e);
+                Logger.w("Facebook oncreate hook 1 could not be loaded.", e);
+            } try {
+
+                XposedHelpers.findAndHookMethod(CLASS_FB_UPDATE, lpparam.classLoader,
+                        "onCreate", Bundle.class, new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+                                XposedHelpers.setBooleanField(param.thisObject, "e", true);
+                                ((Activity) param.thisObject).getIntent().setAction("ANY_ACTION");
+                                param.setResult(true);
+                                Logger.logHookAfter(param);
+                            }
+                        });
+
+                Logger.v("Facebook oncreate hook 2 loaded.");
+
+            } catch (Throwable e) {
+                Logger.w("Facebook oncreate hook 2 could not be loaded.", e);
             }
 
         } else if (lpparam.packageName.equals(PKG_HTC_GPLUS_APP)) {
@@ -1828,8 +1861,8 @@ public class X_Mod
                         colorPrimary);
                 resparam.res.setReplacement(PKG_GMUSIC, "color", "gearhead_primary_color_dark",
                         colorPrimaryDark);
-                resparam.res.setReplacement(PKG_GMUSIC, "color", "common_signin_btn_default_background",
-                        colorPrimaryDark);
+//                resparam.res.setReplacement(PKG_GMUSIC, "color", "common_signin_btn_default_background",
+//                        colorPrimaryDark);
                 resparam.res.setReplacement(PKG_GMUSIC, "color", "play_music_secondary",
                         colorPrimaryDark);
                 resparam.res.setReplacement(PKG_GMUSIC, "color", "play_music_recents",
