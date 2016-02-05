@@ -33,11 +33,13 @@ public class DownloadPreference extends Preference {
     private SharedPreferences sharedPreferences;
     private TextView mTitle, mSummary;
     private Boolean mIsInstalled;
+    public BroadcastReceiver receiver;
 
     public DownloadPreference(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
         init(context, attributeSet);
     }
+
 
 
     @Override
@@ -69,6 +71,13 @@ public class DownloadPreference extends Preference {
         RefreshPreferenceSummary();
 
 
+
+    }
+
+    @Override
+    protected void onPrepareForRemoval() {
+        super.onPrepareForRemoval();
+        getContext().unregisterReceiver(receiver);
     }
 
     @Override
@@ -171,8 +180,7 @@ public class DownloadPreference extends Preference {
             mSummaryText = attributeSet.getAttributeValue("http://schemas.android.com/apk/res/android", "summary");
             mPackageVersionInstalled = queryVersionCode(mPackageName);
             mPackageVersionName = queryVersionName(mPackageName);
-
-            BroadcastReceiver receiver = new BroadcastReceiver() {
+            receiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     String action = intent.getAction();
@@ -184,12 +192,16 @@ public class DownloadPreference extends Preference {
 
                 }
             };
-
-            context.registerReceiver(receiver, new IntentFilter(
+            getContext().registerReceiver(receiver, new IntentFilter(
                     "com.woalk.HTCAuthorizer.VERSION_FETCHED"));
+
+
+
 
         }
     }
+
+
 
     public void QuerySelf() {
         HTMLHelper htmlHelper = new HTMLHelper(getContext());
