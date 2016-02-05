@@ -769,33 +769,33 @@ public class X_Mod
 
             Logger.v("X_Mod: Load hooks for Google Music...");
 
-            try {
-                XposedHelpers.findAndHookMethod("com.google.android.music.MusicApplication", lpparam.classLoader,
-                        "onCreate", new XC_MethodHook() {
-                            @Override
-                            protected void afterHookedMethod(MethodHookParam param) throws
-                                    Throwable {
-                                Logger.d("X_Mod: Hooking some shit.");
-                                Activity activity = (Activity) param.thisObject;
-                                Window window = activity.getWindow();
-
-                                // clear FLAG_TRANSLUCENT_STATUS flag:
-                                window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-                                // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
-                                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-
-                                // finally change the color
-                                window.setStatusBarColor(cachedPrimaryDark);
-                            }
-                        });
-
-
-                Logger.v("X_Mod: Google Music loaded.");
-
-            } catch (Throwable e) {
-                Logger.w("Google Music hooks could not be loaded.", e);
-            }
+//            try {
+//                XposedHelpers.findAndHookMethod("com.google.android.music.MusicApplication", lpparam.classLoader,
+//                        "onCreate", new XC_MethodHook() {
+//                            @Override
+//                            protected void afterHookedMethod(MethodHookParam param) throws
+//                                    Throwable {
+//                                Logger.d("X_Mod: Hooking some shit.");
+//                                Activity activity = (Activity) param.get;
+//                                Window window = this.getWindow();
+//
+//                                // clear FLAG_TRANSLUCENT_STATUS flag:
+//                                window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//
+//                                // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+//                                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//
+//                                // finally change the color
+//                                window.setStatusBarColor(cachedPrimaryDark);
+//                            }
+//                        });
+//
+//
+//                Logger.v("X_Mod: Google Music loaded.");
+//
+//            } catch (Throwable e) {
+//                Logger.w("Google Music hooks could not be loaded.", e);
+//            }
 
         } else if (lpparam.packageName.equals(PKG_HTC_FB)) {
 
