@@ -20,7 +20,7 @@ def getVersionName = { ->
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '23.0.1'
+    buildToolsVersion '23.0.2'
 
     defaultConfig {
         applicationId "com.woalk.apps.xposed.htcblinkfeedauthorizer"
@@ -47,9 +47,9 @@ dependencies {
 
     }
     provided fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:23.0.1'
-    compile 'com.android.support:cardview-v7:23.0.1'
-    compile 'com.android.support:palette-v7:23.0.1'
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:cardview-v7:23.1.1'
+    compile 'com.android.support:palette-v7:23.1.1'
     compile 'org.jsoup:jsoup:1.8.3'
     compile(name: 'GreenMatter', ext: 'aar')
     //compile 'com.negusoft.greenmatter:GreenMatter:0.7-alpha'
