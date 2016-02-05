@@ -152,13 +152,12 @@ public class Common {
         String PREFERENCE_FILE = PACKAGE_NAME + "_preferences";
 
         try {
-            Logger.d("Common: Fixperms called.");
             String path = context.getFilesDir().getPath();
             path = path.replace("/files", "");
             theSharedPrefsFile = new File(path + "/shared_prefs/" + PREFERENCE_FILE + ".xml");
             theSharedPrefsFile.setReadable(true, false);
         } catch (Exception e) {
-            Logger.e("LaunchActivity: Fuck: " + e);
+            Logger.e("LaunchActivity: " + e);
         }
     }
 
