@@ -53,7 +53,7 @@ public class HTMLHelper {
         originalName = inputAppName;
         newName = inputAppName.replaceAll("\\s", "+");
         //Set up search URL
-        String holderUrl = context.getString(R.string.url_apkmirror) + "/?s=" + newName + "&post_type=apps_post";
+        String holderUrl = context.getString(R.string.url_apkmirror) + "/?s=" + newName + "&post_type=app_release";
         //Set input app name for a Filename
         newName = inputAppName.replaceAll("\\s", "");
         //Set the input URL for the background task.
@@ -70,11 +70,15 @@ public class HTMLHelper {
 
 
     protected void fetchApp(String inputAppName, Context appContext, String prefKey, Boolean skipDownload) {
+
+        if (skipDownload) {
+            Logger.d("HTMLHelper: Calling fetch for app " + inputAppName);
+        }
         //Set our input app name to be URL-friendly
         originalName = inputAppName;
         newName = inputAppName.replaceAll("\\s", "+");
         //Set up search URL
-        String holderUrl = context.getString(R.string.url_apkmirror) + "/?s=" + newName + "&post_type=apps_post";
+        String holderUrl = context.getString(R.string.url_apkmirror) + "/?s=" + newName + "&post_type=app_release";
         //Set input app name for a Filename
         newName = inputAppName.replaceAll("\\s", "");
         //Set the input URL for the background task.
@@ -143,6 +147,7 @@ public class HTMLHelper {
             try {
 
                 document = Jsoup.connect(inUrl).get();
+                Logger.d("HTMLHelper: Url is " + inUrl);
 
                 // Using Elements to get the class data
                 // Check to see if we're on the "scrape" or
@@ -151,35 +156,37 @@ public class HTMLHelper {
                     // Specifies to find the first instance of the class
                     // "downloadlink fontBlue", which on this page, is
                     // the first result for the APK we want.
-                    Element url = document.select("a[class=downloadlink fontBlue]").first();
+                    Element url = document.select("a[class=downloadLink iconColor]").first();
                     // Grabs the href attribute
                     parsedHtmlNode = url.attr("href");
 
                 } else {
                     // Look for the class that holds the download link.
-                    Element url = document.select("a[class=waves-effect waves-button downloadButton]").first();
-                    Element versionNumber = document.select("h1[class=marginZero wrapText apk-title]").first();
-                    Elements versionCode = document.select("span[class=  fontBlue]");
-                    // Grabs the href attribute
-                    parsedHtmlNode = url.attr("href");
-                    parsedVersionNumber = versionNumber.attr("title");
-                    parsedFileName = parsedVersionNumber.replaceAll("\\s", "_");
-                    parsedVersionNumber = parsedVersionNumber.replaceAll("[^0-9.]", "");
-                    for (Element element : versionCode) {
-                        if (element.ownText().equals("Version:")) {
-                            Node node = element.nextSibling();
-                            versionString = node.toString();
-
-                            break;
-                        }
+                    Element url = document.select("a[class=downloadLink iconColor]").first();
+                    parsedHtmlNode = "http://www.apkmirror.com" + url.attr("href");
+                    document = Jsoup.connect(parsedHtmlNode).get();
+                    url = document.select("a[class=btn btn-flat downloadButton]").first();
+                    try {
+                        parsedHtmlNode = "http://www.apkmirror.com" + url.attr("href");
+                    } catch (NullPointerException e) {
+                        Logger.e("Error parsing url" + e);
                     }
 
-                    parsedVersionString = versionString.replace(parsedVersionNumber, "");
-                    int StartPos = parsedVersionString.indexOf("(") + 1;
-                    int EndPos = parsedVersionString.indexOf(")");
-                    Logger.d("HTMLHELPER: parsedVersionString is " + parsedVersionString);
-                    parsedVersionString = parsedVersionString.substring(StartPos, EndPos);
-                    Logger.d("HTMLHELPER: parsedVersionString (split) is " + parsedVersionString);
+
+                    Element versionNumber = document.select("div.appspec-value").first();
+                    Element title = document.select("h1[marginZero wrapText app-title fontBlack noHover]").first();
+                    // Grabs the href attribute
+                    try {
+                        String editText = versionNumber.text();
+
+                    // String appTitle = title.text();
+                    int StartPos = editText.indexOf("(") + 1;
+                    int EndPos = editText.indexOf(")");
+                    parsedVersionNumber = editText.substring(0,StartPos - 1);
+                    parsedVersionString = editText.substring(StartPos, EndPos);
+                    } catch (NullPointerException e) {
+                        Logger.e("EditText was empty" + e);
+                    }
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString(mPrefKey, parsedVersionNumber);

@@ -126,11 +126,14 @@ public class MainActivity extends MatActivity implements SharedPreferences.OnSha
             @Override
             public void onClick(View v) {
                 Animation rotation = AnimationUtils.loadAnimation(getApplication(), R.anim.clockwise_refresh);
-                rotation.setRepeatCount(10);
+                rotation.setRepeatCount(20);
                 mButtonRefresh.startAnimation(rotation);
-                DownloadFragment myFragment = (DownloadFragment) getFragmentManager().findFragmentByTag("DL_FRAGMENT");
+                DownloadFragment myFragment = (DownloadFragment) getFragmentManager().findFragmentByTag("DownloadPref");
                 if (myFragment != null && myFragment.isVisible()) {
+                    Logger.d("HTMLHelper: Query precall");
                     myFragment.queryAllPackages();
+                } else {
+                    Logger.d("HTMLHelper: Query precall skipped");
                 }
 
             }

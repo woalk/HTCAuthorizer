@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -227,13 +228,14 @@ public class DownloadPreference extends Preference {
                 if (mInstalledVer < mPackageVersionAvailable && (mIsInstalled)) {
                     mSummaryText = "A new version is available.  Tap to download.";
 
-                } else if (mInstalledVer == mPackageVersionAvailable && (mIsInstalled)) {
+                } else if (mInstalledVer >= mPackageVersionAvailable && (mIsInstalled)) {
                     mSummaryText = "Installed Version (Latest): " + mPackageVersionName;
                 }
             } else {
                 mSummaryText = "Tap to download";
 
             }
+            Logger.d("RefreshPreferenceSummary: String is " + mSummaryText + " and Installed Check is " + mIsInstalled + " Installed Ver: " + mInstalledVer + " Available: " + mPackageVersionAvailable);
 
         return null;
         }
@@ -245,17 +247,26 @@ public class DownloadPreference extends Preference {
     }
 
     private boolean isPackageInstalled(String packageName) {
+
         List<ApplicationInfo> packages;
         PackageManager pm;
-
         pm = getContext().getPackageManager();
         packages = pm.getInstalledApplications(0);
-        for (ApplicationInfo packageInfo : packages) {
-            if (packageInfo.packageName.equals(packageName))
+
+        int i = 0;
+        while (i < packages.size()) {
+            ApplicationInfo packageInfo = packages.get(i);
+            if (!packageInfo.packageName.equals(packageName)) {
+                i++;
+
+            } else {
                 return true;
+            }
+
         }
         return false;
     }
+
 
     private int queryVersionCode(String packageName) {
         PackageManager packageManager = getContext().getPackageManager();

@@ -24,7 +24,7 @@
         android:defaultValue="0"
         android:key="dl_IME"
         android:summary="Download HTC Keyboard"
-        android:title="HTC Input"
+        android:title="HTC Sense Input"
         sensify:package_name="com.htc.sense.ime" />
     <com.woalk.apps.xposed.htcblinkfeedauthorizer.DownloadPreference
         android:defaultValue="0"
