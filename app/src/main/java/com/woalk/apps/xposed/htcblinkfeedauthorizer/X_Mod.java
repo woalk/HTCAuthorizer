@@ -21,6 +21,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.Preference;
+import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -29,7 +30,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import android.support.v7.widget.Toolbar;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -769,33 +770,23 @@ public class X_Mod
 
             Logger.v("X_Mod: Load hooks for Google Music...");
 
-//            try {
-//                XposedHelpers.findAndHookMethod("com.google.android.music.MusicApplication", lpparam.classLoader,
-//                        "onCreate", new XC_MethodHook() {
-//                            @Override
-//                            protected void afterHookedMethod(MethodHookParam param) throws
-//                                    Throwable {
-//                                Logger.d("X_Mod: Hooking some shit.");
-//                                Activity activity = (Activity) param.get;
-//                                Window window = this.getWindow();
-//
-//                                // clear FLAG_TRANSLUCENT_STATUS flag:
-//                                window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-//
-//                                // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
-//                                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-//
-//                                // finally change the color
-//                                window.setStatusBarColor(cachedPrimaryDark);
-//                            }
-//                        });
-//
-//
-//                Logger.v("X_Mod: Google Music loaded.");
-//
-//            } catch (Throwable e) {
-//                Logger.w("Google Music hooks could not be loaded.", e);
-//            }
+            try {
+                XposedHelpers.findAndHookMethod("com.google.android.music.ui.BaseActivity", lpparam.classLoader,
+                        "setSupportActionBar", Toolbar.class, new XC_MethodHook() {
+                            @Override
+                            protected void afterHookedMethod(MethodHookParam param) throws
+                                    Throwable {
+                                Logger.d("X_Mod: Hooking some shit.");
+
+                            }
+                        });
+
+
+                Logger.v("X_Mod: Google Music loaded.");
+
+            } catch (Throwable e) {
+                Logger.w("Google Music hooks could not be loaded.", e);
+            }
 
         } else if (lpparam.packageName.equals(PKG_HTC_FB)) {
 
@@ -1661,14 +1652,6 @@ public class X_Mod
             } else if (resparam.packageName.equals(PKG_GDIALER)) {
                 Logger.v("Replacing Theme resources for Dialer app.");
 
-                resparam.res.setReplacement(PKG_DIALER, "color", "wallet_highlighted_text_holo_light",
-                        colorPrimary);
-                resparam.res.setReplacement(PKG_DIALER, "color", "wallet_highlighted_text_holo_dark",
-                        colorPrimaryDark);
-                resparam.res.setReplacement(PKG_DIALER, "color", "wallet_holo_blue_light",
-                        colorPrimary);
-                resparam.res.setReplacement(PKG_DIALER, "color", "wallet_link_text_light",
-                        colorPrimary);
                 resparam.res.setReplacement(PKG_DIALER, "color", "dialer_theme_color",
                         colorPrimary);
                 resparam.res.setReplacement(PKG_DIALER, "color", "dialer_theme_color_dark",
@@ -1740,8 +1723,6 @@ public class X_Mod
                 resparam.res.setReplacement(PKG_CONTACTS, "color", "floating_action_button_icon_color",
                         colorPrimaryDark);
                 resparam.res.setReplacement(PKG_CONTACTS, "color", "dialer_theme_color",
-                        colorPrimaryDark);
-                resparam.res.setReplacement(PKG_CONTACTS, "color", "wallet_holo_blue_light",
                         colorPrimaryDark);
                 resparam.res.setReplacement(PKG_CONTACTS, "color", "dialer_theme_color_dark",
                         colorPrimary);
@@ -1828,6 +1809,8 @@ public class X_Mod
             } else if (resparam.packageName.equals(PKG_GMUSIC)) {
                 Logger.v("Sensify: Replacing string resource for Google Music.");
 
+                resparam.res.setReplacement(PKG_GMUSIC, "color", "play_music_primary",
+                        colorPrimary);
                 resparam.res.setReplacement(PKG_GMUSIC, "color", "gearhead_color_accent",
                         colorAccent);
                 resparam.res.setReplacement(PKG_GMUSIC, "color", "app_color_accented",
@@ -1836,9 +1819,6 @@ public class X_Mod
                         colorAccent);
                 resparam.res.setReplacement(PKG_GMUSIC, "color", "play_music_light",
                         colorAccent);
-
-                resparam.res.setReplacement(PKG_GMUSIC, "color", "play_music_primary",
-                        colorPrimary);
                 resparam.res.setReplacement(PKG_GMUSIC, "color", "signup_header_text",
                         colorPrimary);
                 resparam.res.setReplacement(PKG_GMUSIC, "color", "sound_search_start_search_button_color",
